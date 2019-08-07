@@ -8,7 +8,7 @@
     "format": "prettier --write **/*.{ts,json,md}",
     "test": "jest --watch",
     "test:ci": "jest --passWithNoTests",
-    "prepublish": "tsc"
+    "prepare": "tsc"
   },
   "repository": {
     "type": "git",
