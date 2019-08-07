@@ -1,0 +1,52 @@
+{
+  "name": "sipgateio",
+  "version": "0.0.1",
+  "description": "The sipgate.io Node.js library",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "format": "prettier --write **/*.{ts,json,md}",
+    "test": "jest --watch",
+    "test:ci": "jest --passWithNoTests",
+    "prepublish": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sipgate-io/sipgateio-node.git"
+  },
+  "files": [
+    "/dist"
+  ],
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/sipgate-io/sipgateio-node/issues"
+  },
+  "homepage": "https://github.com/sipgate-io/sipgateio-node#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "prettier --write",
+      "tslint",
+      "git add"
+    ],
+    "*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^3.0.2",
+    "jest": "^24.8.0",
+    "lint-staged": "^9.2.1",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.5.3"
+  }
+}
