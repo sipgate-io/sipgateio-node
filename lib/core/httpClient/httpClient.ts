@@ -1,6 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import btoa from 'btoa';
+import pjson from 'pjson';
+
 export const BASE_URL = 'https://api.sipgate.com/v2';
+
 export class HttpClient {
   private client: AxiosInstance;
 
@@ -10,6 +13,8 @@ export class HttpClient {
       baseURL: baseUrl || BASE_URL,
       headers: {
         Authorization: `Basic ${basicAuth}`,
+        'X-Sipgate-Client': 'lib-node',
+        'X-Sipgate-Version': pjson.version,
       },
     });
   }
