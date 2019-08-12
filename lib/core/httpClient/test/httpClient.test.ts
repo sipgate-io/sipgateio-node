@@ -1,6 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import btoa from 'btoa';
+
+import pjson from 'pjson';
+
 import { BASE_URL, HttpClient } from '../httpClient';
 
 describe('Test Get Method', () => {
@@ -41,7 +44,7 @@ describe('Test Get Method', () => {
     const expectedXHeaderValue = 'lib-node';
 
     const expectedXVersionHeaderKey = 'X-Sipgate-Version';
-    const expectedXVersionHeaderValue = '0.0.0';
+    const expectedXVersionHeaderValue = pjson.version;
 
     const expectedAuthHeader = `Basic ${btoa('testUsername:testPassword')}`;
 
