@@ -5,7 +5,6 @@ import { BASE_URL, HttpClient } from '../httpClient';
 
 describe('Test Get Method', () => {
   const mock = new MockAdapter(axios);
-  const TESTDATA = 'TESTDATA';
 
   beforeEach(() => {
     mock.reset();
@@ -14,18 +13,23 @@ describe('Test Get Method', () => {
   test('Test Get to Get Mapping', async () => {
     const httpClient = new HttpClient('testUsername', 'testPassword');
 
-    mock.onGet('').reply(200, TESTDATA);
+    const expectedData = 'test';
+
+    mock.onGet('').reply(200, expectedData);
 
     const response = await httpClient.get('');
-    expect(response.data).toBe(TESTDATA);
+    expect(response.data).toBe(expectedData);
   });
 
   test('Test Valid URL Concatenation', async () => {
     const httpClient = new HttpClient('testUsername', 'testPassword');
-    mock.onGet(`${BASE_URL}/sessions`).reply(200, TESTDATA);
+
+    const expectedData = 'test';
+
+    mock.onGet(`${BASE_URL}/sessions`).reply(200, expectedData);
 
     const response = await httpClient.get('/sessions');
-    expect(response.data).toBe(TESTDATA);
+    expect(response.data).toBe(expectedData);
   });
 
   test('test headers', async () => {
