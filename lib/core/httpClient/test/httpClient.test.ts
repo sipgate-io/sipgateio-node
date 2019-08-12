@@ -7,6 +7,10 @@ describe('Test Get Method', () => {
   const mock = new MockAdapter(axios);
   const TESTDATA = 'TESTDATA';
 
+  beforeEach(() => {
+    mock.reset();
+  });
+
   test('Test Get to Get Mapping', async () => {
     const httpClient = new HttpClient('testUsername', 'testPassword');
 
