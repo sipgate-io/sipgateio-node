@@ -1,56 +1,53 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import btoa from 'btoa';
 import pjson from 'pjson';
+import { HttpClientModule } from './httpClient.module';
 
-export const BASE_URL = 'https://api.sipgate.com/v2';
+export const createHttpClient = (
+  username: string,
+  password: string,
+): HttpClientModule => {
+  const basicAuth = btoa(`${username}:${password}`);
+  const client = axios.create({
+    baseURL: 'https://api.sipgate.com/v2',
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+      'X-Sipgate-Client': 'lib-node',
+      'X-Sipgate-Version': pjson.version,
+    },
+  });
 
-export class HttpClient {
-  private client: AxiosInstance;
+  return {
+    delete(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+      return client.delete(url, config);
+    },
 
-  constructor(username: string, password: string, baseUrl?: string) {
-    const basicAuth = btoa(`${username}:${password}`);
-    this.client = axios.create({
-      baseURL: baseUrl || BASE_URL,
-      headers: {
-        Authorization: `Basic ${basicAuth}`,
-        'X-Sipgate-Client': 'lib-node',
-        'X-Sipgate-Version': pjson.version,
-      },
-    });
-  }
+    get(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+      return client.get(url, config);
+    },
 
-  public get(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
-    return this.client.get(url, config);
-  }
+    patch(
+      url: string,
+      data?: any,
+      config?: AxiosRequestConfig,
+    ): Promise<AxiosResponse> {
+      return client.patch(url, data, config);
+    },
 
-  public post(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig,
-  ): Promise<AxiosResponse> {
-    return this.client.post(url, data, config);
-  }
+    post(
+      url: string,
+      data?: any,
+      config?: AxiosRequestConfig,
+    ): Promise<AxiosResponse> {
+      return client.post(url, data, config);
+    },
 
-  public put(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig,
-  ): Promise<AxiosResponse> {
-    return this.client.put(url, data, config);
-  }
-
-  public delete(
-    url: string,
-    config?: AxiosRequestConfig,
-  ): Promise<AxiosResponse> {
-    return this.client.delete(url, config);
-  }
-
-  public patch(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig,
-  ): Promise<AxiosResponse> {
-    return this.client.put(url, data, config);
-  }
-}
+    put(
+      url: string,
+      data?: any,
+      config?: AxiosRequestConfig,
+    ): Promise<AxiosResponse> {
+      return client.put(url, data, config);
+    },
+  };
+};
