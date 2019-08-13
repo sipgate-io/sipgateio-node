@@ -2,7 +2,9 @@ import { createSMSModule } from '../../sms/sms';
 import { SMSModule } from '../../sms/sms.model';
 import { createHttpClient } from '../httpClient/httpClient';
 
-export type SipgateClient = SMSModule;
+export interface SipgateClient {
+  sms: SMSModule;
+}
 
 export const createClient = (
   username: string,
@@ -11,6 +13,6 @@ export const createClient = (
   const httpClient = createHttpClient(username, password);
 
   return {
-    ...createSMSModule(httpClient),
+    sms: createSMSModule(httpClient),
   };
 };
