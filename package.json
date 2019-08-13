@@ -42,7 +42,6 @@
   "devDependencies": {
     "@types/btoa": "^1.2.3",
     "@types/jest": "^24.0.17",
-    "axios-mock-adapter": "^1.17.0",
     "husky": "^3.0.3",
     "jest": "^24.8.0",
     "lint-staged": "^9.2.1",
@@ -54,6 +53,7 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "axios-mock-adapter": "^1.17.0",
     "btoa": "latest",
     "pjson": "^1.0.9"
   }
