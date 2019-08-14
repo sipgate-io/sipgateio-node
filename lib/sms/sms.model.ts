@@ -1,6 +1,5 @@
-import { Message, SMSResponses } from '../core/models';
+import { Message } from '../core/models';
 
 export interface SMSModule {
-  list: (userId: string) => Promise<SMSResponses>;
-  send: (sms: Message) => Promise<void>;
+  send: (sms: Message) => Promise<string>;
 }
