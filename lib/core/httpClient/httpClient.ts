@@ -1,6 +1,8 @@
 import axios from 'axios';
 import btoa from 'btoa';
 import pjson from 'pjson';
+import { validateEmail, validatePassword } from '../validator';
+
 import {
   HttpClientModule,
   HttpRequestConfig,
@@ -11,6 +13,12 @@ export const createHttpClient = (
   username: string,
   password: string,
 ): HttpClientModule => {
+  validateEmail(username);
+
+  if (!validatePassword(password)) {
+    throw new Error('Invalid password - contains " "');
+  }
+
   const basicAuth = btoa(`${username}:${password}`);
   const client = axios.create({
     baseURL: 'https://api.sipgate.com/v2',

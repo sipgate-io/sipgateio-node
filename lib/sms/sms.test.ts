@@ -34,7 +34,7 @@ describe('SMS Module', () => {
     };
 
     await expect(smsModule.send(message)).rejects.toThrow(
-      'Wrong SMS extension',
+      'Invalid SMS extension',
     );
   });
 });

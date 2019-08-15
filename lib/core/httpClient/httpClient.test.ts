@@ -7,11 +7,13 @@ import { createHttpClient } from './httpClient';
 
 describe('Test header', () => {
   const baseUrl = 'https://api.sipgate.com/v2';
-  const httpClient = createHttpClient('testUsername', 'testPassword');
+  const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
 
   test('test authorization header', async () => {
     const expectedData = 'test';
-    const expectedAuthHeader = `Basic ${btoa('testUsername:testPassword')}`;
+    const expectedAuthHeader = `Basic ${btoa(
+      'testUsername@test.de:testPassword',
+    )}`;
 
     nock(baseUrl)
       .matchHeader('Authorization', expectedAuthHeader)
@@ -66,7 +68,7 @@ describe('Test wrapper methods', () => {
   });
 
   test('Test Get to Get Mapping', async () => {
-    const httpClient = createHttpClient('testUsername', 'testPassword');
+    const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
 
     const expectedData = 'test';
 
@@ -77,7 +79,7 @@ describe('Test wrapper methods', () => {
   });
 
   test('Test Valid URL Concatenation for Get Requests', async () => {
-    const httpClient = createHttpClient('testUsername', 'testPassword');
+    const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
 
     const expectedData = 'test';
 
@@ -88,7 +90,7 @@ describe('Test wrapper methods', () => {
   });
 
   test('Test Get Requests', async () => {
-    const httpClient = createHttpClient('testUsername', 'testPassword');
+    const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
 
     const expectedData = 'test';
 
@@ -98,9 +100,8 @@ describe('Test wrapper methods', () => {
     expect(response.data).toBe(expectedData);
   });
 
-  ////// Temp
   test('Test Post to Post Mapping', async () => {
-    const httpClient = createHttpClient('testUsername', 'testPassword');
+    const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
 
     const expectedData = 'test';
     const testData = { foo: 'bar' };
@@ -111,7 +112,7 @@ describe('Test wrapper methods', () => {
   });
 
   test('Test Put to Put Mapping', async () => {
-    const httpClient = createHttpClient('testUsername', 'testPassword');
+    const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
 
     const expectedData = 'test';
     const testData = { foo: 'bar' };
@@ -122,7 +123,7 @@ describe('Test wrapper methods', () => {
   });
 
   test('Test Delete to Delete Mapping', async () => {
-    const httpClient = createHttpClient('testUsername', 'testPassword');
+    const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
 
     const expectedData = 'test';
     mock.onDelete('').reply(200, expectedData);
@@ -132,7 +133,7 @@ describe('Test wrapper methods', () => {
   });
 
   test('Test Patch to Patch Mapping', async () => {
-    const httpClient = createHttpClient('testUsername', 'testPassword');
+    const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
 
     const expectedData = 'test';
     const testData = { foo: 'bar' };
@@ -143,21 +144,15 @@ describe('Test wrapper methods', () => {
   });
 });
 
-describe('ErrorHandling', () => {
-  const mock = new MockAdapter(axios);
-  const baseUrl = 'https://api.sipgate.com/v2';
-
-  beforeEach(() => {
-    mock.reset();
+describe('validation', () => {
+  test('email', async () => {
+    await expect(() =>
+      createHttpClient('testUsername', 'testPassword'),
+    ).toThrow('Invalid email');
   });
-
-  test('AuthenticationError', async () => {
-    mock.onGet(`${baseUrl}/account`).reply(401);
-
-    const client = createHttpClient('invalidUsername', 'invalidPassword');
-
-    await expect(client.get('/account')).rejects.toThrow(
-      'Invalid login credentials',
+  test('password', async () => {
+    await expect(() => createHttpClient('testUsername@test.d', '')).toThrow(
+      'Invalid password - contains " "',
     );
   });
 });
