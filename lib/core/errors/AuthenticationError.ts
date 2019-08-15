@@ -1,8 +1,8 @@
 import { BaseError } from './BaseError';
 
-export class AuthorizationError extends BaseError {
+export class AuthenticationError extends BaseError {
   constructor(message?: string) {
     super(message || 'Invalid login credentials');
-    Object.setPrototypeOf(this, AuthorizationError.prototype);
+    Object.setPrototypeOf(this, AuthenticationError.prototype);
   }
 }

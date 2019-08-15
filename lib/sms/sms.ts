@@ -1,5 +1,5 @@
-import { AuthorizationError } from '../core/errors/AuthorizationError';
 import { ExtensionError } from '../core/errors/ExtensionError';
+import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import { ShortMessage } from '../core/models';
 import { SMSModule } from './sms.module';
@@ -17,13 +17,9 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 
 // Todo handle error if the server isn't reachable
 const handleError = (e: any) => {
-  if (e.response.status === 401) {
-    return new AuthorizationError();
-  }
-
   if (e.response.status === 403) {
     return new ExtensionError('Invalid SMS extension');
   }
 
-  return new Error();
+  return handleCoreError(e);
 };
