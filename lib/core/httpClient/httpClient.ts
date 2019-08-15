@@ -1,7 +1,11 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios from 'axios';
 import btoa from 'btoa';
 import pjson from 'pjson';
-import { HttpClientModule } from './httpClient.module';
+import {
+  HttpClientModule,
+  HttpRequestConfig,
+  HttpResponse,
+} from './httpClient.module';
 
 export const createHttpClient = (
   username: string,
@@ -18,35 +22,35 @@ export const createHttpClient = (
   });
 
   return {
-    delete(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+    delete(url: string, config?: HttpRequestConfig): Promise<HttpResponse> {
       return client.delete(url, config);
     },
 
-    get(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+    get(url: string, config?: HttpRequestConfig): Promise<HttpResponse> {
       return client.get(url, config);
     },
 
     patch(
       url: string,
       data?: any,
-      config?: AxiosRequestConfig,
-    ): Promise<AxiosResponse> {
+      config?: HttpRequestConfig,
+    ): Promise<HttpResponse> {
       return client.patch(url, data, config);
     },
 
     post(
       url: string,
       data?: any,
-      config?: AxiosRequestConfig,
-    ): Promise<AxiosResponse> {
+      config?: HttpRequestConfig,
+    ): Promise<HttpResponse> {
       return client.post(url, data, config);
     },
 
     put(
       url: string,
       data?: any,
-      config?: AxiosRequestConfig,
-    ): Promise<AxiosResponse> {
+      config?: HttpRequestConfig,
+    ): Promise<HttpResponse> {
       return client.put(url, data, config);
     },
   };

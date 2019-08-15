@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { Message } from '../core/models';
+import { ShortMessage } from '../core/models';
 import { createSMSModule } from './sms';
 
 describe('SMS Module', () => {
@@ -15,19 +15,19 @@ describe('SMS Module', () => {
   it('It sends a SMS successfully', async () => {
     mock.onPost('/sessions/sms').reply(200, '');
 
-    const message: Message = {
+    const message: ShortMessage = {
       message: 'ValidMessage',
       recipient: 'validFonNumber',
       smsId: 'validExtensionId',
     };
-    const result = await smsModule.send(message);
-    expect(result).toEqual('');
+
+    await expect(smsModule.send(message)).resolves.not.toThrow();
   });
 
   it('It sends a SMS with error', async () => {
     mock.onPost('/sessions/sms').reply(403);
 
-    const message: Message = {
+    const message: ShortMessage = {
       message: 'ValidMessage',
       recipient: 'validFonNumber',
       smsId: 'nonValidExtensionId',

@@ -1,14 +1,13 @@
 import { AuthorizationError } from '../core/errors/AuthorizationError';
-import { UnprocessableEntity } from '../core/errors/UnprocessableEntity';
+import { ExtensionError } from '../core/errors/ExtensionError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
-import { Message } from '../core/models';
-import { SMSModule } from './sms.model';
+import { ShortMessage } from '../core/models';
+import { SMSModule } from './sms.module';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
-  async send(sms: Message): Promise<string> {
+  async send(sms: ShortMessage): Promise<void> {
     try {
-      const { data } = await client.post('/sessions/sms', sms);
-      return data;
+      await client.post('/sessions/sms', sms);
     } catch (e) {
       const newError = handleError(e);
       return Promise.reject(newError);
@@ -23,8 +22,8 @@ const handleError = (e: any) => {
   }
 
   if (e.response.status === 403) {
-    return new UnprocessableEntity('Wrong SMS extension');
+    return new ExtensionError('Invalid SMS extension');
   }
 
-  return new Error('boom');
+  return new Error();
 };

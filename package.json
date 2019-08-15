@@ -57,6 +57,7 @@
     "axios-mock-adapter": "^1.17.0",
     "btoa": "latest",
     "nock": "^10.0.6",
-    "pjson": "^1.0.9"
+    "pjson": "^1.0.9",
+    "stackup": "^1.0.2"
   }
 }

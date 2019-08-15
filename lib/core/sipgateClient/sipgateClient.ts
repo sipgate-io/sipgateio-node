@@ -1,5 +1,5 @@
 import { createSMSModule } from '../../sms/sms';
-import { SMSModule } from '../../sms/sms.model';
+import { SMSModule } from '../../sms/sms.module';
 import { createHttpClient } from '../httpClient/httpClient';
 
 export interface SipgateClient {
