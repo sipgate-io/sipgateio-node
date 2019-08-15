@@ -142,3 +142,22 @@ describe('Test wrapper methods', () => {
     expect(response.data).toBe(expectedData);
   });
 });
+
+describe('ErrorHandling', () => {
+  const mock = new MockAdapter(axios);
+  const baseUrl = 'https://api.sipgate.com/v2';
+
+  beforeEach(() => {
+    mock.reset();
+  });
+
+  test('AuthenticationError', async () => {
+    mock.onGet(`${baseUrl}/account`).reply(401);
+
+    const client = createHttpClient('invalidUsername', 'invalidPassword');
+
+    await expect(client.get('/account')).rejects.toThrow(
+      'Invalid login credentials',
+    );
+  });
+});
