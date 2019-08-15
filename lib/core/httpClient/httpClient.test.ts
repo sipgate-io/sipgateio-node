@@ -97,4 +97,48 @@ describe('Test wrapper methods', () => {
     const response = await httpClient.get('/sessions');
     expect(response.data).toBe(expectedData);
   });
+
+  ////// Temp
+  test('Test Post to Post Mapping', async () => {
+    const httpClient = createHttpClient('testUsername', 'testPassword');
+
+    const expectedData = 'test';
+    const testData = { foo: 'bar' };
+    mock.onPost('', testData).reply(200, expectedData);
+
+    const response = await httpClient.post('', testData);
+    expect(response.data).toBe(expectedData);
+  });
+
+  test('Test Put to Put Mapping', async () => {
+    const httpClient = createHttpClient('testUsername', 'testPassword');
+
+    const expectedData = 'test';
+    const testData = { foo: 'bar' };
+    mock.onPut('', testData).reply(200, expectedData);
+
+    const response = await httpClient.put('', testData);
+    expect(response.data).toBe(expectedData);
+  });
+
+  test('Test Delete to Delete Mapping', async () => {
+    const httpClient = createHttpClient('testUsername', 'testPassword');
+
+    const expectedData = 'test';
+    mock.onDelete('').reply(200, expectedData);
+
+    const response = await httpClient.delete('');
+    expect(response.data).toBe(expectedData);
+  });
+
+  test('Test Patch to Patch Mapping', async () => {
+    const httpClient = createHttpClient('testUsername', 'testPassword');
+
+    const expectedData = 'test';
+    const testData = { foo: 'bar' };
+    mock.onPatch('', testData).reply(200, expectedData);
+
+    const response = await httpClient.patch('', testData);
+    expect(response.data).toBe(expectedData);
+  });
 });
