@@ -1,4 +1,8 @@
-import { validateEmail, validatePassword } from './validator';
+import {
+  validateEmail,
+  validatePassword,
+  validatePhoneNumber,
+} from './validator';
 
 describe('ValidateEmail test', () => {
   it('should return true for valid email address', () => {
@@ -31,5 +35,27 @@ describe('ValidateEmail test', () => {
 describe('ValidatePassword', () => {
   it('should return true for valid password', () => {
     expect(validatePassword('validPassword')).toBe(true);
+  });
+});
+
+describe('Phone validation', () => {
+  test('valid phone number numbers', () => {
+    expect(validatePhoneNumber('015739777777')).toBeTruthy();
+  });
+
+  test('valid phone number +numbers', () => {
+    expect(validatePhoneNumber('+4915739777777')).toBeTruthy();
+  });
+
+  test('invalid phone number text', () => {
+    expect(() => validatePhoneNumber('text')).toThrow(
+      new Error('Invalid Phone Number'),
+    );
+  });
+
+  test('invalid phone number empty', () => {
+    expect(() => validatePhoneNumber('')).toThrow(
+      new Error('Invalid Phone Number'),
+    );
   });
 });

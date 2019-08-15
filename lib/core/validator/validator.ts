@@ -12,4 +12,15 @@ const validateEmail = (email: string): boolean => {
 const validatePassword = (password: string): boolean => {
   return password.length > 0 && !password.includes(' ');
 };
-export { validateEmail, validatePassword };
+
+const validatePhoneNumber = (phoneNumber: string): boolean => {
+  const emailRegex: RegExp = new RegExp(/^\+?[0-9]+$/);
+
+  if (!emailRegex.test(phoneNumber)) {
+    throw new Error('Invalid Phone Number');
+  }
+
+  return true;
+};
+
+export { validateEmail, validatePassword, validatePhoneNumber };

@@ -12,24 +12,24 @@ describe('SMS Module', () => {
     mock.reset();
   });
 
-  it('It sends a SMS successfully', async () => {
+  test('It sends a SMS successfully', async () => {
     mock.onPost('/sessions/sms').reply(200, '');
 
     const message: ShortMessage = {
       message: 'ValidMessage',
-      recipient: 'validFonNumber',
+      recipient: '015739777777',
       smsId: 'validExtensionId',
     };
 
     await expect(smsModule.send(message)).resolves.not.toThrow();
   });
 
-  it('It sends a SMS with error', async () => {
+  test('It sends a SMS with error', async () => {
     mock.onPost('/sessions/sms').reply(403);
 
     const message: ShortMessage = {
       message: 'ValidMessage',
-      recipient: 'validFonNumber',
+      recipient: '015739777777',
       smsId: 'nonValidExtensionId',
     };
 
