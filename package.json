@@ -8,6 +8,7 @@
     "format": "prettier --write **/*.{ts,json,md}",
     "test": "jest --watch",
     "test:ci": "jest",
+    "sms-example": "ts-node examples/sms.ts",
     "prepare": "tsc"
   },
   "repository": {
