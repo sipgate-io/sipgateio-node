@@ -26,7 +26,8 @@
   "homepage": "https://github.com/sipgate-io/sipgateio-node#readme",
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test:ci && lint-staged"
+      "pre-commit": "npm run test:ci && lint-staged",
+      "pre-push": "npm run test:ci"
     }
   },
   "lint-staged": {
