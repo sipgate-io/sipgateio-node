@@ -5,13 +5,13 @@ import {
 } from './validator';
 
 describe('ValidateEmail', () => {
-  it('should not throw error for valid email address', () => {
+  test('should not throw error for valid email address', () => {
     expect(() => {
       validateEmail('validEmail@test.de');
     }).not.toThrowError(new Error('Invalid email'));
   });
 
-  it('should throw error for invalid email address', () => {
+  test('should throw error for invalid email address', () => {
     expect(() => {
       validateEmail('invalidEmail');
     }).toThrowError(new Error('Invalid email'));
