@@ -4,12 +4,14 @@ import {
   validatePhoneNumber,
 } from './validator';
 
-describe('ValidateEmail test', () => {
-  it('should return true for valid email address', () => {
-    expect(validateEmail('validEmail@test.de')).toBe(true);
+describe('ValidateEmail', () => {
+  it('should not throw error for valid email address', () => {
+    expect(() => {
+      validateEmail('validEmail@test.de');
+    }).not.toThrowError(new Error('Invalid email'));
   });
 
-  it('should return false for invalid email', () => {
+  it('should throw error for invalid email address', () => {
     expect(() => {
       validateEmail('invalidEmail');
     }).toThrowError(new Error('Invalid email'));
