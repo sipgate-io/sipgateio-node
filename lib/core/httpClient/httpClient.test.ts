@@ -152,7 +152,7 @@ describe('validation', () => {
   });
   test('password', async () => {
     await expect(() => createHttpClient('testUsername@test.d', '')).toThrow(
-      'Invalid password - contains " "',
+      'Invalid password',
     );
   });
 });

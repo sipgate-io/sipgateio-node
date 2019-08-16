@@ -9,8 +9,12 @@ const validateEmail = (email: string): boolean => {
 
   return true;
 };
-const validatePassword = (password: string): boolean => {
-  return password.length > 0 && !password.includes(' ');
+
+const validatePassword = (password: string): void => {
+  const isNotValid = password.length === 0 || password.includes(' ');
+  if (isNotValid) {
+    throw new Error('Invalid password');
+  }
 };
 
 const validatePhoneNumber = (phoneNumber: string): boolean => {

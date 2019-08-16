@@ -14,10 +14,7 @@ export const createHttpClient = (
   password: string,
 ): HttpClientModule => {
   validateEmail(username);
-
-  if (!validatePassword(password)) {
-    throw new Error('Invalid password - contains " "');
-  }
+  validatePassword(password);
 
   const basicAuth = btoa(`${username}:${password}`);
   const client = axios.create({

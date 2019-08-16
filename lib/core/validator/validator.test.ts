@@ -33,8 +33,20 @@ describe('ValidateEmail test', () => {
 });
 
 describe('ValidatePassword', () => {
-  it('should return true for valid password', () => {
-    expect(validatePassword('validPassword')).toBe(true);
+  test('should not throw error for valid password', () => {
+    expect(() => {
+      validatePassword('validPassword');
+    }).not.toThrowError(new Error('Invalid password'));
+  });
+
+  test('should throw error for invalid password', () => {
+    expect(() => {
+      validatePassword('');
+    }).toThrowError(new Error('Invalid password'));
+
+    expect(() => {
+      validatePassword(' ');
+    }).toThrowError(new Error('Invalid password'));
   });
 });
 
