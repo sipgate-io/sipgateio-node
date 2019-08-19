@@ -60,10 +60,14 @@ describe('Test header', () => {
 });
 
 describe('Test wrapper methods', () => {
-  const mock = new MockAdapter(axios);
+  let mock: MockAdapter;
   const baseUrl = 'https://api.sipgate.com/v2';
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
     mock.reset();
   });
 
