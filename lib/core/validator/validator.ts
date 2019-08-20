@@ -1,4 +1,4 @@
-import fileType from 'file-type';
+import fileType, { FileTypeResult } from 'file-type';
 import * as fs from 'fs';
 import { ValidationError } from '../errors/ValidationError';
 
@@ -34,12 +34,13 @@ const validatePdfFile = (filePath: string): void => {
     throw new ValidationError('File does not exist');
   }
 
+  let type: FileTypeResult | undefined;
+
   try {
-    fs.accessSync(filePath, fs.constants.R_OK);
+    type = fileType(fs.readFileSync(filePath));
   } catch (e) {
     throw new ValidationError('File is unreadable');
   }
-  const type = fileType(fs.readFileSync(filePath));
 
   if (!type || type.mime !== 'application/pdf') {
     throw new ValidationError('Invalid pdf extension');
