@@ -1,6 +1,6 @@
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
-import { UserInfo } from '../core/models';
+import { FaxLine, FaxLineListObject, UserInfo } from '../core/models';
 
 export const getUserInfo = async (
   client: HttpClientModule,
@@ -16,4 +16,20 @@ export const getUserInfo = async (
 
 const handleError = (e: any) => {
   return handleCoreError(e);
+};
+
+export const getUserFaxlines = async (
+  client: HttpClientModule,
+  masterSipId: string,
+): Promise<FaxLine[]> => {
+  try {
+    const { data } = await client.get<FaxLineListObject>(
+      `${masterSipId}/faxlines`,
+    );
+
+    return data.items;
+  } catch (e) {
+    const newError = handleError(e);
+    return Promise.reject(newError);
+  }
 };
