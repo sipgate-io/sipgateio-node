@@ -31,7 +31,10 @@ export const createHttpClient = (
       return client.delete(url, config);
     },
 
-    get(url: string, config?: HttpRequestConfig): Promise<HttpResponse> {
+    get<T = any, R = HttpResponse<T>>(
+      url: string,
+      config?: HttpRequestConfig,
+    ): Promise<R> {
       return client.get(url, config);
     },
 
