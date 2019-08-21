@@ -12,12 +12,21 @@ describe('MasterSipID', () => {
     mock.reset();
   });
 
-  test('should get webuser ID', () => {
-    mock.onGet('authorization/userinfo').reply(200, '');
+  test('should get webuser ID', async () => {
+    const mockData = {
+      domain: 'sipgate.de',
+      locale: 'de_DE',
+      masterSipId: '0000000',
+      sub: 'w0',
+    };
+    mock.onGet('authorization/userinfo').reply(200, mockData);
 
     expect(async () => {
       await getUserInfo(instance);
     }).not.toThrow();
+
+    const userInfo = await getUserInfo(instance);
+    expect(userInfo).toEqual(mockData);
   });
 });
 
