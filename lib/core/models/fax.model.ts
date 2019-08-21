@@ -6,10 +6,10 @@ export interface UserInfo {
 }
 
 export interface Fax {
-  faxlineId: string;
+  faxlineId?: string;
   recipient: string;
   filename: string;
-  base64Content: string;
+  base64Content?: string;
 }
 
 export interface FaxLine {

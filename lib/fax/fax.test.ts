@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { createHttpClient } from '../core/httpClient/httpClient';
-import { getUserFaxlines, getUserInfo } from './fax';
+import { getUserFaxLines, getUserInfo } from './fax';
 
 describe('MasterSipID', () => {
   const instance = axios.create();
@@ -56,10 +56,10 @@ describe('Faxline ID List', () => {
     mock.onGet(`${baseUrl}/${mockUserID}/faxlines`).reply(200, mockData);
 
     expect(async () => {
-      await getUserFaxlines(httpClient, mockUserID);
+      await getUserFaxLines(httpClient, mockUserID);
     }).not.toThrow();
 
-    const userFaxLines = await getUserFaxlines(httpClient, mockUserID);
+    const userFaxLines = await getUserFaxLines(httpClient, mockUserID);
     expect(userFaxLines).toEqual(mockData.items);
   });
 });
