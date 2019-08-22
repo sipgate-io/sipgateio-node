@@ -8,7 +8,7 @@ import { FaxModule } from './fax.module';
 const POLLING_INTERVAL = 5000;
 
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
-  async send(fax: Fax): Promise<boolean> {
+  async send(fax: Fax): Promise<void> {
     const { filename: filepath, faxlineId } = fax;
     fax.base64Content = readFileAsBase64(filepath);
 
@@ -21,7 +21,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
       data: { sessionId },
     } = await client.post('/sessions/fax', fax);
 
-    let timeout = 40000;
+    let timeout = 40 * 1000;
     while (timeout > 0) {
       timeout -= POLLING_INTERVAL;
       await sleep(POLLING_INTERVAL);
@@ -31,7 +31,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 
         if (data) {
           if (data.faxStatusType === 'SENT') {
-            return true;
+            return Promise.resolve();
           }
         }
       } catch (e) {
