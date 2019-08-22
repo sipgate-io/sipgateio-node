@@ -5,8 +5,7 @@ import { Fax, FaxLine, FaxLineListObject, UserInfo } from '../core/models';
 import { validatePdfFile } from '../core/validator';
 import { FaxModule } from './fax.module';
 
-let timeout = 40000;
-const timespan = 5000;
+const POLLING_INTERVAL = 5000;
 
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
   async send(fax: Fax): Promise<boolean> {
@@ -14,15 +13,18 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
     fax.base64Content = readFileAsBase64(filepath);
 
     if (!faxlineId) {
-      fax.faxlineId = await getFaxLineId(client);
+      const userInfo = await getUserInfo(client);
+      fax.faxlineId = await getFirstFaxLineId(client, userInfo);
     }
 
     const {
       data: { sessionId },
     } = await client.post('/sessions/fax', fax);
+
+    let timeout = 40000;
     while (timeout > 0) {
-      timeout = timeout - timespan;
-      await sleep(timespan);
+      timeout -= POLLING_INTERVAL;
+      await sleep(POLLING_INTERVAL);
 
       try {
         const { data } = await fetchFaxStatus(client, sessionId);
@@ -41,8 +43,10 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
   },
 });
 
-const getFaxLineId = async (client: HttpClientModule): Promise<string> => {
-  const userInfo = await getUserInfo(client);
+const getFirstFaxLineId = async (
+  client: HttpClientModule,
+  userInfo: UserInfo,
+): Promise<string> => {
   const { sub } = userInfo;
   const faxlines: FaxLine[] = await getUserFaxLines(client, sub);
   const { id } = faxlines[0];
