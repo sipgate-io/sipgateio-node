@@ -3,8 +3,10 @@ import MockAdapter from 'axios-mock-adapter';
 // tslint:disable-next-line:no-implicit-dependencies
 import mockfs from 'mock-fs';
 import { createHttpClient } from '../core/httpClient/httpClient';
+// import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import { Fax } from '../core/models';
 import { createFaxModule, getUserFaxLines, getUserInfo } from './fax';
+// import mockito, { instance, when } from 'ts-mockito';
 
 describe('MasterSipID', () => {
   const instance = axios.create();
@@ -77,6 +79,13 @@ describe('SendFax', () => {
 
   test.skip('fax is sent', async () => {
     const client = createHttpClient('testuser@email.com', 'testpassword');
+
+    // const mockModule: HttpClientModule = mockito.mock<HttpClientModule>();
+    // const mockClient: HttpClientModule = mockito.instance(mockModule);
+    //
+    // const data = { data: { sessionId: "123"}};
+    // when(mockClient.post('/sessions/fax', mockito.anything))
+    //   .thenResolve(data);
 
     const faxModule = createFaxModule(client);
 
