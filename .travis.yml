@@ -3,6 +3,10 @@ node_js:
   - "8"
   - "10"
   - "12"
+os:
+  - windows
+  - linux
+  - osx
 install:
   - npm install
 script:
