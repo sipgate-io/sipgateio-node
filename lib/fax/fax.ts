@@ -1,8 +1,8 @@
 import * as fs from 'fs';
-import { getUserInfo } from '../../core/userHelper/userHelper';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import { Fax, FaxLine, FaxLineListObject, UserInfo } from '../core/models';
+import { getUserInfo } from '../core/userHelper/userHelper';
 import { validatePdfFile } from '../core/validator';
 import { FaxModule } from './fax.module';
 

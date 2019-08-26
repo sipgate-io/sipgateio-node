@@ -80,7 +80,27 @@ describe('SendFax', () => {
     await expect(faxModule.send(fax)).resolves.not.toThrow();
   });
 
-  test.skip('throws exception when timeout', () => {
-    return true;
+  test.skip('throws exception when fax status could not be fetched', async () => {
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    const mockClient = {} as HttpClientModule;
+
+    mockClient.post = jest.fn().mockImplementationOnce(() => {
+      return Promise.reject({
+        response: {
+          status: 404,
+        },
+      });
+    });
+    const faxModule = createFaxModule(mockClient);
+
+    const faxToSend: Fax = {
+      faxlineId: 'f0',
+      filename: './path/to/valid.pdf',
+      recipient: '+4912368712',
+    };
+
+    await expect(faxModule.send(faxToSend)).rejects.toThrowError(
+      'Could not fetch the fax status',
+    );
   });
 });
