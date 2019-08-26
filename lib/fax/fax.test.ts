@@ -3,10 +3,9 @@ import MockAdapter from 'axios-mock-adapter';
 // tslint:disable-next-line:no-implicit-dependencies
 import mockfs from 'mock-fs';
 import { createHttpClient } from '../core/httpClient/httpClient';
-// import { HttpClientModule } from '../core/httpClient/httpClient.module';
+import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import { Fax } from '../core/models';
 import { createFaxModule, getUserFaxLines, getUserInfo } from './fax';
-// import mockito, { instance, when } from 'ts-mockito';
 
 describe('MasterSipID', () => {
   const instance = axios.create();
@@ -77,17 +76,27 @@ describe('SendFax', () => {
     });
   });
 
-  test.skip('fax is sent', async () => {
-    const client = createHttpClient('testuser@email.com', 'testpassword');
+  test('fax is sent', async () => {
+    // Used to make setTimeout call the passed callback immediately
+    // @ts-ignore
+    global.setTimeout = fn => fn();
 
-    // const mockModule: HttpClientModule = mockito.mock<HttpClientModule>();
-    // const mockClient: HttpClientModule = mockito.instance(mockModule);
-    //
-    // const data = { data: { sessionId: "123"}};
-    // when(mockClient.post('/sessions/fax', mockito.anything))
-    //   .thenResolve(data);
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    const mockedClient = {} as HttpClientModule;
 
-    const faxModule = createFaxModule(client);
+    // @ts-ignore
+    mockedClient.post = jest
+      .fn()
+      .mockImplementationOnce(() =>
+        Promise.resolve({ data: { sessionId: '123123' } }),
+      );
+    mockedClient.get = jest
+      .fn()
+      .mockImplementationOnce(() =>
+        Promise.resolve({ data: { faxStatusType: 'SENT' } }),
+      );
+
+    const faxModule = createFaxModule(mockedClient);
 
     const fax: Fax = {
       faxlineId: 'f0',

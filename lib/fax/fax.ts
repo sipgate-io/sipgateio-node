@@ -27,7 +27,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
       await sleep(POLLING_INTERVAL);
 
       try {
-        const { data } = await fetchFaxStatus(client, sessionId);
+        const data = await fetchFaxStatus(client, sessionId);
 
         if (data) {
           if (data.faxStatusType === 'SENT') {
@@ -66,7 +66,7 @@ const fetchFaxStatus = async (
   try {
     const { data } = await client.get(`/history/${sessionId}`);
 
-    return data;
+    return Promise.resolve(data);
   } catch (e) {
     const newError = handleError(e);
     return Promise.reject(newError);
