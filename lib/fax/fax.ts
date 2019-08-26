@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { getUserInfo } from '../../core/userHelper/userHelper';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import { Fax, FaxLine, FaxLineListObject, UserInfo } from '../core/models';
@@ -67,18 +68,6 @@ const fetchFaxStatus = async (
     const { data } = await client.get(`/history/${sessionId}`);
 
     return Promise.resolve(data);
-  } catch (e) {
-    const newError = handleError(e);
-    return Promise.reject(newError);
-  }
-};
-
-export const getUserInfo = async (
-  client: HttpClientModule,
-): Promise<UserInfo> => {
-  try {
-    const { data } = await client.get<UserInfo>('/authorization/userinfo');
-    return data;
   } catch (e) {
     const newError = handleError(e);
     return Promise.reject(newError);

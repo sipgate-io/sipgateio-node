@@ -5,34 +5,7 @@ import mockfs from 'mock-fs';
 import { createHttpClient } from '../core/httpClient/httpClient';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import { Fax } from '../core/models';
-import { createFaxModule, getUserFaxLines, getUserInfo } from './fax';
-
-describe('MasterSipID', () => {
-  const instance = axios.create();
-  const mock = new MockAdapter(instance);
-  // const faxModule = createFaxModule(instance);
-
-  beforeEach(() => {
-    mock.reset();
-  });
-
-  test('should get webuser ID', async () => {
-    const mockData = {
-      domain: 'sipgate.de',
-      locale: 'de_DE',
-      masterSipId: '0000000',
-      sub: 'w0',
-    };
-    mock.onGet('authorization/userinfo').reply(200, mockData);
-
-    expect(async () => {
-      await getUserInfo(instance);
-    }).not.toThrow();
-
-    const userInfo = await getUserInfo(instance);
-    expect(userInfo).toEqual(mockData);
-  });
-});
+import { createFaxModule, getUserFaxLines } from './fax';
 
 describe('Faxline ID List', () => {
   const mock = new MockAdapter(axios);
