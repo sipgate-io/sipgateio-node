@@ -22,7 +22,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
       data: { sessionId },
     } = await client.post('/sessions/fax', fax);
 
-    let timeout = 40 * 1000;
+    let timeout = 30 * 60 * 1000;
     while (timeout > 0) {
       timeout -= POLLING_INTERVAL;
       await sleep(POLLING_INTERVAL);
