@@ -18,5 +18,5 @@ client.fax
     console.log('Fax sent');
   })
   .catch(error => {
-    console.error(error);
+    console.error(error.message);
   });

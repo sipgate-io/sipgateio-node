@@ -39,6 +39,27 @@ describe('Faxline ID List', () => {
     const userFaxLines = await getUserFaxLines(httpClient, mockUserID);
     expect(userFaxLines).toEqual(mockData.items);
   });
+
+  test('should throw an exception', async () => {
+    const mockUserID = '0000000';
+
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    const mockedClient = {} as HttpClientModule;
+
+    mockedClient.get = jest
+      .fn()
+      .mockImplementationOnce(() =>
+        Promise.reject({
+          response: { data: { status: 404, message: 'resource not found' } },
+        }),
+      )
+      .mockImplementationOnce(() =>
+        Promise.reject({ response: { data: { status: 401 } } }),
+      );
+
+    await expect(getUserFaxLines(httpClient, mockUserID)).rejects.toThrow();
+    await expect(getUserFaxLines(httpClient, mockUserID)).rejects.toThrow();
+  });
 });
 
 describe('SendFax', () => {
