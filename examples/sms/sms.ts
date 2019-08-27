@@ -23,5 +23,5 @@ client.sms
     console.log('Sms sent.');
   })
   .catch(error => {
-    console.error(error);
+    console.error(error.message);
   });
