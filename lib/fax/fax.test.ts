@@ -74,6 +74,8 @@ describe('SendFax', () => {
     global.setTimeout = fn => fn();
   });
 
+  afterAll(mockfs.restore);
+
   test('fax is sent', async () => {
     // tslint:disable-next-line:no-object-literal-type-assertion
     const mockedClient = {} as HttpClientModule;
