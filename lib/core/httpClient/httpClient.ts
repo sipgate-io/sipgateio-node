@@ -27,7 +27,10 @@ export const createHttpClient = (
   });
 
   return {
-    delete(url: string, config?: HttpRequestConfig): Promise<HttpResponse> {
+    delete<T = any, R = HttpResponse<T>>(
+      url: string,
+      config?: HttpRequestConfig,
+    ): Promise<R> {
       return client.delete(url, config);
     },
 
@@ -38,27 +41,27 @@ export const createHttpClient = (
       return client.get(url, config);
     },
 
-    patch(
+    patch<T = any, R = HttpResponse<T>>(
       url: string,
       data?: any,
       config?: HttpRequestConfig,
-    ): Promise<HttpResponse> {
+    ): Promise<R> {
       return client.patch(url, data, config);
     },
 
-    post(
+    post<T = any, R = HttpResponse<T>>(
       url: string,
       data?: any,
       config?: HttpRequestConfig,
-    ): Promise<HttpResponse> {
+    ): Promise<R> {
       return client.post(url, data, config);
     },
 
-    put(
+    put<T = any, R = HttpResponse<T>>(
       url: string,
       data?: any,
       config?: HttpRequestConfig,
-    ): Promise<HttpResponse> {
+    ): Promise<R> {
       return client.put(url, data, config);
     },
   };
