@@ -175,4 +175,36 @@ describe('SendFax', () => {
       'Could not fetch the fax status',
     );
   });
+
+  test('throws exception when fax status is failed', async () => {
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    const mockClient = {} as HttpClientModule;
+
+    const faxModule = createFaxModule(mockClient);
+
+    const faxToSend: Fax = {
+      faxlineId: 'f0',
+      filename: './path/to/valid.pdf',
+      recipient: '+4912368712',
+    };
+
+    mockClient.post = jest.fn().mockImplementationOnce(() => {
+      return Promise.resolve({
+        data: {
+          sessionId: 123,
+        },
+        status: 200,
+      });
+    });
+
+    mockClient.get = jest
+      .fn()
+      .mockImplementationOnce(() =>
+        Promise.resolve({ data: { faxStatusType: 'FAILED' } }),
+      );
+
+    await expect(faxModule.send(faxToSend)).rejects.toThrowError(
+      'Fax could not be sent',
+    );
+  });
 });

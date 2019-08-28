@@ -34,6 +34,9 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
           if (data.faxStatusType === 'SENT') {
             return Promise.resolve();
           }
+          if (data.faxStatusType === 'FAILED') {
+            return Promise.reject(new Error('Fax could not be sent'));
+          }
         }
       } catch (e) {
         return Promise.reject(new Error('Could not fetch the fax status'));
