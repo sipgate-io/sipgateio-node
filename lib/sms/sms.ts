@@ -17,6 +17,10 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
       return Promise.reject(newError);
     }
   },
+  async schedule(sms: ShortMessage, sendAt: Date): Promise<void> {
+    sms.sendAt = sendAt.getTime();
+    return this.send(sms);
+  },
 });
 
 const handleError = (e: any) => {

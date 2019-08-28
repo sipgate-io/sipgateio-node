@@ -1,5 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import { ShortMessage } from '../core/models';
 import { createSMSModule } from './sms';
 
@@ -50,5 +51,32 @@ describe('SMS Module', () => {
     await expect(smsModule.send(message)).rejects.toThrow(
       'getaddrinfo ENOTFOUND',
     );
+  });
+});
+
+describe('schedule sms', () => {
+  test('should use sentAt set', () => {
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    const mockClient = {} as HttpClientModule;
+
+    const smsModule = createSMSModule(mockClient);
+    const message: ShortMessage = {
+      message: 'ValidMessage',
+      recipient: '015739777777',
+      smsId: 'validExtensionId',
+    };
+
+    const date: Date = new Date();
+
+    mockClient.post = jest.fn().mockImplementationOnce(() => {
+      return Promise.resolve({
+        data: {},
+        status: 200,
+      });
+    });
+
+    smsModule.schedule(message, date);
+
+    expect(mockClient.post).toBeCalledWith('/sessions/sms', message);
   });
 });
