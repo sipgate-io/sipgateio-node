@@ -24,7 +24,7 @@ describe('SMS Module', () => {
     await expect(smsModule.send(message)).resolves.not.toThrow();
   });
 
-  test('It sends a SMS with error', async () => {
+  test('It sends an invalid SMS with error', async () => {
     mock.onPost('/sessions/sms').reply(403);
 
     const message: ShortMessage = {
@@ -35,6 +35,20 @@ describe('SMS Module', () => {
 
     await expect(smsModule.send(message)).rejects.toThrow(
       'Invalid SMS extension',
+    );
+  });
+
+  test('It sends SMS with unreachable server with error', async () => {
+    mock.onPost('/sessions/sms').networkError();
+
+    const message: ShortMessage = {
+      message: 'ValidMessage',
+      recipient: '015739777777',
+      smsId: 'nonValidExtensionId',
+    };
+
+    await expect(smsModule.send(message)).rejects.toThrow(
+      'getaddrinfo ENOTFOUND',
     );
   });
 });

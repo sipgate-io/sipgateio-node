@@ -5,5 +5,9 @@ export default (e: any) => {
     return new AuthenticationError();
   }
 
+  if (e.response.status === 403) {
+    return new AuthenticationError('Forbidden');
+  }
+
   return new Error();
 };
