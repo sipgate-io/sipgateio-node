@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import { ShortMessage } from '../core/models';
-import { createSMSModule } from './sms';
+import { createSMSModule, getUserSMSExtensions } from './sms';
 
 describe('SMS Module', () => {
   const instance = axios.create();
@@ -78,5 +78,37 @@ describe('schedule sms', () => {
     smsModule.schedule(message, date);
 
     expect(mockClient.post).toBeCalledWith('/sessions/sms', message);
+  });
+});
+
+describe('SMS Extension List', () => {
+  test('should get SMS ID LIST', async () => {
+    const mockUserID = '0000000';
+    const mockData = {
+      data: {
+        items: [
+          {
+            alias: "Alexander Bain's fax",
+            callerId: '+94123456789',
+            id: 'f0',
+          },
+        ],
+      },
+      status: 200,
+    };
+
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    const mockedClient = {} as HttpClientModule;
+
+    mockedClient.get = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockData));
+
+    await expect(
+      getUserSMSExtensions(mockedClient, mockUserID),
+    ).resolves.not.toThrow();
+
+    const userFaxLines = await getUserSMSExtensions(mockedClient, mockUserID);
+    expect(userFaxLines).toEqual(mockData.data.items);
   });
 });

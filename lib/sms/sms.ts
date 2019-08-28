@@ -2,7 +2,7 @@ import { ConnectionError } from '../core/errors/ConnectionError';
 import { ExtensionError } from '../core/errors/ExtensionError';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
-import { ShortMessage } from '../core/models';
+import { ShortMessage, SmsExtension, SmsExtensions } from '../core/models';
 import { validatePhoneNumber } from '../core/validator';
 import { SMSModule } from './sms.module';
 
@@ -22,6 +22,20 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
     return this.send(sms);
   },
 });
+
+export const getUserSMSExtensions = async (
+  client: HttpClientModule,
+  sub: string,
+): Promise<SmsExtension[]> => {
+  try {
+    const { data } = await client.get<SmsExtensions>(`${sub}/sms`);
+
+    return data.items;
+  } catch (e) {
+    const newError = handleError(e);
+    return Promise.reject(newError);
+  }
+};
 
 const handleError = (e: any) => {
   if (
