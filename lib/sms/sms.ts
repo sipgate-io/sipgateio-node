@@ -8,7 +8,6 @@ import {
   SmsCallerIds,
   SmsExtension,
   SmsExtensions,
-  UserInfo,
 } from '../core/models';
 import { validatePhoneNumber } from '../core/validator';
 import { SMSModule } from './sms.module';
@@ -46,12 +45,12 @@ export const getUserSMSExtensions = async (
 
 export const getSmsCallerIds = async (
   client: HttpClientModule,
-  userInfo: UserInfo,
-  smsExtension: SmsExtension,
+  webuserExtension: string,
+  smsExtension: string,
 ): Promise<SmsCallerId[]> => {
   try {
     const { data } = await client.get<SmsCallerIds>(
-      `${userInfo.sub}/sms/${smsExtension.id}/callerids`,
+      `${webuserExtension}/sms/${smsExtension}/callerids`,
     );
     return data.items;
   } catch (error) {

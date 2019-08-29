@@ -156,8 +156,8 @@ describe('CallerIds for SMS Extension', () => {
 
     const callerIds = await getSmsCallerIds(
       mockedClient,
-      userInfo,
-      smsExtension,
+      userInfo.sub,
+      smsExtension.id,
     );
     expect(callerIds).toEqual(mockData.data.items);
   });
