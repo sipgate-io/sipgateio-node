@@ -24,8 +24,16 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
     }
   },
   async schedule(sms: ShortMessage, sendAt: Date): Promise<void> {
-    sms.sendAt = sendAt.getTime();
-    return this.send(sms);
+    const timeToSend = sendAt.getTime();
+    if (
+      timeToSend > new Date().getTime() &&
+      timeToSend < new Date().setMonth(new Date().getMonth()) + 3
+    ) {
+      sms.sendAt = sendAt.getTime() / 1000;
+      return this.send(sms);
+    } else {
+      Promise.reject(new Error('Time must be in future.'));
+    }
   },
 });
 
