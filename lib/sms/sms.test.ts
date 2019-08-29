@@ -1,8 +1,18 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
-import { ShortMessage, SmsExtension, UserInfo } from '../core/models';
-import { createSMSModule, getSmsCallerIds, getUserSMSExtensions } from './sms';
+import {
+  ShortMessage,
+  SmsCallerId,
+  SmsExtension,
+  UserInfo,
+} from '../core/models';
+import {
+  createSMSModule,
+  getSmsCallerIds,
+  getUserSMSExtensions,
+  verifyNumber,
+} from './sms';
 
 describe('SMS Module', () => {
   const instance = axios.create();
@@ -120,13 +130,13 @@ describe('CallerIds for SMS Extension', () => {
         items: [
           {
             defaultNumber: true,
-            id: 's0',
+            id: 0,
             phonenumber: '+4912345678',
             verified: true,
           },
           {
             defaultNumber: false,
-            id: 's1',
+            id: 1,
             phonenumber: '+4987654321',
             verified: false,
           },
@@ -160,5 +170,70 @@ describe('CallerIds for SMS Extension', () => {
       smsExtension.id,
     );
     expect(callerIds).toEqual(mockData.data.items);
+  });
+});
+
+describe('Numbers Verification', () => {
+  test('should verify phone number correctly', async () => {
+    const smsCallerIds: SmsCallerId[] = [
+      {
+        defaultNumber: true,
+        id: 0,
+        phonenumber: '+4912345678',
+        verified: true,
+      },
+      {
+        defaultNumber: false,
+        id: 1,
+        phonenumber: '+4987654321',
+        verified: false,
+      },
+    ];
+
+    const verificationStatus = verifyNumber(smsCallerIds, '+4912345678');
+
+    expect(verificationStatus).toBeTruthy();
+  });
+
+  test('should not verify phone number', async () => {
+    const smsCallerIds: SmsCallerId[] = [
+      {
+        defaultNumber: true,
+        id: 0,
+        phonenumber: '+4912345678',
+        verified: true,
+      },
+      {
+        defaultNumber: false,
+        id: 1,
+        phonenumber: '+4987654321',
+        verified: false,
+      },
+    ];
+
+    const verificationStatus = verifyNumber(smsCallerIds, '+4987654321');
+
+    expect(verificationStatus).toBeFalsy();
+  });
+
+  test('should not verify phone unknown number', async () => {
+    const smsCallerIds: SmsCallerId[] = [
+      {
+        defaultNumber: true,
+        id: 0,
+        phonenumber: '+4912345678',
+        verified: true,
+      },
+      {
+        defaultNumber: false,
+        id: 1,
+        phonenumber: '+4987654321',
+        verified: false,
+      },
+    ];
+
+    const verificationStatus = verifyNumber(smsCallerIds, '12345678');
+
+    expect(verificationStatus).toBeFalsy();
   });
 });

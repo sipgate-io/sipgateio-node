@@ -58,6 +58,20 @@ export const getSmsCallerIds = async (
   }
 };
 
+export const verifyNumber = (
+  smsCallerIds: SmsCallerId[],
+  phoneNumber: string,
+): boolean => {
+  const founded = smsCallerIds.find(
+    smsCallerId => smsCallerId.phonenumber === phoneNumber,
+  );
+
+  if (founded) {
+    return founded.verified;
+  }
+  return false;
+};
+
 const handleError = (e: any) => {
   if (
     e.message === 'Network Error' ||
