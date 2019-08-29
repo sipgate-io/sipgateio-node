@@ -2,7 +2,14 @@ import { ConnectionError } from '../core/errors/ConnectionError';
 import { ExtensionError } from '../core/errors/ExtensionError';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
-import { ShortMessage, SmsExtension, SmsExtensions } from '../core/models';
+import {
+  ShortMessage,
+  SmsCallerId,
+  SmsCallerIds,
+  SmsExtension,
+  SmsExtensions,
+  UserInfo,
+} from '../core/models';
 import { validatePhoneNumber } from '../core/validator';
 import { SMSModule } from './sms.module';
 
@@ -34,6 +41,21 @@ export const getUserSMSExtensions = async (
   } catch (e) {
     const newError = handleError(e);
     return Promise.reject(newError);
+  }
+};
+
+export const getSmsCallerIds = async (
+  client: HttpClientModule,
+  userInfo: UserInfo,
+  smsExtension: SmsExtension,
+): Promise<SmsCallerId[]> => {
+  try {
+    const { data } = await client.get<SmsCallerIds>(
+      `${userInfo.sub}/sms/${smsExtension.id}/callerids`,
+    );
+    return data.items;
+  } catch (error) {
+    return Promise.reject(handleError(error));
   }
 };
 
