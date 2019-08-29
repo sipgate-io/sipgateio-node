@@ -1,8 +1,8 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
-import { ShortMessage } from '../core/models';
-import { createSMSModule, getUserSMSExtensions } from './sms';
+import { ShortMessage, SmsExtension, UserInfo } from '../core/models';
+import { createSMSModule, getSmsCallerIds, getUserSMSExtensions } from './sms';
 
 describe('SMS Module', () => {
   const instance = axios.create();
@@ -110,5 +110,55 @@ describe('SMS Extension List', () => {
 
     const userFaxLines = await getUserSMSExtensions(mockedClient, mockUserID);
     expect(userFaxLines).toEqual(mockData.data.items);
+  });
+});
+
+describe('CallerIds for SMS Extension', () => {
+  test('should get callerIds for sms extension', async () => {
+    const mockData = {
+      data: {
+        items: [
+          {
+            defaultNumber: true,
+            id: 's0',
+            phonenumber: '+4912345678',
+            verified: true,
+          },
+          {
+            defaultNumber: false,
+            id: 's1',
+            phonenumber: '+4987654321',
+            verified: false,
+          },
+        ],
+      },
+    };
+
+    const userInfo: UserInfo = {
+      domain: '',
+      locale: '',
+      masterSipId: '',
+      sub: '',
+    };
+
+    const smsExtension: SmsExtension = {
+      alias: 'SMS Extension',
+      callerId: '+4912345678',
+      id: 's0',
+    };
+
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    const mockedClient = {} as HttpClientModule;
+
+    mockedClient.get = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockData));
+
+    const callerIds = await getSmsCallerIds(
+      mockedClient,
+      userInfo,
+      smsExtension,
+    );
+    expect(callerIds).toEqual(mockData.data.items);
   });
 });
