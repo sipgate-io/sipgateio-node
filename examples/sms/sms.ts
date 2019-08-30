@@ -25,3 +25,12 @@ client.sms
   .catch(error => {
     console.error(error.message);
   });
+
+client.sms
+  .schedule(sms, new Date(new Date().setSeconds(new Date().getSeconds() + 30)))
+  .then(() => {
+    console.log('Sms sent.');
+  })
+  .catch(error => {
+    console.error(error.message);
+  });
