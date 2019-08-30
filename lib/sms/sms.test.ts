@@ -13,8 +13,7 @@ import {
   getUserSMSExtensions,
   verifyNumber,
 } from './sms';
-
-let mockClient: HttpClientModule;
+import { SMSModule } from './sms.module';
 
 describe('SMS Module', () => {
   const instance = axios.create();
@@ -23,11 +22,6 @@ describe('SMS Module', () => {
 
   beforeEach(() => {
     mock.reset();
-  });
-
-  beforeAll(() => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
-    mockClient = {} as HttpClientModule;
   });
 
   test('It sends a SMS successfully', async () => {
@@ -72,21 +66,24 @@ describe('SMS Module', () => {
 });
 
 describe('schedule sms', () => {
-  const smsModule = createSMSModule(mockClient);
-
+  let smsModule: SMSModule;
+  let mockClient: HttpClientModule;
   beforeAll(() => {
     // tslint:disable-next-line:no-object-literal-type-assertion
     mockClient = {} as HttpClientModule;
+    smsModule = createSMSModule(mockClient);
   });
 
-  test.skip('should use sentAt set', () => {
+  test('should use sentAt set', async () => {
     const message: ShortMessage = {
       message: 'ValidMessage',
       recipient: '015739777777',
       smsId: 'validExtensionId',
     };
 
-    const date: Date = new Date();
+    const date: Date = new Date(
+      new Date().setSeconds(new Date().getSeconds() + 60),
+    );
 
     mockClient.post = jest.fn().mockImplementationOnce(() => {
       return Promise.resolve({
@@ -95,18 +92,13 @@ describe('schedule sms', () => {
       });
     });
 
-    smsModule.schedule(message, date);
+    await smsModule.schedule(message, date);
 
     expect(mockClient.post).toBeCalledWith('/sessions/sms', message);
   });
 });
 
 describe('SMS Extension List', () => {
-  beforeAll(() => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
-    mockClient = {} as HttpClientModule;
-  });
-
   test('should get SMS ID LIST', async () => {
     const mockUserID = '0000000';
     const mockData = {
@@ -122,25 +114,23 @@ describe('SMS Extension List', () => {
       status: 200,
     };
 
-    mockClient.get = jest
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    const mockedClient = {} as HttpClientModule;
+
+    mockedClient.get = jest
       .fn()
       .mockImplementation(() => Promise.resolve(mockData));
 
     await expect(
-      getUserSMSExtensions(mockClient, mockUserID),
+      getUserSMSExtensions(mockedClient, mockUserID),
     ).resolves.not.toThrow();
 
-    const userFaxLines = await getUserSMSExtensions(mockClient, mockUserID);
+    const userFaxLines = await getUserSMSExtensions(mockedClient, mockUserID);
     expect(userFaxLines).toEqual(mockData.data.items);
   });
 });
 
 describe('CallerIds for SMS Extension', () => {
-  beforeAll(() => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
-    mockClient = {} as HttpClientModule;
-  });
-
   test('should get callerIds for sms extension', async () => {
     const mockData = {
       data: {
@@ -174,12 +164,15 @@ describe('CallerIds for SMS Extension', () => {
       id: 's0',
     };
 
-    mockClient.get = jest
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    const mockedClient = {} as HttpClientModule;
+
+    mockedClient.get = jest
       .fn()
       .mockImplementation(() => Promise.resolve(mockData));
 
     const callerIds = await getSmsCallerIds(
-      mockClient,
+      mockedClient,
       userInfo.sub,
       smsExtension.id,
     );
@@ -188,11 +181,6 @@ describe('CallerIds for SMS Extension', () => {
 });
 
 describe('Numbers Verification', () => {
-  beforeAll(() => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
-    mockClient = {} as HttpClientModule;
-  });
-
   test('should verify phone number correctly', async () => {
     const smsCallerIds: SmsCallerId[] = [
       {

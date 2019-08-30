@@ -27,7 +27,7 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
     const timeToSend = sendAt.getTime();
     if (
       timeToSend > new Date().getTime() &&
-      timeToSend < new Date().setMonth(new Date().getMonth()) + 3
+      timeToSend < new Date().setMonth(new Date().getMonth() + 3)
     ) {
       sms.sendAt = sendAt.getTime() / 1000;
       return this.send(sms);
