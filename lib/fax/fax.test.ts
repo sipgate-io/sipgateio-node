@@ -199,7 +199,7 @@ describe('SendFax', () => {
       );
 
     await expect(faxModule.send(faxToSend)).rejects.toThrowError(
-      'Fax could not be sent',
+      'Could not fetch the fax status',
     );
   });
 });

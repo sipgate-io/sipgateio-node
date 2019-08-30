@@ -18,32 +18,19 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
       fax.faxlineId = await getFirstFaxLineId(client, userInfo);
     }
 
-    const {
-      data: { sessionId },
-    } = await client.post('/sessions/fax', fax);
-
-    let timeout = 30 * 60 * 1000;
-    while (timeout > 0) {
-      timeout -= POLLING_INTERVAL;
-      await sleep(POLLING_INTERVAL);
-
-      try {
-        const data = await fetchFaxStatus(client, sessionId);
-
-        if (data) {
-          if (data.faxStatusType === 'SENT') {
-            return Promise.resolve();
-          }
-          if (data.faxStatusType === 'FAILED') {
-            return Promise.reject(new Error('Fax could not be sent'));
-          }
-        }
-      } catch (e) {
-        return Promise.reject(new Error('Could not fetch the fax status'));
-      }
+    let sessionId;
+    try {
+      const { data } = await client.post('/sessions/fax', fax);
+      sessionId = data.sessionId;
+    } catch (e) {
+      return Promise.reject(new Error('Could not be sent'));
     }
 
-    return Promise.reject(new Error('Timeout error'));
+    try {
+      await fetchFaxStatus(client, sessionId);
+    } catch (e) {
+      return Promise.reject(new Error('Could not fetch the fax status'));
+    }
   },
 });
 
@@ -68,9 +55,19 @@ const fetchFaxStatus = async (
   sessionId: string,
 ): Promise<any> => {
   try {
-    const { data } = await client.get(`/history/${sessionId}`);
+    while (true) {
+      await sleep(POLLING_INTERVAL);
+      const { data } = await client.get(`/history/${sessionId}`);
 
-    return Promise.resolve(data);
+      if (data) {
+        if (data.faxStatusType === 'SENT') {
+          return Promise.resolve();
+        }
+        if (data.faxStatusType === 'FAILED') {
+          return Promise.reject(new Error('Fax could not be sent'));
+        }
+      }
+    }
   } catch (e) {
     const newError = handleError(e);
     return Promise.reject(newError);
