@@ -66,3 +66,10 @@ const fax: Fax = {
   faxlineId: '<your faxlineId>',
 };
 ```
+
+#### Disclaimer
+
+This library sets the following headers for every request made to the sipgate REST-API to obtain statistics about versions currently in use and to differentiate sipgate.io-users from sipgate software:
+
+- X-Sipgate-Client
+- X-Sipgate-Version
