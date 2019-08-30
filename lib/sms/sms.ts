@@ -2,7 +2,13 @@ import { ConnectionError } from '../core/errors/ConnectionError';
 import { ExtensionError } from '../core/errors/ExtensionError';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
-import { ShortMessage } from '../core/models';
+import {
+  ShortMessage,
+  SmsCallerId,
+  SmsCallerIds,
+  SmsExtension,
+  SmsExtensions,
+} from '../core/models';
 import { validatePhoneNumber } from '../core/validator';
 import { SMSModule } from './sms.module';
 
@@ -18,10 +24,61 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
     }
   },
   async schedule(sms: ShortMessage, sendAt: Date): Promise<void> {
-    sms.sendAt = sendAt.getTime();
-    return this.send(sms);
+    const timeToSend = sendAt.getTime();
+    if (
+      timeToSend > new Date().getTime() &&
+      timeToSend < new Date().setMonth(new Date().getMonth()) + 3
+    ) {
+      sms.sendAt = sendAt.getTime() / 1000;
+      return this.send(sms);
+    } else {
+      Promise.reject(new Error('Time must be in future.'));
+    }
   },
 });
+
+export const getUserSMSExtensions = async (
+  client: HttpClientModule,
+  sub: string,
+): Promise<SmsExtension[]> => {
+  try {
+    const { data } = await client.get<SmsExtensions>(`${sub}/sms`);
+
+    return data.items;
+  } catch (e) {
+    const newError = handleError(e);
+    return Promise.reject(newError);
+  }
+};
+
+export const getSmsCallerIds = async (
+  client: HttpClientModule,
+  webuserExtension: string,
+  smsExtension: string,
+): Promise<SmsCallerId[]> => {
+  try {
+    const { data } = await client.get<SmsCallerIds>(
+      `${webuserExtension}/sms/${smsExtension}/callerids`,
+    );
+    return data.items;
+  } catch (error) {
+    return Promise.reject(handleError(error));
+  }
+};
+
+export const verifyNumber = (
+  smsCallerIds: SmsCallerId[],
+  phoneNumber: string,
+): boolean => {
+  const founded = smsCallerIds.find(
+    smsCallerId => smsCallerId.phonenumber === phoneNumber,
+  );
+
+  if (founded) {
+    return founded.verified;
+  }
+  return false;
+};
 
 const handleError = (e: any) => {
   if (

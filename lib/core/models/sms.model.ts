@@ -14,3 +14,14 @@ export interface SmsExtension {
 export interface SmsExtensions {
   items: SmsExtension[];
 }
+
+export interface SmsCallerId {
+  id: number;
+  phonenumber: string;
+  verified: boolean;
+  defaultNumber: boolean;
+}
+
+export interface SmsCallerIds {
+  items: SmsCallerId[];
+}

@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import fs from 'fs';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import { Fax, FaxLine, FaxLineListObject, UserInfo } from '../core/models';
@@ -52,7 +52,7 @@ const getFirstFaxLineId = async (
   userInfo: UserInfo,
 ): Promise<string> => {
   const { sub } = userInfo;
-  const faxlines: FaxLine[] = await getUserFaxLines(client, sub);
+  const faxlines = await getUserFaxLines(client, sub);
   const { id } = faxlines[0];
   return id;
 };
