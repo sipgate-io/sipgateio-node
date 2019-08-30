@@ -1,5 +1,5 @@
 import fileType, { FileTypeResult } from 'file-type';
-import * as fs from 'fs';
+import fs from 'fs';
 import { ValidationError } from '../errors/ValidationError';
 
 const validateEmail = (email: string): void => {

@@ -1,11 +1,15 @@
 import { HttpClientModule } from '../httpClient/httpClient.module';
 import { getUserInfo } from './userHelper';
 
-describe('UserHelper Test', () => {
-  test('should throw exception when user is not authorized', async () => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
-    const mockClient = {} as HttpClientModule;
+let mockClient: HttpClientModule;
 
+describe('UserHelper Test', () => {
+  beforeAll(() => {
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    mockClient = {} as HttpClientModule;
+  });
+
+  test('should throw exception when user is not authorized', async () => {
     mockClient.get = jest.fn().mockImplementationOnce(() => {
       return Promise.reject({
         response: {
@@ -18,9 +22,6 @@ describe('UserHelper Test', () => {
   });
 
   test('should get webuser ID', async () => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
-    const mockClient = {} as HttpClientModule;
-
     mockClient.get = jest.fn().mockImplementationOnce(() => {
       return Promise.resolve({
         data: null,
