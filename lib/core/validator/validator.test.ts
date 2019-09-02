@@ -58,11 +58,15 @@ describe('ValidatePassword', () => {
 
 describe('Phone validation', () => {
   test('valid phone number numbers', () => {
-    expect(validatePhoneNumber('015739777777')).toBeTruthy();
+    expect(() => {
+      validatePhoneNumber('015739777777');
+    }).not.toThrowError(new Error('Invalid Phone Number'));
   });
 
   test('valid phone number +numbers', () => {
-    expect(validatePhoneNumber('+4915739777777')).toBeTruthy();
+    expect(() => {
+      validatePhoneNumber('+4915739777777');
+    }).not.toThrowError(new Error('Invalid Phone Number'));
   });
 
   test('invalid phone number text', () => {

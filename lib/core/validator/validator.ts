@@ -18,14 +18,12 @@ const validatePassword = (password: string): void => {
   }
 };
 
-const validatePhoneNumber = (phoneNumber: string): boolean => {
+const validatePhoneNumber = (phoneNumber: string): void => {
   const emailRegex: RegExp = new RegExp(/^\+?[0-9]+$/);
 
   if (!emailRegex.test(phoneNumber)) {
     throw new Error('Invalid Phone Number');
   }
-
-  return true;
 };
 
 const validatePdfFile = (filePath: string): void => {
