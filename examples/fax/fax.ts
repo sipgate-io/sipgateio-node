@@ -1,19 +1,21 @@
 // tslint:disable no-console
-import { Fax } from '../../lib/core/models';
+import fs from 'fs';
+import path from 'path';
 import { createClient } from '../../lib/core/sipgateClient';
 
-const username = process.env.SIPGATE_USERNAME || '';
 const password = process.env.SIPGATE_PASSWORD || '';
+const username = process.env.SIPGATE_USERNAME || '';
 
 const client = createClient(username, password);
 
-const fax: Fax = {
-  filename: './testpage.pdf',
-  recipient: process.env.SIPGATE_FAX_RECIPIENT || '',
-};
+const faxlineID = process.env.SIPGATE_FAX_EXTENSION || '';
+const recipient = process.env.SIPGATE_FAX_RECIPIENT || '';
+const filePath = './testpage.pdf';
+const { name: filename } = path.parse(path.basename(filePath));
+const fileContent = fs.readFileSync(filePath);
 
 client.fax
-  .send(fax)
+  .send(recipient, fileContent, filename, faxlineID)
   .then(() => {
     console.log('Fax sent');
   })
