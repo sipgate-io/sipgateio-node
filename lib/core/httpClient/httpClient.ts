@@ -13,8 +13,17 @@ export const createHttpClient = (
   username: string,
   password: string,
 ): HttpClientModule => {
-  validateEmail(username);
-  validatePassword(password);
+  const emailValidationResult = validateEmail(username);
+
+  if (!emailValidationResult.valid) {
+    throw emailValidationResult.cause;
+  }
+
+  const passwordValidationResult = validatePassword(password);
+
+  if (!passwordValidationResult.valid) {
+    throw passwordValidationResult.cause;
+  }
 
   const basicAuth = btoa(`${username}:${password}`);
   const client = axios.create({
