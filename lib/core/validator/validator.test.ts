@@ -1,5 +1,6 @@
 // tslint:disable-next-line: no-implicit-dependencies
 import mockfs = require('mock-fs');
+import { ErrorMessage } from '../errors/ErrorMessage';
 import {
   validateEmail,
   validatePassword,
@@ -9,77 +10,50 @@ import {
 import validPDFBuffer from './validPDFBuffer';
 
 describe('ValidateEmail', () => {
-  test('should not throw error for valid email address', () => {
-    expect(() => {
-      validateEmail('validEmail@test.de');
-    }).not.toThrowError(new Error('Invalid email'));
-  });
-
-  test('should throw error for invalid email address', () => {
-    expect(() => {
-      validateEmail('invalidEmail');
-    }).toThrowError(new Error('Invalid email'));
-
-    expect(() => {
-      validateEmail('@test.de');
-    }).toThrowError(new Error('Invalid email'));
-
-    expect(() => {
-      validateEmail('@');
-    }).toThrowError(new Error('Invalid email'));
-
-    expect(() => {
-      validateEmail(' ');
-    }).toThrowError(new Error('Invalid email'));
-
-    expect(() => {
-      validateEmail('');
-    }).toThrowError(new Error('Invalid email'));
-  });
+  test.each`
+    input                   | expected
+    ${'validEmail@test.de'} | ${{ valid: true }}
+    ${'invalidEmail'}       | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+    ${'@test.de'}           | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+    ${'@'}                  | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+    ${' '}                  | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+    ${''}                   | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+  `(
+    'validator returns $expected when $input is validated',
+    ({ input, expected }) => {
+      expect(validateEmail(input)).toEqual(expected);
+    },
+  );
 });
 
 describe('ValidatePassword', () => {
-  test('should not throw error for valid password', () => {
-    expect(() => {
-      validatePassword('validPassword');
-    }).not.toThrowError(new Error('Invalid password'));
-  });
-
-  test('should throw error for invalid password', () => {
-    expect(() => {
-      validatePassword('');
-    }).toThrowError(new Error('Invalid password'));
-
-    expect(() => {
-      validatePassword(' ');
-    }).toThrowError(new Error('Invalid password'));
-  });
+  test.each`
+    input              | expected
+    ${'validPassword'} | ${{ valid: true }}
+    ${' '}             | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
+    ${''}              | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
+  `(
+    'validator returns $expected when $input is validated',
+    ({ input, expected }) => {
+      expect(validatePassword(input)).toEqual(expected);
+    },
+  );
 });
 
 describe('Phone validation', () => {
-  test('valid phone number numbers', () => {
-    expect(() => {
-      validatePhoneNumber('015739777777');
-    }).not.toThrowError(new Error('Invalid Phone Number'));
-  });
-
-  test('valid phone number +numbers', () => {
-    expect(() => {
-      validatePhoneNumber('+4915739777777');
-    }).not.toThrowError(new Error('Invalid Phone Number'));
-  });
-
-  test('invalid phone number text', () => {
-    expect(() => validatePhoneNumber('text')).toThrow(
-      new Error('Invalid Phone Number'),
-    );
-  });
-
-  test('invalid phone number empty', () => {
-    expect(() => validatePhoneNumber('')).toThrow(
-      new Error('Invalid Phone Number'),
-    );
-  });
+  test.each`
+    input               | expected
+    ${'015739777777'}   | ${{ valid: true }}
+    ${'+4915739777777'} | ${{ valid: true }}
+    ${'text'}           | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
+    ${' '}              | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
+    ${''}               | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
+  `(
+    'validator returns $expected when $input is validated',
+    ({ input, expected }) => {
+      expect(validatePhoneNumber(input)).toEqual(expected);
+    },
+  );
 });
 
 describe('PDF file validation', () => {
