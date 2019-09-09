@@ -1,16 +1,7 @@
-import fileType, { FileTypeResult } from 'file-type';
-import fs from 'fs';
+import fileType from 'file-type';
 import { ErrorMessage } from '../errors/ErrorMessage';
-import { ValidationError } from '../errors/ValidationError';
 
-type ValidatorResult =
-  | {
-      valid: true;
-    }
-  | {
-      valid: false;
-      cause: ErrorMessage;
-    };
+type ValidatorResult = { valid: true } | { valid: false; cause: ErrorMessage };
 
 const validateEmail = (email: string): ValidatorResult => {
   const emailRegex: RegExp = new RegExp(
@@ -24,9 +15,7 @@ const validateEmail = (email: string): ValidatorResult => {
     };
   }
 
-  return {
-    valid: true,
-  };
+  return { valid: true };
 };
 
 const validatePassword = (password: string): ValidatorResult => {
@@ -49,29 +38,22 @@ const validatePhoneNumber = (phoneNumber: string): ValidatorResult => {
   return { valid: true };
 };
 
-const validatePdfFile = (filePath: string): void => {
-  try {
-    fs.accessSync(filePath, fs.constants.F_OK);
-  } catch (e) {
-    throw new ValidationError('File does not exist');
+const validatePdfFileContent = (content: Buffer): ValidatorResult => {
+  const fileTypeResult = fileType(content);
+
+  if (!fileTypeResult || fileTypeResult.mime !== 'application/pdf') {
+    return {
+      cause: ErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
+      valid: false,
+    };
   }
 
-  let type: FileTypeResult | undefined;
-
-  try {
-    type = fileType(fs.readFileSync(filePath));
-  } catch (e) {
-    throw new ValidationError('File is unreadable');
-  }
-
-  if (!type || type.mime !== 'application/pdf') {
-    throw new ValidationError('Invalid pdf extension');
-  }
+  return { valid: true };
 };
 
 export {
   validateEmail,
   validatePassword,
   validatePhoneNumber,
-  validatePdfFile,
+  validatePdfFileContent,
 };

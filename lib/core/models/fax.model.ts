@@ -5,6 +5,10 @@ export interface UserInfo {
   locale: string;
 }
 
+export interface SendFaxSessionResponse {
+  sessionId: string;
+}
+
 export interface Fax {
   faxlineId?: string;
   recipient: string;

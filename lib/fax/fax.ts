@@ -1,36 +1,49 @@
-import fs from 'fs';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
-import { Fax, FaxLine, FaxLineListObject, UserInfo } from '../core/models';
+import {
+  Fax,
+  FaxLine,
+  FaxLineListObject,
+  SendFaxSessionResponse,
+  UserInfo,
+} from '../core/models';
 import { getUserInfo } from '../core/userHelper/userHelper';
-import { validatePdfFile } from '../core/validator';
+import { validatePdfFileContent } from '../core/validator';
 import { FaxModule } from './fax.module';
 
 const POLLING_INTERVAL = 5000;
 
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
-  async send(fax: Fax): Promise<void> {
-    const { filename: filepath, faxlineId } = fax;
-    fax.base64Content = readFileAsBase64(filepath);
+  async send(
+    recipient: string,
+    fileContent: Buffer,
+    faxlineId?: string,
+  ): Promise<void> {
+    const fileContentValidationResult = validatePdfFileContent(fileContent);
+
+    if (!fileContentValidationResult.valid) {
+      throw fileContentValidationResult.cause;
+    }
 
     if (!faxlineId) {
       const userInfo = await getUserInfo(client);
-      fax.faxlineId = await getFirstFaxLineId(client, userInfo);
+      faxlineId = await getFirstFaxLineId(client, userInfo);
     }
 
-    let sessionId;
-    try {
-      const { data } = await client.post('/sessions/fax', fax);
-      sessionId = data.sessionId;
-    } catch (e) {
-      return Promise.reject(new Error('Could not be sent'));
-    }
+    const fax: Fax = {
+      base64Content: fileContent.toString('base64'),
+      faxlineId,
+      filename: '',
+      recipient,
+    };
 
-    try {
-      await fetchFaxStatus(client, sessionId);
-    } catch (e) {
-      return Promise.reject(new Error('Could not fetch the fax status'));
-    }
+    const sendFaxSessionResponse = await client
+      .post<SendFaxSessionResponse>('/sessions/fax', fax)
+      .catch(error => Promise.reject(handleError(error)));
+
+    await fetchFaxStatus(client, sendFaxSessionResponse.data.sessionId).catch(
+      error => Promise.reject(handleError(error)),
+    );
   },
 });
 
@@ -44,33 +57,26 @@ const getFirstFaxLineId = async (
   return id;
 };
 
-const readFileAsBase64 = (filePath: string) => {
-  validatePdfFile(filePath);
-  const fileContents = fs.readFileSync(filePath);
-  return Buffer.from(fileContents).toString('base64');
-};
-
 const fetchFaxStatus = async (
   client: HttpClientModule,
   sessionId: string,
 ): Promise<any> => {
-  try {
-    while (true) {
-      await sleep(POLLING_INTERVAL);
-      const { data } = await client.get(`/history/${sessionId}`);
+  while (true) {
+    await sleep(POLLING_INTERVAL);
 
-      if (data) {
-        if (data.faxStatusType === 'SENT') {
-          return Promise.resolve();
-        }
-        if (data.faxStatusType === 'FAILED') {
-          return Promise.reject(new Error('Fax could not be sent'));
-        }
-      }
+    const { data } = await client.get(`/history/${sessionId}`);
+
+    if (!data) {
+      throw new Error('No data in fetchFaxStatus');
     }
-  } catch (e) {
-    const newError = handleError(e);
-    return Promise.reject(newError);
+
+    if (data.faxStatusType === 'SENT') {
+      return;
+    }
+
+    if (data.faxStatusType === 'FAILED') {
+      throw new Error('Fax could not be sent');
+    }
   }
 };
 
@@ -82,20 +88,24 @@ const sleep = async (time: number) => {
   });
 };
 
-const handleError = (e: any) => {
-  return handleCoreError(e);
+const handleError = (error: any) => {
+  if (error instanceof Error) {
+    return error;
+  }
+
+  if (error.response.status === 404) {
+    return new Error('Could not fetch the fax status');
+  }
+
+  return handleCoreError(error);
 };
 
 export const getUserFaxLines = async (
   client: HttpClientModule,
   sub: string,
 ): Promise<FaxLine[]> => {
-  try {
-    const { data } = await client.get<FaxLineListObject>(`${sub}/faxlines`);
-
-    return data.items;
-  } catch (e) {
-    const newError = handleError(e);
-    return Promise.reject(newError);
-  }
+  return client
+    .get<FaxLineListObject>(`${sub}/faxlines`)
+    .then(response => response.data.items)
+    .catch(error => Promise.reject(handleError(error)));
 };

@@ -1,10 +1,8 @@
-// tslint:disable-next-line: no-implicit-dependencies
-import mockfs = require('mock-fs');
 import { ErrorMessage } from '../errors/ErrorMessage';
 import {
   validateEmail,
   validatePassword,
-  validatePdfFile,
+  validatePdfFileContent,
   validatePhoneNumber,
 } from './validator';
 import validPDFBuffer from './validPDFBuffer';
@@ -57,40 +55,20 @@ describe('Phone validation', () => {
 });
 
 describe('PDF file validation', () => {
-  beforeAll(() => {
-    mockfs({
-      'path/to/invalid.pdf': '',
-      'path/to/unreadable.pdf': mockfs.file({
-        content: '',
-        mode: Number(0o111),
-      }),
-      'path/to/valid.pdf': validPDFBuffer,
+  test('should return valid ValidatorResult if pdf file content is valid', () => {
+    const validPdfFileContents = validPDFBuffer;
+
+    expect(validatePdfFileContent(validPdfFileContents)).toEqual({
+      valid: true,
     });
   });
 
-  afterAll(mockfs.restore);
+  test('should return invalid ValidatorResult if file content is invalid', () => {
+    const invalidPdfFileContents = Buffer.from('12ABC34');
 
-  test('should not throw an error if pdf file is valid', () => {
-    expect(() => {
-      validatePdfFile('./path/to/valid.pdf');
-    }).not.toThrowError();
-  });
-
-  test('should throw an error if file does not exist', () => {
-    expect(() => {
-      validatePdfFile('./path/to/missing.pdf');
-    }).toThrowError('File does not exist');
-  });
-
-  test('should throw an error if mime type is non valid', () => {
-    expect(() => {
-      validatePdfFile('./path/to/invalid.pdf');
-    }).toThrowError('Invalid pdf extension');
-  });
-
-  test('should throw an error if file is not readable', () => {
-    expect(() => {
-      validatePdfFile('./path/to/unreadable.pdf');
-    }).toThrowError('File is unreadable');
+    expect(validatePdfFileContent(invalidPdfFileContents)).toEqual({
+      cause: ErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
+      valid: false,
+    });
   });
 });
