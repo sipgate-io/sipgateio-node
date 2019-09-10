@@ -1,6 +1,6 @@
 import { ConnectionError, ErrorMessage, ExtensionError } from '../core/errors';
 import handleCoreError from '../core/errors/handleCoreError';
-import { HttpClientModule } from '../core/httpClient/httpClient.module';
+import { HttpClientModule } from '../core/httpClient';
 import {
   ShortMessage,
   SmsCallerId,

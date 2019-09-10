@@ -1,4 +1,4 @@
-import { HttpClientModule } from '../httpClient/httpClient.module';
+import { HttpClientModule } from '../httpClient';
 import { getUserInfo } from './userHelper';
 
 let mockClient: HttpClientModule;

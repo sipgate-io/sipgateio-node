@@ -1,5 +1,5 @@
 import handleCoreError from '../errors/handleCoreError';
-import { HttpClientModule } from '../httpClient/httpClient.module';
+import { HttpClientModule } from '../httpClient';
 import { UserInfo } from '../models';
 
 export const getUserInfo = async (
