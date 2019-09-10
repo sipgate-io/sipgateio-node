@@ -55,7 +55,7 @@ describe('Phone validation', () => {
 });
 
 describe('PDF file validation', () => {
-  test('should return valid ValidatorResult if pdf file content is valid', () => {
+  test('should return valid ValidationResult if pdf file content is valid', () => {
     const validPdfFileContents = validPDFBuffer;
 
     expect(validatePdfFileContent(validPdfFileContents)).toEqual({
@@ -63,7 +63,7 @@ describe('PDF file validation', () => {
     });
   });
 
-  test('should return invalid ValidatorResult if file content is invalid', () => {
+  test('should return invalid ValidationResult if file content is invalid', () => {
     const invalidPdfFileContents = Buffer.from('12ABC34');
 
     expect(validatePdfFileContent(invalidPdfFileContents)).toEqual({

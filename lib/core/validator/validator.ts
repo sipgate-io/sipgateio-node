@@ -1,9 +1,9 @@
 import fileType from 'file-type';
 import { ErrorMessage } from '../errors/ErrorMessage';
 
-type ValidatorResult = { valid: true } | { valid: false; cause: ErrorMessage };
+type ValidationResult = { valid: true } | { valid: false; cause: ErrorMessage };
 
-const validateEmail = (email: string): ValidatorResult => {
+const validateEmail = (email: string): ValidationResult => {
   const emailRegex: RegExp = new RegExp(
     /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$/i,
   );
@@ -18,7 +18,7 @@ const validateEmail = (email: string): ValidatorResult => {
   return { valid: true };
 };
 
-const validatePassword = (password: string): ValidatorResult => {
+const validatePassword = (password: string): ValidationResult => {
   const passwordIsValid = password.length > 0 && !password.includes(' ');
 
   if (!passwordIsValid) {
@@ -28,7 +28,7 @@ const validatePassword = (password: string): ValidatorResult => {
   return { valid: true };
 };
 
-const validatePhoneNumber = (phoneNumber: string): ValidatorResult => {
+const validatePhoneNumber = (phoneNumber: string): ValidationResult => {
   const emailRegex: RegExp = new RegExp(/^\+?[0-9]+$/);
 
   if (!emailRegex.test(phoneNumber)) {
@@ -38,7 +38,7 @@ const validatePhoneNumber = (phoneNumber: string): ValidatorResult => {
   return { valid: true };
 };
 
-const validatePdfFileContent = (content: Buffer): ValidatorResult => {
+const validatePdfFileContent = (content: Buffer): ValidationResult => {
   const fileTypeResult = fileType(content);
 
   if (!fileTypeResult || fileTypeResult.mime !== 'application/pdf') {
