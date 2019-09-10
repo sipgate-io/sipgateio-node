@@ -8,10 +8,10 @@ import {
   UserInfo,
 } from '../core/models';
 import {
+  containsPhoneNumber,
   createSMSModule,
   getSmsCallerIds,
   getUserSMSExtensions,
-  verifyNumber,
 } from './sms';
 import { SMSModule } from './sms.module';
 
@@ -197,7 +197,7 @@ describe('Numbers Verification', () => {
       },
     ];
 
-    const verificationStatus = verifyNumber(smsCallerIds, '+4912345678');
+    const verificationStatus = containsPhoneNumber(smsCallerIds, '+4912345678');
 
     expect(verificationStatus).toBeTruthy();
   });
@@ -218,7 +218,7 @@ describe('Numbers Verification', () => {
       },
     ];
 
-    const verificationStatus = verifyNumber(smsCallerIds, '+4987654321');
+    const verificationStatus = containsPhoneNumber(smsCallerIds, '+4987654321');
 
     expect(verificationStatus).toBeFalsy();
   });
@@ -239,7 +239,7 @@ describe('Numbers Verification', () => {
       },
     ];
 
-    const verificationStatus = verifyNumber(smsCallerIds, '12345678');
+    const verificationStatus = containsPhoneNumber(smsCallerIds, '12345678');
 
     expect(verificationStatus).toBeFalsy();
   });

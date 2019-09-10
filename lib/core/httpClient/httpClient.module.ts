@@ -1,7 +1,9 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type HttpRequestConfig = AxiosRequestConfig;
 export type HttpResponse<T = any> = AxiosResponse<T>;
+
+export type HttpError<T = any> = AxiosError<T>;
 
 export interface HttpClientModule {
   get: <T = any, R = HttpResponse<T>>(

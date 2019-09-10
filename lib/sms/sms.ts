@@ -14,26 +14,26 @@ import { SMSModule } from './sms.module';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
   async send(sms: ShortMessage): Promise<void> {
-    validatePhoneNumber(sms.recipient);
+    const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
 
-    try {
-      await client.post('/sessions/sms', sms);
-    } catch (e) {
-      const newError = handleError(e);
-      return Promise.reject(newError);
+    if (!phoneNumberValidationResult.valid) {
+      throw phoneNumberValidationResult.cause;
     }
+
+    await client
+      .post('/sessions/sms', sms)
+      .catch(error => Promise.reject(handleError(error)));
   },
   async schedule(sms: ShortMessage, sendAt: Date): Promise<void> {
-    const timeToSend = sendAt.getTime();
     if (
-      timeToSend > new Date().getTime() &&
-      timeToSend < new Date().setMonth(new Date().getMonth() + 3)
+      sendAt > new Date() &&
+      sendAt.getTime() < new Date().setMonth(new Date().getMonth() + 3)
     ) {
       sms.sendAt = sendAt.getTime() / 1000;
       return this.send(sms);
-    } else {
-      Promise.reject(new Error('Time must be in future.'));
     }
+
+    return Promise.reject(new Error('Time must be in future.'));
   },
 });
 
@@ -41,14 +41,10 @@ export const getUserSMSExtensions = async (
   client: HttpClientModule,
   sub: string,
 ): Promise<SmsExtension[]> => {
-  try {
-    const { data } = await client.get<SmsExtensions>(`${sub}/sms`);
-
-    return data.items;
-  } catch (e) {
-    const newError = handleError(e);
-    return Promise.reject(newError);
-  }
+  return client
+    .get<SmsExtensions>(`${sub}/sms`)
+    .then(value => value.data.items)
+    .catch(error => Promise.reject(handleError(error)));
 };
 
 export const getSmsCallerIds = async (
@@ -56,28 +52,21 @@ export const getSmsCallerIds = async (
   webuserExtension: string,
   smsExtension: string,
 ): Promise<SmsCallerId[]> => {
-  try {
-    const { data } = await client.get<SmsCallerIds>(
-      `${webuserExtension}/sms/${smsExtension}/callerids`,
-    );
-    return data.items;
-  } catch (error) {
-    return Promise.reject(handleError(error));
-  }
+  return client
+    .get<SmsCallerIds>(`${webuserExtension}/sms/${smsExtension}/callerids`)
+    .then(value => value.data.items)
+    .catch(error => Promise.reject(handleError(error)));
 };
 
-export const verifyNumber = (
+export const containsPhoneNumber = (
   smsCallerIds: SmsCallerId[],
   phoneNumber: string,
 ): boolean => {
-  const founded = smsCallerIds.find(
+  const foundCallerId = smsCallerIds.find(
     smsCallerId => smsCallerId.phonenumber === phoneNumber,
   );
 
-  if (founded) {
-    return founded.verified;
-  }
-  return false;
+  return foundCallerId ? foundCallerId.verified : false;
 };
 
 const handleError = (e: any) => {

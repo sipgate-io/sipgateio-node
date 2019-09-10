@@ -1,5 +1,8 @@
 import handleCoreError from '../core/errors/handleCoreError';
-import { HttpClientModule } from '../core/httpClient/httpClient.module';
+import {
+  HttpClientModule,
+  HttpError,
+} from '../core/httpClient/httpClient.module';
 import {
   Fax,
   FaxLine,
@@ -81,26 +84,6 @@ const fetchFaxStatus = async (
   }
 };
 
-const sleep = async (time: number) => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, time);
-  });
-};
-
-const handleError = (error: any) => {
-  if (error instanceof Error) {
-    return error;
-  }
-
-  if (error.response.status === 404) {
-    return new Error('Could not fetch the fax status');
-  }
-
-  return handleCoreError(error);
-};
-
 export const getUserFaxLines = async (
   client: HttpClientModule,
   sub: string,
@@ -109,4 +92,19 @@ export const getUserFaxLines = async (
     .get<FaxLineListObject>(`${sub}/faxlines`)
     .then(response => response.data.items)
     .catch(error => Promise.reject(handleError(error)));
+};
+
+const sleep = async (time: number) =>
+  new Promise((resolve, _) => setTimeout(resolve, time));
+
+const handleError = (error: HttpError): Error => {
+  if (!error.response) {
+    return error;
+  }
+
+  if (error.response.status === 404) {
+    return new Error('Could not fetch the fax status');
+  }
+
+  return handleCoreError(error);
 };

@@ -1,6 +1,11 @@
+import { HttpError } from '../httpClient/httpClient.module';
 import { AuthenticationError } from './AuthenticationError';
 
-export default (error: any) => {
+export default (error: HttpError): Error => {
+  if (!error.response) {
+    return error;
+  }
+
   if (error.response.status === 401) {
     return new AuthenticationError();
   }
@@ -9,5 +14,5 @@ export default (error: any) => {
     return new AuthenticationError('Forbidden');
   }
 
-  return new Error();
+  return new Error(error.message);
 };
