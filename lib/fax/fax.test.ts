@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../core/errors/ErrorMessage';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import validPDFBuffer from '../core/validator/validPDFBuffer';
 import { createFaxModule, getUserFaxLines } from './fax';
@@ -155,7 +156,7 @@ describe('SendFax', () => {
 
     await expect(
       faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
-    ).rejects.toThrowError('Could not fetch the fax status');
+    ).rejects.toThrowError(ErrorMessage.FAX_STATUS_COULD_NOT_BE_FETCHED);
   });
 
   test('throws exception when fax status is failed', async () => {
@@ -182,6 +183,6 @@ describe('SendFax', () => {
 
     await expect(
       faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
-    ).rejects.toThrowError('Fax could not be sent');
+    ).rejects.toThrowError(ErrorMessage.FAX_COULD_NOT_BE_SEND);
   });
 });

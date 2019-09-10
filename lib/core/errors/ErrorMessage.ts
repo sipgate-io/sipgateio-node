@@ -9,5 +9,9 @@ export enum ErrorMessage {
   SMS_INVALID_EXTENSION = 'Invalid SMS extension',
   SMS_TIME_MUST_BE_IN_FUTURE = 'Time must be in future',
 
+  FAX_STATUS_COULD_NOT_BE_FETCHED = 'Could not fetch the fax status',
+  FAX_COULD_NOT_BE_SEND = 'Fax could not be sent',
+  FAX_NO_DATA_IN_FETCH_STATUS = 'No data in fetchFaxStatus',
+
   NETWORK_ERROR = 'getaddrinfo ENOTFOUND',
 }

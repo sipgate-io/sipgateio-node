@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../core/errors/ErrorMessage';
 import handleCoreError from '../core/errors/handleCoreError';
 import {
   HttpClientModule,
@@ -71,7 +72,7 @@ const fetchFaxStatus = async (
     const { data } = await client.get(`/history/${sessionId}`);
 
     if (!data) {
-      throw new Error('No data in fetchFaxStatus');
+      throw new Error(ErrorMessage.FAX_NO_DATA_IN_FETCH_STATUS);
     }
 
     if (data.faxStatusType === 'SENT') {
@@ -79,7 +80,7 @@ const fetchFaxStatus = async (
     }
 
     if (data.faxStatusType === 'FAILED') {
-      throw new Error('Fax could not be sent');
+      throw new Error(ErrorMessage.FAX_COULD_NOT_BE_SEND);
     }
   }
 };
@@ -103,7 +104,7 @@ const handleError = (error: HttpError): Error => {
   }
 
   if (error.response.status === 404) {
-    return new Error('Could not fetch the fax status');
+    return new Error(ErrorMessage.FAX_STATUS_COULD_NOT_BE_FETCHED);
   }
 
   return handleCoreError(error);
