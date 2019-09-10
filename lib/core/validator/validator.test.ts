@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors/ErrorMessage';
+import { ErrorMessage } from '../errors';
 import {
   validateEmail,
   validatePassword,

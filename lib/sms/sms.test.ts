@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { ErrorMessage } from '../core/errors/ErrorMessage';
+import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import {
   ShortMessage,

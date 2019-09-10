@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../core/errors/ErrorMessage';
+import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import validPDFBuffer from '../core/validator/validPDFBuffer';
 import { createFaxModule, getUserFaxLines } from './fax';

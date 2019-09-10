@@ -1,8 +1,8 @@
-import { createFaxModule } from '../../fax/fax';
+import { createHttpClient } from '..';
+import { createFaxModule } from '../../fax';
 import { FaxModule } from '../../fax/fax.module';
-import { createSMSModule } from '../../sms/sms';
+import { createSMSModule } from '../../sms';
 import { SMSModule } from '../../sms/sms.module';
-import { createHttpClient } from '../httpClient/httpClient';
 
 export interface SipgateClient {
   sms: SMSModule;

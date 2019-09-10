@@ -1,6 +1,4 @@
-import { ConnectionError } from '../core/errors/ConnectionError';
-import { ErrorMessage } from '../core/errors/ErrorMessage';
-import { ExtensionError } from '../core/errors/ExtensionError';
+import { ConnectionError, ErrorMessage, ExtensionError } from '../core/errors';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import {

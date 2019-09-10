@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../core/errors/ErrorMessage';
+import { ErrorMessage } from '../core/errors';
 import handleCoreError from '../core/errors/handleCoreError';
 import {
   HttpClientModule,
@@ -11,7 +11,7 @@ import {
   SendFaxSessionResponse,
   UserInfo,
 } from '../core/models';
-import { getUserInfo } from '../core/userHelper/userHelper';
+import { getUserInfo } from '../core/userHelper';
 import { validatePdfFileContent } from '../core/validator';
 import { FaxModule } from './fax.module';
 

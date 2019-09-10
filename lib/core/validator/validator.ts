@@ -1,5 +1,5 @@
 import fileType from 'file-type';
-import { ErrorMessage } from '../errors/ErrorMessage';
+import { ErrorMessage } from '../errors';
 
 type ValidationResult = { valid: true } | { valid: false; cause: ErrorMessage };
 
