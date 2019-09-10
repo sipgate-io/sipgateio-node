@@ -1,5 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { ErrorMessage } from '../core/errors/ErrorMessage';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
 import {
   ShortMessage,
@@ -46,7 +47,7 @@ describe('SMS Module', () => {
     };
 
     await expect(smsModule.send(message)).rejects.toThrow(
-      'Invalid SMS extension',
+      ErrorMessage.SMS_INVALID_EXTENSION,
     );
   });
 
@@ -60,7 +61,7 @@ describe('SMS Module', () => {
     };
 
     await expect(smsModule.send(message)).rejects.toThrow(
-      'getaddrinfo ENOTFOUND',
+      ErrorMessage.NETWORK_ERROR,
     );
   });
 });

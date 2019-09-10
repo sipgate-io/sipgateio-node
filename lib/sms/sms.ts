@@ -1,4 +1,5 @@
 import { ConnectionError } from '../core/errors/ConnectionError';
+import { ErrorMessage } from '../core/errors/ErrorMessage';
 import { ExtensionError } from '../core/errors/ExtensionError';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient/httpClient.module';
@@ -33,7 +34,7 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
       return this.send(sms);
     }
 
-    return Promise.reject(new Error('Time must be in future.'));
+    return Promise.reject(new Error(ErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE));
   },
 });
 
@@ -72,12 +73,12 @@ export const containsPhoneNumber = (
 const handleError = (e: any) => {
   if (
     e.message === 'Network Error' ||
-    e.message.includes('getaddrinfo ENOTFOUND')
+    e.message.includes(ErrorMessage.NETWORK_ERROR)
   ) {
     return new ConnectionError();
   }
   if (e.response.status === 403) {
-    return new ExtensionError('Invalid SMS extension');
+    return new ExtensionError(ErrorMessage.SMS_INVALID_EXTENSION);
   }
 
   return handleCoreError(e.message);
