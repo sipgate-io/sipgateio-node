@@ -17,6 +17,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
   async send(
     recipient: string,
     fileContent: Buffer,
+    filename: string,
     faxlineId?: string,
   ): Promise<void> {
     const fileContentValidationResult = validatePdfFileContent(fileContent);
@@ -33,7 +34,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
     const fax: Fax = {
       base64Content: fileContent.toString('base64'),
       faxlineId,
-      filename: '',
+      filename,
       recipient,
     };
 

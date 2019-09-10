@@ -89,7 +89,7 @@ describe('SendFax', () => {
     const faxlineId = 'f0';
 
     await expect(
-      faxModule.send(recipient, fileContents, faxlineId),
+      faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
     ).resolves.not.toThrow();
   });
 
@@ -125,7 +125,7 @@ describe('SendFax', () => {
     const fileContents = validPDFBuffer;
 
     await expect(
-      faxModule.send(recipient, fileContents),
+      faxModule.send(recipient, fileContents, 'testPdfFileName'),
     ).resolves.not.toThrow();
   });
 
@@ -154,7 +154,7 @@ describe('SendFax', () => {
     const faxlineId = 'f0';
 
     await expect(
-      faxModule.send(recipient, fileContents, faxlineId),
+      faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
     ).rejects.toThrowError('Could not fetch the fax status');
   });
 
@@ -181,7 +181,7 @@ describe('SendFax', () => {
     const faxlineId = 'f0';
 
     await expect(
-      faxModule.send(recipient, fileContents, faxlineId),
+      faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
     ).rejects.toThrowError('Fax could not be sent');
   });
 });
