@@ -81,7 +81,7 @@ const fetchFaxStatus = async (
     }
 
     if (data.faxStatusType === 'FAILED') {
-      throw new Error(ErrorMessage.FAX_COULD_NOT_BE_SEND);
+      throw new Error(ErrorMessage.FAX_COULD_NOT_BE_SENT);
     }
   }
 };
@@ -105,7 +105,7 @@ const handleError = (error: HttpError): Error => {
   }
 
   if (error.response.status === 404) {
-    return new Error(ErrorMessage.FAX_STATUS_COULD_NOT_BE_FETCHED);
+    return new Error(ErrorMessage.FAX_NOT_FOUND);
   }
 
   return handleCoreError(error);

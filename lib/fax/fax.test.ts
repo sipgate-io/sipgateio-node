@@ -156,7 +156,7 @@ describe('SendFax', () => {
 
     await expect(
       faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
-    ).rejects.toThrowError(ErrorMessage.FAX_STATUS_COULD_NOT_BE_FETCHED);
+    ).rejects.toThrowError(ErrorMessage.FAX_NOT_FOUND);
   });
 
   test('throws exception when fax status is failed', async () => {
@@ -183,6 +183,6 @@ describe('SendFax', () => {
 
     await expect(
       faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
-    ).rejects.toThrowError(ErrorMessage.FAX_COULD_NOT_BE_SEND);
+    ).rejects.toThrowError(ErrorMessage.FAX_COULD_NOT_BE_SENT);
   });
 });
