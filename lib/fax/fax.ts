@@ -18,7 +18,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
   async send(
     recipient: string,
     fileContent: Buffer,
-    filename: string,
+    filename?: string,
     faxlineId?: string,
   ): Promise<void> {
     const fileContentValidationResult = validatePdfFileContent(fileContent);
@@ -30,6 +30,15 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
     if (!faxlineId) {
       const userInfo = await getUserInfo(client);
       faxlineId = await getFirstFaxLineId(client, userInfo);
+    }
+
+    if (!filename) {
+      const timestamp = new Date()
+        .toJSON()
+        .replace(/T/g, '_')
+        .replace(/[.:-]/g, '')
+        .slice(0, -5);
+      filename = `Fax_${timestamp}`;
     }
 
     const fax: Fax = {
