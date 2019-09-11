@@ -10,12 +10,12 @@ import validPDFBuffer from './validPDFBuffer';
 describe('ValidateEmail', () => {
   test.each`
     input                   | expected
-    ${'validEmail@test.de'} | ${{ valid: true }}
-    ${'invalidEmail'}       | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
-    ${'@test.de'}           | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
-    ${'@'}                  | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
-    ${' '}                  | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
-    ${''}                   | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+    ${'validEmail@test.de'} | ${{ isValid: true }}
+    ${'invalidEmail'}       | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+    ${'@test.de'}           | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+    ${'@'}                  | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+    ${' '}                  | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
+    ${''}                   | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_EMAIL }}
   `(
     'validator returns $expected when $input is validated',
     ({ input, expected }) => {
@@ -27,10 +27,10 @@ describe('ValidateEmail', () => {
 describe('ValidatePassword', () => {
   test.each`
     input                 | expected
-    ${'validPassword'}    | ${{ valid: true }}
-    ${'invalid password'} | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
-    ${' '}                | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
-    ${''}                 | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
+    ${'validPassword'}    | ${{ isValid: true }}
+    ${'invalid password'} | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
+    ${' '}                | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
+    ${''}                 | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
   `(
     'validator returns $expected when $input is validated',
     ({ input, expected }) => {
@@ -42,11 +42,11 @@ describe('ValidatePassword', () => {
 describe('Phone validation', () => {
   test.each`
     input               | expected
-    ${'015739777777'}   | ${{ valid: true }}
-    ${'+4915739777777'} | ${{ valid: true }}
-    ${'text'}           | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
-    ${' '}              | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
-    ${''}               | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
+    ${'015739777777'}   | ${{ isValid: true }}
+    ${'+4915739777777'} | ${{ isValid: true }}
+    ${'text'}           | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
+    ${' '}              | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
+    ${''}               | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
   `(
     'validator returns $expected when $input is validated',
     ({ input, expected }) => {
@@ -60,7 +60,7 @@ describe('PDF file validation', () => {
     const validPdfFileContents = validPDFBuffer;
 
     expect(validatePdfFileContent(validPdfFileContents)).toEqual({
-      valid: true,
+      isValid: true,
     });
   });
 
@@ -69,7 +69,7 @@ describe('PDF file validation', () => {
 
     expect(validatePdfFileContent(invalidPdfFileContents)).toEqual({
       cause: ErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
-      valid: false,
+      isValid: false,
     });
   });
 });

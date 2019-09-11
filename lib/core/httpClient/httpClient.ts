@@ -15,13 +15,13 @@ export const createHttpClient = (
 ): HttpClientModule => {
   const emailValidationResult = validateEmail(username);
 
-  if (!emailValidationResult.valid) {
+  if (!emailValidationResult.isValid) {
     throw emailValidationResult.cause;
   }
 
   const passwordValidationResult = validatePassword(password);
 
-  if (!passwordValidationResult.valid) {
+  if (!passwordValidationResult.isValid) {
     throw passwordValidationResult.cause;
   }
 

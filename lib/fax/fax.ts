@@ -23,7 +23,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
   ): Promise<void> {
     const fileContentValidationResult = validatePdfFileContent(fileContent);
 
-    if (!fileContentValidationResult.valid) {
+    if (!fileContentValidationResult.isValid) {
       throw fileContentValidationResult.cause;
     }
 

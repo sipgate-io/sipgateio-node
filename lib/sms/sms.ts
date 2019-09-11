@@ -15,7 +15,7 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
   async send(sms: ShortMessage): Promise<void> {
     const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
 
-    if (!phoneNumberValidationResult.valid) {
+    if (!phoneNumberValidationResult.isValid) {
       throw phoneNumberValidationResult.cause;
     }
 
