@@ -26,10 +26,11 @@ describe('ValidateEmail', () => {
 
 describe('ValidatePassword', () => {
   test.each`
-    input              | expected
-    ${'validPassword'} | ${{ valid: true }}
-    ${' '}             | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
-    ${''}              | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
+    input                 | expected
+    ${'validPassword'}    | ${{ valid: true }}
+    ${'invalid password'} | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
+    ${' '}                | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
+    ${''}                 | ${{ valid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
   `(
     'validator returns $expected when $input is validated',
     ({ input, expected }) => {
