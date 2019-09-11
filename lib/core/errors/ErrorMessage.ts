@@ -12,6 +12,7 @@ export enum ErrorMessage {
   FAX_STATUS_COULD_NOT_BE_FETCHED = 'Could not fetch the fax status',
   FAX_COULD_NOT_BE_SEND = 'Fax could not be sent',
   FAX_NO_DATA_IN_FETCH_STATUS = 'No data in fetchFaxStatus',
+  FAX_NOT_A_FAX = 'History item is not a fax',
 
   NETWORK_ERROR = 'getaddrinfo ENOTFOUND',
 }

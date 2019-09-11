@@ -72,6 +72,10 @@ const fetchFaxStatus = async (
       throw new Error(ErrorMessage.FAX_NO_DATA_IN_FETCH_STATUS);
     }
 
+    if (!data.type || data.type !== 'FAX') {
+      throw new Error(ErrorMessage.FAX_NOT_A_FAX);
+    }
+
     if (data.faxStatusType === 'SENT') {
       return;
     }

@@ -82,7 +82,7 @@ describe('SendFax', () => {
     mockClient.get = jest
       .fn()
       .mockImplementationOnce(() =>
-        Promise.resolve({ data: { faxStatusType: 'SENT' } }),
+        Promise.resolve({ data: { type: 'FAX', faxStatusType: 'SENT' } }),
       );
 
     const recipient = '+4912368712';
@@ -117,7 +117,7 @@ describe('SendFax', () => {
         Promise.resolve({ data: { items: [{ id: '0' }, { id: '1' }] } }),
       )
       .mockImplementationOnce(() =>
-        Promise.resolve({ data: { faxStatusType: 'SENT' } }),
+        Promise.resolve({ data: { type: 'FAX', faxStatusType: 'SENT' } }),
       );
 
     const faxModule = createFaxModule(mockClient);
@@ -174,7 +174,7 @@ describe('SendFax', () => {
     mockClient.get = jest
       .fn()
       .mockImplementationOnce(() =>
-        Promise.resolve({ data: { faxStatusType: 'FAILED' } }),
+        Promise.resolve({ data: { type: 'FAX', faxStatusType: 'FAILED' } }),
       );
 
     const recipient = '+4912368712';
