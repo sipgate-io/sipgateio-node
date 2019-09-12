@@ -13,6 +13,7 @@ export enum ErrorMessage {
   FAX_COULD_NOT_BE_SENT = 'Fax could not be sent',
   FAX_NO_DATA_IN_FETCH_STATUS = 'No data in fetchFaxStatus',
   FAX_NOT_A_FAX = 'History item is not a fax',
+  FAX_FETCH_STATUS_TIMED_OUT = 'Timeout expired while polling send status',
 
   NETWORK_ERROR = 'getaddrinfo ENOTFOUND',
 }

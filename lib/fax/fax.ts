@@ -13,6 +13,7 @@ import { validatePdfFileContent } from '../core/validator';
 import { FaxModule } from './fax.module';
 
 const POLLING_INTERVAL = 5000;
+const POLLING_TIMEOUT = 30 * 60 * 1000;
 
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
   async send(
@@ -72,8 +73,10 @@ const fetchFaxStatus = async (
   client: HttpClientModule,
   sessionId: string,
 ): Promise<any> => {
-  while (true) {
+  let untilTimeout = POLLING_TIMEOUT;
+  while (untilTimeout > 0) {
     await sleep(POLLING_INTERVAL);
+    untilTimeout -= POLLING_INTERVAL;
 
     const { data } = await client.get(`/history/${sessionId}`);
 
@@ -93,6 +96,7 @@ const fetchFaxStatus = async (
       throw new Error(ErrorMessage.FAX_COULD_NOT_BE_SENT);
     }
   }
+  throw new Error(ErrorMessage.FAX_FETCH_STATUS_TIMED_OUT);
 };
 
 export const getUserFaxLines = async (
