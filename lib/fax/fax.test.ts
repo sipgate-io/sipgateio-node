@@ -207,4 +207,31 @@ describe('SendFax', () => {
       faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
     ).rejects.toThrowError(ErrorMessage.FAX_COULD_NOT_BE_SENT);
   });
+
+  test('throws exception when timeout is exceeded', async () => {
+    const faxModule = createFaxModule(mockClient);
+
+    mockClient.post = jest.fn().mockImplementationOnce(() => {
+      return Promise.resolve({
+        data: {
+          sessionId: 123123,
+        },
+        status: 200,
+      });
+    });
+
+    mockClient.get = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        data: { type: 'FAX', faxStatusType: 'PENDING' },
+      }),
+    );
+
+    const recipient = '+4912368712';
+    const fileContents = validPDFBuffer;
+    const faxlineId = 'f0';
+
+    await expect(
+      faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
+    ).rejects.toThrowError(ErrorMessage.FAX_FETCH_STATUS_TIMED_OUT);
+  });
 });
