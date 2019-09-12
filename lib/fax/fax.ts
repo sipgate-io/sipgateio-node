@@ -36,12 +36,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
     }
 
     if (!filename) {
-      const timestamp = new Date()
-        .toJSON()
-        .replace(/T/g, '_')
-        .replace(/[.:-]/g, '')
-        .slice(0, -5);
-      filename = `Fax_${timestamp}`;
+      filename = generateFilename();
     }
 
     const fax: Fax = {
@@ -61,6 +56,15 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
   },
 });
 
+const generateFilename = () => {
+  const timestamp = new Date()
+    .toJSON()
+    .replace(/T/g, '_')
+    .replace(/[.:-]/g, '')
+    .slice(0, -5);
+  return `Fax_${timestamp}`;
+};
+
 const getFirstFaxLineId = async (
   client: HttpClientModule,
   userInfo: UserInfo,
@@ -76,6 +80,7 @@ const fetchFaxStatus = async (
   sessionId: string,
 ): Promise<any> => {
   let untilTimeout = POLLING_TIMEOUT;
+
   while (untilTimeout > 0) {
     await sleep(POLLING_INTERVAL);
     untilTimeout -= POLLING_INTERVAL;
