@@ -61,7 +61,7 @@ const generateFilename = () => {
     .toJSON()
     .replace(/T/g, '_')
     .replace(/[.:-]/g, '')
-    .slice(0, -5);
+    .slice(0, -6);
   return `Fax_${timestamp}`;
 };
 
