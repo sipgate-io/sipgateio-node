@@ -27,3 +27,16 @@ export interface FaxLine {
 export interface FaxLineListObject {
   items: FaxLine[];
 }
+
+export interface HistoryFaxResponse {
+  type: 'FAX';
+  faxStatusType: FaxStatusType;
+}
+
+export enum FaxStatusType {
+  SENT = 'SENT',
+  PENDING = 'PENDING',
+  FAILED = 'FAILED',
+  SENDING = 'SENDING',
+  SCHEDULED = 'SCHEDULED',
+}

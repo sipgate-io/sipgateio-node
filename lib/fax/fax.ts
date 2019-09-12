@@ -5,6 +5,8 @@ import {
   Fax,
   FaxLine,
   FaxLineListObject,
+  FaxStatusType,
+  HistoryFaxResponse,
   SendFaxSessionResponse,
   UserInfo,
 } from '../core/models';
@@ -78,7 +80,9 @@ const fetchFaxStatus = async (
     await sleep(POLLING_INTERVAL);
     untilTimeout -= POLLING_INTERVAL;
 
-    const { data } = await client.get(`/history/${sessionId}`);
+    const { data } = await client.get<HistoryFaxResponse>(
+      `/history/${sessionId}`,
+    );
 
     if (!data) {
       throw new Error(ErrorMessage.FAX_NO_DATA_IN_FETCH_STATUS);
@@ -88,11 +92,11 @@ const fetchFaxStatus = async (
       throw new Error(ErrorMessage.FAX_NOT_A_FAX);
     }
 
-    if (data.faxStatusType === 'SENT') {
+    if (data.faxStatusType === FaxStatusType.SENT) {
       return;
     }
 
-    if (data.faxStatusType === 'FAILED') {
+    if (data.faxStatusType === FaxStatusType.FAILED) {
       throw new Error(ErrorMessage.FAX_COULD_NOT_BE_SENT);
     }
   }
