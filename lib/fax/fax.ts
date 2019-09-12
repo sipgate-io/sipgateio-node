@@ -110,7 +110,7 @@ export const getUserFaxLines = async (
 };
 
 const sleep = async (time: number) =>
-  new Promise((resolve, _) => setTimeout(resolve, time));
+  new Promise(resolve => setTimeout(resolve, time));
 
 const handleError = (error: HttpError): Error => {
   if (!error.response) {
