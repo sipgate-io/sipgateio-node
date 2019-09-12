@@ -2,7 +2,7 @@ export interface FaxModule {
   send: (
     recipient: string,
     fileContent: Buffer,
-    filename: string,
+    filename?: string,
     faxlineId?: string,
   ) => Promise<void>;
 }
