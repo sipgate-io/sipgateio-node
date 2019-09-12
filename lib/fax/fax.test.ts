@@ -1,5 +1,6 @@
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
+import { Fax } from '../core/models';
 import validPDFBuffer from '../core/validator/validPDFBuffer';
 import { createFaxModule, getUserFaxLines } from './fax';
 
@@ -73,7 +74,6 @@ describe('SendFax', () => {
   test('fax is sent', async () => {
     const faxModule = createFaxModule(mockClient);
 
-    // @ts-ignore
     mockClient.post = jest
       .fn()
       .mockImplementationOnce(() =>
@@ -95,7 +95,6 @@ describe('SendFax', () => {
   });
 
   test('fax is sent without given faxline id', async () => {
-    // @ts-ignore
     mockClient.post = jest
       .fn()
       .mockImplementationOnce(() =>
@@ -128,6 +127,29 @@ describe('SendFax', () => {
     await expect(
       faxModule.send(recipient, fileContents, 'testPdfFileName'),
     ).resolves.not.toThrow();
+  });
+
+  test('fax is sent without given filename', async () => {
+    mockClient.post = jest
+      .fn()
+      .mockImplementationOnce((_, { filename }: Fax) => {
+        expect(filename && /^Fax_2\d{7}_\d{4}$/.test(filename)).toBeTruthy();
+        return Promise.resolve({ data: { sessionId: 123456 } });
+      });
+
+    mockClient.get = jest
+      .fn()
+      .mockImplementationOnce(() =>
+        Promise.resolve({ data: { type: 'FAX', faxStatusType: 'SENT' } }),
+      );
+
+    const faxModule = createFaxModule(mockClient);
+
+    const recipient = '+4912368712';
+    const fileContents = validPDFBuffer;
+    const faxlineId = 'f0';
+
+    await faxModule.send(recipient, fileContents, undefined, faxlineId);
   });
 
   test('throws exception when fax status could not be fetched', async () => {
