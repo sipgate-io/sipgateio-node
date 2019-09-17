@@ -88,7 +88,7 @@ describe('Call Module', () => {
     );
   });
 
-  it('should throw an exception for bad request', async () => {
+  it('should throw a validation exception for malformed callee number ', async () => {
     mockClient.post = jest.fn().mockImplementationOnce(() => {
       return Promise.reject({
         response: {
