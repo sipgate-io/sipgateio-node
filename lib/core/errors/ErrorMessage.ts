@@ -15,5 +15,10 @@ export enum ErrorMessage {
   FAX_NOT_A_FAX = 'History item is not a fax',
   FAX_FETCH_STATUS_TIMED_OUT = 'Timeout expired while polling send status',
 
+  CALL_INVALID_EXTENSION = 'Invalid Call Extension',
+  CALL_INSUFFICIENT_FUNDS = 'Insufficient funds',
+
+  BAD_REQUEST = 'Invalid Call object',
+
   NETWORK_ERROR = 'getaddrinfo ENOTFOUND',
 }
