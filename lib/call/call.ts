@@ -9,10 +9,10 @@ import { CallModule } from './call.module';
 
 export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
   async initiate(
-    newCallRequest: ClickToDial,
+    clickToDial: ClickToDial,
   ): Promise<InitiateNewCallSessionResponse> {
     return httpClient
-      .post<InitiateNewCallSessionResponse>('/sessions/calls', newCallRequest)
+      .post<InitiateNewCallSessionResponse>('/sessions/calls', clickToDial)
       .then(response => response.data)
       .catch(error => Promise.reject(handleError(error)));
   },
