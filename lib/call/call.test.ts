@@ -98,11 +98,11 @@ describe('Call Module', () => {
     });
 
     const validExtensionId = 'e0';
-    const inValidCalleeNumber = 'test';
+    const invalidCalleeNumber = 'not a phone number';
     const validCallerId = '+494567787889';
 
     const clickToDial: ClickToDial = {
-      callee: inValidCalleeNumber,
+      callee: invalidCalleeNumber,
       caller: validExtensionId,
       callerId: validCallerId,
     };
