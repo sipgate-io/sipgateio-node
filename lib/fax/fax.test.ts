@@ -1,6 +1,6 @@
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
-import { Fax } from '../core/models';
+import { FaxDTO } from '../core/models';
 import validPDFBuffer from '../core/validator/validPDFBuffer';
 import { createFaxModule, getUserFaxLines } from './fax';
 
@@ -86,11 +86,16 @@ describe('SendFax', () => {
       );
 
     const recipient = '+4912368712';
-    const fileContents = validPDFBuffer;
+    const fileContent = validPDFBuffer;
     const faxlineId = 'f0';
 
     await expect(
-      faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
+      faxModule.send({
+        faxlineId,
+        fileContent,
+        filename: 'testPdfFileName',
+        recipient,
+      }),
     ).resolves.not.toThrow();
   });
 
@@ -122,17 +127,17 @@ describe('SendFax', () => {
     const faxModule = createFaxModule(mockClient);
 
     const recipient = '+4912368712';
-    const fileContents = validPDFBuffer;
+    const fileContent = validPDFBuffer;
 
     await expect(
-      faxModule.send(recipient, fileContents, 'testPdfFileName'),
+      faxModule.send({ recipient, fileContent, filename: 'testPdfFileName' }),
     ).resolves.not.toThrow();
   });
 
   test('fax is sent without given filename', async () => {
     mockClient.post = jest
       .fn()
-      .mockImplementationOnce((_, { filename }: Fax) => {
+      .mockImplementationOnce((_, { filename }: FaxDTO) => {
         expect(filename && /^Fax_2\d{7}_\d{4}$/.test(filename)).toBeTruthy();
         return Promise.resolve({ data: { sessionId: 123456 } });
       });
@@ -146,10 +151,10 @@ describe('SendFax', () => {
     const faxModule = createFaxModule(mockClient);
 
     const recipient = '+4912368712';
-    const fileContents = validPDFBuffer;
+    const fileContent = validPDFBuffer;
     const faxlineId = 'f0';
 
-    await faxModule.send(recipient, fileContents, undefined, faxlineId);
+    await faxModule.send({ recipient, fileContent, faxlineId });
   });
 
   test('throws exception when fax status could not be fetched', async () => {
@@ -173,11 +178,16 @@ describe('SendFax', () => {
     const faxModule = createFaxModule(mockClient);
 
     const recipient = '+4912368712';
-    const fileContents = validPDFBuffer;
+    const fileContent = validPDFBuffer;
     const faxlineId = 'f0';
 
     await expect(
-      faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
+      faxModule.send({
+        faxlineId,
+        fileContent,
+        filename: 'testPdfFileName',
+        recipient,
+      }),
     ).rejects.toThrowError(ErrorMessage.FAX_NOT_FOUND);
   });
 
@@ -200,11 +210,16 @@ describe('SendFax', () => {
       );
 
     const recipient = '+4912368712';
-    const fileContents = validPDFBuffer;
+    const fileContent = validPDFBuffer;
     const faxlineId = 'f0';
 
     await expect(
-      faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
+      faxModule.send({
+        faxlineId,
+        fileContent,
+        filename: 'testPdfFileName',
+        recipient,
+      }),
     ).rejects.toThrowError(ErrorMessage.FAX_COULD_NOT_BE_SENT);
   });
 
@@ -227,11 +242,16 @@ describe('SendFax', () => {
     );
 
     const recipient = '+4912368712';
-    const fileContents = validPDFBuffer;
+    const fileContent = validPDFBuffer;
     const faxlineId = 'f0';
 
     await expect(
-      faxModule.send(recipient, fileContents, 'testPdfFileName', faxlineId),
+      faxModule.send({
+        faxlineId,
+        fileContent,
+        filename: 'testPdfFileName',
+        recipient,
+      }),
     ).rejects.toThrowError(ErrorMessage.FAX_FETCH_STATUS_TIMED_OUT);
   });
 });

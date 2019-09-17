@@ -9,11 +9,18 @@ export interface SendFaxSessionResponse {
   sessionId: string;
 }
 
-export interface Fax {
+export interface FaxDTO {
   faxlineId?: string;
   recipient: string;
-  filename: string;
+  filename?: string;
   base64Content: string;
+}
+
+export interface Fax {
+  recipient: string;
+  fileContent: Buffer;
+  filename?: string;
+  faxlineId?: string;
 }
 
 export interface FaxLine {

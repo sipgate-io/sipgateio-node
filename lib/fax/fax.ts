@@ -3,6 +3,7 @@ import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import {
   Fax,
+  FaxDTO,
   FaxLine,
   FaxLineListObject,
   FaxStatusType,
@@ -18,36 +19,31 @@ const POLLING_INTERVAL = 5000;
 const POLLING_TIMEOUT = 30 * 60 * 1000;
 
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
-  async send(
-    recipient: string,
-    fileContent: Buffer,
-    filename?: string,
-    faxlineId?: string,
-  ): Promise<void> {
-    const fileContentValidationResult = validatePdfFileContent(fileContent);
+  async send(fax: Fax): Promise<void> {
+    const fileContentValidationResult = validatePdfFileContent(fax.fileContent);
 
     if (!fileContentValidationResult.isValid) {
       throw fileContentValidationResult.cause;
     }
 
-    if (!faxlineId) {
+    if (!fax.faxlineId) {
       const userInfo = await getUserInfo(client);
-      faxlineId = await getFirstFaxLineId(client, userInfo);
+      fax.faxlineId = await getFirstFaxLineId(client, userInfo);
     }
 
-    if (!filename) {
-      filename = generateFilename();
+    if (!fax.filename) {
+      fax.filename = generateFilename();
     }
 
-    const fax: Fax = {
-      base64Content: fileContent.toString('base64'),
-      faxlineId,
-      filename,
-      recipient,
+    const faxDTO: FaxDTO = {
+      base64Content: fax.fileContent.toString('base64'),
+      faxlineId: fax.faxlineId,
+      filename: fax.filename,
+      recipient: fax.recipient,
     };
 
     const sendFaxSessionResponse = await client
-      .post<SendFaxSessionResponse>('/sessions/fax', fax)
+      .post<SendFaxSessionResponse>('/sessions/fax', faxDTO)
       .catch(error => Promise.reject(handleError(error)));
 
     await fetchFaxStatus(client, sendFaxSessionResponse.data.sessionId).catch(
