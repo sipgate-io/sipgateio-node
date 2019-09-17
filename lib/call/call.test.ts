@@ -41,26 +41,18 @@ describe('Call Module', () => {
   });
 
   it('should throw an exception for malformed extension', async () => {
-    mockClient.post = jest.fn().mockImplementationOnce(() => {
-      return Promise.reject({
-        response: {
-          status: 403,
-        },
-      });
-    });
-
-    const inValidExtensionId = 'e-18';
+    const invalidExtensionId = 'e-18';
     const validCalleeNumber = '0123456789123';
     const validCallerId = '0123456789';
 
     const clickToDial: ClickToDial = {
       callee: validCalleeNumber,
-      caller: inValidExtensionId,
+      caller: invalidExtensionId,
       callerId: validCallerId,
     };
 
     await expect(callModule.initiate(clickToDial)).rejects.toThrow(
-      ErrorMessage.CALL_INVALID_EXTENSION,
+      ErrorMessage.VALIDATOR_INVALID_EXTENSION,
     );
   });
 
@@ -89,14 +81,6 @@ describe('Call Module', () => {
   });
 
   it('should throw a validation exception for malformed callee number ', async () => {
-    mockClient.post = jest.fn().mockImplementationOnce(() => {
-      return Promise.reject({
-        response: {
-          status: 400,
-        },
-      });
-    });
-
     const validExtensionId = 'e0';
     const invalidCalleeNumber = 'not a phone number';
     const validCallerId = '+494567787889';
