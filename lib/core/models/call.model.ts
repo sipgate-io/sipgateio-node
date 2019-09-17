@@ -1,4 +1,4 @@
-export interface NewCallRequest {
+export interface ClickToDial {
   deviceId?: string;
   caller: string;
   callee: string;

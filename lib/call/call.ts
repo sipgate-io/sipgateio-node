@@ -2,23 +2,15 @@ import { ErrorMessage } from '../core/errors';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import {
+  ClickToDial,
   InitiateNewCallSessionResponse,
-  NewCallRequest,
 } from '../core/models/call.model';
 import { CallModule } from './call.module';
 
 export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
   async initCall(
-    extensionId: string,
-    calleeNumber: string,
-    callerId: string,
+    newCallRequest: ClickToDial,
   ): Promise<InitiateNewCallSessionResponse> {
-    const newCallRequest: NewCallRequest = {
-      callee: calleeNumber,
-      caller: extensionId,
-      callerId,
-    };
-
     return httpClient
       .post<InitiateNewCallSessionResponse>('/sessions/calls', newCallRequest)
       .then(response => response.data)
@@ -32,7 +24,7 @@ const handleError = (error: HttpError): Error => {
   }
 
   if (error.response.status === 400) {
-    return new Error(ErrorMessage.BAD_REQUEST);
+    return new Error(ErrorMessage.CALL_BAD_REQUEST);
   }
 
   if (error.response.status === 402) {
