@@ -12,9 +12,9 @@ export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
   async initiate(
     clickToDial: ClickToDial,
   ): Promise<InitiateNewCallSessionResponse> {
-    const validationResult = validatePhoneNumber(clickToDial.callee);
-    if (!validationResult.isValid) {
-      throw new Error(`${validationResult.cause}: callee`);
+    const phoneNumberValidation = validatePhoneNumber(clickToDial.callee);
+    if (!phoneNumberValidation.isValid) {
+      throw new Error(`${phoneNumberValidation.cause}: callee`);
     }
 
     return httpClient
