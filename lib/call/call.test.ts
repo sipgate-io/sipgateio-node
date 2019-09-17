@@ -34,9 +34,9 @@ describe('Call Module', () => {
       callerId: validCallerId,
     };
 
-    await expect(callModule.initCall(clickToDial)).resolves.not.toThrow();
+    await expect(callModule.initiate(clickToDial)).resolves.not.toThrow();
 
-    const { sessionId } = await callModule.initCall(clickToDial);
+    const { sessionId } = await callModule.initiate(clickToDial);
     expect(sessionId).toEqual(expectedSessionId);
   });
 
@@ -59,7 +59,7 @@ describe('Call Module', () => {
       callerId: validCallerId,
     };
 
-    await expect(callModule.initCall(clickToDial)).rejects.toThrow(
+    await expect(callModule.initiate(clickToDial)).rejects.toThrow(
       ErrorMessage.CALL_INVALID_EXTENSION,
     );
   });
@@ -83,7 +83,7 @@ describe('Call Module', () => {
       callerId: validCallerId,
     };
 
-    await expect(callModule.initCall(clickToDial)).rejects.toThrow(
+    await expect(callModule.initiate(clickToDial)).rejects.toThrow(
       ErrorMessage.CALL_INSUFFICIENT_FUNDS,
     );
   });
@@ -107,7 +107,7 @@ describe('Call Module', () => {
       callerId: validCallerId,
     };
 
-    await expect(callModule.initCall(clickToDial)).rejects.toThrow(
+    await expect(callModule.initiate(clickToDial)).rejects.toThrow(
       ErrorMessage.CALL_BAD_REQUEST,
     );
   });

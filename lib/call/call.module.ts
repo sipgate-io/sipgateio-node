@@ -4,7 +4,7 @@ import {
 } from '../core/models/call.model';
 
 export interface CallModule {
-  initCall: (
+  initiate: (
     newCallRequest: ClickToDial,
   ) => Promise<InitiateNewCallSessionResponse>;
 }

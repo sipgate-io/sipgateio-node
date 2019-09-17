@@ -8,7 +8,7 @@ import {
 import { CallModule } from './call.module';
 
 export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
-  async initCall(
+  async initiate(
     newCallRequest: ClickToDial,
   ): Promise<InitiateNewCallSessionResponse> {
     return httpClient
