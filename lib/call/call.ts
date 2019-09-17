@@ -5,12 +5,18 @@ import {
   ClickToDial,
   InitiateNewCallSessionResponse,
 } from '../core/models/call.model';
+import { validatePhoneNumber } from '../core/validator';
 import { CallModule } from './call.module';
 
 export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
   async initiate(
     clickToDial: ClickToDial,
   ): Promise<InitiateNewCallSessionResponse> {
+    const validationResult = validatePhoneNumber(clickToDial.callee);
+    if (!validationResult.isValid) {
+      throw new Error(`${validationResult.cause}: callee`);
+    }
+
     return httpClient
       .post<InitiateNewCallSessionResponse>('/sessions/calls', clickToDial)
       .then(response => response.data)

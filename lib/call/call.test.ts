@@ -108,7 +108,7 @@ describe('Call Module', () => {
     };
 
     await expect(callModule.initiate(clickToDial)).rejects.toThrow(
-      ErrorMessage.CALL_BAD_REQUEST,
+      `${ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER}: callee`,
     );
   });
 });
