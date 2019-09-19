@@ -49,9 +49,9 @@ const validatePassword = (password: string): ValidationResult => {
 };
 
 const validatePhoneNumber = (phoneNumber: string): ValidationResult => {
-  const emailRegex: RegExp = new RegExp(/^\+?[0-9]+$/);
+  const phoneNumberRegex: RegExp = new RegExp(/^\+?[0-9]+$/);
 
-  if (!emailRegex.test(phoneNumber)) {
+  if (!phoneNumberRegex.test(phoneNumber)) {
     return {
       cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER,
       isValid: false,
