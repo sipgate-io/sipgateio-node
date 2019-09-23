@@ -1,13 +1,13 @@
 export enum ErrorMessage {
   VALIDATOR_INVALID_EMAIL = 'Invalid email',
   VALIDATOR_INVALID_PASSWORD = 'Invalid password',
-
   VALIDATOR_INVALID_PHONE_NUMBER = 'Invalid Phone Number',
 
   VALIDATOR_INVALID_PDF_MIME_TYPE = 'Invalid PDF File',
 
   SMS_INVALID_EXTENSION = 'Invalid SMS extension',
   SMS_TIME_MUST_BE_IN_FUTURE = 'Time must be in future',
+  SMS_TIME_TOO_FAR_IN_FUTURE = 'Please select a date no further than 30 days in the future',
 
   FAX_NOT_FOUND = 'Fax was not found',
   FAX_COULD_NOT_BE_SENT = 'Fax could not be sent',
