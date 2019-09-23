@@ -1,9 +1,11 @@
-export interface UserInfo {
-  sub: string;
-  domain: string;
-  masterSipId: string;
-  locale: string;
+export interface Fax {
+  recipient: string;
+  fileContent: Buffer;
+  filename?: string;
+  faxlineId?: string;
 }
+
+// DTOs
 
 export interface SendFaxSessionResponse {
   sessionId: string;
@@ -14,13 +16,6 @@ export interface FaxDTO {
   recipient: string;
   filename?: string;
   base64Content: string;
-}
-
-export interface Fax {
-  recipient: string;
-  fileContent: Buffer;
-  filename?: string;
-  faxlineId?: string;
 }
 
 export interface FaxLine {
