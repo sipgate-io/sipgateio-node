@@ -27,7 +27,7 @@ client.sms
   });
 
 client.sms
-  .schedule(sms, new Date(new Date().setSeconds(new Date().getSeconds() + 30)))
+  .schedule(sms, new Date(Date.now() + 30 * 60 * 1000)) // now + 30 min
   .then(() => {
     console.log('Sms sent.');
   })
