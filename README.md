@@ -3,27 +3,95 @@
 The sipgate.io Node.js library
 
 - [Download](#download)
-- [Methods](#methods)
 - [Available Functionality](#available-functionality)
+- [Usage](#usage)
+- [Examples](#examples)
 - [Privacy Note](#privacy-note)
 
 ## Download
 
 `git clone https://github.com/sipgate-io/sipgateio-node`
 
-## Methods
+## Available Functionality
 
-### createClient(username, password)
+Currently, the library includes SMS, fax, and phone call capabilities. The SMS module supports both instant and scheduled sending of text messages with the default caller ID set for the SMS extension of the authenticated webuser.
+
+## Usage
+
+### Creating a Client
 
 ```typescript
 const client = createClient('<your email-address>', '<your password>');
 ```
 
-The `createClient` method returns a sipgate.io Client after passing your valid sipgate credentials.
+The `createClient` method accepts your valid sipgate credentials and returns a sipgate.io Client.
+The client contains as members the supported modules (e.g. `sms`, `fax`, `call`).
 
-## Available Functionality
+### SMS
 
-Currently, the library includes SMS, Fax, and phone call capabilities. The SMS module supports both instant and scheduled sending of text messages with the .
+The SMS module provides the following functions:
+
+```typescript
+async function send(sms: ShortMessage): Promise<void>;
+async function schedule(sms: ShortMessage, sendAt: Date): Promise<void>;
+```
+
+The `ShortMessage` type requires the following fields:
+
+```typescript
+export interface ShortMessage {
+  smsId: string;
+  recipient: string;
+  message: string;
+  sendAt?: number;
+}
+```
+
+### Fax
+
+The fax module provides the following function:
+
+```typescript
+async function send(fax: Fax): Promise<void>;
+```
+
+The `Fax` type requires the following fields:
+
+```typescript
+export interface Fax {
+  recipient: string;
+  fileContent: Buffer;
+  filename?: string;
+  faxlineId?: string;
+}
+```
+
+### Call
+
+The call module provides the following function:
+
+```typescript
+async function initiate(
+  newCallRequest: ClickToDial,
+): Promise<InitiateNewCallSessionResponse>;
+```
+
+The `ClickToDial` type requires the following fields:
+
+```typescript
+export interface ClickToDial {
+  deviceId?: string;
+  caller: string;
+  callee: string;
+  callerId: string;
+}
+```
+
+The `InitiateNewCallSessionResponse` contains only a session ID.
+
+## Examples
+
+For some examples on how to use the library, please refer to the [`examples` folder](./examples).
 
 ## Privacy Note
 
