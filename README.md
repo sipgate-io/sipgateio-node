@@ -2,72 +2,30 @@
 
 The sipgate.io Node.js library
 
-### Download
+- [Download](#download)
+- [Methods](#methods)
+- [Available Functionality](#available-functionality)
+- [Privacy Note](#privacy-note)
+
+## Download
 
 `git clone https://github.com/sipgate-io/sipgateio-node`
 
-### Methods
+## Methods
 
-#### createClient(username, password)
-
-```typescript
-const client = createClient(<your email-adress>, <your password>);
-```
-
-The Create Client Method returns a sipgate.io-Client after passing your valid sipgate.io-Credentials.
-
-### Available Functionality
-
-You can use the SMS Module to send an SMS to any recipient in the following way:
-
-##### SMS Example:
+### createClient(username, password)
 
 ```typescript
-const recipient = '<your phone number>';
-const smsId = '<your sms extension>';
-const message = '<your short message>';
-
-client.sms
-  .send({ recipient, smsId, message })
-  .then(() => {
-    console.log('Sms sent.');
-  })
-  .catch(error => {
-    console.error(error);
-  });
+const client = createClient('<your email-address>', '<your password>');
 ```
 
-You can use the Fax Module to send a Fax to any recipient in the following way:
+The `createClient` method returns a sipgate.io Client after passing your valid sipgate credentials.
 
-##### Fax Example:
+## Available Functionality
 
-```typescript
-const fax: Fax = {
-  filename: '<path to your pdf-file>',
-  recipient: "<recipients's faxnumber>",
-};
+Currently, the library includes SMS, Fax, and phone call capabilities. The SMS module supports both instant and scheduled sending of text messages with the .
 
-client.fax
-  .send(fax)
-  .then(() => {
-    console.log('Fax sent');
-  })
-  .catch(error => {
-    console.error(error.message);
-  });
-```
-
-You can also provide a faxlineId to specify which faxline should be used otherwise the library will use the first faxlineId it receives from your list of registered faxlines.
-
-```typescript
-const fax: Fax = {
-  filename: '<path to your pdf-file>',
-  recipient: "<recipients's faxnumber>",
-  faxlineId: '<your faxlineId>',
-};
-```
-
-#### Disclaimer
+## Privacy Note
 
 This library sets the following headers for every request made to the sipgate REST-API to obtain statistics about versions currently in use and to differentiate sipgate.io-users from sipgate software:
 
