@@ -1,4 +1,5 @@
 export enum ErrorMessage {
+  VALIDATOR_INVALID_EXTENSION = 'Invalid extension',
   VALIDATOR_INVALID_EMAIL = 'Invalid email',
   VALIDATOR_INVALID_PASSWORD = 'Invalid password',
   VALIDATOR_INVALID_PHONE_NUMBER = 'Invalid Phone Number',
@@ -14,6 +15,10 @@ export enum ErrorMessage {
   FAX_NO_DATA_IN_FETCH_STATUS = 'No data in fetchFaxStatus',
   FAX_NOT_A_FAX = 'History item is not a fax',
   FAX_FETCH_STATUS_TIMED_OUT = 'Timeout expired while polling send status',
+
+  CALL_INVALID_EXTENSION = 'Invalid Call Extension',
+  CALL_INSUFFICIENT_FUNDS = 'Insufficient funds',
+  CALL_BAD_REQUEST = 'Invalid Call object',
 
   NETWORK_ERROR = 'getaddrinfo ENOTFOUND',
 }
