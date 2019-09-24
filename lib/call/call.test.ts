@@ -15,7 +15,7 @@ describe('Call Module', () => {
   });
 
   it('should init a call successfully', async () => {
-    const expectedSessionId = '1234564545454545';
+    const expectedSessionId = '123456';
     mockClient.post = jest.fn().mockImplementation(() => {
       return Promise.resolve({
         data: {
@@ -25,8 +25,8 @@ describe('Call Module', () => {
       });
     });
     const validExtension = 'e0';
-    const validCalleeNumber = '0123456789123';
-    const validCallerId = '0123456789';
+    const validCalleeNumber = '+49123456789123';
+    const validCallerId = '+49123456789';
 
     const clickToDial: ClickToDial = {
       callee: validCalleeNumber,
@@ -42,8 +42,8 @@ describe('Call Module', () => {
 
   it('should throw an exception for malformed extension', async () => {
     const invalidExtensionId = 'e-18';
-    const validCalleeNumber = '0123456789123';
-    const validCallerId = '0123456789';
+    const validCalleeNumber = '+49123456789123';
+    const validCallerId = '+49123456789';
 
     const clickToDial: ClickToDial = {
       callee: validCalleeNumber,
@@ -66,8 +66,8 @@ describe('Call Module', () => {
     });
 
     const validExtension = 'e8';
-    const validCalleeNumber = '0123456789123';
-    const validCallerId = '0123456789';
+    const validCalleeNumber = '+49123456789123';
+    const validCallerId = '+49123456789';
 
     const clickToDial: ClickToDial = {
       callee: validCalleeNumber,
