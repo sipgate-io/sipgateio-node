@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../errors';
-import { ValidationResult } from './validator';
+import { ValidationResult } from './validationResult';
 
 const validatePassword = (password: string): ValidationResult => {
   const passwordIsValid = password.length > 0 && !password.includes(' ');

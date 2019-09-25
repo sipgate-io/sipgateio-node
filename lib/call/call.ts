@@ -10,6 +10,7 @@ import {
   validateExtension,
   validatePhoneNumber,
 } from '../core/validator';
+
 import { CallModule } from './call.module';
 
 export const createCallModule = (httpClient: HttpClientModule): CallModule => ({

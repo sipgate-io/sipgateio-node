@@ -1,6 +1,6 @@
 import fileType from 'file-type';
 import { ErrorMessage } from '../errors';
-import { ValidationResult } from './validator';
+import { ValidationResult } from './validationResult';
 
 const validatePdfFileContent = (content: Buffer): ValidationResult => {
   const fileTypeResult = fileType(content);

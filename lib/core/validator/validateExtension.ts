@@ -1,8 +1,5 @@
 import { ErrorMessage } from '../errors';
-
-export type ValidationResult =
-  | { isValid: true }
-  | { isValid: false; cause: ErrorMessage };
+import { ValidationResult } from './validationResult';
 
 enum ExtensionType {
   APPLICATION = 'a',
