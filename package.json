@@ -9,6 +9,7 @@
     "test": "jest --watch",
     "test:ci": "jest",
     "sms-example": "ts-node examples/sms/sms.ts",
+    "fax-example": "ts-node examples/fax/fax.ts",
     "prepare": "tsc"
   },
   "repository": {
