@@ -23,16 +23,6 @@ enum ExtensionType {
   MOBILE = 'y',
 }
 
-const validatePassword = (password: string): ValidationResult => {
-  const passwordIsValid = password.length > 0 && !password.includes(' ');
-
-  if (!passwordIsValid) {
-    return { isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD };
-  }
-
-  return { isValid: true };
-};
-
 const validatePhoneNumber = (phoneNumber: string): ValidationResult => {
   const phoneNumberRegex: RegExp = new RegExp(/^\+?[0-9]+$/);
 
@@ -79,7 +69,6 @@ const validateExtension = (
 
 export {
   validateExtension,
-  validatePassword,
   validatePhoneNumber,
   validatePdfFileContent,
   ExtensionType,

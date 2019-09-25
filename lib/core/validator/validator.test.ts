@@ -1,25 +1,6 @@
 import { ErrorMessage } from '../errors';
-import {
-  validatePassword,
-  validatePdfFileContent,
-  validatePhoneNumber,
-} from './validator';
+import { validatePdfFileContent, validatePhoneNumber } from './validator';
 import validPDFBuffer from './validPDFBuffer';
-
-describe('ValidatePassword', () => {
-  test.each`
-    input                 | expected
-    ${'validPassword'}    | ${{ isValid: true }}
-    ${'invalid password'} | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
-    ${' '}                | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
-    ${''}                 | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD }}
-  `(
-    'validator returns $expected when $input is validated',
-    ({ input, expected }) => {
-      expect(validatePassword(input)).toEqual(expected);
-    },
-  );
-});
 
 describe('Phone validation', () => {
   test.each`
