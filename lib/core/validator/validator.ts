@@ -1,4 +1,3 @@
-import fileType from 'file-type';
 import { ErrorMessage } from '../errors';
 
 export type ValidationResult =
@@ -23,19 +22,6 @@ enum ExtensionType {
   MOBILE = 'y',
 }
 
-const validatePdfFileContent = (content: Buffer): ValidationResult => {
-  const fileTypeResult = fileType(content);
-
-  if (!fileTypeResult || fileTypeResult.mime !== 'application/pdf') {
-    return {
-      cause: ErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
-      isValid: false,
-    };
-  }
-
-  return { isValid: true };
-};
-
 const validateExtension = (
   extensionId: string,
   extensionType: ExtensionType,
@@ -54,4 +40,4 @@ const validateExtension = (
   return { isValid: true };
 };
 
-export { validateExtension, validatePdfFileContent, ExtensionType };
+export { validateExtension, ExtensionType };

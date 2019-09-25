@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../errors';
-import { validatePdfFileContent } from './validator';
+import { validatePdfFileContent } from './validatePdfFileContent';
 import validPDFBuffer from './validPDFBuffer';
 
 describe('PDF file validation', () => {
