@@ -1,7 +1,7 @@
 import fileType from 'file-type';
 import { ErrorMessage } from '../errors';
 
-type ValidationResult =
+export type ValidationResult =
   | { isValid: true }
   | { isValid: false; cause: ErrorMessage };
 
@@ -22,21 +22,6 @@ enum ExtensionType {
   EXTERNAL = 'x',
   MOBILE = 'y',
 }
-
-const validateEmail = (email: string): ValidationResult => {
-  const emailRegex: RegExp = new RegExp(
-    /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$/i,
-  );
-
-  if (!emailRegex.test(email)) {
-    return {
-      cause: ErrorMessage.VALIDATOR_INVALID_EMAIL,
-      isValid: false,
-    };
-  }
-
-  return { isValid: true };
-};
 
 const validatePassword = (password: string): ValidationResult => {
   const passwordIsValid = password.length > 0 && !password.includes(' ');
@@ -93,7 +78,6 @@ const validateExtension = (
 };
 
 export {
-  validateEmail,
   validateExtension,
   validatePassword,
   validatePhoneNumber,
