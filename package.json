@@ -19,7 +19,11 @@
   "files": [
     "/dist"
   ],
-  "author": "",
+  "author": {
+    "name": "sipgate GmbH",
+    "email": "io-team@sipgate.de",
+    "url": "https://sipgate.io"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/sipgate-io/sipgateio-node/issues"
