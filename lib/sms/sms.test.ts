@@ -92,10 +92,12 @@ describe('schedule sms', () => {
         status: 200,
       });
     });
+    await smsModule.send(message, date);
 
-    await smsModule.schedule(message, date);
-
-    expect(mockClient.post).toBeCalledWith('/sessions/sms', message);
+    expect(mockClient.post).toBeCalledWith('/sessions/sms', {
+      ...message,
+      sendAt: date.getTime() / 1000,
+    });
   });
 });
 

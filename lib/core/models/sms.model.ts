@@ -2,6 +2,12 @@ export interface ShortMessage {
   smsId: string;
   recipient: string;
   message: string;
+}
+
+export interface ShortMessageDTO {
+  smsId: string;
+  recipient: string;
+  message: string;
   sendAt?: number;
 }
 

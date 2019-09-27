@@ -3,6 +3,7 @@ import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient';
 import {
   ShortMessage,
+  ShortMessageDTO,
   SmsCallerId,
   SmsCallerIds,
   SmsExtension,
@@ -12,28 +13,30 @@ import { validatePhoneNumber } from '../core/validator';
 import { SMSModule } from './sms.module';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
-  async send(sms: ShortMessage): Promise<void> {
+  async send(sms: ShortMessage, sendAt?: Date): Promise<void> {
+    const smsDTO: ShortMessageDTO = { ...sms };
     const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
 
     if (!phoneNumberValidationResult.isValid) {
       throw phoneNumberValidationResult.cause;
     }
 
-    await client
-      .post('/sessions/sms', sms)
-      .catch(error => Promise.reject(handleError(error)));
-  },
-  async schedule(sms: ShortMessage, sendAt: Date): Promise<void> {
-    if (sendAt.getTime() < Date.now()) {
-      Promise.reject(new Error(ErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE));
-    }
-    if (sendAt.getTime() > Date.now() + 30 * 24 * 60 * 60 * 1000) {
-      // now + 30 days
-      return Promise.reject(new Error(ErrorMessage.SMS_TIME_TOO_FAR_IN_FUTURE));
+    if (sendAt) {
+      if (sendAt.getTime() < Date.now()) {
+        Promise.reject(new Error(ErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE));
+      }
+      if (sendAt.getTime() > Date.now() + 30 * 24 * 60 * 60 * 1000) {
+        // now + 30 days
+        return Promise.reject(
+          new Error(ErrorMessage.SMS_TIME_TOO_FAR_IN_FUTURE),
+        );
+      }
+      smsDTO.sendAt = sendAt.getTime() / 1000;
     }
 
-    sms.sendAt = sendAt.getTime() / 1000;
-    return this.send(sms);
+    await client
+      .post('/sessions/sms', smsDTO)
+      .catch(error => Promise.reject(handleError(error)));
   },
 });
 
