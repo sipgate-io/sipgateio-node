@@ -26,10 +26,11 @@ client.sms
     console.error(error.message);
   });
 
+const inTwoMinutes = new Date(Date.now() + 2 * 60 * 1000); // now + 2 min
 client.sms
-  .schedule(sms, new Date(Date.now() + 30 * 60 * 1000)) // now + 30 min
+  .send(sms, inTwoMinutes)
   .then(() => {
-    console.log('Sms sent.');
+    console.log(`Sms scheduled for ${inTwoMinutes}`);
   })
   .catch(error => {
     console.error(error.message);
