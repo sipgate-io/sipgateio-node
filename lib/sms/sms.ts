@@ -10,6 +10,7 @@ import {
   SmsExtensions,
 } from '../core/models';
 import { validatePhoneNumber } from '../core/validator';
+import { validateSendAt } from '../core/validator/validateSendAt';
 import { SMSModule } from './sms.module';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
@@ -22,14 +23,9 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
     }
 
     if (sendAt) {
-      if (sendAt.getTime() < Date.now()) {
-        Promise.reject(new Error(ErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE));
-      }
-      if (sendAt.getTime() > Date.now() + 30 * 24 * 60 * 60 * 1000) {
-        // now + 30 days
-        return Promise.reject(
-          new Error(ErrorMessage.SMS_TIME_TOO_FAR_IN_FUTURE),
-        );
+      const sendAtValidationResult = validateSendAt(sendAt);
+      if (!sendAtValidationResult.isValid) {
+        throw sendAtValidationResult.cause;
       }
       smsDTO.sendAt = sendAt.getTime() / 1000;
     }
