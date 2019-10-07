@@ -67,12 +67,15 @@ describe('SMS Module', () => {
 });
 
 describe('schedule sms', () => {
-  let smsModule: SMSModule;
+  let mockedSmsModule: SMSModule;
+  const instance = axios.create();
+  const smsModule = createSMSModule(instance);
+
   let mockClient: HttpClientModule;
   beforeAll(() => {
     // tslint:disable-next-line:no-object-literal-type-assertion
     mockClient = {} as HttpClientModule;
-    smsModule = createSMSModule(mockClient);
+    mockedSmsModule = createSMSModule(mockClient);
   });
 
   test('should use sentAt set', async () => {
@@ -92,12 +95,28 @@ describe('schedule sms', () => {
         status: 200,
       });
     });
-    await smsModule.send(message, date);
+    await mockedSmsModule.send(message, date);
 
     expect(mockClient.post).toBeCalledWith('/sessions/sms', {
       ...message,
       sendAt: date.getTime() / 1000,
     });
+  });
+
+  test('should throw an "SMS_TIME_MUST_BE_IN_FUTURE" error when using current date ', async () => {
+    const message: ShortMessage = {
+      message: 'ValidMessage',
+      recipient: '015739777777',
+      smsId: 'validExtensionId',
+    };
+
+    const date: Date = new Date(
+      new Date().setSeconds(new Date().getSeconds() - 5),
+    );
+
+    await expect(smsModule.send(message, date)).rejects.toThrow(
+      ErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE,
+    );
   });
 });
 
