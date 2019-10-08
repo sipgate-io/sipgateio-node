@@ -78,7 +78,7 @@ describe('schedule sms', () => {
     mockedSmsModule = createSMSModule(mockClient);
   });
 
-  test('should use sentAt set', async () => {
+  test('should use sendAt', async () => {
     const message: ShortMessage = {
       message: 'ValidMessage',
       recipient: '015739777777',
@@ -114,8 +114,38 @@ describe('schedule sms', () => {
       new Date().setSeconds(new Date().getSeconds() - 5),
     );
 
-    await expect(smsModule.send(message, date)).rejects.toThrow(
+    await expect(smsModule.send(message, date)).rejects.toEqual(
       ErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE,
+    );
+  });
+
+  test('should return an "SMS_TIME_TOO_FAR_IN_FUTURE" when providing a sendAt greater than 30 days in advance', async () => {
+    const message: ShortMessage = {
+      message: 'ValidMessage',
+      recipient: '015739777777',
+      smsId: 'validExtensionId',
+    };
+
+    const date: Date = new Date(
+      new Date().setSeconds(new Date().getSeconds() + 60 * 60 * 24 * 31),
+    );
+
+    await expect(smsModule.send(message, date)).rejects.toEqual(
+      ErrorMessage.SMS_TIME_TOO_FAR_IN_FUTURE,
+    );
+  });
+
+  test('should return an invalid date format error', async () => {
+    const message: ShortMessage = {
+      message: 'ValidMessage',
+      recipient: '015739777777',
+      smsId: 'validExtensionId',
+    };
+
+    const date: Date = new Date('08 bar 2015');
+
+    await expect(smsModule.send(message, date)).rejects.toEqual(
+      ErrorMessage.SMS_TIME_INVALID,
     );
   });
 });

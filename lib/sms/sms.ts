@@ -25,7 +25,7 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
     if (sendAt) {
       const sendAtValidationResult = validateSendAt(sendAt);
       if (!sendAtValidationResult.isValid) {
-        throw new Error(sendAtValidationResult.cause);
+        throw sendAtValidationResult.cause;
       }
       smsDTO.sendAt = sendAt.getTime() / 1000;
     }

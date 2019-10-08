@@ -9,6 +9,7 @@ export enum ErrorMessage {
   SMS_INVALID_EXTENSION = 'Invalid SMS extension',
   SMS_TIME_MUST_BE_IN_FUTURE = 'Time must be in future',
   SMS_TIME_TOO_FAR_IN_FUTURE = 'Please select a date no further than 30 days in the future',
+  SMS_TIME_INVALID = 'Invalid date format provided',
 
   FAX_NOT_FOUND = 'Fax was not found',
   FAX_COULD_NOT_BE_SENT = 'Fax could not be sent',
