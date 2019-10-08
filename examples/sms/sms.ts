@@ -9,7 +9,7 @@ const client = createClient(username, password);
 
 const recipient = process.env.SIPGATE_SMS_RECIPIENT || '';
 const smsExtension = process.env.SIPGATE_SMS_EXTENSION || '';
-const message = 'This is a test message';
+const message = 'This is a test message.';
 
 const sms: ShortMessage = {
   message,
@@ -23,7 +23,7 @@ client.sms
     console.log('Sms sent.');
   })
   .catch(error => {
-    console.error(error.message);
+    console.error(error);
   });
 
 const inTwoMinutes = new Date(Date.now() + 2 * 60 * 1000); // now + 2 min
@@ -33,5 +33,5 @@ client.sms
     console.log(`Sms scheduled for ${inTwoMinutes}`);
   })
   .catch(error => {
-    console.error(error.message);
+    console.error(error);
   });
