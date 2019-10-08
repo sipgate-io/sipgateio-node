@@ -6,6 +6,7 @@ export enum ErrorMessage {
 
   VALIDATOR_INVALID_PDF_MIME_TYPE = 'Invalid PDF File',
 
+  SMS_INVALID_MESSAGE = 'Invalid SMS message',
   SMS_INVALID_EXTENSION = 'Invalid SMS extension',
   SMS_TIME_MUST_BE_IN_FUTURE = 'Time must be in future',
   SMS_TIME_TOO_FAR_IN_FUTURE = 'Please select a date no further than 30 days in the future',

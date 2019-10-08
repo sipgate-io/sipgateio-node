@@ -21,7 +21,9 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
     if (!phoneNumberValidationResult.isValid) {
       throw phoneNumberValidationResult.cause;
     }
-
+    if (sms.message === '') {
+      throw ErrorMessage.SMS_INVALID_MESSAGE;
+    }
     if (sendAt) {
       const sendAtValidationResult = validateSendAt(sendAt);
       if (!sendAtValidationResult.isValid) {

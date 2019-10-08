@@ -64,6 +64,28 @@ describe('SMS Module', () => {
       ErrorMessage.NETWORK_ERROR,
     );
   });
+
+  test('It sends SMS with no recipient', async () => {
+    const message: ShortMessage = {
+      message: 'ValidMessage',
+      recipient: '',
+      smsId: 'validExtensionId',
+    };
+    await expect(smsModule.send(message)).rejects.toEqual(
+      ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER,
+    );
+  });
+
+  test('It sends SMS with empty message', async () => {
+    const message: ShortMessage = {
+      message: '',
+      recipient: '015739777777',
+      smsId: 'validExtensionId',
+    };
+    await expect(smsModule.send(message)).rejects.toEqual(
+      ErrorMessage.SMS_INVALID_MESSAGE,
+    );
+  });
 });
 
 describe('schedule sms', () => {
