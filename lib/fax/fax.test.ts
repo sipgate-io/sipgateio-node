@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/ban-ts-ignore: 0 */
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
 import { FaxDTO } from '../core/models';
@@ -8,7 +9,6 @@ describe('Faxline ID List', () => {
   let mockClient: HttpClientModule;
 
   beforeAll(() => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
     mockClient = {} as HttpClientModule;
   });
 
@@ -63,11 +63,11 @@ describe('SendFax', () => {
   let mockClient: HttpClientModule;
 
   beforeAll(() => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
     mockClient = {} as HttpClientModule;
 
     // Used to make setTimeout call the passed callback immediately
     // @ts-ignore
+    // eslint-disable-next-line
     global.setTimeout = fn => fn();
   });
 

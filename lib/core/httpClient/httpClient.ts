@@ -1,3 +1,4 @@
+/* eslint  @typescript-eslint/no-explicit-any: 0 */
 import axios from 'axios';
 import btoa from 'btoa';
 import pjson from 'pjson';

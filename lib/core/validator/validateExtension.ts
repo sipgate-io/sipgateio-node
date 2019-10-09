@@ -23,9 +23,7 @@ const validateExtension = (
   extensionId: string,
   extensionType: ExtensionType,
 ): ValidationResult => {
-  const extensionRegEx: RegExp = new RegExp(
-    `^${extensionType}(0|[1-9][0-9]*)$`,
-  );
+  const extensionRegEx = new RegExp(`^${extensionType}(0|[1-9][0-9]*)$`);
 
   if (!extensionRegEx.test(extensionId)) {
     return {

@@ -68,6 +68,7 @@ export const containsPhoneNumber = (
   return foundCallerId ? foundCallerId.verified : false;
 };
 
+// eslint-disable-next-line
 const handleError = (e: any) => {
   if (
     e.message === 'Network Error' ||

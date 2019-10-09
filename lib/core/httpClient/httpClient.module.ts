@@ -1,3 +1,4 @@
+/* eslint  @typescript-eslint/no-explicit-any: 0 */
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type HttpRequestConfig = AxiosRequestConfig;

@@ -1,6 +1,7 @@
+import { HttpError } from '../httpClient';
 import { AuthenticationError } from './AuthenticationError';
 
-export default (error: any): Error => {
+export default (error: HttpError): Error => {
   if (!error.response) {
     return error;
   }

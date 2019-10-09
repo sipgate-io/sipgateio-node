@@ -1,6 +1,6 @@
 import { ErrorMessage } from '../core/errors';
 import handleCoreError from '../core/errors/handleCoreError';
-import { HttpClientModule, HttpError } from '../core/httpClient';
+import { HttpClientModule, HttpError, HttpResponse } from '../core/httpClient';
 import {
   Fax,
   FaxDTO,
@@ -52,7 +52,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
   },
 });
 
-const generateFilename = () => {
+const generateFilename = (): string => {
   const timestamp = new Date()
     .toJSON()
     .replace(/T/g, '_')
@@ -74,7 +74,7 @@ const getFirstFaxLineId = async (
 const fetchFaxStatus = async (
   client: HttpClientModule,
   sessionId: string,
-): Promise<any> => {
+): Promise<HttpResponse | undefined> => {
   let untilTimeout = POLLING_TIMEOUT;
 
   while (untilTimeout > 0) {
@@ -114,7 +114,7 @@ export const getUserFaxLines = async (
     .catch(error => Promise.reject(handleError(error)));
 };
 
-const sleep = async (time: number) =>
+const sleep = async (time: number): Promise<NodeJS.Timeout> =>
   new Promise(resolve => setTimeout(resolve, time));
 
 const handleError = (error: HttpError): Error => {

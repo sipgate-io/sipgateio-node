@@ -2,7 +2,7 @@ import { ErrorMessage } from '../errors';
 import { ValidationResult } from './validationResult';
 
 const validatePhoneNumber = (phoneNumber: string): ValidationResult => {
-  const phoneNumberRegex: RegExp = new RegExp(/^\+?[0-9]+$/);
+  const phoneNumberRegex = new RegExp(/^\+?[0-9]+$/);
 
   if (!phoneNumberRegex.test(phoneNumber)) {
     return {

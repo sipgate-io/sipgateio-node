@@ -4,7 +4,7 @@
   "description": "The sipgate.io Node.js library",
   "main": "dist/index.js",
   "scripts": {
-    "lint": "tslint --project tsconfig.json",
+    "lint": "eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
     "format": "prettier --write **/*.{ts,json,md}",
     "test": "jest --watch",
     "test:ci": "jest",
@@ -37,7 +37,7 @@
   "lint-staged": {
     "*.{ts}": [
       "prettier --write",
-      "tslint",
+      "eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
       "git add"
     ],
     "*.{json,md}": [
@@ -49,6 +49,16 @@
     "@types/btoa": "^1.2.3",
     "@types/jest": "^24.0.17",
     "@types/nock": "^10.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "husky": "^3.0.3",
     "jest": "^24.8.0",
     "lint-staged": "^9.2.1",
