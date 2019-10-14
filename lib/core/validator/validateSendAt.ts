@@ -16,7 +16,7 @@ const validateSendAt = (sendAt: Date): ValidationResult => {
     };
   }
 
-  if (Number.isNaN(Date.parse(sendAt.toDateString()))) {
+  if (Number.isNaN(sendAt.getTime())) {
     return {
       cause: ErrorMessage.SMS_TIME_INVALID,
       isValid: false,
