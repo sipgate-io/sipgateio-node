@@ -1,8 +1,9 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import btoa from 'btoa';
+import { detect as detectPlatform } from 'detect-browser';
 import nock from 'nock';
-import pjson from 'pjson';
+import packageJson from '../../../package.json';
 import { createHttpClient } from './httpClient';
 
 describe('Test header', () => {
@@ -29,7 +30,7 @@ describe('Test header', () => {
   test('x-header', async () => {
     const expectedData = 'test';
     const expectedXHeaderKey = 'X-Sipgate-Client';
-    const expectedXHeaderValue = 'lib-node';
+    const expectedXHeaderValue = JSON.stringify(detectPlatform());
 
     nock(baseUrl)
       .matchHeader(expectedXHeaderKey, expectedXHeaderValue)
@@ -45,7 +46,7 @@ describe('Test header', () => {
   test('test x-sipgate-client header', async () => {
     const expectedData = 'test';
     const expectedXVersionHeaderKey = 'X-Sipgate-Version';
-    const expectedXVersionHeaderValue = pjson.version;
+    const expectedXVersionHeaderValue = packageJson.version;
 
     nock(baseUrl)
       .matchHeader(expectedXVersionHeaderKey, expectedXVersionHeaderValue)
