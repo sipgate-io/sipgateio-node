@@ -6,9 +6,10 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "format": "prettier --write **/*.{ts,json,md}",
-    "test": "jest --watch",
-    "test:ci": "jest",
-    "browserify": "browserify -r ./lib/index.ts:sipgate-io -p tsify > sipgate-io.js",
+    "test:dev": "jest ./lib --env=node --watch",
+    "test:unit": "jest ./lib --env=node",
+    "test:integration": "jest ./bundle --env=jsdom",
+    "build": "browserify -r ./lib/index.ts:sipgate-io -p tsify > ./bundle/sipgate-io.js",
     "prepare": "tsc"
   },
   "repository": {
@@ -30,7 +31,7 @@
   "homepage": "https://github.com/sipgate-io/sipgateio-node#readme",
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test:ci && lint-staged"
+      "pre-commit": "npm run test:unit && lint-staged"
     }
   },
   "lint-staged": {
