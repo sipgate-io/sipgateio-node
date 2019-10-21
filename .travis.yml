@@ -9,5 +9,6 @@ os:
 install:
   - npm install
 script:
+  - npm run bundle
   - npm run test:unit
   - npm run test:integration

@@ -9,7 +9,7 @@
     "test:dev": "jest ./lib --env=node --watch",
     "test:unit": "jest ./lib --env=node",
     "test:integration": "jest ./bundle --env=jsdom",
-    "build": "browserify -r ./lib/index.ts:sipgate-io -p tsify -g uglifyify > ./bundle/sipgate-io.js",
+    "bundle": "browserify -r ./lib/index.ts:sipgate-io -p tsify -g uglifyify > ./bundle/sipgate-io.js",
     "prepare": "tsc"
   },
   "repository": {
