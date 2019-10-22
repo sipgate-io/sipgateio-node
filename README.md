@@ -8,9 +8,17 @@ The sipgate.io Node.js library
 - [Examples](#examples)
 - [Privacy Note](#privacy-note)
 
+#Get Started
+
 ## Download
 
 `git clone https://github.com/sipgate-io/sipgateio-node`
+
+## Installation
+
+For use in node applications you can install with - `npm install https://github.com/sipgate-io/sipgateio-node`
+
+For use in client side web applications get the JavaScript bundle from [github releases](#releases) and import in your project.
 
 ## Available Functionality
 
