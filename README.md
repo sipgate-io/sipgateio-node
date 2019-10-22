@@ -8,7 +8,7 @@ The sipgate.io Node.js library
 - [Examples](#examples)
 - [Privacy Note](#privacy-note)
 
-#Get Started
+# Get Started
 
 ## Download
 
