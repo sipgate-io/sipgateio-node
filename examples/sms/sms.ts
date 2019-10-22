@@ -1,4 +1,4 @@
-// tslint:disable no-console
+
 import { ShortMessage } from '../../lib/core/models';
 import { createClient } from '../../lib/core/sipgateClient';
 

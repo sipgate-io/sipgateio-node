@@ -1,4 +1,4 @@
-// tslint:disable no-console
+
 import { createClient } from '../../lib/core/sipgateClient';
 
 const password = process.env.SIPGATE_PASSWORD || '';

@@ -9,7 +9,6 @@ describe('Call Module', () => {
   let mockClient: HttpClientModule;
 
   beforeEach(() => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
     mockClient = {} as HttpClientModule;
     callModule = createCallModule(mockClient);
   });

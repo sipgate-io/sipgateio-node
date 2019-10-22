@@ -21,7 +21,7 @@ describe('Test header', () => {
       .reply(201, expectedData);
 
     const response = await httpClient.get('/test');
-    const data = response.data;
+    const { data } = response;
 
     expect(data).toEqual(expectedData);
   });
@@ -37,7 +37,7 @@ describe('Test header', () => {
       .reply(201, expectedData);
 
     const response = await httpClient.get('/test');
-    const data = response.data;
+    const { data } = response;
 
     expect(data).toEqual(expectedData);
   });
@@ -53,7 +53,7 @@ describe('Test header', () => {
       .reply(201, expectedData);
 
     const response = await httpClient.get('/test');
-    const data = response.data;
+    const { data } = response;
 
     expect(data).toEqual(expectedData);
   });

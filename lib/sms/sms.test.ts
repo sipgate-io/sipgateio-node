@@ -73,7 +73,6 @@ describe('schedule sms', () => {
 
   let mockClient: HttpClientModule;
   beforeAll(() => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
     mockClient = {} as HttpClientModule;
     mockedSmsModule = createSMSModule(mockClient);
   });
@@ -166,7 +165,6 @@ describe('SMS Extension List', () => {
       status: 200,
     };
 
-    // tslint:disable-next-line:no-object-literal-type-assertion
     const mockedClient = {} as HttpClientModule;
 
     mockedClient.get = jest
@@ -216,7 +214,6 @@ describe('CallerIds for SMS Extension', () => {
       id: 's0',
     };
 
-    // tslint:disable-next-line:no-object-literal-type-assertion
     const mockedClient = {} as HttpClientModule;
 
     mockedClient.get = jest

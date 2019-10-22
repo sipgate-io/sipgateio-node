@@ -5,7 +5,6 @@ let mockClient: HttpClientModule;
 
 describe('UserHelper Test', () => {
   beforeAll(() => {
-    // tslint:disable-next-line:no-object-literal-type-assertion
     mockClient = {} as HttpClientModule;
   });
 
