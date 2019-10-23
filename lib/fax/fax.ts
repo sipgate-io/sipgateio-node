@@ -11,15 +11,18 @@ import {
 	SendFaxSessionResponse,
 	UserInfo
 } from '../core/models';
+import { FaxModule } from './fax.module';
+import { HttpClientModule, HttpError, HttpResponse } from '../core/httpClient';
 import { getUserInfo } from '../core/userHelper';
 import { validatePdfFileContent } from '../core/validator';
-import { FaxModule } from './fax.module';
+import handleCoreError from '../core/errors/handleCoreError';
 
 const POLLING_INTERVAL = 5000;
 const POLLING_TIMEOUT = 30 * 60 * 1000;
 
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
-	async send(fax: Fax): Promise<void> {
+	async send(userFax: Fax): Promise<void> {
+		const fax = userFax;
 		const fileContentValidationResult = validatePdfFileContent(fax.fileContent);
 
 		if (!fileContentValidationResult.isValid) {
