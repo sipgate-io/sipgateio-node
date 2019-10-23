@@ -69,8 +69,7 @@ const getFirstFaxLineId = async (
 	userInfo: UserInfo
 ): Promise<string> => {
 	const { sub } = userInfo;
-	const faxlines = await getUserFaxLines(client, sub);
-	const { id } = faxlines[0];
+	const [{ id }] = await getUserFaxLines(client, sub);
 	return id;
 };
 
