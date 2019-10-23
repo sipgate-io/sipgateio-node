@@ -68,7 +68,7 @@ describe('SendFax', () => {
 		// Used to make setTimeout call the passed callback immediately
 		// @ts-ignore
 		// eslint-disable-next-line
-		global.setTimeout = fn => fn();
+    global.setTimeout = fn => fn();
 	});
 
 	test('fax is sent', async () => {

@@ -5,7 +5,7 @@
 	"main": "dist/index.js",
 	"scripts": {
 		"lint": "eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
-		"format": "prettier --write **/*.{ts}",
+		"format": "prettier --write **/**.ts",
 		"test:dev": "jest ./lib --env=node --watch",
 		"test:unit": "jest ./lib --env=node",
 		"test:integration": "jest ./bundle --env=jsdom",

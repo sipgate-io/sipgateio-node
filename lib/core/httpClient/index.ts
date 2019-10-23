@@ -1,2 +1,2 @@
-export * from './httpClient';
-export * from './httpClient.module';
+export * from "./httpClient";
+export * from "./httpClient.module";

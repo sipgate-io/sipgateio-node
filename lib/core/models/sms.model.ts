@@ -1,33 +1,33 @@
 export interface ShortMessage {
-	smsId: string;
-	recipient: string;
-	message: string;
+  smsId: string;
+  recipient: string;
+  message: string;
 }
 
 export interface ShortMessageDTO {
-	smsId: string;
-	recipient: string;
-	message: string;
-	sendAt?: number;
+  smsId: string;
+  recipient: string;
+  message: string;
+  sendAt?: number;
 }
 
 export interface SmsExtension {
-	id: string;
-	alias: string;
-	callerId: string;
+  id: string;
+  alias: string;
+  callerId: string;
 }
 
 export interface SmsExtensions {
-	items: SmsExtension[];
+  items: SmsExtension[];
 }
 
 export interface SmsCallerId {
-	id: number;
-	phonenumber: string;
-	verified: boolean;
-	defaultNumber: boolean;
+  id: number;
+  phonenumber: string;
+  verified: boolean;
+  defaultNumber: boolean;
 }
 
 export interface SmsCallerIds {
-	items: SmsCallerId[];
+  items: SmsCallerId[];
 }

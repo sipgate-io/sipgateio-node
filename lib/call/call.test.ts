@@ -1,8 +1,8 @@
-import { CallModule } from './call.module';
-import { ClickToDial } from '../core/models/call.model';
-import { createCallModule } from './call';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
+import { ClickToDial } from '../core/models/call.model';
+import { createCallModule } from './call';
+import { CallModule } from './call.module';
 
 describe('Call Module', () => {
 	let callModule: CallModule;
