@@ -1,6 +1,6 @@
 import { ConnectionError, ErrorMessage, ExtensionError } from '../core/errors';
-import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient';
+import { SMSModule } from './sms.module';
 import {
 	ShortMessage,
 	ShortMessageDTO,
@@ -11,7 +11,7 @@ import {
 } from '../core/models';
 import { validatePhoneNumber } from '../core/validator';
 import { validateSendAt } from '../core/validator/validateSendAt';
-import { SMSModule } from './sms.module';
+import handleCoreError from '../core/errors/handleCoreError';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 	async send(sms: ShortMessage, sendAt?: Date): Promise<void> {

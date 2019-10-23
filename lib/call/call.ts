@@ -1,15 +1,15 @@
-import { ErrorMessage } from '../core/errors';
-import handleCoreError from '../core/errors/handleCoreError';
-import { HttpClientModule, HttpError } from '../core/httpClient';
 import {
 	ClickToDial,
 	InitiateNewCallSessionResponse
 } from '../core/models/call.model';
+import { ErrorMessage } from '../core/errors';
 import {
 	ExtensionType,
 	validateExtension,
 	validatePhoneNumber
 } from '../core/validator';
+import { HttpClientModule, HttpError } from '../core/httpClient';
+import handleCoreError from '../core/errors/handleCoreError';
 
 import { CallModule } from './call.module';
 

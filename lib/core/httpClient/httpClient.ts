@@ -1,77 +1,81 @@
 /* eslint  @typescript-eslint/no-explicit-any: 0 */
-import axios from "axios";
-import btoa from "btoa";
-import { detect as detectPlatform } from "detect-browser";
-import packageJson from "../../../package.json";
-import { validateEmail, validatePassword } from "../validator";
+import { detect as detectPlatform } from 'detect-browser';
+import { validateEmail, validatePassword } from '../validator';
+import axios from 'axios';
+import btoa from 'btoa';
+import packageJson from '../../../package.json';
 
-import { HttpClientModule, HttpRequestConfig, HttpResponse } from "./httpClient.module";
+import {
+	HttpClientModule,
+	HttpRequestConfig,
+	HttpResponse
+} from './httpClient.module';
 
 export const createHttpClient = (
-  username: string,
-  password: string
+	username: string,
+	password: string
 ): HttpClientModule => {
-  const emailValidationResult = validateEmail(username);
+	const emailValidationResult = validateEmail(username);
 
-  if (!emailValidationResult.isValid) {
-    throw emailValidationResult.cause;
-  }
+	if (!emailValidationResult.isValid) {
+		throw emailValidationResult.cause;
+	}
 
-  const passwordValidationResult = validatePassword(password);
+	const passwordValidationResult = validatePassword(password);
 
-  if (!passwordValidationResult.isValid) {
-    throw passwordValidationResult.cause;
-  }
+	if (!passwordValidationResult.isValid) {
+		throw passwordValidationResult.cause;
+	}
 
-  const platformInfo = detectPlatform();
+	const platformInfo = detectPlatform();
 
-  const basicAuth = btoa(`${username}:${password}`);
-  const client = axios.create({
-    baseURL: "https://api.sipgate.com/v2",
-    headers: {
-      Authorization: `Basic ${basicAuth}`,
-      "X-Sipgate-Client": JSON.stringify(platformInfo),
-      "X-Sipgate-Version": packageJson.version
-    }
-  });
+	const basicAuth = btoa(`${username}:${password}`);
+	const client = axios.create({
+		baseURL: 'https://api.sipgate.com/v2',
+		headers: {
+			Authorization: `Basic ${basicAuth}`,
+			'X-Sipgate-Client': JSON.stringify(platformInfo),
+			'X-Sipgate-Version': packageJson.version
+		}
+	});
 
-  return {
-    delete<T = any, R = HttpResponse<T>>(
-      url: string,
-      config?: HttpRequestConfig
-    ): Promise<R> {
-      return client.delete(url, config);
-    },
+	return {
+		delete<T = any, R = HttpResponse<T>>(
+			url: string,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.delete(url, config);
+		},
 
-    get<T = any, R = HttpResponse<T>>(
-      url: string,
-      config?: HttpRequestConfig
-    ): Promise<R> {
-      return client.get(url, config);
-    },
+		get<T = any, R = HttpResponse<T>>(
+			url: string,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.get(url, config);
+		},
 
-    patch<T = any, R = HttpResponse<T>>(
-      url: string,
-      data?: any,
-      config?: HttpRequestConfig
-    ): Promise<R> {
-      return client.patch(url, data, config);
-    },
+		patch<T = any, R = HttpResponse<T>>(
+			url: string,
+			data?: any,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.patch(url, data, config);
+		},
 
-    post<T = any, R = HttpResponse<T>>(
-      url: string,
-      data?: any,
-      config?: HttpRequestConfig
-    ): Promise<R> {
-      return client.post(url, data, config);
-    },
+		post<T = any, R = HttpResponse<T>>(
+			url: string,
+			data?: any,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.post(url, data, config);
+		},
 
-    put<T = any, R = HttpResponse<T>>(
-      url: string,
-      data?: any,
-      config?: HttpRequestConfig
-    ): Promise<R> {
-      return client.put(url, data, config);
-    }
-  };
+		put<T = any, R = HttpResponse<T>>(
+			url: string,
+			data?: any,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.put(url, data, config);
+		}
+	};
 };

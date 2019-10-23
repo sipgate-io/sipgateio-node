@@ -1,9 +1,9 @@
 /* eslint @typescript-eslint/ban-ts-ignore: 0 */
 import { ErrorMessage } from '../core/errors';
-import { HttpClientModule } from '../core/httpClient';
 import { FaxDTO } from '../core/models';
-import validPDFBuffer from '../core/validator/validPDFBuffer';
+import { HttpClientModule } from '../core/httpClient';
 import { createFaxModule, getUserFaxLines } from './fax';
+import validPDFBuffer from '../core/validator/validPDFBuffer';
 
 describe('Faxline ID List', () => {
 	let mockClient: HttpClientModule;
@@ -18,7 +18,7 @@ describe('Faxline ID List', () => {
 			data: {
 				items: [
 					{
-						alias: "Alexander Bain's fax",
+						alias: 'Alexander Bains fax',
 						canReceive: false,
 						canSend: false,
 						id: 'f0',
@@ -68,7 +68,7 @@ describe('SendFax', () => {
 		// Used to make setTimeout call the passed callback immediately
 		// @ts-ignore
 		// eslint-disable-next-line
-    global.setTimeout = fn => fn();
+		global.setTimeout = fn => fn();
 	});
 
 	test('fax is sent', async () => {

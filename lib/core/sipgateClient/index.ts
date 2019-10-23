@@ -1,1 +1,1 @@
-export * from "./sipgateClient";
+export * from './sipgateClient';

@@ -1,6 +1,4 @@
 import { ErrorMessage } from '../core/errors';
-import handleCoreError from '../core/errors/handleCoreError';
-import { HttpClientModule, HttpError, HttpResponse } from '../core/httpClient';
 import {
 	Fax,
 	FaxDTO,

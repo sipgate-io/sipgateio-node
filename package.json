@@ -36,7 +36,7 @@
 	},
 	"lint-staged": {
 		"*.{ts}": [
-			"prettier --write",
+			"prettier --write **/**.ts",
 			"eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
 			"git add"
 		],
@@ -47,30 +47,32 @@
 	},
 	"devDependencies": {
 		"@types/btoa": "^1.2.3",
+		"@types/detect-browser": "^4.0.0",
 		"@types/jest": "^24.0.17",
 		"@types/nock": "^10.0.3",
-		"@types/detect-browser": "^4.0.0",
-		"axios-mock-adapter": "^1.17.0",
-		"browserify": "^16.5.0",
 		"@typescript-eslint/eslint-plugin": "^2.3.3",
 		"@typescript-eslint/parser": "^2.3.3",
+		"axios-mock-adapter": "^1.17.0",
+		"browserify": "^16.5.0",
 		"eslint": "^6.5.1",
 		"eslint-config-prettier": "^6.4.0",
 		"eslint-config-standard": "^14.1.0",
+		"eslint-plugin-autofix": "0.0.9",
 		"eslint-plugin-import": "^2.18.2",
 		"eslint-plugin-node": "^10.0.0",
 		"eslint-plugin-prettier": "^3.1.1",
 		"eslint-plugin-promise": "^4.2.1",
+		"eslint-plugin-sort-imports-es6-autofix": "^0.5.0",
 		"eslint-plugin-standard": "^4.0.1",
 		"husky": "^3.0.3",
 		"jest": "^24.8.0",
 		"lint-staged": "^9.2.1",
 		"nock": "^10.0.6",
+		"prettier": "^1.18.2",
 		"ts-jest": "^24.0.2",
 		"tsify": "^4.0.1",
-		"uglifyify": "^5.0.2",
-		"prettier": "^1.18.2",
-		"typescript": "^3.5.3"
+		"typescript": "^3.5.3",
+		"uglifyify": "^5.0.2"
 	},
 	"dependencies": {
 		"axios": "^0.19.0",

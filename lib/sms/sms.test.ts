@@ -1,7 +1,6 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
+import { SMSModule } from './sms.module';
 import {
 	ShortMessage,
 	SmsCallerId,
@@ -14,7 +13,8 @@ import {
 	getSmsCallerIds,
 	getUserSMSExtensions
 } from './sms';
-import { SMSModule } from './sms.module';
+import MockAdapter from 'axios-mock-adapter';
+import axios from 'axios';
 
 describe('SMS Module', () => {
 	const instance = axios.create();
@@ -178,7 +178,7 @@ describe('SMS Extension List', () => {
 			data: {
 				items: [
 					{
-						alias: "Alexander Bain's fax",
+						alias: '"Alexander Bain\'s fax"',
 						callerId: '+94123456789',
 						id: 'f0'
 					}
