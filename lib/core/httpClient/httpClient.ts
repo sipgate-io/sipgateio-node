@@ -1,6 +1,7 @@
 import axios from 'axios';
 import btoa from 'btoa';
-import pjson from 'pjson';
+import { detect as detectPlatform } from 'detect-browser';
+import packageJson from '../../../package.json';
 import { validateEmail, validatePassword } from '../validator';
 
 import {
@@ -25,13 +26,15 @@ export const createHttpClient = (
     throw passwordValidationResult.cause;
   }
 
+  const platformInfo = detectPlatform();
+
   const basicAuth = btoa(`${username}:${password}`);
   const client = axios.create({
     baseURL: 'https://api.sipgate.com/v2',
     headers: {
       Authorization: `Basic ${basicAuth}`,
-      'X-Sipgate-Client': 'lib-node',
-      'X-Sipgate-Version': pjson.version,
+      'X-Sipgate-Client': JSON.stringify(platformInfo),
+      'X-Sipgate-Version': packageJson.version,
     },
   });
 

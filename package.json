@@ -6,10 +6,10 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "format": "prettier --write **/*.{ts,json,md}",
-    "test": "jest --watch",
-    "test:ci": "jest",
-    "sms-example": "ts-node examples/sms/sms.ts",
-    "fax-example": "ts-node examples/fax/fax.ts",
+    "test:dev": "jest ./lib --env=node --watch",
+    "test:unit": "jest ./lib --env=node",
+    "test:integration": "jest ./bundle --env=jsdom",
+    "bundle": "browserify -r ./lib/index.ts:sipgate-io -p tsify -g uglifyify > ./bundle/sipgate-io.js",
     "prepare": "tsc"
   },
   "repository": {
@@ -31,7 +31,7 @@
   "homepage": "https://github.com/sipgate-io/sipgateio-node#readme",
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test:ci && lint-staged"
+      "pre-commit": "npm run test:unit && lint-staged"
     }
   },
   "lint-staged": {
@@ -46,24 +46,28 @@
     ]
   },
   "devDependencies": {
-    "@types/btoa": "^1.2.3",
     "@types/jest": "^24.0.17",
     "@types/nock": "^10.0.3",
+    "@types/btoa": "^1.2.3",
+    "@types/detect-browser": "^4.0.0",
+    "axios-mock-adapter": "^1.17.0",
+    "browserify": "^16.5.0",
     "husky": "^3.0.3",
     "jest": "^24.8.0",
     "lint-staged": "^9.2.1",
-    "prettier": "^1.18.2",
+    "nock": "^10.0.6",
     "ts-jest": "^24.0.2",
+    "tsify": "^4.0.1",
+    "uglifyify": "^5.0.2",
+    "prettier": "^1.18.2",
+    "typescript": "^3.5.3",
     "tslint": "^5.18.0",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.3"
+    "tslint-config-prettier": "^1.18.0"
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "axios-mock-adapter": "^1.17.0",
     "btoa": "latest",
-    "file-type": "^12.2.0",
-    "nock": "^10.0.6",
-    "pjson": "^1.0.9"
+    "detect-browser": "^4.7.0",
+    "file-type": "^12.2.0"
   }
 }
