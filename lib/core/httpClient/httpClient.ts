@@ -1,78 +1,81 @@
 /* eslint  @typescript-eslint/no-explicit-any: 0 */
 import axios from 'axios';
 import btoa from 'btoa';
-import pjson from 'pjson';
+import { detect as detectPlatform } from 'detect-browser';
+import packageJson from '../../../package.json';
 import { validateEmail, validatePassword } from '../validator';
 
 import {
-  HttpClientModule,
-  HttpRequestConfig,
-  HttpResponse,
+	HttpClientModule,
+	HttpRequestConfig,
+	HttpResponse
 } from './httpClient.module';
 
 export const createHttpClient = (
-  username: string,
-  password: string,
+	username: string,
+	password: string
 ): HttpClientModule => {
-  const emailValidationResult = validateEmail(username);
+	const emailValidationResult = validateEmail(username);
 
-  if (!emailValidationResult.isValid) {
-    throw emailValidationResult.cause;
-  }
+	if (!emailValidationResult.isValid) {
+		throw emailValidationResult.cause;
+	}
 
-  const passwordValidationResult = validatePassword(password);
+	const passwordValidationResult = validatePassword(password);
 
-  if (!passwordValidationResult.isValid) {
-    throw passwordValidationResult.cause;
-  }
+	if (!passwordValidationResult.isValid) {
+		throw passwordValidationResult.cause;
+	}
 
-  const basicAuth = btoa(`${username}:${password}`);
-  const client = axios.create({
-    baseURL: 'https://api.sipgate.com/v2',
-    headers: {
-      Authorization: `Basic ${basicAuth}`,
-      'X-Sipgate-Client': 'lib-node',
-      'X-Sipgate-Version': pjson.version,
-    },
-  });
+	const platformInfo = detectPlatform();
 
-  return {
-    delete<T = any, R = HttpResponse<T>>(
-      url: string,
-      config?: HttpRequestConfig,
-    ): Promise<R> {
-      return client.delete(url, config);
-    },
+	const basicAuth = btoa(`${username}:${password}`);
+	const client = axios.create({
+		baseURL: 'https://api.sipgate.com/v2',
+		headers: {
+			Authorization: `Basic ${basicAuth}`,
+			'X-Sipgate-Client': JSON.stringify(platformInfo),
+			'X-Sipgate-Version': packageJson.version
+		}
+	});
 
-    get<T = any, R = HttpResponse<T>>(
-      url: string,
-      config?: HttpRequestConfig,
-    ): Promise<R> {
-      return client.get(url, config);
-    },
+	return {
+		delete<T = any, R = HttpResponse<T>>(
+			url: string,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.delete(url, config);
+		},
 
-    patch<T = any, R = HttpResponse<T>>(
-      url: string,
-      data?: any,
-      config?: HttpRequestConfig,
-    ): Promise<R> {
-      return client.patch(url, data, config);
-    },
+		get<T = any, R = HttpResponse<T>>(
+			url: string,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.get(url, config);
+		},
 
-    post<T = any, R = HttpResponse<T>>(
-      url: string,
-      data?: any,
-      config?: HttpRequestConfig,
-    ): Promise<R> {
-      return client.post(url, data, config);
-    },
+		patch<T = any, R = HttpResponse<T>>(
+			url: string,
+			data?: any,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.patch(url, data, config);
+		},
 
-    put<T = any, R = HttpResponse<T>>(
-      url: string,
-      data?: any,
-      config?: HttpRequestConfig,
-    ): Promise<R> {
-      return client.put(url, data, config);
-    },
-  };
+		post<T = any, R = HttpResponse<T>>(
+			url: string,
+			data?: any,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.post(url, data, config);
+		},
+
+		put<T = any, R = HttpResponse<T>>(
+			url: string,
+			data?: any,
+			config?: HttpRequestConfig
+		): Promise<R> {
+			return client.put(url, data, config);
+		}
+	};
 };

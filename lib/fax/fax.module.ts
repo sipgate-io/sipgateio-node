@@ -1,5 +1,5 @@
 import { Fax } from '../core/models';
 
 export interface FaxModule {
-  send: (fax: Fax) => Promise<void>;
+	send: (fax: Fax) => Promise<void>;
 }

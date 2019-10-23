@@ -1,10 +1,10 @@
 export interface ClickToDial {
-  deviceId?: string;
-  caller: string;
-  callee: string;
-  callerId: string;
+	deviceId?: string;
+	caller: string;
+	callee: string;
+	callerId: string;
 }
 
 export interface InitiateNewCallSessionResponse {
-  sessionId: string;
+	sessionId: string;
 }

@@ -1,21 +1,48 @@
 import { AuthenticationError } from './AuthenticationError';
 import handleCoreError from './handleCoreError';
+import { AxiosError, AxiosResponse } from 'axios';
 
 describe('handleCoreError', () => {
-  test('AuthenticationError', () => {
-    const error = { response: { status: 401 } };
-    expect(handleCoreError(error)).toEqual(new AuthenticationError());
-  });
+	it('AuthenticationError', () => {
+		const response:AxiosResponse = {
+			data: {
+				status: 401 //sipgate API response
+			},
+			status: 401, // http status response code
+			config: {},
+			statusText: "Unauthorized",
+			headers: {}
+		};
+		const error: AxiosError = { name: "testError", isAxiosError: true, message: "test error message", config: {}, response};
+		expect(handleCoreError(error)).toEqual(new AuthenticationError());
+	});
 
-  test('AccessError', () => {
-    const error = { response: { status: 403 } };
-    expect(handleCoreError(error)).toEqual(
-      new AuthenticationError('Forbidden'),
-    );
-  });
+	it('AccessError', () => {
+		const response:AxiosResponse = {
+			data: {
+				status: 403 //sipgate API response
+			},
+			status: 403, // http status response code
+			config: {},
+			statusText: "Unauthorized",
+			headers: {}
+		};
+		const error: AxiosError = { name: "testError", isAxiosError: true, message: "test error message", config: {}, response};		expect(handleCoreError(error)).toEqual(
+			new AuthenticationError('Forbidden')
+		);
+	});
 
-  test('Catch all errors', () => {
-    const error = { response: { status: 3.1415 } };
-    expect(handleCoreError(error)).toEqual(new Error());
-  });
+	it('Catch all errors', () => {
+		const response:AxiosResponse = {
+			data: {
+				status: 987 //sipgate API response
+			},
+			status: 987, // http status response code
+			config: {},
+			statusText: "Unauthorized",
+			headers: {}
+		};
+		const error: AxiosError = { name: "testError", isAxiosError: true, message: "", config: {}, response};
+		expect(handleCoreError(error)).toEqual(new Error());
+	});
 });

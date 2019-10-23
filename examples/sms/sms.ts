@@ -1,4 +1,3 @@
-
 import { ShortMessage } from '../../lib/core/models';
 import { createClient } from '../../lib/core/sipgateClient';
 
@@ -12,26 +11,26 @@ const smsExtension = process.env.SIPGATE_SMS_EXTENSION || '';
 const message = 'This is a test message.';
 
 const sms: ShortMessage = {
-  message,
-  recipient,
-  smsId: smsExtension,
+	message,
+	recipient,
+	smsId: smsExtension
 };
 
 client.sms
-  .send(sms)
-  .then(() => {
-    console.log('Sms sent.');
-  })
-  .catch(error => {
-    console.error(error);
-  });
+	.send(sms)
+	.then(() => {
+		console.log('Sms sent.');
+	})
+	.catch(error => {
+		console.error(error);
+	});
 
 const inTwoMinutes = new Date(Date.now() + 2 * 60 * 1000); // now + 2 min
 client.sms
-  .send(sms, inTwoMinutes)
-  .then(() => {
-    console.log(`Sms scheduled for ${inTwoMinutes}`);
-  })
-  .catch(error => {
-    console.error(error);
-  });
+	.send(sms, inTwoMinutes)
+	.then(() => {
+		console.log(`Sms scheduled for ${inTwoMinutes}`);
+	})
+	.catch(error => {
+		console.error(error);
+	});

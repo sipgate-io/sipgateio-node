@@ -8,9 +8,17 @@ The sipgate.io Node.js library
 - [Examples](#examples)
 - [Privacy Note](#privacy-note)
 
+# Get Started
+
 ## Download
 
 `git clone https://github.com/sipgate-io/sipgateio-node`
+
+## Installation
+
+For use in node applications you can install with - `npm install https://github.com/sipgate-io/sipgateio-node`
+
+For use in client side web applications get the JavaScript bundle from [github releases](#releases) and import in your project.
 
 ## Available Functionality
 
@@ -40,10 +48,10 @@ The `ShortMessage` type requires the following fields:
 
 ```typescript
 export interface ShortMessage {
-  smsId: string;
-  recipient: string;
-  message: string;
-  sendAt?: number;
+	smsId: string;
+	recipient: string;
+	message: string;
+	sendAt?: number;
 }
 ```
 
@@ -59,10 +67,10 @@ The `Fax` type requires the following fields:
 
 ```typescript
 export interface Fax {
-  recipient: string;
-  fileContent: Buffer;
-  filename?: string;
-  faxlineId?: string;
+	recipient: string;
+	fileContent: Buffer;
+	filename?: string;
+	faxlineId?: string;
 }
 ```
 
@@ -72,7 +80,7 @@ The call module provides the following function:
 
 ```typescript
 async function initiate(
-  newCallRequest: ClickToDial,
+	newCallRequest: ClickToDial
 ): Promise<InitiateNewCallSessionResponse>;
 ```
 
@@ -80,10 +88,10 @@ The `ClickToDial` type requires the following fields:
 
 ```typescript
 export interface ClickToDial {
-  deviceId?: string;
-  caller: string;
-  callee: string;
-  callerId: string;
+	deviceId?: string;
+	caller: string;
+	callee: string;
+	callerId: string;
 }
 ```
 

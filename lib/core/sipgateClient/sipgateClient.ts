@@ -4,20 +4,20 @@ import { createSMSModule, SMSModule } from '../../sms';
 import { createHttpClient } from '../httpClient';
 
 export interface SipgateClient {
-  sms: SMSModule;
-  fax: FaxModule;
-  call: CallModule;
+	sms: SMSModule;
+	fax: FaxModule;
+	call: CallModule;
 }
 
 export const createClient = (
-  username: string,
-  password: string,
+	username: string,
+	password: string
 ): SipgateClient => {
-  const httpClient = createHttpClient(username, password);
+	const httpClient = createHttpClient(username, password);
 
-  return {
-    call: createCallModule(httpClient),
-    fax: createFaxModule(httpClient),
-    sms: createSMSModule(httpClient),
-  };
+	return {
+		call: createCallModule(httpClient),
+		fax: createFaxModule(httpClient),
+		sms: createSMSModule(httpClient)
+	};
 };

@@ -1,4 +1,3 @@
-
 import * as fs from 'fs';
 import * as path from 'path';
 import { createClient } from '../../lib/core/sipgateClient';
@@ -15,10 +14,10 @@ const { name: filename } = path.parse(path.basename(filePath));
 const fileContent = fs.readFileSync(filePath);
 
 client.fax
-  .send({ recipient, fileContent, filename, faxlineId })
-  .then(() => {
-    console.log('Fax sent');
-  })
-  .catch(error => {
-    console.error(error.message);
-  });
+	.send({ recipient, fileContent, filename, faxlineId })
+	.then(() => {
+		console.log('Fax sent');
+	})
+	.catch(error => {
+		console.error(error.message);
+	});

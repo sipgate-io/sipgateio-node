@@ -2,83 +2,85 @@ import { ConnectionError, ErrorMessage, ExtensionError } from '../core/errors';
 import handleCoreError from '../core/errors/handleCoreError';
 import { HttpClientModule } from '../core/httpClient';
 import {
-  ShortMessage,
-  ShortMessageDTO,
-  SmsCallerId,
-  SmsCallerIds,
-  SmsExtension,
-  SmsExtensions,
+	ShortMessage,
+	ShortMessageDTO,
+	SmsCallerId,
+	SmsCallerIds,
+	SmsExtension,
+	SmsExtensions
 } from '../core/models';
 import { validatePhoneNumber } from '../core/validator';
 import { validateSendAt } from '../core/validator/validateSendAt';
 import { SMSModule } from './sms.module';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
-  async send(sms: ShortMessage, sendAt?: Date): Promise<void> {
-    const smsDTO: ShortMessageDTO = { ...sms };
-    const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
+	async send(sms: ShortMessage, sendAt?: Date): Promise<void> {
+		const smsDTO: ShortMessageDTO = { ...sms };
+		const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
 
-    if (!phoneNumberValidationResult.isValid) {
-      throw phoneNumberValidationResult.cause;
-    }
+		if (!phoneNumberValidationResult.isValid) {
+			throw phoneNumberValidationResult.cause;
+		}
+		if (sms.message === '') {
+			throw ErrorMessage.SMS_INVALID_MESSAGE;
+		}
+		if (sendAt) {
+			const sendAtValidationResult = validateSendAt(sendAt);
+			if (!sendAtValidationResult.isValid) {
+				throw sendAtValidationResult.cause;
+			}
+			smsDTO.sendAt = sendAt.getTime() / 1000;
+		}
 
-    if (sendAt) {
-      const sendAtValidationResult = validateSendAt(sendAt);
-      if (!sendAtValidationResult.isValid) {
-        throw sendAtValidationResult.cause;
-      }
-      smsDTO.sendAt = sendAt.getTime() / 1000;
-    }
-
-    await client
-      .post('/sessions/sms', smsDTO)
-      .catch(error => Promise.reject(handleError(error)));
-  },
+		await client
+			.post('/sessions/sms', smsDTO)
+			.catch(error => Promise.reject(handleError(error)));
+	}
 });
 
 export const getUserSMSExtensions = async (
-  client: HttpClientModule,
-  sub: string,
+	client: HttpClientModule,
+	sub: string
 ): Promise<SmsExtension[]> => {
-  return client
-    .get<SmsExtensions>(`${sub}/sms`)
-    .then(value => value.data.items)
-    .catch(error => Promise.reject(handleError(error)));
+	return client
+		.get<SmsExtensions>(`${sub}/sms`)
+		.then(value => value.data.items)
+		.catch(error => Promise.reject(handleError(error)));
 };
 
 export const getSmsCallerIds = async (
-  client: HttpClientModule,
-  webuserExtension: string,
-  smsExtension: string,
+	client: HttpClientModule,
+	webuserExtension: string,
+	smsExtension: string
 ): Promise<SmsCallerId[]> => {
-  return client
-    .get<SmsCallerIds>(`${webuserExtension}/sms/${smsExtension}/callerids`)
-    .then(value => value.data.items)
-    .catch(error => Promise.reject(handleError(error)));
+	return client
+		.get<SmsCallerIds>(`${webuserExtension}/sms/${smsExtension}/callerids`)
+		.then(value => value.data.items)
+		.catch(error => Promise.reject(handleError(error)));
 };
 
 export const containsPhoneNumber = (
-  smsCallerIds: SmsCallerId[],
-  phoneNumber: string,
+	smsCallerIds: SmsCallerId[],
+	phoneNumber: string
 ): boolean => {
-  const foundCallerId = smsCallerIds.find(
-    smsCallerId => smsCallerId.phonenumber === phoneNumber,
-  );
+	const foundCallerId = smsCallerIds.find(
+		smsCallerId => smsCallerId.phonenumber === phoneNumber
+	);
 
-  return foundCallerId ? foundCallerId.verified : false;
+	return foundCallerId ? foundCallerId.verified : false;
 };
 
 // eslint-disable-next-line
 const handleError = (e: any) => {
-  if (
-    e.message === 'Network Error' ||
-    e.message.includes(ErrorMessage.NETWORK_ERROR)
-  ) {
-    return new ConnectionError();
-  }
-  if (e.response.status === 403) {
-    return new ExtensionError(ErrorMessage.SMS_INVALID_EXTENSION);
-  }
+	if (
+		e.message === 'Network Error' ||
+		e.message.includes(ErrorMessage.NETWORK_ERROR)
+	) {
+		return new ConnectionError();
+	}
+	if (e.response.status === 403) {
+		return new ExtensionError(ErrorMessage.SMS_INVALID_EXTENSION);
+	}
 
-  return handleCoreError(e.message);
+	return handleCoreError(e.message);
 };

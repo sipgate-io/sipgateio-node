@@ -1,4 +1,3 @@
-
 import { createClient } from '../../lib/core/sipgateClient';
 
 const password = process.env.SIPGATE_PASSWORD || '';
@@ -11,10 +10,10 @@ const callee = process.env.SIPGATE_CALLEE || '';
 const callerId = process.env.SIPGATE_CALLER_ID || '';
 
 client.call
-  .initiate({ callee, caller, callerId })
-  .then(() => {
-    console.log('Call initiated');
-  })
-  .catch(error => {
-    console.error(error.message);
-  });
+	.initiate({ callee, caller, callerId })
+	.then(() => {
+		console.log('Call initiated');
+	})
+	.catch(error => {
+		console.error(error.message);
+	});

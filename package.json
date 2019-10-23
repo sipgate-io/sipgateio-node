@@ -1,77 +1,81 @@
 {
-  "name": "sipgateio",
-  "version": "0.0.1",
-  "description": "The sipgate.io Node.js library",
-  "main": "dist/index.js",
-  "scripts": {
-    "lint": "eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
-    "format": "prettier --write **/*.{ts,json,md}",
-    "test": "jest --watch",
-    "test:ci": "jest",
-    "sms-example": "ts-node examples/sms/sms.ts",
-    "fax-example": "ts-node examples/fax/fax.ts",
-    "prepare": "tsc"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sipgate-io/sipgateio-node.git"
-  },
-  "files": [
-    "/dist"
-  ],
-  "author": {
-    "name": "sipgate GmbH",
-    "email": "io-team@sipgate.de",
-    "url": "https://sipgate.io"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sipgate-io/sipgateio-node/issues"
-  },
-  "homepage": "https://github.com/sipgate-io/sipgateio-node#readme",
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run test:ci && lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{ts}": [
-      "prettier --write",
-      "eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
-      "git add"
-    ],
-    "*.{json,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "devDependencies": {
-    "@types/btoa": "^1.2.3",
-    "@types/jest": "^24.0.17",
-    "@types/nock": "^10.0.3",
-    "@typescript-eslint/eslint-plugin": "^2.3.3",
-    "@typescript-eslint/parser": "^2.3.3",
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^10.0.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "husky": "^3.0.3",
-    "jest": "^24.8.0",
-    "lint-staged": "^9.2.1",
-    "prettier": "^1.18.2",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.5.3"
-  },
-  "dependencies": {
-    "axios": "^0.19.0",
-    "axios-mock-adapter": "^1.17.0",
-    "btoa": "latest",
-    "file-type": "^12.2.0",
-    "nock": "^10.0.6",
-    "pjson": "^1.0.9"
-  }
+	"name": "sipgateio",
+	"version": "0.0.1",
+	"description": "The sipgate.io Node.js library",
+	"main": "dist/index.js",
+	"scripts": {
+		"lint": "eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
+		"format": "prettier --write **/*.{ts}",
+		"test:dev": "jest ./lib --env=node --watch",
+		"test:unit": "jest ./lib --env=node",
+		"test:integration": "jest ./bundle --env=jsdom",
+		"bundle": "browserify -r ./lib/index.ts:sipgate-io -p tsify -g uglifyify > ./bundle/sipgate-io.js",
+		"prepare": "tsc"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sipgate-io/sipgateio-node.git"
+	},
+	"files": [
+		"/dist"
+	],
+	"author": {
+		"name": "sipgate GmbH",
+		"email": "io-team@sipgate.de",
+		"url": "https://sipgate.io"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/sipgate-io/sipgateio-node/issues"
+	},
+	"homepage": "https://github.com/sipgate-io/sipgateio-node#readme",
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run test:unit && lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.{ts}": [
+			"prettier --write",
+			"eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
+			"git add"
+		],
+		"*.{json,md}": [
+			"prettier --write",
+			"git add"
+		]
+	},
+	"devDependencies": {
+		"@types/btoa": "^1.2.3",
+		"@types/jest": "^24.0.17",
+		"@types/nock": "^10.0.3",
+		"@types/detect-browser": "^4.0.0",
+		"axios-mock-adapter": "^1.17.0",
+		"browserify": "^16.5.0",
+		"@typescript-eslint/eslint-plugin": "^2.3.3",
+		"@typescript-eslint/parser": "^2.3.3",
+		"eslint": "^6.5.1",
+		"eslint-config-prettier": "^6.4.0",
+		"eslint-config-standard": "^14.1.0",
+		"eslint-plugin-import": "^2.18.2",
+		"eslint-plugin-node": "^10.0.0",
+		"eslint-plugin-prettier": "^3.1.1",
+		"eslint-plugin-promise": "^4.2.1",
+		"eslint-plugin-standard": "^4.0.1",
+		"husky": "^3.0.3",
+		"jest": "^24.8.0",
+		"lint-staged": "^9.2.1",
+		"nock": "^10.0.6",
+		"ts-jest": "^24.0.2",
+		"tsify": "^4.0.1",
+		"uglifyify": "^5.0.2",
+		"prettier": "^1.18.2",
+		"typescript": "^3.5.3"
+	},
+	"dependencies": {
+		"axios": "^0.19.0",
+		"btoa": "latest",
+		"detect-browser": "^4.7.0",
+		"file-type": "^12.2.0"
+	}
 }
