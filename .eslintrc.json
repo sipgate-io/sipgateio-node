@@ -5,6 +5,7 @@
 		"es6": true,
 		"jest": true
 	},
+
 	"extends": [
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
@@ -27,7 +28,9 @@
 		"node",
 		"import",
 		"promise",
-		"standard"
+		"standard",
+		"autofix",
+		"sort-imports-es6-autofix"
 	],
 	"rules": {
 		"linebreak-style": ["error", "unix"],
@@ -46,10 +49,17 @@
 		"indent": ["error", "tab"],
 		"prefer-const": "error",
 		"prefer-template": "error",
-		"require-await": "error",
-		"sort-imports": "error",
-		"sort-keys": "error",
-		"sort-vars": "error",
-		"use-isnan": "error"
+		"autofix/sort-vars": "error",
+		"@typescript-eslint/no-use-before-define": "warn",
+		"use-isnan": "error",
+		"autofix/no-debugger": "error",
+		"sort-imports-es6-autofix/sort-imports-es6": [
+			2,
+			{
+				"ignoreCase": false,
+				"ignoreMemberSort": false,
+				"memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+			}
+		]
 	}
 }
