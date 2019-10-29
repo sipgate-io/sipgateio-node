@@ -12,11 +12,3 @@ describe('Settings Module', () => {
 		expect(settingsModule.getSettings() instanceof Function);
 	});
 });
-
-describe('getSettings Method', () => {
-	const mockClient = {} as HttpClientModule;
-	const settingsModule = createSettingsModule(mockClient);
-	it('should send a GET request to settings/sipgateio', () => {
-		settingsModule.getSettings();
-	});
-});
