@@ -36,8 +36,8 @@
 	},
 	"lint-staged": {
 		"*.{ts}": [
-			"prettier --write **/**.ts",
-			"eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
+			"npm run format",
+			"npm run lint",
 			"git add"
 		],
 		"*.{json,md}": [
