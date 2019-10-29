@@ -1,46 +1,26 @@
-// import { CallModule, createCallModule } from '../call';
-import { HttpClientModule } from '../core/httpClient';
-// import { ClickToDial } from '../core/models/call.model';
+import axios from "axios";
+import {createSettingsModule} from "./settings";
 
 describe('Settings Module', () => {
-  let settingsModule: SettingsModule;
-  let mockClient: HttpClientModule;
+    const instance = axios.create();
+    const settingsModule = createSettingsModule(instance);
+    it('should exist on client object', () => {
+        expect(settingsModule instanceof Function);
+    });
 
-  beforeEach(() => {
-    mockClient = {} as HttpClientModule;
-    settingsModule = createSettingsModule(mockClient);
-  });
+    it('should contain getSettings method', () => {
+        expect(settingsModule.getSettings() instanceof Function);
+    });
+});
 
-  it('should exist on client object', () =>{
-  })
+describe('getSettings Method', () => {
 
-  it('should contain getSettings method', () => {
-    expect(settingsModule.getSettings() instanceof Function);
-  });
+    it('should return a successfully Response 200', () => {
 
-  //
-  // it('should fetch settings from pushAPI', async () => {
-  //   const expectedSessionId = '123456';
-  //   mockClient.post = jest.fn().mockImplementation(() => {
-  //     return Promise.resolve({
-  //       data: {
-  //         sessionId: expectedSessionId
-  //       },
-  //       status: 200
-  //     });
-  //   });
-  //   const validExtension = 'e0';
-  //   const validCalleeNumber = '+49123456789123';
-  //   const validCallerId = '+49123456789';
-  //
-  //   const clickToDial: ClickToDial = {
-  //     callee: validCalleeNumber,
-  //     caller: validExtension,
-  //     callerId: validCallerId
-  //   };
-  //
-  //   await expect(callModule.initiate(clickToDial)).resolves.not.toThrow();
-  //
-  //   const { sessionId } = await callModule.initiate(clickToDial);
-  //   expect(sessionId).toEqual(expectedSessionId);
-  });
+    })
+
+    it('should return a Bad Request Response 403', () => {
+    });
+})
+
+
