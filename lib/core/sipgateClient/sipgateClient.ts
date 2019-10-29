@@ -1,8 +1,8 @@
 import { CallModule, createCallModule } from '../../call';
 import { FaxModule, createFaxModule } from '../../fax';
 import { SMSModule, createSMSModule } from '../../sms';
+import { SettingsModule, createSettingsModule } from '../../settings';
 import { createHttpClient } from '../httpClient';
-import {createSettingsModule, SettingsModule} from "../../settings";
 
 export interface SipgateClient {
 	sms: SMSModule;
