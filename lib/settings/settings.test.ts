@@ -1,9 +1,9 @@
+import { HttpClientModule } from '../core/httpClient';
 import { createSettingsModule } from './settings';
-import axios from 'axios';
 
 describe('Settings Module', () => {
-	const instance = axios.create();
-	const settingsModule = createSettingsModule(instance);
+	const mockClient = {} as HttpClientModule;
+	const settingsModule = createSettingsModule(mockClient);
 	it('should exist on client object', () => {
 		expect(settingsModule instanceof Function);
 	});
@@ -14,7 +14,9 @@ describe('Settings Module', () => {
 });
 
 describe('getSettings Method', () => {
-	it('should return a successfully Response 200', () => {});
-
-	it('should return a Bad Request Response 403', () => {});
+	const mockClient = {} as HttpClientModule;
+	const settingsModule = createSettingsModule(mockClient);
+	it('should send a GET request to settings/sipgateio', () => {
+		settingsModule.getSettings();
+	});
 });
