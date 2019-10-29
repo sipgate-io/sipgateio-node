@@ -6,12 +6,7 @@ export const createSettingsModule = (
 	client: HttpClientModule
 ): SettingsModule => ({
 	async getSettings(): Promise<Settings> {
-		console.log(client);
-		return {
-			outgoingUrl: '',
-			incomingUrl: '',
-			log: false,
-			whitelist: []
-		};
+		const { data } = await client.get('settings/sipgateio');
+		return data;
 	}
 });
