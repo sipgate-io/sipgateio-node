@@ -28,6 +28,10 @@ describe('Settings Module', () => {
 	it('should contain setLog method', () => {
 		expect(settingsModule.setLog(true) instanceof Function);
 	});
+
+	it('should contain clearIncomingUrl method', () => {
+		expect(settingsModule.clearIncomingUrl() instanceof Function);
+	});
 });
 
 describe('get settings', () => {
