@@ -6,10 +6,10 @@ const password = process.env.SIPGATE_PASSWORD || '';
 const client = createClient(username, password);
 
 client.settings
-	.getSettings()
+	.setIncomingUrl('https://io.sipgate.beer/my/incoming/url')
 	.then(result => {
-		console.log('Config fetched.', result);
+		console.log('Incoming URL updated.', { result });
 	})
 	.catch(error => {
-		console.error(error);
+		throw error;
 	});
