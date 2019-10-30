@@ -10,7 +10,8 @@
 		"test:unit": "jest ./lib --env=node",
 		"test:integration": "jest ./bundle --env=jsdom",
 		"bundle": "browserify -r ./lib/index.ts:sipgate-io -p tsify -g uglifyify > ./bundle/sipgate-io.js",
-		"prepare": "tsc"
+		"prepare": "tsc",
+		"eslint-check": "eslint --print-config path/to/main.js | eslint-config-prettier-check"
 	},
 	"repository": {
 		"type": "git",
