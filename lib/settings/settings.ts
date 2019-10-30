@@ -9,7 +9,7 @@ const SETTINGS_ENDPOINT = 'settings/sipgateio';
 export const createSettingsModule = (
 	client: HttpClientModule
 ): SettingsModule => ({
-	async setIncomingUrl(url: string): Promise<void> {
+	async setIncomingUrl(url): Promise<void> {
 		await getSettings(client)
 			.then(settings => {
 				settings.incomingUrl = url;
@@ -17,7 +17,7 @@ export const createSettingsModule = (
 			})
 			.catch(error => handleError(error));
 	},
-	async setOutgoingUrl(url: string): Promise<void> {
+	async setOutgoingUrl(url): Promise<void> {
 		await getSettings(client)
 			.then(settings => {
 				settings.outgoingUrl = url;
@@ -25,7 +25,7 @@ export const createSettingsModule = (
 			})
 			.catch(error => handleError(error));
 	},
-	async setWhitelist(extensions: string[]): Promise<void> {
+	async setWhitelist(extensions): Promise<void> {
 		await getSettings(client)
 			.then(settings => {
 				settings.whitelist = extensions;
