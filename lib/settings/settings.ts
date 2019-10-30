@@ -24,6 +24,14 @@ export const createSettingsModule = (
 				client.put(SETTINGS_ENDPOINT, settings);
 			})
 			.catch(error => handleError(error));
+	},
+	async setWhitelist(extensions: string[]): Promise<void> {
+		await getSettings(client)
+			.then(settings => {
+				settings.whitelist = extensions;
+				client.put(SETTINGS_ENDPOINT, settings);
+			})
+			.catch(error => handleError(error));
 	}
 });
 
