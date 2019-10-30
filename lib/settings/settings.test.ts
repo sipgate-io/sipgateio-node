@@ -32,6 +32,10 @@ describe('Settings Module', () => {
 	it('should contain clearIncomingUrl method', () => {
 		expect(settingsModule.clearIncomingUrl() instanceof Function);
 	});
+
+	it('should contain clearOutgoingUrl method', () => {
+		expect(settingsModule.clearOutgoingUrl() instanceof Function);
+	});
 });
 
 describe('get settings', () => {

@@ -3,4 +3,6 @@ export interface SettingsModule {
 	setOutgoingUrl: (url: string) => Promise<void>;
 	setWhitelist: (extensions: string[]) => Promise<void>;
 	setLog: (value: boolean) => Promise<void>;
+	clearIncomingUrl: () => Promise<void>;
+	clearOutgoingUrl: () => Promise<void>;
 }
