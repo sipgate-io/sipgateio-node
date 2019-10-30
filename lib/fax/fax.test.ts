@@ -55,7 +55,6 @@ describe('Faxline ID List', () => {
 			);
 
 		await expect(getUserFaxLines(mockClient, mockUserID)).rejects.toThrow();
-		await expect(getUserFaxLines(mockClient, mockUserID)).rejects.toThrow();
 	});
 });
 
