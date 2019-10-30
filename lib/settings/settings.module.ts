@@ -1,5 +1,3 @@
-import { Settings } from '../core/models';
-
 export interface SettingsModule {
-	getSettings: () => Promise<Settings>;
+	setIncomingUrl: (url: string) => Promise<void>;
 }

@@ -3,7 +3,6 @@ export enum ErrorMessage {
 	VALIDATOR_INVALID_EMAIL = 'Invalid email',
 	VALIDATOR_INVALID_PASSWORD = 'Invalid password',
 	VALIDATOR_INVALID_PHONE_NUMBER = 'Invalid Phone Number',
-
 	VALIDATOR_INVALID_PDF_MIME_TYPE = 'Invalid PDF File',
 
 	SMS_INVALID_MESSAGE = 'Invalid SMS message',
@@ -22,5 +21,6 @@ export enum ErrorMessage {
 	CALL_INSUFFICIENT_FUNDS = 'Insufficient funds',
 	CALL_BAD_REQUEST = 'Invalid Call object',
 
+	SETTINGS_BAD_REQUEST = 'Invalid settings object',
 	NETWORK_ERROR = 'getaddrinfo ENOTFOUND'
 }
