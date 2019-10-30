@@ -40,6 +40,22 @@ export const createSettingsModule = (
 				client.put(SETTINGS_ENDPOINT, settings);
 			})
 			.catch(error => handleError(error));
+	},
+	async clearIncomingUrl(): Promise<void> {
+		await getSettings(client)
+			.then(settings => {
+				settings.incomingUrl = '';
+				client.put(SETTINGS_ENDPOINT, settings);
+			})
+			.catch(error => handleError(error));
+	},
+	async clearOutgoingUrl(): Promise<void> {
+		await getSettings(client)
+			.then(settings => {
+				settings.outgoingUrl = '';
+				client.put(SETTINGS_ENDPOINT, settings);
+			})
+			.catch(error => handleError(error));
 	}
 });
 
