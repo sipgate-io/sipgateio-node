@@ -32,6 +32,14 @@ export const createSettingsModule = (
 				client.put(SETTINGS_ENDPOINT, settings);
 			})
 			.catch(error => handleError(error));
+	},
+	async setLog(value): Promise<void> {
+		await getSettings(client)
+			.then(settings => {
+				settings.log = value;
+				client.put(SETTINGS_ENDPOINT, settings);
+			})
+			.catch(error => handleError(error));
 	}
 });
 
