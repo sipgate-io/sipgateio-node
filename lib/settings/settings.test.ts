@@ -21,8 +21,8 @@ describe('Settings Module', () => {
 		);
 	});
 	it('should contain setWhitelist method', () => {
-		// const whiteList = { whitelist: ['["w0", "w1", "g3"]'] };
-		// expect(settingsModule.setWhitelist(whiteList) instanceof Function);
+		const whiteList = ['extension1', 'extension2', 'extension3'];
+		expect(settingsModule.setWhitelist(whiteList) instanceof Function);
 	});
 	it('should contain setLog method', () => {
 		// expect(settingsModule.setLog(true) instanceof Function);
