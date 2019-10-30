@@ -16,9 +16,9 @@ describe('Settings Module', () => {
 	});
 
 	it('should contain setOutgoingUrl method', () => {
-		// expect(
-		// settingsModule.setOutgoingUrl('https://myURL.de') instanceof Function
-		// );
+		expect(
+			settingsModule.setOutgoingUrl('https://myURL.de') instanceof Function
+		);
 	});
 	it('should contain setWhitelist method', () => {
 		// const whiteList = { whitelist: ['["w0", "w1", "g3"]'] };
