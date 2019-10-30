@@ -1,3 +1,4 @@
 export interface SettingsModule {
 	setIncomingUrl: (url: string) => Promise<void>;
+	setOutgoingUrl: (url: string) => Promise<void>;
 }
