@@ -35,15 +35,34 @@
 	"rules": {
 		"linebreak-style": ["error", "unix"],
 		"quotes": ["error", "single"],
-		"semi": ["error", "always"],
-		"prefer-destructuring": "error",
+		"semi": "error",
+		"prefer-destructuring": [
+			"error",
+			{
+				"VariableDeclarator": {
+					"array": false,
+					"object": true
+				},
+				"AssignmentExpression": {
+					"array": false,
+					"object": true
+				}
+			},
+			{ "Enforced ForRenamedProperties": false }
+		],
 		"no-unused-vars": "error",
 		"no-unused-expressions": "error",
 		"no-unused-labels": "error",
 		"camelcase": "warn",
 		"comma-dangle": [
 			"error",
-			{ "imports": "never", "exports": "never", "functions": "never" }
+			{
+				"arrays": "always-multiline",
+				"objects": "always-multiline",
+				"imports": "always-multiline",
+				"exports": "always-multiline",
+				"functions": "never"
+			}
 		],
 		"eqeqeq": "error",
 		"indent": ["error", "tab"],
