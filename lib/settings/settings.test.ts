@@ -2,42 +2,6 @@ import { HttpClientModule } from '../core/httpClient';
 import { SettingsModule } from './settings.module';
 import { createSettingsModule } from './settings';
 
-describe('Settings Module', () => {
-	const mockClient = {} as HttpClientModule;
-	const settingsModule = createSettingsModule(mockClient);
-	it('should exist on client object', () => {
-		expect(settingsModule instanceof Function);
-	});
-
-	it('should contain setIncomingUrl method', () => {
-		expect(
-			settingsModule.setIncomingUrl('https://myURL.de') instanceof Function
-		);
-	});
-
-	it('should contain setOutgoingUrl method', () => {
-		expect(
-			settingsModule.setOutgoingUrl('https://myURL.de') instanceof Function
-		);
-	});
-	it('should contain setWhitelist method', () => {
-		const whiteList = ['extension1', 'extension2', 'extension3'];
-		expect(settingsModule.setWhitelist(whiteList) instanceof Function);
-	});
-
-	it('should contain setLog method', () => {
-		expect(settingsModule.setLog(true) instanceof Function);
-	});
-
-	it('should contain clearIncomingUrl method', () => {
-		expect(settingsModule.clearIncomingUrl() instanceof Function);
-	});
-
-	it('should contain clearOutgoingUrl method', () => {
-		expect(settingsModule.clearOutgoingUrl() instanceof Function);
-	});
-});
-
 describe('get settings', () => {
 	let mockedSettingsModule: SettingsModule;
 	let mockClient: HttpClientModule;
