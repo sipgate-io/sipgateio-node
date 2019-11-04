@@ -2,6 +2,7 @@ import { ConnectionError, ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
 import { Settings } from '../core/models';
 import { SettingsModule } from './settings.module';
+import { validateWebhookUrl } from '../core/validator/validateWebhookUrl';
 import handleCoreError from '../core/errors/handleCoreError';
 
 const SETTINGS_ENDPOINT = 'settings/sipgateio';
@@ -10,22 +11,32 @@ export const createSettingsModule = (
 	client: HttpClientModule
 ): SettingsModule => ({
 	async setIncomingUrl(url): Promise<void> {
-		modifySettings(client, settings => (settings.incomingUrl = url));
+		const validationResult = validateWebhookUrl(url);
+		if (!validationResult.isValid) {
+			throw new Error(validationResult.cause);
+		}
+
+		await modifySettings(client, settings => (settings.incomingUrl = url));
 	},
 	async setOutgoingUrl(url): Promise<void> {
-		modifySettings(client, settings => (settings.outgoingUrl = url));
+		const validationResult = validateWebhookUrl(url);
+		if (!validationResult.isValid) {
+			throw new Error(validationResult.cause);
+		}
+
+		await modifySettings(client, settings => (settings.outgoingUrl = url));
 	},
 	async setWhitelist(extensions): Promise<void> {
-		modifySettings(client, settings => (settings.whitelist = extensions));
+		await modifySettings(client, settings => (settings.whitelist = extensions));
 	},
 	async setLog(value): Promise<void> {
-		modifySettings(client, settings => (settings.log = value));
+		await modifySettings(client, settings => (settings.log = value));
 	},
 	async clearIncomingUrl(): Promise<void> {
-		modifySettings(client, settings => (settings.incomingUrl = ''));
+		await modifySettings(client, settings => (settings.incomingUrl = ''));
 	},
 	async clearOutgoingUrl(): Promise<void> {
-		modifySettings(client, settings => (settings.outgoingUrl = ''));
+		await modifySettings(client, settings => (settings.outgoingUrl = ''));
 	}
 });
 
@@ -41,7 +52,10 @@ const modifySettings = async (
 	fn: (s: Settings) => void
 ): Promise<void> => {
 	await getSettings(client)
-		.then(settings => client.put(SETTINGS_ENDPOINT, fn(settings)))
+		.then(settings => {
+			fn(settings);
+			return client.put(SETTINGS_ENDPOINT, settings);
+		})
 		.catch(error => handleError(error));
 };
 
