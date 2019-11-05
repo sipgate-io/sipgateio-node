@@ -21,4 +21,10 @@ import { createClient } from '../../lib/core/sipgateClient';
 
 	await client.settings.setWhitelist(['p2', 'g10']);
 	console.log('Whitelist updated.');
+
+	await client.settings.clearWhitelist();
+	console.log('Whitelist cleared.');
+
+	await client.settings.disableWhitelist();
+	console.log('Whitelist disabled.');
 })();
