@@ -1,4 +1,5 @@
 import { ConnectionError, ErrorMessage } from '../core/errors';
+import { ExtensionType, validateExtension } from '../core/validator';
 import { HttpClientModule } from '../core/httpClient';
 import { Settings } from '../core/models';
 import { SettingsModule } from './settings.module';
@@ -6,6 +7,11 @@ import { validateWebhookUrl } from '../core/validator/validateWebhookUrl';
 import handleCoreError from '../core/errors/handleCoreError';
 
 const SETTINGS_ENDPOINT = 'settings/sipgateio';
+
+const whitelistExtensions = new Map([
+	['g', ExtensionType.GROUP],
+	['p', ExtensionType.PERSON]
+]);
 
 export const createSettingsModule = (
 	client: HttpClientModule
@@ -27,6 +33,8 @@ export const createSettingsModule = (
 		await modifySettings(client, settings => (settings.outgoingUrl = url));
 	},
 	async setWhitelist(extensions): Promise<void> {
+		validateWhitelistExtensions(extensions);
+
 		await modifySettings(client, settings => (settings.whitelist = extensions));
 	},
 	async setLog(value): Promise<void> {
@@ -57,6 +65,20 @@ const modifySettings = async (
 			return client.put(SETTINGS_ENDPOINT, settings);
 		})
 		.catch(error => handleError(error));
+};
+
+const validateWhitelistExtensions = (extensions: string[]) => {
+	extensions.forEach(ext => {
+		const extensionType = whitelistExtensions.get(ext.charAt(0));
+		if (extensionType === undefined) {
+			throw new Error(
+				`${ErrorMessage.VALIDATOR_INVALID_WHITELIST_EXTENSION} : ${ext}`
+			);
+		}
+		if (!validateExtension(ext, extensionType).isValid) {
+			throw new Error(`${ErrorMessage.VALIDATOR_INVALID_EXTENSION} : ${ext}`);
+		}
+	});
 };
 
 const handleError = (e: any) => {
