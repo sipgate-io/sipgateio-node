@@ -97,6 +97,25 @@ export interface ClickToDial {
 
 The `InitiateNewCallSessionResponse` contains only a session ID.
 
+### Settings
+
+The settings module provides the following functions to update settings:
+
+```typescript
+export interface SettingsModule {
+	setIncomingUrl: (url: string) => Promise<void>;
+	setOutgoingUrl: (url: string) => Promise<void>;
+	setWhitelist: (extensions: string[]) => Promise<void>;
+	setLog: (value: boolean) => Promise<void>;
+	clearIncomingUrl: () => Promise<void>;
+	clearOutgoingUrl: () => Promise<void>;
+	clearWhitelist: () => Promise<void>;
+	disableWhitelist: () => Promise<void>;
+}
+```
+
+The `disableWhitelist` completely removes the whitelisting and enables all phoneline and group extensions.
+
 ## Examples
 
 For some examples on how to use the library, please refer to the [`examples` folder](./examples).
