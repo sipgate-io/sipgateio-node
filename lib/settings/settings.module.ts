@@ -5,4 +5,6 @@ export interface SettingsModule {
 	setLog: (value: boolean) => Promise<void>;
 	clearIncomingUrl: () => Promise<void>;
 	clearOutgoingUrl: () => Promise<void>;
+	clearWhitelist: () => Promise<void>;
+	disableWhitelist: () => Promise<void>;
 }

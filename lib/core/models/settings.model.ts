@@ -2,5 +2,5 @@ export interface Settings {
 	incomingUrl: string;
 	outgoingUrl: string;
 	log: boolean;
-	whitelist: string[];
+	whitelist: string[] | null;
 }

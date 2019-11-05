@@ -45,6 +45,12 @@ export const createSettingsModule = (
 	},
 	async clearOutgoingUrl(): Promise<void> {
 		await modifySettings(client, settings => (settings.outgoingUrl = ''));
+	},
+	async clearWhitelist(): Promise<void> {
+		await modifySettings(client, settings => (settings.whitelist = []));
+	},
+	async disableWhitelist(): Promise<void> {
+		await modifySettings(client, settings => (settings.whitelist = null));
 	}
 });
 
