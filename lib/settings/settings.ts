@@ -8,11 +8,6 @@ import handleCoreError from '../core/errors/handleCoreError';
 
 const SETTINGS_ENDPOINT = 'settings/sipgateio';
 
-const whitelistExtensions = new Map([
-	['g', ExtensionType.GROUP],
-	['p', ExtensionType.PERSON],
-]);
-
 export const createSettingsModule = (
 	client: HttpClientModule
 ): SettingsModule => ({
@@ -74,15 +69,15 @@ const modifySettings = async (
 };
 
 const validateWhitelistExtensions = (extensions: string[]) => {
-	extensions.forEach(ext => {
-		const extensionType = whitelistExtensions.get(ext.charAt(0));
-		if (extensionType === undefined) {
+	extensions.forEach(extension => {
+		const validationResult = validateExtension(extension, [
+			ExtensionType.PERSON,
+			ExtensionType.GROUP,
+		]);
+		if (!validationResult.isValid) {
 			throw new Error(
-				`${ErrorMessage.VALIDATOR_INVALID_WHITELIST_EXTENSION} : ${ext}`
+				`${ErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS}\n${validationResult.cause}: ${extension}`
 			);
-		}
-		if (!validateExtension(ext, extensionType).isValid) {
-			throw new Error(`${ErrorMessage.VALIDATOR_INVALID_EXTENSION} : ${ext}`);
 		}
 	});
 };

@@ -20,19 +20,21 @@ enum ExtensionType {
 }
 
 const validateExtension = (
-	extensionId: string,
-	extensionType: ExtensionType
+	extension: string,
+	validTypes: ExtensionType[]
 ): ValidationResult => {
-	const extensionRegEx = new RegExp(`^${extensionType}(0|[1-9][0-9]*)$`);
+	for (const type of validTypes) {
+		const extensionRegEx = new RegExp(`^${type}(0|[1-9][0-9]*)$`);
 
-	if (!extensionRegEx.test(extensionId)) {
-		return {
-			cause: ErrorMessage.VALIDATOR_INVALID_EXTENSION,
-			isValid: false,
-		};
+		if (extensionRegEx.test(extension)) {
+			return { isValid: true };
+		}
 	}
 
-	return { isValid: true };
+	return {
+		cause: ErrorMessage.VALIDATOR_INVALID_EXTENSION,
+		isValid: false,
+	};
 };
 
 export { validateExtension, ExtensionType };

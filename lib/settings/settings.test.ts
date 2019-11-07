@@ -154,7 +154,9 @@ describe('setWhitelist', () => {
 
 		await expect(
 			settingsModule.setWhitelist(INVALID_P_EXT_WHITELIST)
-		).rejects.toThrowError(ErrorMessage.VALIDATOR_INVALID_WHITELIST_EXTENSION);
+		).rejects.toThrowError(
+			ErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS
+		);
 	});
 
 	it('should succeed when supplied with a valid array of extensions', async () => {

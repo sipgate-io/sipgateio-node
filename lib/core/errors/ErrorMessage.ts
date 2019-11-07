@@ -1,6 +1,6 @@
 export enum ErrorMessage {
 	VALIDATOR_INVALID_EXTENSION = 'Invalid extension',
-	VALIDATOR_INVALID_WHITELIST_EXTENSION = 'Invalid whitelist extension',
+	VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS = "Whitelist allows only 'p' and 'g' extensions",
 	VALIDATOR_INVALID_EMAIL = 'Invalid email',
 	VALIDATOR_INVALID_PASSWORD = 'Invalid password',
 	VALIDATOR_INVALID_PHONE_NUMBER = 'Invalid Phone Number',
@@ -24,5 +24,5 @@ export enum ErrorMessage {
 	CALL_BAD_REQUEST = 'Invalid Call object',
 
 	SETTINGS_BAD_REQUEST = 'Invalid settings object',
-	NETWORK_ERROR = 'getaddrinfo ENOTFOUND'
+	NETWORK_ERROR = 'getaddrinfo ENOTFOUND',
 }
