@@ -9,7 +9,6 @@
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
 		"prettier/@typescript-eslint",
-		"plugin:prettier/recommended",
 		"prettier"
 	],
 	"globals": {
@@ -32,26 +31,18 @@
 		"sort-imports-es6-autofix"
 	],
 	"rules": {
-		"@typescript-eslint/no-use-before-define": "warn",
+		"@typescript-eslint/no-use-before-define": [
+			"error",
+			{ "functions": false, "classes": false, "variables": false }
+		],
 		"autofix/no-debugger": "error",
 		"autofix/sort-vars": "error",
 		"camelcase": "warn",
-		"comma-dangle": [
-			"error",
-			{
-				"arrays": "always-multiline",
-				"exports": "always-multiline",
-				"functions": "never",
-				"imports": "always-multiline",
-				"objects": "always-multiline"
-			}
-		],
 		"eqeqeq": "error",
-		"indent": ["error", "tab"],
-		"linebreak-style": ["error", "unix"],
 		"no-unused-expressions": "error",
 		"no-unused-labels": "error",
 		"no-unused-vars": "error",
+		"@typescript-eslint/no-unused-vars": "error",
 		"prefer-const": "error",
 		"prefer-destructuring": [
 			"error",
@@ -70,8 +61,7 @@
 			}
 		],
 		"prefer-template": "error",
-		"quotes": ["error", "single"],
-		"semi": "error",
+		"prettier/prettier": "error",
 		"sort-imports-es6-autofix/sort-imports-es6": [
 			2,
 			{
