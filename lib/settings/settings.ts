@@ -1,6 +1,6 @@
-import { ConnectionError, ErrorMessage } from '../core/errors';
+import { ErrorMessage } from '../core/errors';
 import { ExtensionType, validateExtension } from '../core/validator';
-import { HttpClientModule } from '../core/httpClient';
+import { HttpClientModule, HttpError } from '../core/httpClient';
 import { Settings } from '../core/models';
 import { SettingsModule } from './settings.module';
 import { validateWebhookUrl } from '../core/validator/validateWebhookUrl';
@@ -82,12 +82,10 @@ const validateWhitelistExtensions = (extensions: string[]) => {
 	});
 };
 
-const handleError = (e: any) => {
-	if (
-		e.message === 'Network Error' ||
-		e.message.includes(ErrorMessage.NETWORK_ERROR)
-	) {
-		return new ConnectionError();
+const handleError = (error: HttpError): Error => {
+	if (!error.response) {
+		return error;
 	}
-	return handleCoreError(e.message);
+
+	return handleCoreError(error);
 };
