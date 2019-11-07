@@ -7,7 +7,7 @@ import {
 	FaxStatusType,
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
-	UserInfo
+	UserInfo,
 } from '../core/models';
 import { FaxModule } from './fax.module';
 import { HttpClientModule, HttpError, HttpResponse } from '../core/httpClient';
@@ -40,7 +40,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 			base64Content: fax.fileContent.toString('base64'),
 			faxlineId: fax.faxlineId,
 			filename: fax.filename,
-			recipient: fax.recipient
+			recipient: fax.recipient,
 		};
 
 		const sendFaxSessionResponse = await client
@@ -50,7 +50,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 		await fetchFaxStatus(client, sendFaxSessionResponse.data.sessionId).catch(
 			error => Promise.reject(handleError(error))
 		);
-	}
+	},
 });
 
 const generateFilename = (): string => {

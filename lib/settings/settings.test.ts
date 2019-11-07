@@ -20,9 +20,9 @@ describe('get settings', () => {
 					incomingUrl: 'string',
 					outgoingUrl: 'string',
 					log: true,
-					whitelist: []
+					whitelist: [],
 				},
-				status: 200
+				status: 200,
 			});
 		});
 
@@ -48,7 +48,7 @@ describe('setIncomingUrl', () => {
 			incomingUrl: '',
 			log: false,
 			outgoingUrl: '',
-			whitelist: []
+			whitelist: [],
 		};
 
 		const expectedSettings = { ...settings };
@@ -97,7 +97,7 @@ describe('setOutgoingUrl', () => {
 			incomingUrl: '',
 			log: false,
 			outgoingUrl: '',
-			whitelist: []
+			whitelist: [],
 		};
 
 		const expectedSettings = { ...settings };
@@ -164,7 +164,7 @@ describe('setWhitelist', () => {
 			incomingUrl: '',
 			log: false,
 			outgoingUrl: '',
-			whitelist: []
+			whitelist: [],
 		};
 
 		const expectedSettings = { ...settings };

@@ -18,9 +18,9 @@ describe('Call Module', () => {
 		mockClient.post = jest.fn().mockImplementation(() => {
 			return Promise.resolve({
 				data: {
-					sessionId: expectedSessionId
+					sessionId: expectedSessionId,
 				},
-				status: 200
+				status: 200,
 			});
 		});
 		const validExtension = 'e0';
@@ -30,7 +30,7 @@ describe('Call Module', () => {
 		const clickToDial: ClickToDial = {
 			callee: validCalleeNumber,
 			caller: validExtension,
-			callerId: validCallerId
+			callerId: validCallerId,
 		};
 
 		await expect(callModule.initiate(clickToDial)).resolves.not.toThrow();
@@ -47,7 +47,7 @@ describe('Call Module', () => {
 		const clickToDial: ClickToDial = {
 			callee: validCalleeNumber,
 			caller: invalidExtensionId,
-			callerId: validCallerId
+			callerId: validCallerId,
 		};
 
 		await expect(callModule.initiate(clickToDial)).rejects.toThrow(
@@ -59,8 +59,8 @@ describe('Call Module', () => {
 		mockClient.post = jest.fn().mockImplementationOnce(() => {
 			return Promise.reject({
 				response: {
-					status: 402
-				}
+					status: 402,
+				},
 			});
 		});
 
@@ -71,7 +71,7 @@ describe('Call Module', () => {
 		const clickToDial: ClickToDial = {
 			callee: validCalleeNumber,
 			caller: validExtension,
-			callerId: validCallerId
+			callerId: validCallerId,
 		};
 
 		await expect(callModule.initiate(clickToDial)).rejects.toThrow(
@@ -87,7 +87,7 @@ describe('Call Module', () => {
 		const clickToDial: ClickToDial = {
 			callee: invalidCalleeNumber,
 			caller: validExtensionId,
-			callerId: validCallerId
+			callerId: validCallerId,
 		};
 
 		await expect(callModule.initiate(clickToDial)).rejects.toThrow(

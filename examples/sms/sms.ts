@@ -13,7 +13,7 @@ const message = 'This is a test message.';
 const sms: ShortMessage = {
 	message,
 	recipient,
-	smsId: smsExtension
+	smsId: smsExtension,
 };
 
 client.sms

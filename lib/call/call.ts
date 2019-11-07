@@ -1,12 +1,12 @@
 import {
 	ClickToDial,
-	InitiateNewCallSessionResponse
+	InitiateNewCallSessionResponse,
 } from '../core/models/call.model';
 import { ErrorMessage } from '../core/errors';
 import {
 	ExtensionType,
 	validateExtension,
-	validatePhoneNumber
+	validatePhoneNumber,
 } from '../core/validator';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import handleCoreError from '../core/errors/handleCoreError';
@@ -34,7 +34,7 @@ export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 			.post<InitiateNewCallSessionResponse>('/sessions/calls', clickToDial)
 			.then(response => response.data)
 			.catch(error => Promise.reject(handleError(error)));
-	}
+	},
 });
 
 const handleError = (error: HttpError): Error => {

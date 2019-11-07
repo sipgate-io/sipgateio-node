@@ -16,7 +16,7 @@ enum ExtensionType {
 	VOICEMAIL = 'v',
 	WEBUSER = 'w',
 	EXTERNAL = 'x',
-	MOBILE = 'y'
+	MOBILE = 'y',
 }
 
 const validateExtension = (
@@ -28,7 +28,7 @@ const validateExtension = (
 	if (!extensionRegEx.test(extensionId)) {
 		return {
 			cause: ErrorMessage.VALIDATOR_INVALID_EXTENSION,
-			isValid: false
+			isValid: false,
 		};
 	}
 

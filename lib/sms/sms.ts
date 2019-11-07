@@ -7,7 +7,7 @@ import {
 	SmsCallerId,
 	SmsCallerIds,
 	SmsExtension,
-	SmsExtensions
+	SmsExtensions,
 } from '../core/models';
 import { validatePhoneNumber } from '../core/validator';
 import { validateSendAt } from '../core/validator/validateSendAt';
@@ -35,7 +35,7 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 		await client
 			.post('/sessions/sms', smsDTO)
 			.catch(error => Promise.reject(handleError(error)));
-	}
+	},
 });
 
 export const getUserSMSExtensions = async (

@@ -5,13 +5,13 @@ import {
 	ShortMessage,
 	SmsCallerId,
 	SmsExtension,
-	UserInfo
+	UserInfo,
 } from '../core/models';
 import {
 	containsPhoneNumber,
 	createSMSModule,
 	getSmsCallerIds,
-	getUserSMSExtensions
+	getUserSMSExtensions,
 } from './sms';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
@@ -31,7 +31,7 @@ describe('SMS Module', () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId'
+			smsId: 'validExtensionId',
 		};
 
 		await expect(smsModule.send(message)).resolves.not.toThrow();
@@ -43,7 +43,7 @@ describe('SMS Module', () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'nonValidExtensionId'
+			smsId: 'nonValidExtensionId',
 		};
 
 		await expect(smsModule.send(message)).rejects.toThrow(
@@ -57,7 +57,7 @@ describe('SMS Module', () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'nonValidExtensionId'
+			smsId: 'nonValidExtensionId',
 		};
 
 		await expect(smsModule.send(message)).rejects.toThrow(
@@ -69,7 +69,7 @@ describe('SMS Module', () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '',
-			smsId: 'validExtensionId'
+			smsId: 'validExtensionId',
 		};
 		await expect(smsModule.send(message)).rejects.toEqual(
 			ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER
@@ -80,7 +80,7 @@ describe('SMS Module', () => {
 		const message: ShortMessage = {
 			message: '',
 			recipient: '015739777777',
-			smsId: 'validExtensionId'
+			smsId: 'validExtensionId',
 		};
 		await expect(smsModule.send(message)).rejects.toEqual(
 			ErrorMessage.SMS_INVALID_MESSAGE
@@ -103,7 +103,7 @@ describe('schedule sms', () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId'
+			smsId: 'validExtensionId',
 		};
 
 		const date: Date = new Date(
@@ -113,14 +113,14 @@ describe('schedule sms', () => {
 		mockClient.post = jest.fn().mockImplementationOnce(() => {
 			return Promise.resolve({
 				data: {},
-				status: 200
+				status: 200,
 			});
 		});
 		await mockedSmsModule.send(message, date);
 
 		expect(mockClient.post).toBeCalledWith('/sessions/sms', {
 			...message,
-			sendAt: date.getTime() / 1000
+			sendAt: date.getTime() / 1000,
 		});
 	});
 
@@ -128,7 +128,7 @@ describe('schedule sms', () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId'
+			smsId: 'validExtensionId',
 		};
 
 		const date: Date = new Date(
@@ -144,7 +144,7 @@ describe('schedule sms', () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId'
+			smsId: 'validExtensionId',
 		};
 
 		const date: Date = new Date(
@@ -160,7 +160,7 @@ describe('schedule sms', () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId'
+			smsId: 'validExtensionId',
 		};
 
 		const date: Date = new Date('08 bar 2015');
@@ -180,11 +180,11 @@ describe('SMS Extension List', () => {
 					{
 						alias: '"Alexander Bain\'s fax"',
 						callerId: '+94123456789',
-						id: 'f0'
-					}
-				]
+						id: 'f0',
+					},
+				],
 			},
-			status: 200
+			status: 200,
 		};
 
 		const mockedClient = {} as HttpClientModule;
@@ -211,29 +211,29 @@ describe('CallerIds for SMS Extension', () => {
 						defaultNumber: true,
 						id: 0,
 						phonenumber: '+4912345678',
-						verified: true
+						verified: true,
 					},
 					{
 						defaultNumber: false,
 						id: 1,
 						phonenumber: '+4987654321',
-						verified: false
-					}
-				]
-			}
+						verified: false,
+					},
+				],
+			},
 		};
 
 		const userInfo: UserInfo = {
 			domain: '',
 			locale: '',
 			masterSipId: '',
-			sub: ''
+			sub: '',
 		};
 
 		const smsExtension: SmsExtension = {
 			alias: 'SMS Extension',
 			callerId: '+4912345678',
-			id: 's0'
+			id: 's0',
 		};
 
 		const mockedClient = {} as HttpClientModule;
@@ -258,14 +258,14 @@ describe('Numbers Verification', () => {
 				defaultNumber: true,
 				id: 0,
 				phonenumber: '+4912345678',
-				verified: true
+				verified: true,
 			},
 			{
 				defaultNumber: false,
 				id: 1,
 				phonenumber: '+4987654321',
-				verified: false
-			}
+				verified: false,
+			},
 		];
 
 		const verificationStatus = containsPhoneNumber(smsCallerIds, '+4912345678');
@@ -279,14 +279,14 @@ describe('Numbers Verification', () => {
 				defaultNumber: true,
 				id: 0,
 				phonenumber: '+4912345678',
-				verified: true
+				verified: true,
 			},
 			{
 				defaultNumber: false,
 				id: 1,
 				phonenumber: '+4987654321',
-				verified: false
-			}
+				verified: false,
+			},
 		];
 
 		const verificationStatus = containsPhoneNumber(smsCallerIds, '+4987654321');
@@ -300,14 +300,14 @@ describe('Numbers Verification', () => {
 				defaultNumber: true,
 				id: 0,
 				phonenumber: '+4912345678',
-				verified: true
+				verified: true,
 			},
 			{
 				defaultNumber: false,
 				id: 1,
 				phonenumber: '+4987654321',
-				verified: false
-			}
+				verified: false,
+			},
 		];
 
 		const verificationStatus = containsPhoneNumber(smsCallerIds, '12345678');

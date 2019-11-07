@@ -1,6 +1,6 @@
 import {
 	ClickToDial,
-	InitiateNewCallSessionResponse
+	InitiateNewCallSessionResponse,
 } from '../core/models/call.model';
 
 export interface CallModule {

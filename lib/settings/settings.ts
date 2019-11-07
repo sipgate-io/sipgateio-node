@@ -10,7 +10,7 @@ const SETTINGS_ENDPOINT = 'settings/sipgateio';
 
 const whitelistExtensions = new Map([
 	['g', ExtensionType.GROUP],
-	['p', ExtensionType.PERSON]
+	['p', ExtensionType.PERSON],
 ]);
 
 export const createSettingsModule = (
@@ -51,7 +51,7 @@ export const createSettingsModule = (
 	},
 	async disableWhitelist(): Promise<void> {
 		await modifySettings(client, settings => (settings.whitelist = null));
-	}
+	},
 });
 
 const getSettings = async (client: HttpClientModule): Promise<Settings> => {

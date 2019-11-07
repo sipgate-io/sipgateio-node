@@ -22,10 +22,10 @@ describe('Faxline ID List', () => {
 						canReceive: false,
 						canSend: false,
 						id: 'f0',
-						tagline: 'Example Ltd.'
-					}
-				]
-			}
+						tagline: 'Example Ltd.',
+					},
+				],
+			},
 		};
 
 		mockClient.get = jest
@@ -47,7 +47,7 @@ describe('Faxline ID List', () => {
 			.fn()
 			.mockImplementationOnce(() =>
 				Promise.reject({
-					response: { data: { status: 404, message: 'resource not found' } }
+					response: { data: { status: 404, message: 'resource not found' } },
 				})
 			)
 			.mockImplementationOnce(() =>
@@ -93,7 +93,7 @@ describe('SendFax', () => {
 				faxlineId,
 				fileContent,
 				filename: 'testPdfFileName',
-				recipient
+				recipient,
 			})
 		).resolves.not.toThrow();
 	});
@@ -112,8 +112,8 @@ describe('SendFax', () => {
 						domain: 'domain',
 						locale: 'locale',
 						masterSipId: 'masterSipId',
-						sub: '123123'
-					}
+						sub: '123123',
+					},
 				});
 			})
 			.mockImplementationOnce(() =>
@@ -160,17 +160,17 @@ describe('SendFax', () => {
 		mockClient.post = jest.fn().mockImplementationOnce(() => {
 			return Promise.resolve({
 				data: {
-					sessionId: 123
+					sessionId: 123,
 				},
-				status: 200
+				status: 200,
 			});
 		});
 
 		mockClient.get = jest.fn().mockImplementationOnce(() => {
 			return Promise.reject({
 				response: {
-					status: 404
-				}
+					status: 404,
+				},
 			});
 		});
 
@@ -185,7 +185,7 @@ describe('SendFax', () => {
 				faxlineId,
 				fileContent,
 				filename: 'testPdfFileName',
-				recipient
+				recipient,
 			})
 		).rejects.toThrowError(ErrorMessage.FAX_NOT_FOUND);
 	});
@@ -196,9 +196,9 @@ describe('SendFax', () => {
 		mockClient.post = jest.fn().mockImplementationOnce(() => {
 			return Promise.resolve({
 				data: {
-					sessionId: 123
+					sessionId: 123,
 				},
-				status: 200
+				status: 200,
 			});
 		});
 
@@ -217,7 +217,7 @@ describe('SendFax', () => {
 				faxlineId,
 				fileContent,
 				filename: 'testPdfFileName',
-				recipient
+				recipient,
 			})
 		).rejects.toThrowError(ErrorMessage.FAX_COULD_NOT_BE_SENT);
 	});
@@ -228,15 +228,15 @@ describe('SendFax', () => {
 		mockClient.post = jest.fn().mockImplementationOnce(() => {
 			return Promise.resolve({
 				data: {
-					sessionId: 123123
+					sessionId: 123123,
 				},
-				status: 200
+				status: 200,
 			});
 		});
 
 		mockClient.get = jest.fn().mockImplementation(() =>
 			Promise.resolve({
-				data: { type: 'FAX', faxStatusType: 'PENDING' }
+				data: { type: 'FAX', faxStatusType: 'PENDING' },
 			})
 		);
 
@@ -249,7 +249,7 @@ describe('SendFax', () => {
 				faxlineId,
 				fileContent,
 				filename: 'testPdfFileName',
-				recipient
+				recipient,
 			})
 		).rejects.toThrowError(ErrorMessage.FAX_FETCH_STATUS_TIMED_OUT);
 	});
