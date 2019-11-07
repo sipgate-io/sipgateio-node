@@ -51,20 +51,6 @@ describe('SMS Module', () => {
     );
   });
 
-  test('It sends SMS with unreachable server with error', async () => {
-    mock.onPost('/sessions/sms').networkError();
-
-    const message: ShortMessage = {
-      message: 'ValidMessage',
-      recipient: '015739777777',
-      smsId: 'nonValidExtensionId',
-    };
-
-    await expect(smsModule.send(message)).rejects.toThrow(
-      ErrorMessage.NETWORK_ERROR,
-    );
-  });
-
   test('It sends SMS with no recipient', async () => {
     const message: ShortMessage = {
       message: 'ValidMessage',
