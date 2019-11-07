@@ -1,11 +1,10 @@
 {
 	"env": {
 		"browser": true,
-		"node": true,
 		"es6": true,
-		"jest": true
+		"jest": true,
+		"node": true
 	},
-
 	"extends": [
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
@@ -33,26 +32,46 @@
 		"sort-imports-es6-autofix"
 	],
 	"rules": {
-		"linebreak-style": ["error", "unix"],
-		"quotes": ["error", "single"],
-		"semi": ["error", "always"],
-		"prefer-destructuring": "error",
-		"no-unused-vars": "error",
-		"no-unused-expressions": "error",
-		"no-unused-labels": "error",
+		"@typescript-eslint/no-use-before-define": "warn",
+		"autofix/no-debugger": "error",
+		"autofix/sort-vars": "error",
 		"camelcase": "warn",
 		"comma-dangle": [
 			"error",
-			{ "imports": "never", "exports": "never", "functions": "never" }
+			{
+				"arrays": "always-multiline",
+				"exports": "always-multiline",
+				"functions": "never",
+				"imports": "always-multiline",
+				"objects": "always-multiline"
+			}
 		],
 		"eqeqeq": "error",
 		"indent": ["error", "tab"],
+		"linebreak-style": ["error", "unix"],
+		"no-unused-expressions": "error",
+		"no-unused-labels": "error",
+		"no-unused-vars": "error",
 		"prefer-const": "error",
+		"prefer-destructuring": [
+			"error",
+			{
+				"AssignmentExpression": {
+					"array": false,
+					"object": true
+				},
+				"VariableDeclarator": {
+					"array": false,
+					"object": true
+				}
+			},
+			{
+				"Enforced ForRenamedProperties": false
+			}
+		],
 		"prefer-template": "error",
-		"autofix/sort-vars": "error",
-		"@typescript-eslint/no-use-before-define": "warn",
-		"use-isnan": "error",
-		"autofix/no-debugger": "error",
+		"quotes": ["error", "single"],
+		"semi": "error",
 		"sort-imports-es6-autofix/sort-imports-es6": [
 			2,
 			{
@@ -60,6 +79,7 @@
 				"ignoreMemberSort": false,
 				"memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
 			}
-		]
+		],
+		"use-isnan": "error"
 	}
 }
