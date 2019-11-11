@@ -1,6 +1,6 @@
 import { createClient } from '../../lib/core/sipgateClient';
 
-(async () => {
+(async (): Promise<void> => {
 	const username = process.env.SIPGATE_USERNAME || '';
 	const password = process.env.SIPGATE_PASSWORD || '';
 

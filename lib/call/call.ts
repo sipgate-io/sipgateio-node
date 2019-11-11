@@ -22,10 +22,9 @@ export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 			throw new Error(`${phoneNumberValidation.cause}: callee`);
 		}
 
-		const extensionValidation = validateExtension(
-			clickToDial.caller,
-			ExtensionType.REGISTER
-		);
+		const extensionValidation = validateExtension(clickToDial.caller, [
+			ExtensionType.REGISTER,
+		]);
 		if (!extensionValidation.isValid) {
 			throw new Error(extensionValidation.cause);
 		}

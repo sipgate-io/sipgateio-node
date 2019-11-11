@@ -68,7 +68,7 @@ const modifySettings = async (
 		.catch(error => handleError(error));
 };
 
-const validateWhitelistExtensions = (extensions: string[]) => {
+const validateWhitelistExtensions = (extensions: string[]): void => {
 	extensions.forEach(extension => {
 		const validationResult = validateExtension(extension, [
 			ExtensionType.PERSON,

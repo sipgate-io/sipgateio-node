@@ -13,7 +13,7 @@ describe('ValidateExtension', () => {
 	`(
 		'validator returns $expected when $input is validated',
 		({ input, expected }) => {
-			expect(validateExtension(input, ExtensionType.FAX)).toEqual(expected);
+			expect(validateExtension(input, [ExtensionType.FAX])).toEqual(expected);
 		}
 	);
 });
