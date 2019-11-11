@@ -24,6 +24,9 @@ export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 
 		const extensionValidation = validateExtension(clickToDial.caller, [
 			ExtensionType.REGISTER,
+			ExtensionType.EXTERNAL,
+			ExtensionType.PERSON,
+			ExtensionType.MOBILE,
 		]);
 		if (!extensionValidation.isValid) {
 			throw new Error(extensionValidation.cause);
