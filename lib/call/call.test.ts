@@ -51,7 +51,7 @@ describe('Call Module', () => {
 		};
 
 		await expect(callModule.initiate(clickToDial)).rejects.toThrow(
-			ErrorMessage.VALIDATOR_INVALID_EXTENSION
+			`${ErrorMessage.VALIDATOR_INVALID_CALLER}: ${JSON.stringify(clickToDial)}`
 		);
 	});
 
@@ -91,7 +91,9 @@ describe('Call Module', () => {
 		};
 
 		await expect(callModule.initiate(clickToDial)).rejects.toThrow(
-			`${ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER}: callee`
+			`${ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER}: ${JSON.stringify(
+				clickToDial
+			)}`
 		);
 	});
 });
