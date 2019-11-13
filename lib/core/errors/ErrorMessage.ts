@@ -6,6 +6,9 @@ export enum ErrorMessage {
 	VALIDATOR_INVALID_PHONE_NUMBER = 'Invalid Phone Number',
 	VALIDATOR_INVALID_PDF_MIME_TYPE = 'Invalid PDF File',
 	VALIDATOR_INVALID_WEBHOOK_URL = 'Invalid Webhook URL',
+	VALIDATOR_INVALID_CALLER = 'Caller is not a valid extension nor phone number',
+	VALIDATOR_INVALID_CALLER_ID = 'CallerId is not a valid phone number',
+	VALIDATOR_INVALID_DEVICE_ID = 'DeviceId is mandatory if caller is not a extension',
 
 	SMS_INVALID_MESSAGE = 'Invalid SMS message',
 	SMS_INVALID_EXTENSION = 'Invalid SMS extension',

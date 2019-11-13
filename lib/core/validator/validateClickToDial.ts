@@ -28,7 +28,7 @@ const validateClickToDial = (clickToDial: ClickToDial): ValidationResult => {
 	) {
 		return {
 			isValid: false,
-			cause: 'caller is not a valid extension nor phone number' as ErrorMessage,
+			cause: ErrorMessage.VALIDATOR_INVALID_CALLER,
 		};
 	}
 
@@ -49,7 +49,7 @@ const validateClickToDial = (clickToDial: ClickToDial): ValidationResult => {
 		if (!callerExtensionValidationResult.isValid) {
 			return {
 				isValid: false,
-				cause: 'deviceId is mandatory if caller is not a extension' as ErrorMessage,
+				cause: ErrorMessage.VALIDATOR_INVALID_DEVICE_ID,
 			};
 		}
 	}
@@ -57,7 +57,10 @@ const validateClickToDial = (clickToDial: ClickToDial): ValidationResult => {
 	if (clickToDial.callerId) {
 		const callerIdValidationResult = validatePhoneNumber(clickToDial.callerId);
 		if (!callerIdValidationResult.isValid) {
-			return { isValid: false, cause: 'Invalid callerId' as ErrorMessage };
+			return {
+				isValid: false,
+				cause: ErrorMessage.VALIDATOR_INVALID_CALLER_ID,
+			};
 		}
 	}
 
