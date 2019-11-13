@@ -91,11 +91,93 @@ export interface ClickToDial {
 	deviceId?: string;
 	caller: string;
 	callee: string;
-	callerId: string;
+	callerId?: string;
 }
 ```
 
 The `InitiateNewCallSessionResponse` contains only a session ID.
+
+#### ClickToDial details
+
+The following table shows valid parameter combinations
+
+| callee | caller    | callerId | deviceId  |
+| ------ | --------- | -------- | --------- |
+| number | extension | -        | -         |
+| number | extension | number   | -         |
+| number | extension | number   | extension |
+| number | number    | -        | extension |
+| number | extension | -        | extension |
+| number | number    | number   | extension |
+|        |
+
+The displayed number at the callee device is determined by a **hierarchy**.
+
+If not set it falls back to the next stage:
+
+1. callerId
+2. deviceId (related phone number)
+3. caller (related phone number if ext)
+
+The param deviceId is only mandatory if `caller` is not a extension.
+
+Valid extension types are _e_, _p_, _x_ and _y_.
+
+| phone type     | letter |
+| -------------- | ------ |
+| voip phone     | e      |
+| user phoneline | p      |
+| external phone | x      |
+| mobile phone   | y      |
+
+---
+
+**Example for basic call:**
+
+```typescript
+clickToDial(caller, callee);
+```
+
+```json
+caller: 'e14',
+callee: '021165432'
+```
+
+default number of extension is displayed at callee device.
+
+**Another example:**
+
+```typescript
+clickToDial(caller, callee, callerId);
+```
+
+```json
+caller: 'p0',
+callee: '021165432',
+callerId: '017012345678'
+```
+
+same situation as previous example but displayed number is now `callerId` ([see hierarchy](###ClickToDial-details)).
+
+---
+
+**Example for group calls:**
+
+```typescript
+clickToDial(caller, deviceId, callee);
+```
+
+```json
+caller: '021123456',
+deviceId: 'e14',
+callee: '021165432'
+```
+
+`caller` is the group number which is used to initiate the call => the group is called
+
+`deviceId` is needed for billing and determines the number which will be displayed at the callee device. For e.g. 'e14' has the default number '021156789'.
+
+---
 
 ### Settings
 
