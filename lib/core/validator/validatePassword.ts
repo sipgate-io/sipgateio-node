@@ -5,7 +5,10 @@ const validatePassword = (password: string): ValidationResult => {
 	const passwordIsValid = password.length > 0 && !password.includes(' ');
 
 	if (!passwordIsValid) {
-		return { isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD };
+		return {
+			isValid: false,
+			cause: `${ErrorMessage.VALIDATOR_INVALID_PASSWORD}: ${password}`,
+		};
 	}
 
 	return { isValid: true };
