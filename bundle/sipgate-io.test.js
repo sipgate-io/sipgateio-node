@@ -90,13 +90,13 @@ describe('sipgate-io client', () => {
 
 	it('should contain a settings module with a clearWhitelist function', () => {
 		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.clearWhitelist()).toBeDefined();
-		expect(typeof (sipgateClient.settings.clearWhitelist())).toEqual('function');
+		expect(sipgateClient.settings.clearWhitelist).toBeDefined();
+		expect(typeof (sipgateClient.settings.clearWhitelist)).toEqual('function');
 	});
 
 	it('should contain a settings module with a disableWhitelist function', () => {
 		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.disableWhitelist()).toBeDefined();
-		expect(typeof (sipgateClient.settings.disableWhitelist())).toEqual('function');
+		expect(sipgateClient.settings.disableWhitelist).toBeDefined();
+		expect(typeof (sipgateClient.settings.disableWhitelist)).toEqual('function');
 	});
 });
