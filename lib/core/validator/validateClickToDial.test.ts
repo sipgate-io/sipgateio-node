@@ -61,7 +61,12 @@ describe('ClickToDial validation', () => {
 	`(
 		'validator returns $expected when $input is validated',
 		({ input, expected }) => {
-			expect(validateClickToDial(input)).toEqual(expected);
+			const output = validateClickToDial(input);
+			expect(output.isValid).toEqual(expected.isValid);
+
+			if (!output.isValid) {
+				expect(output.cause).toContain(expected.cause);
+			}
 		}
 	);
 });

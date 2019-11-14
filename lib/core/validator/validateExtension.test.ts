@@ -13,7 +13,12 @@ describe('ValidateExtension', () => {
 	`(
 		'validator returns $expected when $input is validated',
 		({ input, expected }) => {
-			expect(validateExtension(input, [ExtensionType.FAX])).toEqual(expected);
+			const output = validateExtension(input, [ExtensionType.FAX]);
+			expect(output.isValid).toEqual(expected.isValid);
+
+			if (!output.isValid) {
+				expect(output.cause).toContain(expected.cause);
+			}
 		}
 	);
 });
