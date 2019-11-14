@@ -14,9 +14,7 @@ export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 	): Promise<InitiateNewCallSessionResponse> {
 		const clickToDialValidation = validateClickToDial(clickToDial);
 		if (!clickToDialValidation.isValid) {
-			throw new Error(
-				`${clickToDialValidation.cause}: ${JSON.stringify(clickToDial)}`
-			);
+			throw new Error(clickToDialValidation.cause);
 		}
 
 		return httpClient
