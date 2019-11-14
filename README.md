@@ -1,28 +1,41 @@
 # sipgateio-node [![Build Status](https://travis-ci.com/sipgate-io/sipgateio-node.svg?branch=master)](https://travis-ci.com/sipgate-io/sipgateio-node)
 
-The sipgate.io Node.js library
+A JavaScript library for sipgate.io
 
-- [Download](#download)
+- [Installation](#installation)
 - [Available Functionality](#available-functionality)
 - [Usage](#usage)
+- [| mobile phone | y |](#mobile-phone--y)
 - [Examples](#examples)
 - [Privacy Note](#privacy-note)
 
 # Get Started
 
-## Download
-
-`git clone https://github.com/sipgate-io/sipgateio-node`
-
 ## Installation
 
-For use in node applications you can install with - `npm install https://github.com/sipgate-io/sipgateio-node`
+For use in node applications you can install with
 
-For use in client side web applications get the JavaScript bundle from [github releases](#releases) and import in your project.
+```console
+npm install https://github.com/sipgate-io/sipgateio-node
+```
+
+Alternatively, a bundled version can be obtained from the [github releases](https://github.com/sipgate-io/sipgateio-node/releases) page.
 
 ## Available Functionality
 
-Currently, the library includes SMS, fax, and phone call capabilities. The SMS module supports both instant and scheduled sending of text messages with the default caller ID set for the SMS extension of the authenticated webuser.
+The following features are already implemented in the current version of this library:
+
+### SMS
+
+Send text messages, either instantly or scheduled. The caller ID can be set from the sipgate web interface, the default is the string "sipgate".
+
+### Fax
+
+Send any PDF file buffer as a fax to a single number.
+
+### Call
+
+Initiate a call between two phones of your choice, no matter if inside your sipgate account or outside.
 
 ## Usage
 
@@ -47,7 +60,7 @@ async function schedule(sms: ShortMessage, sendAt: Date): Promise<void>;
 The `ShortMessage` type requires the following fields:
 
 ```typescript
-export interface ShortMessage {
+interface ShortMessage {
 	smsId: string;
 	recipient: string;
 	message: string;
@@ -66,7 +79,7 @@ async function send(fax: Fax): Promise<void>;
 The `Fax` type requires the following fields:
 
 ```typescript
-export interface Fax {
+interface Fax {
 	recipient: string;
 	fileContent: Buffer;
 	filename?: string;
@@ -87,7 +100,7 @@ async function initiate(
 The `ClickToDial` type requires the following fields:
 
 ```typescript
-export interface ClickToDial {
+interface ClickToDial {
 	deviceId?: string;
 	caller: string;
 	callee: string;
@@ -95,7 +108,13 @@ export interface ClickToDial {
 }
 ```
 
-The `InitiateNewCallSessionResponse` contains only a session ID.
+The `InitiateNewCallSessionResponse` contains only a session ID:
+
+```typescript
+interface InitiateNewCallSessionResponse {
+	sessionId: string;
+}
+```
 
 #### ClickToDial details
 
@@ -109,7 +128,6 @@ The following table shows valid parameter combinations
 | number | number    | -        | extension |
 | number | extension | -        | extension |
 | number | number    | number   | extension |
-|        |
 
 The displayed number at the callee device is determined by a **hierarchy**.
 
@@ -184,7 +202,7 @@ callee: '021165432'
 The settings module provides the following functions to update settings:
 
 ```typescript
-export interface SettingsModule {
+interface SettingsModule {
 	setIncomingUrl: (url: string) => Promise<void>;
 	setOutgoingUrl: (url: string) => Promise<void>;
 	setWhitelist: (extensions: string[]) => Promise<void>;
