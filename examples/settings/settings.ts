@@ -6,14 +6,10 @@ import { createClient } from '../../lib/core/sipgateClient';
 
 	const client = createClient(username, password);
 
-	await client.settings.setIncomingUrl(
-		'https://io.sipgate.beer/my/incoming/url2'
-	);
+	await client.settings.setIncomingUrl('https://example.com/my/incoming/url2');
 	console.log('Incoming URL updated.');
 
-	await client.settings.setOutgoingUrl(
-		'https://io.sipgate.beer/my/outgoing/url2'
-	);
+	await client.settings.setOutgoingUrl('https://example.com/my/outgoing/url2');
 	console.log('Outgoing URL updated.');
 
 	await client.settings.setLog(true);
