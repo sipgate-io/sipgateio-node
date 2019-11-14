@@ -8,7 +8,7 @@ import packageJson from '../../../package.json';
 import {
 	HttpClientModule,
 	HttpRequestConfig,
-	HttpResponse
+	HttpResponse,
 } from './httpClient.module';
 
 export const createHttpClient = (
@@ -18,13 +18,13 @@ export const createHttpClient = (
 	const emailValidationResult = validateEmail(username);
 
 	if (!emailValidationResult.isValid) {
-		throw emailValidationResult.cause;
+		throw new Error(emailValidationResult.cause);
 	}
 
 	const passwordValidationResult = validatePassword(password);
 
 	if (!passwordValidationResult.isValid) {
-		throw passwordValidationResult.cause;
+		throw new Error(passwordValidationResult.cause);
 	}
 
 	const platformInfo = detectPlatform();
@@ -35,8 +35,8 @@ export const createHttpClient = (
 		headers: {
 			Authorization: `Basic ${basicAuth}`,
 			'X-Sipgate-Client': JSON.stringify(platformInfo),
-			'X-Sipgate-Version': packageJson.version
-		}
+			'X-Sipgate-Version': packageJson.version,
+		},
 	});
 
 	return {
@@ -76,6 +76,6 @@ export const createHttpClient = (
 			config?: HttpRequestConfig
 		): Promise<R> {
 			return client.put(url, data, config);
-		}
+		},
 	};
 };
