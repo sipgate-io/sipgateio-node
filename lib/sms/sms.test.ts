@@ -46,7 +46,7 @@ describe('SMS Module', () => {
 			smsId: 'nonValidExtensionId',
 		};
 
-		await expect(smsModule.send(message)).rejects.toThrow(
+		await expect(smsModule.send(message)).rejects.toThrowError(
 			ErrorMessage.SMS_INVALID_EXTENSION
 		);
 	});
@@ -60,7 +60,7 @@ describe('SMS Module', () => {
 			smsId: 'nonValidExtensionId',
 		};
 
-		await expect(smsModule.send(message)).rejects.toThrow(
+		await expect(smsModule.send(message)).rejects.toThrowError(
 			ErrorMessage.NETWORK_ERROR
 		);
 	});
@@ -71,7 +71,7 @@ describe('SMS Module', () => {
 			recipient: '',
 			smsId: 'validExtensionId',
 		};
-		await expect(smsModule.send(message)).rejects.toEqual(
+		await expect(smsModule.send(message)).rejects.toThrowError(
 			ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER
 		);
 	});
@@ -82,7 +82,7 @@ describe('SMS Module', () => {
 			recipient: '015739777777',
 			smsId: 'validExtensionId',
 		};
-		await expect(smsModule.send(message)).rejects.toEqual(
+		await expect(smsModule.send(message)).rejects.toThrowError(
 			ErrorMessage.SMS_INVALID_MESSAGE
 		);
 	});
@@ -135,7 +135,7 @@ describe('schedule sms', () => {
 			new Date().setSeconds(new Date().getSeconds() - 5)
 		);
 
-		await expect(smsModule.send(message, date)).rejects.toEqual(
+		await expect(smsModule.send(message, date)).rejects.toThrowError(
 			ErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE
 		);
 	});
@@ -151,7 +151,7 @@ describe('schedule sms', () => {
 			new Date().setSeconds(new Date().getSeconds() + 60 * 60 * 24 * 31)
 		);
 
-		await expect(smsModule.send(message, date)).rejects.toEqual(
+		await expect(smsModule.send(message, date)).rejects.toThrowError(
 			ErrorMessage.SMS_TIME_TOO_FAR_IN_FUTURE
 		);
 	});
@@ -165,7 +165,7 @@ describe('schedule sms', () => {
 
 		const date: Date = new Date('08 bar 2015');
 
-		await expect(smsModule.send(message, date)).rejects.toEqual(
+		await expect(smsModule.send(message, date)).rejects.toThrowError(
 			ErrorMessage.SMS_TIME_INVALID
 		);
 	});

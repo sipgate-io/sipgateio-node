@@ -12,18 +12,18 @@ describe('UserHelper Test', () => {
 		mockClient.get = jest.fn().mockImplementationOnce(() => {
 			return Promise.reject({
 				response: {
-					status: 401
-				}
+					status: 401,
+				},
 			});
 		});
 
-		await expect(getUserInfo(mockClient)).rejects.toThrow();
+		await expect(getUserInfo(mockClient)).rejects.toThrowError();
 	});
 
 	test('should get webuser ID', async () => {
 		mockClient.get = jest.fn().mockImplementationOnce(() => {
 			return Promise.resolve({
-				data: null
+				data: null,
 			});
 		});
 

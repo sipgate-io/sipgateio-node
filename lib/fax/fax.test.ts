@@ -54,7 +54,9 @@ describe('Faxline ID List', () => {
 				Promise.reject({ response: { data: { status: 401 } } })
 			);
 
-		await expect(getUserFaxLines(mockClient, mockUserID)).rejects.toThrow();
+		await expect(
+			getUserFaxLines(mockClient, mockUserID)
+		).rejects.toThrowError();
 	});
 });
 
