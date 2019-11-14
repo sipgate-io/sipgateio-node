@@ -125,7 +125,7 @@ Valid extension types are _e_, _p_, _x_ and _y_.
 
 | phone type     | letter |
 | -------------- | ------ |
-| voip phone     | e      |
+| VoIP phone     | e      |
 | user phoneline | p      |
 | external phone | x      |
 | mobile phone   | y      |
