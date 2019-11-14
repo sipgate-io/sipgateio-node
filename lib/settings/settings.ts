@@ -13,12 +13,14 @@ export const createSettingsModule = (
 ): SettingsModule => ({
 	async setIncomingUrl(url): Promise<void> {
 		const validationResult = validateWebhookUrl(url);
+
 		if (!validationResult.isValid) {
 			throw new Error(validationResult.cause);
 		}
 
 		await modifySettings(client, settings => (settings.incomingUrl = url));
 	},
+
 	async setOutgoingUrl(url): Promise<void> {
 		const validationResult = validateWebhookUrl(url);
 		if (!validationResult.isValid) {
@@ -27,23 +29,29 @@ export const createSettingsModule = (
 
 		await modifySettings(client, settings => (settings.outgoingUrl = url));
 	},
+
 	async setWhitelist(extensions): Promise<void> {
 		validateWhitelistExtensions(extensions);
 
 		await modifySettings(client, settings => (settings.whitelist = extensions));
 	},
+
 	async setLog(value): Promise<void> {
 		await modifySettings(client, settings => (settings.log = value));
 	},
+
 	async clearIncomingUrl(): Promise<void> {
 		await modifySettings(client, settings => (settings.incomingUrl = ''));
 	},
+
 	async clearOutgoingUrl(): Promise<void> {
 		await modifySettings(client, settings => (settings.outgoingUrl = ''));
 	},
+
 	async clearWhitelist(): Promise<void> {
 		await modifySettings(client, settings => (settings.whitelist = []));
 	},
+
 	async disableWhitelist(): Promise<void> {
 		await modifySettings(client, settings => (settings.whitelist = null));
 	},
