@@ -1,5 +1,5 @@
-import { ConnectionError, ErrorMessage, ExtensionError } from '../core/errors';
-import { HttpClientModule } from '../core/httpClient';
+import { ErrorMessage, ExtensionError } from '../core/errors';
+import { HttpClientModule, HttpError } from '../core/httpClient';
 import { SMSModule } from './sms.module';
 import {
 	ShortMessage,
@@ -70,17 +70,14 @@ export const containsPhoneNumber = (
 	return foundCallerId ? foundCallerId.verified : false;
 };
 
-// eslint-disable-next-line
-const handleError = (e: any) => {
-	if (
-		e.message === 'Network Error' ||
-		e.message.includes(ErrorMessage.NETWORK_ERROR)
-	) {
-		return new ConnectionError();
+const handleError = (error: HttpError): Error => {
+	if (!error.response) {
+		return error;
 	}
-	if (e.response.status === 403) {
+
+	if (error.response.status === 403) {
 		return new ExtensionError(ErrorMessage.SMS_INVALID_EXTENSION);
 	}
 
-	return handleCoreError(e.message);
+	return handleCoreError(error);
 };
