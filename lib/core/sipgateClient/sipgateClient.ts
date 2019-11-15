@@ -21,6 +21,6 @@ export const createClient = (
 		call: createCallModule(httpClient),
 		fax: createFaxModule(httpClient),
 		sms: createSMSModule(httpClient),
-		settings: createSettingsModule(httpClient)
+		settings: createSettingsModule(httpClient),
 	};
 };

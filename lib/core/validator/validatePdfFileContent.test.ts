@@ -7,7 +7,7 @@ describe('PDF file validation', () => {
 		const validPdfFileContents = validPDFBuffer;
 
 		expect(validatePdfFileContent(validPdfFileContents)).toEqual({
-			isValid: true
+			isValid: true,
 		});
 	});
 
@@ -16,7 +16,7 @@ describe('PDF file validation', () => {
 
 		expect(validatePdfFileContent(invalidPdfFileContents)).toEqual({
 			cause: ErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
-			isValid: false
+			isValid: false,
 		});
 	});
 });
