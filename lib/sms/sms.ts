@@ -10,7 +10,7 @@ import {
 	SmsExtensions,
 } from '../core/models';
 import { validatePhoneNumber } from '../core/validator';
-import { validateSendAt } from '../core/validator/validateSendAt';
+import { validateSendAt } from '../core/validator';
 import handleCoreError from '../core/errors/handleCoreError';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
