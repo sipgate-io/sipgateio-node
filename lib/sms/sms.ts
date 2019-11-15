@@ -19,15 +19,15 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 		const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
 
 		if (!phoneNumberValidationResult.isValid) {
-			throw phoneNumberValidationResult.cause;
+			throw new Error(phoneNumberValidationResult.cause);
 		}
 		if (sms.message === '') {
-			throw ErrorMessage.SMS_INVALID_MESSAGE;
+			throw new Error(ErrorMessage.SMS_INVALID_MESSAGE);
 		}
 		if (sendAt) {
 			const sendAtValidationResult = validateSendAt(sendAt);
 			if (!sendAtValidationResult.isValid) {
-				throw sendAtValidationResult.cause;
+				throw new Error(sendAtValidationResult.cause);
 			}
 			smsDTO.sendAt = sendAt.getTime() / 1000;
 		}

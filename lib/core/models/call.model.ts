@@ -2,7 +2,7 @@ export interface ClickToDial {
 	deviceId?: string;
 	caller: string;
 	callee: string;
-	callerId: string;
+	callerId?: string;
 }
 
 export interface InitiateNewCallSessionResponse {

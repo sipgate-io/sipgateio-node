@@ -12,7 +12,12 @@ describe('Phone validation', () => {
 	`(
 		'validator returns $expected when $input is validated',
 		({ input, expected }) => {
-			expect(validatePhoneNumber(input)).toEqual(expected);
+			const output = validatePhoneNumber(input);
+			expect(output.isValid).toEqual(expected.isValid);
+
+			if (!output.isValid) {
+				expect(output.cause).toContain(expected.cause);
+			}
 		}
 	);
 });

@@ -76,7 +76,7 @@ describe('setIncomingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setIncomingUrl('newUrl')).rejects.toThrowError(
-			new Error(ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL)
+			ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
 		);
 	});
 });
@@ -125,7 +125,7 @@ describe('setOutgoingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setOutgoingUrl('newUrl')).rejects.toThrowError(
-			new Error(ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL)
+			ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
 		);
 	});
 });

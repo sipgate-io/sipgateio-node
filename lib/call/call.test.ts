@@ -50,8 +50,8 @@ describe('Call Module', () => {
 			callerId: validCallerId,
 		};
 
-		await expect(callModule.initiate(clickToDial)).rejects.toThrow(
-			ErrorMessage.VALIDATOR_INVALID_EXTENSION
+		await expect(callModule.initiate(clickToDial)).rejects.toThrowError(
+			ErrorMessage.VALIDATOR_INVALID_CALLER
 		);
 	});
 
@@ -74,7 +74,7 @@ describe('Call Module', () => {
 			callerId: validCallerId,
 		};
 
-		await expect(callModule.initiate(clickToDial)).rejects.toThrow(
+		await expect(callModule.initiate(clickToDial)).rejects.toThrowError(
 			ErrorMessage.CALL_INSUFFICIENT_FUNDS
 		);
 	});
@@ -90,8 +90,8 @@ describe('Call Module', () => {
 			callerId: validCallerId,
 		};
 
-		await expect(callModule.initiate(clickToDial)).rejects.toThrow(
-			`${ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER}: callee`
+		await expect(callModule.initiate(clickToDial)).rejects.toThrowError(
+			ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER
 		);
 	});
 });

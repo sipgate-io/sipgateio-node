@@ -6,8 +6,8 @@ const validateWebhookUrl = (url: string): ValidationResult => {
 
 	if (!webhookUrlRegex.test(url)) {
 		return {
-			cause: ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL,
-			isValid: false
+			cause: `${ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL}: ${url}`,
+			isValid: false,
 		};
 	}
 	return { isValid: true };

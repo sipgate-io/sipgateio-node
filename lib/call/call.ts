@@ -1,32 +1,20 @@
+import { CallModule } from './call.module';
 import {
 	ClickToDial,
 	InitiateNewCallSessionResponse,
 } from '../core/models/call.model';
 import { ErrorMessage } from '../core/errors';
-import {
-	ExtensionType,
-	validateExtension,
-	validatePhoneNumber,
-} from '../core/validator';
 import { HttpClientModule, HttpError } from '../core/httpClient';
+import { validateClickToDial } from '../core/validator/validateClickToDial';
 import handleCoreError from '../core/errors/handleCoreError';
-
-import { CallModule } from './call.module';
 
 export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 	async initiate(
 		clickToDial: ClickToDial
 	): Promise<InitiateNewCallSessionResponse> {
-		const phoneNumberValidation = validatePhoneNumber(clickToDial.callee);
-		if (!phoneNumberValidation.isValid) {
-			throw new Error(`${phoneNumberValidation.cause}: callee`);
-		}
-
-		const extensionValidation = validateExtension(clickToDial.caller, [
-			ExtensionType.REGISTER,
-		]);
-		if (!extensionValidation.isValid) {
-			throw new Error(extensionValidation.cause);
+		const clickToDialValidation = validateClickToDial(clickToDial);
+		if (!clickToDialValidation.isValid) {
+			throw new Error(clickToDialValidation.cause);
 		}
 
 		return httpClient

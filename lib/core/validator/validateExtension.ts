@@ -32,7 +32,7 @@ const validateExtension = (
 	}
 
 	return {
-		cause: ErrorMessage.VALIDATOR_INVALID_EXTENSION,
+		cause: `${ErrorMessage.VALIDATOR_INVALID_EXTENSION}: ${extension}`,
 		isValid: false,
 	};
 };

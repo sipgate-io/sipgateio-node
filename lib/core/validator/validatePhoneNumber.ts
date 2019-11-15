@@ -6,8 +6,8 @@ const validatePhoneNumber = (phoneNumber: string): ValidationResult => {
 
 	if (!phoneNumberRegex.test(phoneNumber)) {
 		return {
-			cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER,
-			isValid: false
+			cause: `${ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER}: ${phoneNumber}`,
+			isValid: false,
 		};
 	}
 

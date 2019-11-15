@@ -11,7 +11,12 @@ describe('ValidatePassword', () => {
 	`(
 		'validator returns $expected when $input is validated',
 		({ input, expected }) => {
-			expect(validatePassword(input)).toEqual(expected);
+			const output = validatePassword(input);
+			expect(output.isValid).toEqual(expected.isValid);
+
+			if (!output.isValid) {
+				expect(output.cause).toContain(expected.cause);
+			}
 		}
 	);
 });

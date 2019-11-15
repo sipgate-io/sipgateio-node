@@ -24,7 +24,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 		const fileContentValidationResult = validatePdfFileContent(fax.fileContent);
 
 		if (!fileContentValidationResult.isValid) {
-			throw fileContentValidationResult.cause;
+			throw new Error(fileContentValidationResult.cause);
 		}
 
 		if (!fax.faxlineId) {
