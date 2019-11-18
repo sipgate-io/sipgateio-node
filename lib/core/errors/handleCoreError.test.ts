@@ -1,5 +1,5 @@
-import { AuthenticationError } from './AuthenticationError';
 import { AxiosError, AxiosResponse } from 'axios';
+import { ErrorMessage } from './ErrorMessage';
 import handleCoreError from './handleCoreError';
 
 describe('handleCoreError', () => {
@@ -20,7 +20,7 @@ describe('handleCoreError', () => {
 			config: {},
 			response,
 		};
-		expect(handleCoreError(error)).toEqual(new AuthenticationError());
+		expect(handleCoreError(error)).toEqual(new Error(ErrorMessage.HTTP_401));
 	});
 
 	it('AccessError', () => {
@@ -40,9 +40,7 @@ describe('handleCoreError', () => {
 			config: {},
 			response,
 		};
-		expect(handleCoreError(error)).toEqual(
-			new AuthenticationError('Forbidden')
-		);
+		expect(handleCoreError(error)).toEqual(new Error(ErrorMessage.HTTP_403));
 	});
 
 	it('Catch all errors', () => {
