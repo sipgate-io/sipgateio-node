@@ -65,11 +65,6 @@ describe('SendFax', () => {
 
 	beforeAll(() => {
 		mockClient = {} as HttpClientModule;
-
-		// Used to make setTimeout call the passed callback immediately
-		// @ts-ignore
-		// eslint-disable-next-line
-		global.setTimeout = fn => fn();
 	});
 
 	test('fax is sent', async () => {
@@ -157,17 +152,16 @@ describe('SendFax', () => {
 
 		await faxModule.send({ recipient, fileContent, faxlineId });
 	});
+});
+
+describe('GetFaxStatus', () => {
+	let mockClient: HttpClientModule;
+
+	beforeAll(() => {
+		mockClient = {} as HttpClientModule;
+	});
 
 	test('throws exception when fax status could not be fetched', async () => {
-		mockClient.post = jest.fn().mockImplementationOnce(() => {
-			return Promise.resolve({
-				data: {
-					sessionId: 123,
-				},
-				status: 200,
-			});
-		});
-
 		mockClient.get = jest.fn().mockImplementationOnce(() => {
 			return Promise.reject({
 				response: {
@@ -178,81 +172,8 @@ describe('SendFax', () => {
 
 		const faxModule = createFaxModule(mockClient);
 
-		const recipient = '+4912368712';
-		const fileContent = validPDFBuffer;
-		const faxlineId = 'f0';
-
-		await expect(
-			faxModule.send({
-				faxlineId,
-				fileContent,
-				filename: 'testPdfFileName',
-				recipient,
-			})
-		).rejects.toThrowError(ErrorMessage.FAX_NOT_FOUND);
-	});
-
-	test('throws exception when fax status is failed', async () => {
-		const faxModule = createFaxModule(mockClient);
-
-		mockClient.post = jest.fn().mockImplementationOnce(() => {
-			return Promise.resolve({
-				data: {
-					sessionId: 123,
-				},
-				status: 200,
-			});
-		});
-
-		mockClient.get = jest
-			.fn()
-			.mockImplementationOnce(() =>
-				Promise.resolve({ data: { type: 'FAX', faxStatusType: 'FAILED' } })
-			);
-
-		const recipient = '+4912368712';
-		const fileContent = validPDFBuffer;
-		const faxlineId = 'f0';
-
-		await expect(
-			faxModule.send({
-				faxlineId,
-				fileContent,
-				filename: 'testPdfFileName',
-				recipient,
-			})
-		).rejects.toThrowError(ErrorMessage.FAX_COULD_NOT_BE_SENT);
-	});
-
-	test('throws exception when timeout is exceeded', async () => {
-		const faxModule = createFaxModule(mockClient);
-
-		mockClient.post = jest.fn().mockImplementationOnce(() => {
-			return Promise.resolve({
-				data: {
-					sessionId: 123123,
-				},
-				status: 200,
-			});
-		});
-
-		mockClient.get = jest.fn().mockImplementation(() =>
-			Promise.resolve({
-				data: { type: 'FAX', faxStatusType: 'PENDING' },
-			})
+		await expect(faxModule.getFaxStatus('12345')).rejects.toThrowError(
+			ErrorMessage.FAX_NOT_FOUND
 		);
-
-		const recipient = '+4912368712';
-		const fileContent = validPDFBuffer;
-		const faxlineId = 'f0';
-
-		await expect(
-			faxModule.send({
-				faxlineId,
-				fileContent,
-				filename: 'testPdfFileName',
-				recipient,
-			})
-		).rejects.toThrowError(ErrorMessage.FAX_FETCH_STATUS_TIMED_OUT);
 	});
 });
