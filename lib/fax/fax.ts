@@ -10,17 +10,15 @@ import {
 	UserInfo,
 } from '../core/models';
 import { FaxModule } from './fax.module';
-import { HttpClientModule, HttpError, HttpResponse } from '../core/httpClient';
+import { HttpClientModule, HttpError } from '../core/httpClient';
 import { getUserInfo } from '../core/userHelper';
 import { validatePdfFileContent } from '../core/validator';
 import handleCoreError from '../core/errors/handleCoreError';
 
-const POLLING_INTERVAL = 5000;
-const POLLING_TIMEOUT = 30 * 60 * 1000;
-
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
-	async send(userFax: Fax): Promise<void> {
-		const fax = userFax;
+	async send(faxObject: Fax): Promise<SendFaxSessionResponse> {
+		const fax = faxObject;
+
 		const fileContentValidationResult = validatePdfFileContent(fax.fileContent);
 
 		if (!fileContentValidationResult.isValid) {
@@ -43,13 +41,22 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 			recipient: fax.recipient,
 		};
 
-		const sendFaxSessionResponse = await client
+		return await client
 			.post<SendFaxSessionResponse>('/sessions/fax', faxDTO)
+			.then(response => response.data)
 			.catch(error => Promise.reject(handleError(error)));
+	},
+	async getFaxStatus(sessionId: string): Promise<FaxStatusType> {
+		return client
+			.get<HistoryFaxResponse>(`/history/${sessionId}`)
+			.then(({ data }) => {
+				if (!data.type || data.type !== 'FAX') {
+					throw new Error(ErrorMessage.FAX_NOT_A_FAX);
+				}
 
-		await fetchFaxStatus(client, sendFaxSessionResponse.data.sessionId).catch(
-			error => Promise.reject(handleError(error))
-		);
+				return data.faxStatusType;
+			})
+			.catch(error => Promise.reject(handleError(error)));
 	},
 });
 
@@ -66,42 +73,11 @@ const getFirstFaxLineId = async (
 	client: HttpClientModule,
 	userInfo: UserInfo
 ): Promise<string> => {
-	const { sub } = userInfo;
-	const [{ id }] = await getUserFaxLines(client, sub);
-	return id;
-};
-
-const fetchFaxStatus = async (
-	client: HttpClientModule,
-	sessionId: string
-): Promise<HttpResponse | undefined> => {
-	let untilTimeout = POLLING_TIMEOUT;
-
-	while (untilTimeout > 0) {
-		await sleep(POLLING_INTERVAL);
-		untilTimeout -= POLLING_INTERVAL;
-
-		const { data } = await client.get<HistoryFaxResponse>(
-			`/history/${sessionId}`
-		);
-
-		if (!data) {
-			throw new Error(ErrorMessage.FAX_NO_DATA_IN_FETCH_STATUS);
-		}
-
-		if (!data.type || data.type !== 'FAX') {
-			throw new Error(ErrorMessage.FAX_NOT_A_FAX);
-		}
-
-		if (data.faxStatusType === FaxStatusType.SENT) {
-			return;
-		}
-
-		if (data.faxStatusType === FaxStatusType.FAILED) {
-			throw new Error(ErrorMessage.FAX_COULD_NOT_BE_SENT);
-		}
-	}
-	throw new Error(ErrorMessage.FAX_FETCH_STATUS_TIMED_OUT);
+	return getUserFaxLines(client, userInfo.sub).then(faxlines =>
+		faxlines.length > 0
+			? faxlines[0].id
+			: Promise.reject(new Error(ErrorMessage.FAX_NO_FAXLINE))
+	);
 };
 
 export const getUserFaxLines = async (
@@ -113,9 +89,6 @@ export const getUserFaxLines = async (
 		.then(response => response.data.items)
 		.catch(error => Promise.reject(handleError(error)));
 };
-
-const sleep = async (time: number): Promise<NodeJS.Timeout> =>
-	new Promise(resolve => setTimeout(resolve, time));
 
 const handleError = (error: HttpError): Error => {
 	if (!error.response) {

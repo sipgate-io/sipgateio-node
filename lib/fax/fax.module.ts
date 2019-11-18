@@ -1,5 +1,6 @@
-import { Fax } from '../core/models';
+import { Fax, FaxStatusType, SendFaxSessionResponse } from '../core/models';
 
 export interface FaxModule {
-	send: (fax: Fax) => Promise<void>;
+	send: (fax: Fax) => Promise<SendFaxSessionResponse>;
+	getFaxStatus: (sessionId: string) => Promise<FaxStatusType>;
 }
