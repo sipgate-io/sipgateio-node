@@ -1,22 +1,15 @@
-import { CallModule, createCallModule } from '../../call';
-import { FaxModule, createFaxModule } from '../../fax';
-import { SMSModule, createSMSModule } from '../../sms';
-import { SettingsModule, createSettingsModule } from '../../settings';
+import { AuthCredentials, SipgateClient } from './sipgateClient.module';
+import { createCallModule } from '../../call';
+import { createFaxModule } from '../../fax';
 import { createHttpClient } from '../httpClient';
+import { createSMSModule } from '../../sms';
+import { createSettingsModule } from '../../settings';
 
-export interface SipgateClient {
-	sms: SMSModule;
-	fax: FaxModule;
-	call: CallModule;
-	settings: SettingsModule;
-}
-
-export const createClient = (
-	username: string,
-	password: string
-): SipgateClient => {
-	const httpClient = createHttpClient(username, password);
-
+export const createClient = (credentials: AuthCredentials): SipgateClient => {
+	const httpClient = createHttpClient(
+		credentials.username,
+		credentials.password
+	);
 	return {
 		call: createCallModule(httpClient),
 		fax: createFaxModule(httpClient),

@@ -3,7 +3,7 @@ import { createClient } from '../../lib/core/sipgateClient';
 const password = process.env.SIPGATE_PASSWORD || '';
 const username = process.env.SIPGATE_USERNAME || '';
 
-const client = createClient(username, password);
+const client = createClient({ username, password });
 
 const caller = process.env.SIPGATE_CALLER || '';
 const callee = process.env.SIPGATE_CALLEE || '';

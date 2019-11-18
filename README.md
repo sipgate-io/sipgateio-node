@@ -42,7 +42,10 @@ Initiate a call between two phones of your choice, no matter if inside your sipg
 ### Creating a Client
 
 ```typescript
-const client = createClient('<your email-address>', '<your password>');
+const client = createClient({
+	username: '<your username',
+	password: '<your password>',
+});
 ```
 
 The `createClient` method accepts your valid sipgate credentials and returns a sipgate.io Client.

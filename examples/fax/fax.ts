@@ -6,7 +6,7 @@ import { createClient } from '../../lib/core/sipgateClient';
 	const password = process.env.SIPGATE_PASSWORD || '';
 	const username = process.env.SIPGATE_USERNAME || '';
 
-	const client = createClient(username, password);
+	const client = createClient({ username, password });
 
 	const faxlineId = process.env.SIPGATE_FAX_EXTENSION || '';
 	const recipient = process.env.SIPGATE_FAX_RECIPIENT || '';
