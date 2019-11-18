@@ -1,4 +1,4 @@
-import { ErrorMessage, ExtensionError } from '../core/errors';
+import { ErrorMessage } from '../core/errors';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { SMSModule } from './sms.module';
 import {
@@ -76,7 +76,7 @@ const handleError = (error: HttpError): Error => {
 	}
 
 	if (error.response.status === 403) {
-		return new ExtensionError(ErrorMessage.SMS_INVALID_EXTENSION);
+		return new Error(ErrorMessage.SMS_INVALID_EXTENSION);
 	}
 
 	return handleCoreError(error);

@@ -27,5 +27,7 @@ export enum ErrorMessage {
 	CALL_BAD_REQUEST = 'Invalid Call object',
 
 	SETTINGS_BAD_REQUEST = 'Invalid Settings object',
-	NETWORK_ERROR = 'getaddrinfo ENOTFOUND',
+
+	HTTP_401 = 'Unauthenticated',
+	HTTP_403 = 'Forbidden',
 }

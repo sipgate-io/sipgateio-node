@@ -1,4 +1,4 @@
-import { AuthenticationError } from './AuthenticationError';
+import { ErrorMessage } from './ErrorMessage';
 import { HttpError } from '../httpClient';
 
 export default (error: HttpError): Error => {
@@ -7,11 +7,11 @@ export default (error: HttpError): Error => {
 	}
 
 	if (error.response.status === 401) {
-		return new AuthenticationError();
+		return new Error(ErrorMessage.HTTP_401);
 	}
 
 	if (error.response.status === 403) {
-		return new AuthenticationError('Forbidden');
+		return new Error(ErrorMessage.HTTP_403);
 	}
 
 	return new Error(error.message);
