@@ -24,8 +24,6 @@ export enum ErrorMessage {
 	CALL_INSUFFICIENT_FUNDS = 'Insufficient funds',
 	CALL_BAD_REQUEST = 'Invalid Call object',
 
-	SETTINGS_BAD_REQUEST = 'Invalid Settings object',
-
 	HTTP_401 = 'Unauthenticated',
 	HTTP_403 = 'Forbidden',
 }
