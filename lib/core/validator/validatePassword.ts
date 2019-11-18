@@ -7,7 +7,7 @@ const validatePassword = (password: string): ValidationResult => {
 	if (!passwordIsValid) {
 		return {
 			isValid: false,
-			cause: `${ErrorMessage.VALIDATOR_INVALID_PASSWORD}`,
+			cause: ErrorMessage.VALIDATOR_INVALID_PASSWORD,
 		};
 	}
 
