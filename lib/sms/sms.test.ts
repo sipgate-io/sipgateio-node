@@ -1,6 +1,5 @@
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
-import { SMSModule } from './sms.module';
 import {
 	ShortMessage,
 	SmsCallerId,
@@ -13,37 +12,43 @@ import {
 	getSmsCallerIds,
 	getUserSMSExtensions,
 } from './sms';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
 
 describe('SMS Module', () => {
-	const instance = axios.create();
-	const mock = new MockAdapter(instance);
-	const smsModule = createSMSModule(instance);
+	let mockClient: HttpClientModule;
 
 	beforeEach(() => {
-		mock.reset();
+		mockClient = {} as HttpClientModule;
 	});
 
 	test('It sends a SMS successfully', async () => {
-		mock.onPost('/sessions/sms').reply(200, '');
+		const smsModule = createSMSModule(mockClient);
+
+		mockClient.post = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve({ data: {} }));
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId',
+			smsId: 's0',
 		};
 
 		await expect(smsModule.send(message)).resolves.not.toThrow();
 	});
 
-	test('It sends an invalid SMS with error', async () => {
-		mock.onPost('/sessions/sms').reply(403);
+	test('It sends an invalid SMS with smsId which does not exist', async () => {
+		const smsModule = createSMSModule(mockClient);
+
+		mockClient.post = jest
+			.fn()
+			.mockImplementationOnce(() =>
+				Promise.reject({ response: { status: 403, data: {} } })
+			);
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'nonValidExtensionId',
+			smsId: 's999',
 		};
 
 		await expect(smsModule.send(message)).rejects.toThrowError(
@@ -51,23 +56,42 @@ describe('SMS Module', () => {
 		);
 	});
 
+	test('It throws when sending an SMS with an invalid smsId', async () => {
+		const smsModule = createSMSModule(mockClient);
+
+		const message: ShortMessage = {
+			message: 'ValidMessage',
+			recipient: '015739777777',
+			smsId: 'xyz123',
+		};
+
+		await expect(smsModule.send(message)).rejects.toThrowError(
+			`${ErrorMessage.VALIDATOR_INVALID_EXTENSION}: ${message.smsId}`
+		);
+	});
 	test('It sends SMS with no recipient', async () => {
+		const smsModule = createSMSModule(mockClient);
+
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '',
-			smsId: 'validExtensionId',
+			smsId: 's0',
 		};
+
 		await expect(smsModule.send(message)).rejects.toThrowError(
 			ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER
 		);
 	});
 
 	test('It sends SMS with empty message', async () => {
+		const smsModule = createSMSModule(mockClient);
+
 		const message: ShortMessage = {
 			message: '',
 			recipient: '015739777777',
-			smsId: 'validExtensionId',
+			smsId: 's0',
 		};
+
 		await expect(smsModule.send(message)).rejects.toThrowError(
 			ErrorMessage.SMS_INVALID_MESSAGE
 		);
@@ -75,21 +99,18 @@ describe('SMS Module', () => {
 });
 
 describe('schedule sms', () => {
-	let mockedSmsModule: SMSModule;
-	const instance = axios.create();
-	const smsModule = createSMSModule(instance);
-
 	let mockClient: HttpClientModule;
 	beforeAll(() => {
 		mockClient = {} as HttpClientModule;
-		mockedSmsModule = createSMSModule(mockClient);
 	});
 
 	test('should use sendAt', async () => {
+		const smsModule = createSMSModule(mockClient);
+
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId',
+			smsId: 's0',
 		};
 
 		const date: Date = new Date(
@@ -102,7 +123,7 @@ describe('schedule sms', () => {
 				status: 200,
 			});
 		});
-		await mockedSmsModule.send(message, date);
+		await smsModule.send(message, date);
 
 		expect(mockClient.post).toBeCalledWith('/sessions/sms', {
 			...message,
@@ -111,10 +132,12 @@ describe('schedule sms', () => {
 	});
 
 	test('should throw an "SMS_TIME_MUST_BE_IN_FUTURE" error when using current date ', async () => {
+		const smsModule = createSMSModule(mockClient);
+
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId',
+			smsId: 's0',
 		};
 
 		const date: Date = new Date(
@@ -127,10 +150,12 @@ describe('schedule sms', () => {
 	});
 
 	test('should return an "SMS_TIME_TOO_FAR_IN_FUTURE" when providing a sendAt greater than 30 days in advance', async () => {
+		const smsModule = createSMSModule(mockClient);
+
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId',
+			smsId: 's0',
 		};
 
 		const date: Date = new Date(
@@ -143,10 +168,12 @@ describe('schedule sms', () => {
 	});
 
 	test('should return an invalid date format error', async () => {
+		const smsModule = createSMSModule(mockClient);
+
 		const message: ShortMessage = {
 			message: 'ValidMessage',
 			recipient: '015739777777',
-			smsId: 'validExtensionId',
+			smsId: 's0',
 		};
 
 		const date: Date = new Date('08 bar 2015');
