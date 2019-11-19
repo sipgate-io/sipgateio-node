@@ -1,4 +1,5 @@
 import { ErrorMessage } from '../core/errors';
+import { ExtensionType } from '../core/validator/validateExtension';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { SMSModule } from './sms.module';
 import {
@@ -9,14 +10,25 @@ import {
 	SmsExtension,
 	SmsExtensions,
 } from '../core/models';
-import { validatePhoneNumber } from '../core/validator';
-import { validateSendAt } from '../core/validator';
+import {
+	validateExtension,
+	validatePhoneNumber,
+	validateSendAt,
+} from '../core/validator';
 import handleCoreError from '../core/errors/handleCoreError';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 	async send(sms: ShortMessage, sendAt?: Date): Promise<void> {
 		const smsDTO: ShortMessageDTO = { ...sms };
 		const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
+
+		const smsExtensionValidationResult = validateExtension(sms.smsId, [
+			ExtensionType.SMS,
+		]);
+
+		if (!smsExtensionValidationResult.isValid) {
+			throw new Error(smsExtensionValidationResult.cause);
+		}
 
 		if (!phoneNumberValidationResult.isValid) {
 			throw new Error(phoneNumberValidationResult.cause);
@@ -32,8 +44,9 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 			smsDTO.sendAt = sendAt.getTime() / 1000;
 		}
 
-		await client
+		return await client
 			.post('/sessions/sms', smsDTO)
+			.then(() => {})
 			.catch(error => Promise.reject(handleError(error)));
 	},
 });
