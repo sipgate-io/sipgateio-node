@@ -48,7 +48,16 @@ const client = createClient({
 });
 ```
 
-The `createClient` method accepts your valid sipgate credentials and returns a sipgate.io Client.
+Possible Authentication Objects
+
+```typescript
+interface BasicAuthCredentials {
+	username: string;
+	password: string;
+}
+```
+
+The `createClient` method accepts your valid sipgate credentials in the `AuthCredentials` type and returns a sipgate.io Client.
 The client contains as members the supported modules (e.g. `sms`, `fax`, `call`).
 
 ### SMS
@@ -73,13 +82,14 @@ interface ShortMessage {
 
 ### Fax
 
-The fax module provides the following function:
+The fax module provides the following functions:
 
 ```typescript
-async function send(fax: Fax): Promise<void>;
+async function send(fax: Fax): Promise<SendFaxSessionResponse>;
+async function getFaxStatus(sessionId: string): Promise<FaxStatusType>;
 ```
 
-The `Fax` type requires the following fields:
+The `send` function allows you to send a fax by passing the following fields:
 
 ```typescript
 interface Fax {
@@ -87,6 +97,26 @@ interface Fax {
 	fileContent: Buffer;
 	filename?: string;
 	faxlineId?: string;
+}
+```
+
+and returns
+
+```typescript
+interface SendFaxSessionResponse {
+	sessionId: string;
+}
+```
+
+By using `getFaxStatus` and passing the `sessionId` you received from the `send` function, you will receive one of the following values:
+
+```typescript
+enum FaxStatusType {
+	SENT = 'SENT',
+	PENDING = 'PENDING',
+	FAILED = 'FAILED',
+	SENDING = 'SENDING',
+	SCHEDULED = 'SCHEDULED',
 }
 ```
 
