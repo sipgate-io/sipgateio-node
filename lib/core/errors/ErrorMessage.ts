@@ -3,7 +3,7 @@ export enum ErrorMessage {
 	VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS = "Whitelist allows only 'p' and 'g' extensions",
 	VALIDATOR_INVALID_EMAIL = 'Invalid email',
 	VALIDATOR_INVALID_PASSWORD = 'Invalid password',
-	VALIDATOR_INVALID_PHONE_NUMBER = 'Invalid phone number',
+	VALIDATOR_INVALID_PHONE_NUMBER = 'Invalid phone number (please provide number in E.164 format):',
 	VALIDATOR_INVALID_PDF_MIME_TYPE = 'Invalid PDF file',
 	VALIDATOR_INVALID_WEBHOOK_URL = 'Invalid webhook URL',
 	VALIDATOR_INVALID_CALLER = 'Caller is not a valid extension or phone number',
