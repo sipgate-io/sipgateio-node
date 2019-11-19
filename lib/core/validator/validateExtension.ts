@@ -9,6 +9,7 @@ enum ExtensionType {
 	GROUP = 'g',
 	IVR = 'h',
 	SIM = 'i',
+	SMS = 's',
 	PERSON = 'p',
 	QUEUE = 'q',
 	CALLTHROUGH = 'r',
