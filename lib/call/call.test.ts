@@ -24,8 +24,8 @@ describe('Call Module', () => {
 			});
 		});
 		const validExtension = 'e0';
-		const validCalleeNumber = '+49123456789123';
-		const validCallerId = '+49123456789';
+		const validCalleeNumber = '+4915177777777';
+		const validCallerId = '+4915122222222';
 
 		const clickToDial: ClickToDial = {
 			callee: validCalleeNumber,
@@ -41,8 +41,8 @@ describe('Call Module', () => {
 
 	it('should throw an exception for malformed extension', async () => {
 		const invalidExtensionId = 'e-18';
-		const validCalleeNumber = '+49123456789123';
-		const validCallerId = '+49123456789';
+		const validCalleeNumber = '+4915177777777';
+		const validCallerId = '+4915122222222';
 
 		const clickToDial: ClickToDial = {
 			callee: validCalleeNumber,
@@ -65,8 +65,8 @@ describe('Call Module', () => {
 		});
 
 		const validExtension = 'e8';
-		const validCalleeNumber = '+49123456789123';
-		const validCallerId = '+49123456789';
+		const validCalleeNumber = '+4915177777777';
+		const validCallerId = '+4915122222222';
 
 		const clickToDial: ClickToDial = {
 			callee: validCalleeNumber,

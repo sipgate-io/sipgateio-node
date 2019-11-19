@@ -4,7 +4,7 @@ import { validatePhoneNumber } from './validatePhoneNumber';
 describe('Phone validation', () => {
 	test.each`
 		input               | expected
-		${'015739777777'}   | ${{ isValid: true }}
+		${'+4915739777777'} | ${{ isValid: true }}
 		${'+4915739777777'} | ${{ isValid: true }}
 		${'text'}           | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
 		${' '}              | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER }}
@@ -15,7 +15,7 @@ describe('Phone validation', () => {
 			const output = validatePhoneNumber(input);
 			expect(output.isValid).toEqual(expected.isValid);
 
-			if (!output.isValid) {
+			if (output.isValid === false) {
 				expect(output.cause).toContain(expected.cause);
 			}
 		}

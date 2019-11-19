@@ -30,7 +30,7 @@ describe('SMS Module', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '015739777777',
+			recipient: '+4915739777777',
 			smsId: 'validExtensionId',
 		};
 
@@ -42,7 +42,7 @@ describe('SMS Module', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '015739777777',
+			recipient: '+4915739777777',
 			smsId: 'nonValidExtensionId',
 		};
 
@@ -65,7 +65,7 @@ describe('SMS Module', () => {
 	test('It sends SMS with empty message', async () => {
 		const message: ShortMessage = {
 			message: '',
-			recipient: '015739777777',
+			recipient: '+4915739777777',
 			smsId: 'validExtensionId',
 		};
 		await expect(smsModule.send(message)).rejects.toThrowError(
@@ -88,7 +88,7 @@ describe('schedule sms', () => {
 	test('should use sendAt', async () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '015739777777',
+			recipient: '+4915739777777',
 			smsId: 'validExtensionId',
 		};
 
@@ -113,7 +113,7 @@ describe('schedule sms', () => {
 	test('should throw an "SMS_TIME_MUST_BE_IN_FUTURE" error when using current date ', async () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '015739777777',
+			recipient: '+4915739777777',
 			smsId: 'validExtensionId',
 		};
 
@@ -129,7 +129,7 @@ describe('schedule sms', () => {
 	test('should return an "SMS_TIME_TOO_FAR_IN_FUTURE" when providing a sendAt greater than 30 days in advance', async () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '015739777777',
+			recipient: '+4915739777777',
 			smsId: 'validExtensionId',
 		};
 
@@ -145,7 +145,7 @@ describe('schedule sms', () => {
 	test('should return an invalid date format error', async () => {
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '015739777777',
+			recipient: '+4915739777777',
 			smsId: 'validExtensionId',
 		};
 
