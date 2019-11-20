@@ -1,5 +1,6 @@
 import { AuthCredentials, SipgateClient } from './sipgateClient.module';
 import { createCallModule } from '../../call';
+import { createContactsModule } from '../../contacts';
 import { createFaxModule } from '../../fax';
 import { createHttpClient } from '../httpClient';
 import { createSMSModule } from '../../sms';
@@ -15,5 +16,6 @@ export const createClient = (credentials: AuthCredentials): SipgateClient => {
 		fax: createFaxModule(httpClient),
 		sms: createSMSModule(httpClient),
 		settings: createSettingsModule(httpClient),
+		contacts: createContactsModule(httpClient),
 	};
 };

@@ -1,4 +1,5 @@
 import { CallModule } from '../../call';
+import { ContactsModule } from '../../contacts';
 import { FaxModule } from '../../fax';
 import { SMSModule } from '../../sms';
 import { SettingsModule } from '../../settings';
@@ -8,6 +9,7 @@ export interface SipgateClient {
 	fax: FaxModule;
 	call: CallModule;
 	settings: SettingsModule;
+	contacts: ContactsModule;
 }
 
 export interface BasicAuthCredentials {

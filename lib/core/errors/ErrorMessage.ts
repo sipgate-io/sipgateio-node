@@ -24,6 +24,8 @@ export enum ErrorMessage {
 	CALL_INSUFFICIENT_FUNDS = 'Insufficient funds',
 	CALL_BAD_REQUEST = 'Invalid Call object',
 
+	CONTACTS_INVALID_CSV = 'Invalid CSV string',
+
 	HTTP_401 = 'Unauthenticated',
 	HTTP_403 = 'Forbidden',
 }
