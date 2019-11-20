@@ -1,4 +1,4 @@
-import { ContactIndize, ContactsModule } from './contacts.module';
+import { ContactIndices, ContactsModule } from './contacts.module';
 import { ContactsDTO } from '../core/models/contacts.model';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule, HttpError } from '../core/httpClient';
@@ -8,70 +8,59 @@ export const createContactsModule = (
 	client: HttpClientModule
 ): ContactsModule => ({
 	async importFromCsvString(content: string): Promise<void> {
-		const contactsDTO = encodeCsvString(content);
+		const parsedCsv = parseCsvString(content);
+		const encodedCsv = btoa(parsedCsv);
+		const contactsDTO: ContactsDTO = { base64Content: encodedCsv };
+
 		await client
 			.post('/contacts/import/csv', contactsDTO)
 			.catch(error => Promise.reject(handleError(error)));
 	},
 });
 
-const encodeCsvString = (content: string): ContactsDTO => {
-	const csvLines: string[] = content.split(/\n|\r\n/);
-
-	const csvLinesForUpload = parseAndCheckCSV(csvLines);
-
-	const encoded = btoa(csvLinesForUpload);
-
-	const contactsDTO: ContactsDTO = { base64Content: encoded };
-	return contactsDTO;
-};
-
-const getCsvHeader = (csvLines: string[]): string[] => {
-	return csvLines[0].split(',');
-};
-
 const findIgnoreCaseIndex = (array: string[], needle: string): number => {
 	return array.findIndex(value => value.toLowerCase() === needle.toLowerCase());
 };
 
-export const parseAndCheckCSV = (csvLines: string[]): string => {
+export const parseCsvString = (csvString: string): string => {
+	const csvLines: string[] = csvString.split(/\n|\r\n/);
+
 	if (csvLines.length < 2) {
 		throw new Error(ErrorMessage.CONTACTS_INVALID_CSV);
 	}
 
-	const csvHeader: string[] = getCsvHeader(csvLines);
-	const contactIndize: ContactIndize = {
+	const csvHeader: string[] = csvLines[0].split(',');
+	const columnIndices: ContactIndices = {
 		firstname: findIgnoreCaseIndex(csvHeader, 'firstname'),
 		lastname: findIgnoreCaseIndex(csvHeader, 'lastname'),
 		number: findIgnoreCaseIndex(csvHeader, 'number'),
 	};
 
-	if (Object.values(contactIndize).filter(value => value < 0).length !== 0) {
-		throw Error(ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS);
+	if (Object.values(columnIndices).filter(value => value < 0).length !== 0) {
+		throw new Error(ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS);
 	}
 
 	csvLines.shift();
 
-	const maxIndizeLength = Math.max(
-		contactIndize.firstname,
-		contactIndize.lastname,
-		contactIndize.number
+	const maxColumnIndex = Math.max(
+		columnIndices.firstname,
+		columnIndices.lastname,
+		columnIndices.number
 	);
 
 	const lines = csvLines
-		.map(value => value.split(','))
-		.filter(columns => columns.length >= maxIndizeLength)
+		.map(lines => lines.split(','))
 		.map(columns => {
-			if (columns.length >= maxIndizeLength + 1) {
-				return `${columns[contactIndize.firstname]},${
-					columns[contactIndize.lastname]
-				},${columns[contactIndize.number]}`;
+			if (columns.length >= maxColumnIndex + 1) {
+				return `${columns[columnIndices.firstname]},${
+					columns[columnIndices.lastname]
+				},${columns[columnIndices.number]}`;
 			}
 			throw Error(ErrorMessage.CONTACTS_MISSING_VALUES);
 		})
 		.join('\n');
 
-	return `firstname,lastname,number\n${lines}`;
+	return 'firstname,lastname,number\n'.concat(lines);
 };
 
 const handleError = (error: HttpError): Error => {
