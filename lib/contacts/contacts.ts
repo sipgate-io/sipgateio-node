@@ -18,10 +18,8 @@ export const createContactsModule = (
 	},
 });
 
-const findIndexIgnoreCase = (array: string[], needle: string): number => {
-	const index = array.findIndex(
-		value => value.toLowerCase() === needle.toLowerCase()
-	);
+const findColumnIndex = (array: string[], needle: string): number => {
+	const index = array.indexOf(needle);
 	if (index < 0) {
 		throw new Error(`${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}: ${needle}`);
 	}
@@ -35,11 +33,13 @@ export const parseCsvString = (csvString: string): string => {
 		throw new Error(ErrorMessage.CONTACTS_INVALID_CSV);
 	}
 
-	const csvHeader: string[] = csvLines[0].split(',');
+	const csvHeader: string[] = csvLines[0]
+		.split(',')
+		.map(header => header.toLowerCase());
 	const columnIndices: ContactIndices = {
-		firstname: findIndexIgnoreCase(csvHeader, 'firstname'),
-		lastname: findIndexIgnoreCase(csvHeader, 'lastname'),
-		number: findIndexIgnoreCase(csvHeader, 'number'),
+		firstname: findColumnIndex(csvHeader, 'firstname'),
+		lastname: findColumnIndex(csvHeader, 'lastname'),
+		number: findColumnIndex(csvHeader, 'number'),
 	};
 
 	csvLines.shift();
