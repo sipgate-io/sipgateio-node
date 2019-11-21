@@ -28,7 +28,9 @@ const findColumnIndex = (array: string[], needle: string): number => {
 };
 
 const projectCsvString = (csvString: string): string => {
-	const csvLines: string[] = csvString.split(/\n|\r\n/);
+	const csvLines: string[] = csvString
+		.split(/\n|\r\n/)
+		.filter(line => line !== '');
 
 	if (csvLines.length < 2) {
 		throw new Error(ErrorMessage.CONTACTS_INVALID_CSV);
