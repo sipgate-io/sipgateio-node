@@ -1,12 +1,35 @@
+import { ContactsDTO } from '../core/models/contacts.model';
+import { ContactsModule } from './contacts.module';
 import { ErrorMessage } from '../core/errors';
-import { parseCsvString } from './contacts';
+import { HttpClientModule } from '../core/httpClient';
+import { createContactsModule, parseCsvString } from './contacts';
+import atob from 'atob';
 
 describe('Call Module', () => {
-	it('should parse the csv successfully', () => {
-		const EXAMPLE_STRING = `gender,lastname,firstname,number\nm,turing,theodor,number`;
-		const EXPECTED_STRING = `firstname,lastname,number\ntheodor,turing,number`;
+	let contactsModule: ContactsModule;
+	let mockClient: HttpClientModule;
 
-		expect(parseCsvString(EXAMPLE_STRING)).toBe(EXPECTED_STRING);
+	beforeEach(() => {
+		mockClient = {} as HttpClientModule;
+		contactsModule = createContactsModule(mockClient);
+	});
+
+	it('should parse csv with extra fields successfully', async () => {
+		let csvContent = '';
+		mockClient.post = jest
+			.fn()
+			.mockImplementation((_, contactsDTO: ContactsDTO) => {
+				csvContent = atob(contactsDTO.base64Content);
+				return Promise.resolve({
+					status: 204,
+				});
+			});
+
+		const excessiveValidCsv = `gender,lastname,firstname,number\nm,turing,theodor,number`;
+		const expected = `firstname,lastname,number\ntheodor,turing,number`;
+
+		await contactsModule.importFromCsvString(excessiveValidCsv);
+		expect(csvContent).toEqual(expected);
 	});
 
 	it('should print an Error, if the header does not contain "firstname","lastname" and "number"', () => {
