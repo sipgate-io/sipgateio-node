@@ -1,5 +1,5 @@
-import { ContactIndices, ContactsModule } from './contacts.module';
 import { ContactsDTO } from '../core/models/contacts.model';
+import { ContactsModule } from './contacts.module';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import handleCoreError from '../core/errors/handleCoreError';
@@ -36,7 +36,7 @@ export const parseCsvString = (csvString: string): string => {
 	const csvHeader: string[] = csvLines[0]
 		.split(',')
 		.map(header => header.toLowerCase());
-	const columnIndices: ContactIndices = {
+	const columnIndices = {
 		firstname: findColumnIndex(csvHeader, 'firstname'),
 		lastname: findColumnIndex(csvHeader, 'lastname'),
 		number: findColumnIndex(csvHeader, 'number'),
