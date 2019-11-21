@@ -56,11 +56,11 @@ describe('Contacts Module', () => {
 		${'\nm,turing\nd,foo,dummy'}                   | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
 		${'\n\nd,foo,dummy'}                           | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
 	`(
-		'throws $expected when $input is given (some values are missing)',
-		({ input, expected }) => {
-			expect(contactsModule.importFromCsvString(input)).rejects.toThrowError(
-				expected
-			);
+		'throws $expected when $input is given (some fields are missing)',
+		async ({ input, expected }) => {
+			await expect(
+				contactsModule.importFromCsvString(input)
+			).rejects.toThrowError(expected);
 		}
 	);
 
@@ -70,11 +70,11 @@ describe('Contacts Module', () => {
 		${'firstname,lastname,number\nm,turing,000\na,000,200\na,b'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
 		${'firstname,lastname,number\nturing,000\na,000,c\na,b,000'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
 	`(
-		'throws $expected when $input is given (some values are missing)',
-		({ input, expected }) => {
-			expect(contactsModule.importFromCsvString(input)).rejects.toThrowError(
-				expected
-			);
+		'throws $expected when $input is given (some rows missing values)',
+		async ({ input, expected }) => {
+			await expect(
+				contactsModule.importFromCsvString(input)
+			).rejects.toThrowError(expected);
 		}
 	);
 });
