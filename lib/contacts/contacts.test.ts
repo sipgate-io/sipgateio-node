@@ -2,7 +2,7 @@ import { ContactsDTO } from '../core/models/contacts.model';
 import { ContactsModule } from './contacts.module';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
-import { createContactsModule, parseCsvString } from './contacts';
+import { createContactsModule } from './contacts';
 import atob from 'atob';
 
 describe('Call Module', () => {
@@ -32,19 +32,36 @@ describe('Call Module', () => {
 		expect(csvContent).toEqual(expected);
 	});
 
-	it('should print an Error, if the header does not contain "firstname","lastname" and "number"', () => {
-		const EXAMPLE_STRING = `firstname,number\nm,turing\nd,foo,dummy`;
+	it.each`
+		input                                           | expected
+		${'firstname,lastname\nm,turing\nd,foo,dummy`'} | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS}
+		${`firstname,number\nm,turing\nd,foo,dummy`}    | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS}
+		${'\nfirstname,lastname,\nd,foo,dummy`'}        | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS}
+		${'lastname,number\nm,turing\nd,foo,dummy`'}    | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS}
+		${'foo,dummy,bar\nm,turing\nd,foo,dummy`'}      | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS}
+		${'\nm,turing\nd,foo,dummy`'}                   | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS}
+		${'\n\nd,foo,dummy`'}                           | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS}
+	`(
+		'throws $expected when $input is given (some values are missing)',
+		({ input, expected }) => {
+			expect(contactsModule.importFromCsvString(input)).rejects.toThrowError(
+				expected
+			);
+		}
+	);
 
-		expect(() => parseCsvString(EXAMPLE_STRING)).toThrowError(
-			ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS
-		);
-	});
-
-	it('should print an Error, if one value is missing in the CSV-Columns', () => {
-		const EXAMPLE_STRING = `firstname,lastname,number\nm,turing,000\na,000\na,b,000`;
-
-		expect(() => parseCsvString(EXAMPLE_STRING)).toThrowError(
-			ErrorMessage.CONTACTS_MISSING_VALUES
-		);
-	});
+	it.each`
+		input                                                        | expected
+		${'firstname,lastname,number\nm,turing,000\na,000\na,b,000'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
+		${'firstname,lastname,number\nm,turing,000\na,000,200\na,b'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
+		${'firstname,lastname,number\nturing,000\na,000,c\na,b,000'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
+		${'firstname,lastname,number\n,,\n\n'}                       | ${ErrorMessage.CONTACTS_MISSING_VALUES}
+	`(
+		'throws $expected when $input is given (some values are missing)',
+		({ input, expected }) => {
+			expect(contactsModule.importFromCsvString(input)).rejects.toThrowError(
+				expected
+			);
+		}
+	);
 });
