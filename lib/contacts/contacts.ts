@@ -8,7 +8,7 @@ export const createContactsModule = (
 	client: HttpClientModule
 ): ContactsModule => ({
 	async importFromCsvString(content: string): Promise<void> {
-		const parsedCsv = parseCsvString(content);
+		const parsedCsv = projectCsvString(content);
 		const encodedCsv = btoa(parsedCsv);
 		const contactsDTO: ContactsDTO = { base64Content: encodedCsv };
 
@@ -26,7 +26,7 @@ const findColumnIndex = (array: string[], needle: string): number => {
 	return index;
 };
 
-export const parseCsvString = (csvString: string): string => {
+export const projectCsvString = (csvString: string): string => {
 	const csvLines: string[] = csvString.split(/\n|\r\n/);
 
 	if (csvLines.length < 2) {
