@@ -13,7 +13,7 @@ describe('Call Module', () => {
 		const EXAMPLE_STRING = `firstname,number\nm,turing\nd,foo,dummy`;
 
 		expect(() => parseCsvString(EXAMPLE_STRING)).toThrowError(
-			ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS
+			ErrorMessage.CONTACTS_MISSING_HEADER_FIELD
 		);
 	});
 

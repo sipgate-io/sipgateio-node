@@ -19,7 +19,13 @@ export const createContactsModule = (
 });
 
 const findIndexIgnoreCase = (array: string[], needle: string): number => {
-	return array.findIndex(value => value.toLowerCase() === needle.toLowerCase());
+	const index = array.findIndex(
+		value => value.toLowerCase() === needle.toLowerCase()
+	);
+	if (index < 0) {
+		throw new Error(`${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}: ${needle}`);
+	}
+	return index;
 };
 
 export const parseCsvString = (csvString: string): string => {
@@ -35,10 +41,6 @@ export const parseCsvString = (csvString: string): string => {
 		lastname: findIndexIgnoreCase(csvHeader, 'lastname'),
 		number: findIndexIgnoreCase(csvHeader, 'number'),
 	};
-
-	if (Object.values(columnIndices).filter(value => value < 0).length !== 0) {
-		throw new Error(ErrorMessage.CONTACTS_MISSING_HEADER_FIELDS);
-	}
 
 	csvLines.shift();
 

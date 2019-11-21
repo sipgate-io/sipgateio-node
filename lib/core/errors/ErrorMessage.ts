@@ -25,7 +25,7 @@ export enum ErrorMessage {
 	CALL_BAD_REQUEST = 'Invalid Call object',
 
 	CONTACTS_INVALID_CSV = 'Invalid CSV string',
-	CONTACTS_MISSING_HEADER_FIELDS = 'Missing header fields in CSV',
+	CONTACTS_MISSING_HEADER_FIELD = 'Missing header field in CSV',
 	CONTACTS_MISSING_VALUES = 'Missing values in CSV',
 
 	HTTP_401 = 'Unauthenticated',
