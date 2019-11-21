@@ -9,13 +9,11 @@ describe('Contacts Module', () => {
 	let contactsModule: ContactsModule;
 	let mockClient: HttpClientModule;
 
-	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
-		contactsModule = createContactsModule(mockClient);
-	});
+	let csvContent: string;
 
-	it('should parse csv with extra fields successfully', async () => {
-		let csvContent = '';
+	beforeEach(() => {
+		csvContent = '';
+		mockClient = {} as HttpClientModule;
 		mockClient.post = jest
 			.fn()
 			.mockImplementation((_, contactsDTO: ContactsDTO) => {
@@ -24,11 +22,26 @@ describe('Contacts Module', () => {
 					status: 204,
 				});
 			});
+		contactsModule = createContactsModule(mockClient);
+	});
 
-		const excessiveValidCsv = `gender,lastname,firstname,number\nm,turing,theodor,number`;
-		const expected = `firstname,lastname,number\ntheodor,turing,number`;
-
-		await contactsModule.importFromCsvString(excessiveValidCsv);
+	it.each`
+		input                                                                   | expected
+		${'firstname,lastname,number\nAlan,Turing,+4921163553355'}              | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'lastname,firstname,number\nTuring,Alan,+4921163553355'}              | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'number,firstname,lastname\n+4921163553355,Alan,Turing'}              | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'firstname,number,lastname\nAlan,+4921163553355,Turing'}              | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'lastname,number,firstname\nTuring,+4921163553355,Alan'}              | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'number,lastname,firstname\n+4921163553355,Turing,Alan'}              | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'Firstname,Lastname,Number\nAlan,Turing,+4921163553355'}              | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'alias,number,lastname,firstname\nEnigma,+4921163553355,Turing,Alan'} | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'number,lastname,alias,firstname\n+4921163553355,Turing,Enigma,Alan'} | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'number,lastname,firstname,alias\n+4921163553355,Turing,Alan,Enigma'} | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'alias,number,lastname,firstname\n,+4921163553355,Turing,Alan'}       | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'number,lastname,alias,firstname\n+4921163553355,Turing,,Alan'}       | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+		${'number,lastname,firstname,alias\n+4921163553355,Turing,Alan,'}       | ${'firstname,lastname,number\nAlan,Turing,+4921163553355'}
+	`('should parse csv successfully', async ({ input, expected }) => {
+		await contactsModule.importFromCsvString(input);
 		expect(csvContent).toEqual(expected);
 	});
 
