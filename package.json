@@ -46,6 +46,7 @@
 		]
 	},
 	"devDependencies": {
+		"@types/atob": "^2.1.2",
 		"@types/btoa": "^1.2.3",
 		"@types/detect-browser": "^4.0.0",
 		"@types/jest": "^24.0.17",
