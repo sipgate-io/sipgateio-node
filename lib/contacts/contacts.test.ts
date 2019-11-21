@@ -77,4 +77,13 @@ describe('Contacts Module', () => {
 			).rejects.toThrowError(expected);
 		}
 	);
+
+	it.each`
+		input | expected
+		${''} | ${ErrorMessage.CONTACTS_INVALID_CSV}
+	`('throws $expected when $input is given', async ({ input, expected }) => {
+		await expect(
+			contactsModule.importFromCsvString(input)
+		).rejects.toThrowError(expected);
+	});
 });
