@@ -5,7 +5,7 @@ import { HttpClientModule } from '../core/httpClient';
 import { createContactsModule } from './contacts';
 import atob from 'atob';
 
-describe('Call Module', () => {
+describe('Contacts Module', () => {
 	let contactsModule: ContactsModule;
 	let mockClient: HttpClientModule;
 
