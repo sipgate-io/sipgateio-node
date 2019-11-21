@@ -47,14 +47,14 @@ describe('Contacts Module', () => {
 	});
 
 	it.each`
-		input                                           | expected
-		${'firstname,lastname\nm,turing\nd,foo,dummy`'} | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${`firstname,number\nm,turing\nd,foo,dummy`}    | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'\nfirstname,lastname,\nd,foo,dummy`'}        | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'lastname,number\nm,turing\nd,foo,dummy`'}    | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'foo,dummy,bar\nm,turing\nd,foo,dummy`'}      | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'\nm,turing\nd,foo,dummy`'}                   | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'\n\nd,foo,dummy`'}                           | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		input                                          | expected
+		${'firstname,lastname\nm,turing\nd,foo,dummy'} | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'firstname,number\nm,turing\nd,foo,dummy'}   | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'\nfirstname,lastname,\nd,foo,dummy'}        | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'lastname,number\nm,turing\nd,foo,dummy'}    | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'foo,dummy,bar\nm,turing\nd,foo,dummy'}      | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'\nm,turing\nd,foo,dummy'}                   | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'\n\nd,foo,dummy'}                           | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
 	`(
 		'throws $expected when $input is given (some values are missing)',
 		({ input, expected }) => {
