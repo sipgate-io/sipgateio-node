@@ -50,13 +50,14 @@ export const parseCsvString = (csvString: string): string => {
 			if (columns.length !== csvHeader.length) {
 				throw Error(ErrorMessage.CONTACTS_MISSING_VALUES);
 			}
-			return `${columns[columnIndices.firstname]},${
-				columns[columnIndices.lastname]
-			},${columns[columnIndices.number]}`;
-		})
-		.join('\n');
+			return [
+				columns[columnIndices.firstname],
+				columns[columnIndices.lastname],
+				columns[columnIndices.number],
+			].join(',');
+		});
 
-	return 'firstname,lastname,number\n'.concat(lines);
+	return ['firstname,lastname,number', ...lines].join('\n');
 };
 
 const handleError = (error: HttpError): Error => {
