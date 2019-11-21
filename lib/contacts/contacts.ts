@@ -44,21 +44,15 @@ export const parseCsvString = (csvString: string): string => {
 
 	csvLines.shift();
 
-	const maxColumnIndex = Math.max(
-		columnIndices.firstname,
-		columnIndices.lastname,
-		columnIndices.number
-	);
-
 	const lines = csvLines
 		.map(lines => lines.split(','))
 		.map(columns => {
-			if (columns.length >= maxColumnIndex + 1) {
-				return `${columns[columnIndices.firstname]},${
-					columns[columnIndices.lastname]
-				},${columns[columnIndices.number]}`;
+			if (columns.length !== csvHeader.length) {
+				throw Error(ErrorMessage.CONTACTS_MISSING_VALUES);
 			}
-			throw Error(ErrorMessage.CONTACTS_MISSING_VALUES);
+			return `${columns[columnIndices.firstname]},${
+				columns[columnIndices.lastname]
+			},${columns[columnIndices.number]}`;
 		})
 		.join('\n');
 
