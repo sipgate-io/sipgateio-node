@@ -53,15 +53,21 @@ const projectCsvString = (csvString: string): string => {
 
 	const lines = csvLines
 		.map(lines => lines.split(','))
-		.map(columns => {
+		.map((columns, index) => {
 			if (columns.length !== csvHeader.length) {
 				throw Error(ErrorMessage.CONTACTS_MISSING_VALUES);
 			}
-			return [
-				columns[columnIndices.firstname],
-				columns[columnIndices.lastname],
-				columns[columnIndices.number],
-			].join(',');
+
+			const firstname = columns[columnIndices.firstname];
+			const lastname = columns[columnIndices.lastname];
+			const number = columns[columnIndices.number];
+
+			if (!(firstname && lastname && number)) {
+				console.log(`WARNING: record at position ${index + 1} is empty`);
+				return '';
+			}
+
+			return [firstname, lastname, number].join(',');
 		});
 
 	return ['firstname,lastname,number', ...lines].join('\n');
