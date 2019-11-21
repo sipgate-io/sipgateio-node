@@ -2,6 +2,7 @@ import { ContactsDTO } from '../core/models/contacts.model';
 import { ContactsModule } from './contacts.module';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule, HttpError } from '../core/httpClient';
+import btoa from 'btoa';
 import handleCoreError from '../core/errors/handleCoreError';
 
 export const createContactsModule = (
@@ -26,7 +27,7 @@ const findColumnIndex = (array: string[], needle: string): number => {
 	return index;
 };
 
-export const projectCsvString = (csvString: string): string => {
+const projectCsvString = (csvString: string): string => {
 	const csvLines: string[] = csvString.split(/\n|\r\n/);
 
 	if (csvLines.length < 2) {
