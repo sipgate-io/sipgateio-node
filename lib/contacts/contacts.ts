@@ -18,7 +18,7 @@ export const createContactsModule = (
 	},
 });
 
-const findIgnoreCaseIndex = (array: string[], needle: string): number => {
+const findIndexIgnoreCase = (array: string[], needle: string): number => {
 	return array.findIndex(value => value.toLowerCase() === needle.toLowerCase());
 };
 
@@ -31,9 +31,9 @@ export const parseCsvString = (csvString: string): string => {
 
 	const csvHeader: string[] = csvLines[0].split(',');
 	const columnIndices: ContactIndices = {
-		firstname: findIgnoreCaseIndex(csvHeader, 'firstname'),
-		lastname: findIgnoreCaseIndex(csvHeader, 'lastname'),
-		number: findIgnoreCaseIndex(csvHeader, 'number'),
+		firstname: findIndexIgnoreCase(csvHeader, 'firstname'),
+		lastname: findIndexIgnoreCase(csvHeader, 'lastname'),
+		number: findIndexIgnoreCase(csvHeader, 'number'),
 	};
 
 	if (Object.values(columnIndices).filter(value => value < 0).length !== 0) {
