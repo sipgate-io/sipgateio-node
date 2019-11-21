@@ -32,8 +32,12 @@ const projectCsvString = (csvString: string): string => {
 		.split(/\n|\r\n/)
 		.filter(line => line !== '');
 
-	if (csvLines.length < 2) {
+	if (csvLines.length < 1) {
 		throw new Error(ErrorMessage.CONTACTS_INVALID_CSV);
+	}
+
+	if (csvLines.length < 2) {
+		console.log('WARNING: no lines to import');
 	}
 
 	const csvHeader: string[] = csvLines[0]
