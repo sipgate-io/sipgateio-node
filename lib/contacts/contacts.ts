@@ -23,7 +23,7 @@ const findIgnoreCaseIndex = (array: string[], needle: string): number => {
 	return array.findIndex(value => value.toLowerCase() === needle.toLowerCase());
 };
 
-export const parseCsvString = (csvString: string): string => {
+const parseCsvString = (csvString: string): string => {
 	const csvLines: string[] = csvString.split(/\n|\r\n/);
 
 	if (csvLines.length < 2) {
