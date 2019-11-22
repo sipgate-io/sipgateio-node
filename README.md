@@ -5,7 +5,6 @@ A JavaScript library for sipgate.io
 - [Installation](#installation)
 - [Available Functionality](#available-functionality)
 - [Usage](#usage)
-- [| mobile phone | y |](#mobile-phone--y)
 - [Examples](#examples)
 - [Privacy Note](#privacy-note)
 
@@ -57,8 +56,8 @@ interface BasicAuthCredentials {
 }
 ```
 
-The `createClient` method accepts your valid sipgate credentials in the `AuthCredentials` type and returns a sipgate.io Client.
-The client contains as members the supported modules (e.g. `sms`, `fax`, `call`).
+The `createClient` method accepts your valid sipgate credentials as defined in the `AuthCredentials` type and returns a sipgate.io Client.
+The client contains as members the supported modules (e.g. `sms`, `fax`, `call`, `contacts`).
 
 ### SMS
 
@@ -89,7 +88,7 @@ async function send(fax: Fax): Promise<SendFaxSessionResponse>;
 async function getFaxStatus(sessionId: string): Promise<FaxStatusType>;
 ```
 
-The `send` function allows you to send a fax by passing the following fields:
+The `send` function allows you to send a fax by passing an object with the following fields:
 
 ```typescript
 interface Fax {
@@ -100,7 +99,7 @@ interface Fax {
 }
 ```
 
-and returns
+and returns an `SendFaxSessionResponse`:
 
 ```typescript
 interface SendFaxSessionResponse {
