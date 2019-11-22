@@ -99,4 +99,12 @@ describe('sipgate-io client', () => {
 		expect(sipgateClient.settings.disableWhitelist).toBeDefined();
 		expect(typeof sipgateClient.settings.disableWhitelist).toEqual('function');
 	});
+
+	it('should contain a contacts module with function importFromCsv', () => {
+		expect(sipgateClient.contacts).toBeDefined();
+		expect(sipgateClient.contacts.importFromCsvString).toBeDefined();
+		expect(typeof sipgateClient.contacts.importFromCsvString).toEqual(
+			'function'
+		);
+	});
 });
