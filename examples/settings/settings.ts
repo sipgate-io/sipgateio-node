@@ -4,7 +4,7 @@ import { createClient } from '../../lib/core/sipgateClient';
 	const username = process.env.SIPGATE_USERNAME || '';
 	const password = process.env.SIPGATE_PASSWORD || '';
 
-	const client = createClient(username, password);
+	const client = createClient({ username, password });
 
 	await client.settings.setIncomingUrl('https://example.com/my/incoming/url2');
 	console.log('Incoming URL updated.');
