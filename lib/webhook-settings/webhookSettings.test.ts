@@ -1,11 +1,11 @@
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
-import { Settings } from '../core/models';
-import { SettingsModule } from './settings.module';
-import { createSettingsModule } from './settings';
+import { WebhookSettings } from '../core/models';
+import { WebhookSettingsModule } from './webhookSettingsModule';
+import { createSettingsModule } from './webhookSettings';
 
 describe('get settings', () => {
-	let mockedSettingsModule: SettingsModule;
+	let mockedSettingsModule: WebhookSettingsModule;
 	let mockClient: HttpClientModule;
 
 	beforeAll(() => {
@@ -44,7 +44,7 @@ describe('setIncomingUrl', () => {
 	it('should set supplied incomingUrl in fetched settings object', async () => {
 		const settingsModule = createSettingsModule(mockClient);
 
-		const settings: Settings = {
+		const settings: WebhookSettings = {
 			incomingUrl: '',
 			log: false,
 			outgoingUrl: '',
@@ -93,7 +93,7 @@ describe('setOutgoingUrl', () => {
 	it('should set supplied incomingUrl in fetched settings object', async () => {
 		const settingsModule = createSettingsModule(mockClient);
 
-		const settings: Settings = {
+		const settings: WebhookSettings = {
 			incomingUrl: '',
 			log: false,
 			outgoingUrl: '',
@@ -162,7 +162,7 @@ describe('setWhitelist', () => {
 	it('should succeed when supplied with a valid array of extensions', async () => {
 		const settingsModule = createSettingsModule(mockClient);
 
-		const settings: Settings = {
+		const settings: WebhookSettings = {
 			incomingUrl: '',
 			log: false,
 			outgoingUrl: '',

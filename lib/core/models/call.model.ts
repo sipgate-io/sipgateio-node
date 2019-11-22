@@ -1,4 +1,4 @@
-export interface ClickToDial {
+export interface CallData {
 	deviceId?: string;
 	caller: string;
 	callee: string;

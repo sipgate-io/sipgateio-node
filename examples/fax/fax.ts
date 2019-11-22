@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { createClient } from '../../lib/core/sipgateClient';
+import { createClient } from '../../lib/core/sipgateIOClient';
 
 (async (): Promise<void> => {
 	const password = process.env.SIPGATE_PASSWORD || '';

@@ -1,10 +1,10 @@
-import { ClickToDial } from '../models/call.model';
+import { CallData } from "../models";
 import { ErrorMessage } from '../errors';
 import { ExtensionType, validateExtension } from './validateExtension';
 import { ValidationResult } from './validationResult';
 import { validatePhoneNumber } from './validatePhoneNumber';
 
-const validateClickToDial = (clickToDial: ClickToDial): ValidationResult => {
+const validateCallData = (clickToDial: CallData): ValidationResult => {
 	const calleeValidationResult = validatePhoneNumber(clickToDial.callee);
 	if (!calleeValidationResult.isValid) {
 		return { isValid: false, cause: calleeValidationResult.cause };
@@ -66,4 +66,4 @@ const validateClickToDial = (clickToDial: ClickToDial): ValidationResult => {
 
 	return { isValid: true };
 };
-export { validateClickToDial };
+export { validateCallData };

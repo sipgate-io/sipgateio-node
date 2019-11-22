@@ -1,10 +1,7 @@
-import {
-	ClickToDial,
-	InitiateNewCallSessionResponse,
-} from '../core/models/call.model';
+import { CallData, InitiateNewCallSessionResponse } from '../core/models';
 
 export interface CallModule {
 	initiate: (
-		newCallRequest: ClickToDial
+		newCallRequest: CallData
 	) => Promise<InitiateNewCallSessionResponse>;
 }

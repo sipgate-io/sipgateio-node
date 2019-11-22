@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../errors';
-import { validateClickToDial } from './validateClickToDial';
+import { validateCallData } from './validateCallData';
 
 describe('ClickToDial validation', () => {
 	test.each`
@@ -61,7 +61,7 @@ describe('ClickToDial validation', () => {
 	`(
 		'validator returns $expected when $input is validated',
 		({ input, expected }) => {
-			const output = validateClickToDial(input);
+			const output = validateCallData(input);
 			expect(output.isValid).toEqual(expected.isValid);
 
 			if (output.isValid === false) {

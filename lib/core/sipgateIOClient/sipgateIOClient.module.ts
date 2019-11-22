@@ -2,13 +2,13 @@ import { CallModule } from '../../call';
 import { ContactsModule } from '../../contacts';
 import { FaxModule } from '../../fax';
 import { SMSModule } from '../../sms';
-import { SettingsModule } from '../../settings';
+import { WebhookSettingsModule } from '../../webhook-settings';
 
-export interface SipgateClient {
+export interface SipgateIOClient {
 	sms: SMSModule;
 	fax: FaxModule;
 	call: CallModule;
-	settings: SettingsModule;
+	webhookSettings: WebhookSettingsModule;
 	contacts: ContactsModule;
 }
 

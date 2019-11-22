@@ -1,5 +1,5 @@
+import { CallData } from '../core/models';
 import { CallModule } from './call.module';
-import { ClickToDial } from '../core/models/call.model';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
 import { createCallModule } from './call';
@@ -27,7 +27,7 @@ describe('Call Module', () => {
 		const validCalleeNumber = '+4915177777777';
 		const validCallerId = '+4915122222222';
 
-		const clickToDial: ClickToDial = {
+		const clickToDial: CallData = {
 			callee: validCalleeNumber,
 			caller: validExtension,
 			callerId: validCallerId,
@@ -44,7 +44,7 @@ describe('Call Module', () => {
 		const validCalleeNumber = '+4915177777777';
 		const validCallerId = '+4915122222222';
 
-		const clickToDial: ClickToDial = {
+		const clickToDial: CallData = {
 			callee: validCalleeNumber,
 			caller: invalidExtensionId,
 			callerId: validCallerId,
@@ -68,7 +68,7 @@ describe('Call Module', () => {
 		const validCalleeNumber = '+4915177777777';
 		const validCallerId = '+4915122222222';
 
-		const clickToDial: ClickToDial = {
+		const clickToDial: CallData = {
 			callee: validCalleeNumber,
 			caller: validExtension,
 			callerId: validCallerId,
@@ -84,7 +84,7 @@ describe('Call Module', () => {
 		const invalidCalleeNumber = 'not a phone number';
 		const validCallerId = '+494567787889';
 
-		const clickToDial: ClickToDial = {
+		const clickToDial: CallData = {
 			callee: invalidCalleeNumber,
 			caller: validExtensionId,
 			callerId: validCallerId,

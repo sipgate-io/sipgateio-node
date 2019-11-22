@@ -1,8 +1,8 @@
 import { ErrorMessage } from '../core/errors';
 import { ExtensionType, validateExtension } from '../core/validator';
 import { HttpClientModule, HttpError } from '../core/httpClient';
-import { Settings } from '../core/models';
-import { SettingsModule } from './settings.module';
+import { WebhookSettings } from '../core/models';
+import { WebhookSettingsModule } from './webhookSettingsModule';
 import { validateWebhookUrl } from '../core/validator';
 import handleCoreError from '../core/errors/handleCoreError';
 
@@ -10,7 +10,7 @@ const SETTINGS_ENDPOINT = 'settings/sipgateio';
 
 export const createSettingsModule = (
 	client: HttpClientModule
-): SettingsModule => ({
+): WebhookSettingsModule => ({
 	async setIncomingUrl(url): Promise<void> {
 		const validationResult = validateWebhookUrl(url);
 
@@ -18,7 +18,10 @@ export const createSettingsModule = (
 			throw new Error(validationResult.cause);
 		}
 
-		await modifySettings(client, settings => (settings.incomingUrl = url));
+		await modifyWebhookSettings(
+			client,
+			settings => (settings.incomingUrl = url)
+		);
 	},
 
 	async setOutgoingUrl(url): Promise<void> {
@@ -27,48 +30,65 @@ export const createSettingsModule = (
 			throw new Error(validationResult.cause);
 		}
 
-		await modifySettings(client, settings => (settings.outgoingUrl = url));
+		await modifyWebhookSettings(
+			client,
+			settings => (settings.outgoingUrl = url)
+		);
 	},
 
 	async setWhitelist(extensions): Promise<void> {
 		validateWhitelistExtensions(extensions);
 
-		await modifySettings(client, settings => (settings.whitelist = extensions));
+		await modifyWebhookSettings(
+			client,
+			settings => (settings.whitelist = extensions)
+		);
 	},
 
 	async setLog(value): Promise<void> {
-		await modifySettings(client, settings => (settings.log = value));
+		await modifyWebhookSettings(client, settings => (settings.log = value));
 	},
 
 	async clearIncomingUrl(): Promise<void> {
-		await modifySettings(client, settings => (settings.incomingUrl = ''));
+		await modifyWebhookSettings(
+			client,
+			settings => (settings.incomingUrl = '')
+		);
 	},
 
 	async clearOutgoingUrl(): Promise<void> {
-		await modifySettings(client, settings => (settings.outgoingUrl = ''));
+		await modifyWebhookSettings(
+			client,
+			settings => (settings.outgoingUrl = '')
+		);
 	},
 
 	async clearWhitelist(): Promise<void> {
-		await modifySettings(client, settings => (settings.whitelist = []));
+		await modifyWebhookSettings(client, settings => (settings.whitelist = []));
 	},
 
 	async disableWhitelist(): Promise<void> {
-		await modifySettings(client, settings => (settings.whitelist = null));
+		await modifyWebhookSettings(
+			client,
+			settings => (settings.whitelist = null)
+		);
 	},
 });
 
-const getSettings = async (client: HttpClientModule): Promise<Settings> => {
+const getWebhookSettings = async (
+	client: HttpClientModule
+): Promise<WebhookSettings> => {
 	return client
 		.get(SETTINGS_ENDPOINT)
 		.then(res => res.data)
 		.catch(error => handleError(error));
 };
 
-const modifySettings = async (
+const modifyWebhookSettings = async (
 	client: HttpClientModule,
-	fn: (s: Settings) => void
+	fn: (s: WebhookSettings) => void
 ): Promise<void> => {
-	await getSettings(client)
+	await getWebhookSettings(client)
 		.then(settings => {
 			fn(settings);
 			return client.put(SETTINGS_ENDPOINT, settings);

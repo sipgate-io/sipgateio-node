@@ -1,18 +1,15 @@
+import { CallData, InitiateNewCallSessionResponse } from '../core/models';
 import { CallModule } from './call.module';
-import {
-	ClickToDial,
-	InitiateNewCallSessionResponse,
-} from '../core/models/call.model';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule, HttpError } from '../core/httpClient';
-import { validateClickToDial } from '../core/validator/validateClickToDial';
+import { validateCallData } from '../core/validator/validateCallData';
 import handleCoreError from '../core/errors/handleCoreError';
 
 export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 	async initiate(
-		clickToDial: ClickToDial
+		clickToDial: CallData
 	): Promise<InitiateNewCallSessionResponse> {
-		const clickToDialValidation = validateClickToDial(clickToDial);
+		const clickToDialValidation = validateCallData(clickToDial);
 		if (!clickToDialValidation.isValid) {
 			throw new Error(clickToDialValidation.cause);
 		}

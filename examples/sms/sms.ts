@@ -1,5 +1,5 @@
 import { ShortMessage } from '../../lib/core/models';
-import { createClient } from '../../lib/core/sipgateClient';
+import { createClient } from '../../lib/core/sipgateIOClient';
 
 const username = process.env.SIPGATE_USERNAME || '';
 const password = process.env.SIPGATE_PASSWORD || '';

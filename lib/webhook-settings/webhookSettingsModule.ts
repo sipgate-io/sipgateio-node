@@ -1,4 +1,4 @@
-export interface SettingsModule {
+export interface WebhookSettingsModule {
 	setIncomingUrl: (url: string) => Promise<void>;
 	setOutgoingUrl: (url: string) => Promise<void>;
 	setWhitelist: (extensions: string[]) => Promise<void>;

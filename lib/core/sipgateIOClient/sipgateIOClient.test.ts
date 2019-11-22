@@ -1,6 +1,6 @@
-import { createClient } from './sipgateClient';
+import { createClient } from './sipgateIOClient';
 
-describe('sipgateClient tests', () => {
+describe('sipgateIOClient tests', () => {
 	test('check object', () => {
 		const client = createClient({
 			username: 'test@test.com',

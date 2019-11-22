@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { createClient } from '../../lib/core/sipgateClient';
+import { createClient } from '../../lib/core/sipgateIOClient';
 
 const filePath = './contacts.csv';
 const fileContent = fs.readFileSync(filePath).toString();

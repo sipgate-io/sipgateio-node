@@ -1,4 +1,4 @@
-import { createClient } from '../../lib/core/sipgateClient';
+import { createClient } from '../../lib/core/sipgateIOClient';
 
 const password = process.env.SIPGATE_PASSWORD || '';
 const username = process.env.SIPGATE_USERNAME || '';

@@ -1,4 +1,4 @@
-export interface Settings {
+export interface WebhookSettings {
 	incomingUrl: string;
 	outgoingUrl: string;
 	log: boolean;
