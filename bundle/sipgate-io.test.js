@@ -53,54 +53,68 @@ describe('sipgate-io client', () => {
 	});
 
 	it('should contain a settings module with a setIncomingUrl function', () => {
-		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.setIncomingUrl).toBeDefined();
-		expect(typeof sipgateClient.settings.setIncomingUrl).toEqual('function');
+		expect(sipgateClient.webhookSettings).toBeDefined();
+		expect(sipgateClient.webhookSettings.setIncomingUrl).toBeDefined();
+		expect(typeof sipgateClient.webhookSettings.setIncomingUrl).toEqual(
+			'function'
+		);
 	});
 
 	it('should contain a settings module with a setOutgoingUrl function', () => {
-		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.setOutgoingUrl).toBeDefined();
-		expect(typeof sipgateClient.settings.setOutgoingUrl).toEqual('function');
+		expect(sipgateClient.webhookSettings).toBeDefined();
+		expect(sipgateClient.webhookSettings.setOutgoingUrl).toBeDefined();
+		expect(typeof sipgateClient.webhookSettings.setOutgoingUrl).toEqual(
+			'function'
+		);
 	});
 
 	it('should contain a settings module with a setWhitelist function', () => {
-		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.setWhitelist).toBeDefined();
-		expect(typeof sipgateClient.settings.setWhitelist).toEqual('function');
+		expect(sipgateClient.webhookSettings).toBeDefined();
+		expect(sipgateClient.webhookSettings.setWhitelist).toBeDefined();
+		expect(typeof sipgateClient.webhookSettings.setWhitelist).toEqual(
+			'function'
+		);
 	});
 
 	it('should contain a settings module with a setLog function', () => {
-		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.setLog).toBeDefined();
-		expect(typeof sipgateClient.settings.setLog).toEqual('function');
+		expect(sipgateClient.webhookSettings).toBeDefined();
+		expect(sipgateClient.webhookSettings.setLog).toBeDefined();
+		expect(typeof sipgateClient.webhookSettings.setLog).toEqual('function');
 	});
 
 	it('should contain a settings module with a clearIncomingUrl function', () => {
-		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.clearIncomingUrl).toBeDefined();
-		expect(typeof sipgateClient.settings.clearIncomingUrl).toEqual('function');
+		expect(sipgateClient.webhookSettings).toBeDefined();
+		expect(sipgateClient.webhookSettings.clearIncomingUrl).toBeDefined();
+		expect(typeof sipgateClient.webhookSettings.clearIncomingUrl).toEqual(
+			'function'
+		);
 	});
 
 	it('should contain a settings module with a clearOutgoingUrl function', () => {
-		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.clearOutgoingUrl).toBeDefined();
-		expect(typeof sipgateClient.settings.clearOutgoingUrl).toEqual('function');
+		expect(sipgateClient.webhookSettings).toBeDefined();
+		expect(sipgateClient.webhookSettings.clearOutgoingUrl).toBeDefined();
+		expect(typeof sipgateClient.webhookSettings.clearOutgoingUrl).toEqual(
+			'function'
+		);
 	});
 
 	it('should contain a settings module with a clearWhitelist function', () => {
-		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.clearWhitelist).toBeDefined();
-		expect(typeof sipgateClient.settings.clearWhitelist).toEqual('function');
+		expect(sipgateClient.webhookSettings).toBeDefined();
+		expect(sipgateClient.webhookSettings.clearWhitelist).toBeDefined();
+		expect(typeof sipgateClient.webhookSettings.clearWhitelist).toEqual(
+			'function'
+		);
 	});
 
 	it('should contain a settings module with a disableWhitelist function', () => {
-		expect(sipgateClient.settings).toBeDefined();
-		expect(sipgateClient.settings.disableWhitelist).toBeDefined();
-		expect(typeof sipgateClient.settings.disableWhitelist).toEqual('function');
+		expect(sipgateClient.webhookSettings).toBeDefined();
+		expect(sipgateClient.webhookSettings.disableWhitelist).toBeDefined();
+		expect(typeof sipgateClient.webhookSettings.disableWhitelist).toEqual(
+			'function'
+		);
 	});
 
-	it('should contain a contacts module with function importFromCsv', () => {
+	it('should contain a contacts module with function importFromCsvString', () => {
 		expect(sipgateClient.contacts).toBeDefined();
 		expect(sipgateClient.contacts.importFromCsvString).toBeDefined();
 		expect(typeof sipgateClient.contacts.importFromCsvString).toEqual(
