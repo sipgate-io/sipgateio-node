@@ -1,3 +1,3 @@
 export interface ContactsModule {
-	importFromCsvString: (content: string) => Promise<void>;
+	importFromCsvString: (csvContent: string) => Promise<void>;
 }

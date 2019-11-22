@@ -1,7 +1,7 @@
-import { ContactsDTO } from '../core/models/contacts.model';
 import { ContactsModule } from './contacts.module';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
+import { ImportCSVRequestDTO } from '../core/models/contacts.model';
 import { createContactsModule } from './contacts';
 import atob from 'atob';
 
@@ -16,7 +16,7 @@ describe('Contacts Module', () => {
 		mockClient = {} as HttpClientModule;
 		mockClient.post = jest
 			.fn()
-			.mockImplementation((_, contactsDTO: ContactsDTO) => {
+			.mockImplementation((_, contactsDTO: ImportCSVRequestDTO) => {
 				csvContent = atob(contactsDTO.base64Content);
 				return Promise.resolve({
 					status: 204,

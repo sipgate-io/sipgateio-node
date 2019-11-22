@@ -1,17 +1,19 @@
-import { ContactsDTO } from '../core/models/contacts.model';
 import { ContactsModule } from './contacts.module';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule, HttpError } from '../core/httpClient';
+import { ImportCSVRequestDTO } from '../core/models/contacts.model';
 import btoa from 'btoa';
 import handleCoreError from '../core/errors/handleCoreError';
 
 export const createContactsModule = (
 	client: HttpClientModule
 ): ContactsModule => ({
-	async importFromCsvString(content: string): Promise<void> {
-		const parsedCsv = projectCsvString(content);
-		const encodedCsv = btoa(parsedCsv);
-		const contactsDTO: ContactsDTO = { base64Content: encodedCsv };
+	async importFromCsvString(csvContent: string): Promise<void> {
+		const projectedCsv = projectCsvString(csvContent);
+		const base64EncodedCsv = btoa(projectedCsv);
+		const contactsDTO: ImportCSVRequestDTO = {
+			base64Content: base64EncodedCsv,
+		};
 
 		await client
 			.post('/contacts/import/csv', contactsDTO)
