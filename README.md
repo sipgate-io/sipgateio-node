@@ -36,6 +36,10 @@ Send any PDF file buffer as a fax to a single number.
 
 Initiate a call between two phones of your choice, no matter if inside your sipgate account or outside.
 
+### Settings
+
+Make setting for sipgate.io. Currently, setting URLs for webhooks is supported.
+
 ## Usage
 
 ### Creating a Client
