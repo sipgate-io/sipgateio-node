@@ -40,6 +40,10 @@ Initiate a call between two phones of your choice, no matter if inside your sipg
 
 Make setting for sipgate.io. Currently, setting URLs for webhooks is supported.
 
+### Contacts
+
+Import contacts in CSV format into your sipgate account.
+
 ## Usage
 
 ### Creating a Client
@@ -184,8 +188,6 @@ Valid extension types are _e_, _p_, _x_ and _y_.
 | external phone | x      |
 | mobile phone   | y      |
 
----
-
 **Example for basic call:**
 
 ```typescript
@@ -213,8 +215,6 @@ callerId: '017012345678'
 
 same situation as previous example but displayed number is now `callerId` ([see hierarchy](###ClickToDial-details)).
 
----
-
 **Example for group calls:**
 
 ```typescript
@@ -230,8 +230,6 @@ callee: '021165432'
 `caller` is the group number which is used to initiate the call => the group is called
 
 `deviceId` is needed for billing and determines the number which will be displayed at the callee device. For e.g. 'e14' has the default number '021156789'.
-
----
 
 ### Settings
 
@@ -251,6 +249,27 @@ interface SettingsModule {
 ```
 
 The `disableWhitelist` completely removes the whitelisting and enables all phoneline and group extensions.
+
+### Contacts
+
+The contacts module provides the following function:
+
+```typescript
+interface ContactsModule {
+	importFromCsvString: (csvContent: string) => Promise<void>;
+}
+```
+
+It takes a valid CSV-formatted string containing at least the following fields:
+
+- firstname
+- lastname
+- number
+
+These fields may be provided in an arbitrary order.
+Additional fields will be ignored.
+Empty records produce a warning but no error.
+The same is true for strings containing only the header row.
 
 ## Examples
 
