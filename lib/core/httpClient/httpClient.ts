@@ -1,6 +1,8 @@
 /* eslint  @typescript-eslint/no-explicit-any: 0 */
+import { AuthCredentials } from '../sipgateIOClient/sipgateIOClient.module';
 import { detect as detectPlatform } from 'detect-browser';
 import { validateEmail, validatePassword } from '../validator';
+import { validateOAuthToken } from '../validator/validateOAuthToken';
 import axios from 'axios';
 import btoa from 'btoa';
 import packageJson from '../../../package.json';
@@ -12,28 +14,15 @@ import {
 } from './httpClient.module';
 
 export const createHttpClient = (
-	username: string,
-	password: string
+	credentials: AuthCredentials
 ): HttpClientModule => {
-	const emailValidationResult = validateEmail(username);
-
-	if (!emailValidationResult.isValid) {
-		throw new Error(emailValidationResult.cause);
-	}
-
-	const passwordValidationResult = validatePassword(password);
-
-	if (!passwordValidationResult.isValid) {
-		throw new Error(passwordValidationResult.cause);
-	}
+	const authorizationHeader = getAuthHeader(credentials);
 
 	const platformInfo = detectPlatform();
-
-	const basicAuth = btoa(`${username}:${password}`);
 	const client = axios.create({
 		baseURL: 'https://api.sipgate.com/v2',
 		headers: {
-			Authorization: `Basic ${basicAuth}`,
+			Authorization: authorizationHeader,
 			'X-Sipgate-Client': JSON.stringify(platformInfo),
 			'X-Sipgate-Version': packageJson.version,
 		},
@@ -79,3 +68,28 @@ export const createHttpClient = (
 		},
 	};
 };
+
+function getAuthHeader(credentials: AuthCredentials) {
+	if ('token' in credentials) {
+		const tokenValidationResult = validateOAuthToken(credentials.token);
+
+		if (!tokenValidationResult.isValid) {
+			throw new Error(tokenValidationResult.cause);
+		}
+		return `Bearer ${credentials.token}`;
+	}
+
+	const emailValidationResult = validateEmail(credentials.username);
+
+	if (!emailValidationResult.isValid) {
+		throw new Error(emailValidationResult.cause);
+	}
+
+	const passwordValidationResult = validatePassword(credentials.password);
+
+	if (!passwordValidationResult.isValid) {
+		throw new Error(passwordValidationResult.cause);
+	}
+
+	return `Basic ${btoa(`${credentials.username}:${credentials.password}`)}`;
+}
