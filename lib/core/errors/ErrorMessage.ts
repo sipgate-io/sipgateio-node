@@ -9,6 +9,7 @@ export enum ErrorMessage {
 	VALIDATOR_INVALID_CALLER = 'Caller is not a valid extension or phone number',
 	VALIDATOR_INVALID_CALLER_ID = 'CallerId is not a valid phone number',
 	VALIDATOR_INVALID_DEVICE_ID = 'DeviceId is required if caller is not a extension',
+	VALIDATOR_INVALID_OAUTH_TOKEN = 'The provided OAuth token is invalid',
 
 	SMS_INVALID_MESSAGE = 'Invalid SMS message',
 	SMS_INVALID_EXTENSION = 'Invalid SMS extension',
