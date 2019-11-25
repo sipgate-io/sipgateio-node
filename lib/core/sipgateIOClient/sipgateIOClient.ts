@@ -7,10 +7,7 @@ import { createSMSModule } from '../../sms';
 import { createSettingsModule } from '../../webhook-settings';
 
 export const createClient = (credentials: AuthCredentials): SipgateIOClient => {
-	const httpClient = createHttpClient(
-		credentials.username,
-		credentials.password
-	);
+	const httpClient = createHttpClient(credentials);
 	return {
 		call: createCallModule(httpClient),
 		fax: createFaxModule(httpClient),

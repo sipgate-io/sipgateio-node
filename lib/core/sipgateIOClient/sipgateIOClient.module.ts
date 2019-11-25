@@ -17,4 +17,8 @@ export interface BasicAuthCredentials {
 	password: string;
 }
 
-export type AuthCredentials = BasicAuthCredentials;
+export interface OAuthCredentials {
+	token: string;
+}
+
+export type AuthCredentials = BasicAuthCredentials | OAuthCredentials;
