@@ -5,10 +5,15 @@ import axios from 'axios';
 import btoa from 'btoa';
 import nock from 'nock';
 import packageJson from '../../../package.json';
+import validOAuthToken from '../validator/validOAuthToken';
 
 describe('Test header', () => {
 	const baseUrl = 'https://api.sipgate.com/v2';
-	const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
+	const basicAuthHttpClient = createHttpClient({
+		username: 'testUsername@test.de',
+		password: 'testPassword',
+	});
+	const oAuthHttpClient = createHttpClient({ token: validOAuthToken });
 
 	test('test authorization header', async () => {
 		const expectedData = 'test';
@@ -21,7 +26,22 @@ describe('Test header', () => {
 			.get('/test')
 			.reply(201, expectedData);
 
-		const response = await httpClient.get('/test');
+		const response = await basicAuthHttpClient.get('/test');
+		const { data } = response;
+
+		expect(data).toEqual(expectedData);
+	});
+
+	test('test oAuth authorization header', async () => {
+		const expectedData = 'test';
+		const expectedAuthHeader = `Bearer ${validOAuthToken}`;
+
+		nock(baseUrl)
+			.matchHeader('Authorization', expectedAuthHeader)
+			.get('/test')
+			.reply(201, expectedData);
+
+		const response = await oAuthHttpClient.get('/test');
 		const { data } = response;
 
 		expect(data).toEqual(expectedData);
@@ -37,7 +57,7 @@ describe('Test header', () => {
 			.get('/test')
 			.reply(201, expectedData);
 
-		const response = await httpClient.get('/test');
+		const response = await basicAuthHttpClient.get('/test');
 		const { data } = response;
 
 		expect(data).toEqual(expectedData);
@@ -53,7 +73,7 @@ describe('Test header', () => {
 			.get('/test')
 			.reply(201, expectedData);
 
-		const response = await httpClient.get('/test');
+		const response = await basicAuthHttpClient.get('/test');
 		const { data } = response;
 
 		expect(data).toEqual(expectedData);
@@ -73,7 +93,10 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Get to Get Mapping', async () => {
-		const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
+		const httpClient = createHttpClient({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
 
 		const expectedData = 'test';
 
@@ -84,7 +107,10 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Valid URL Concatenation for Get Requests', async () => {
-		const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
+		const httpClient = createHttpClient({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
 
 		const expectedData = 'test';
 
@@ -95,7 +121,10 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Get Requests', async () => {
-		const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
+		const httpClient = createHttpClient({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
 
 		const expectedData = 'test';
 
@@ -106,7 +135,10 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Post to Post Mapping', async () => {
-		const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
+		const httpClient = createHttpClient({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
 
 		const expectedData = 'test';
 		const testData = { foo: 'bar' };
@@ -117,7 +149,10 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Put to Put Mapping', async () => {
-		const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
+		const httpClient = createHttpClient({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
 
 		const expectedData = 'test';
 		const testData = { foo: 'bar' };
@@ -128,7 +163,10 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Delete to Delete Mapping', async () => {
-		const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
+		const httpClient = createHttpClient({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
 
 		const expectedData = 'test';
 		mock.onDelete('').reply(200, expectedData);
@@ -138,7 +176,10 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Patch to Patch Mapping', async () => {
-		const httpClient = createHttpClient('testUsername@test.de', 'testPassword');
+		const httpClient = createHttpClient({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
 
 		const expectedData = 'test';
 		const testData = { foo: 'bar' };
@@ -152,12 +193,12 @@ describe('Test wrapper methods', () => {
 describe('validation', () => {
 	test('email', async () => {
 		await expect(() =>
-			createHttpClient('testUsername', 'testPassword')
+			createHttpClient({ username: 'testUsername', password: 'testPassword' })
 		).toThrow('Invalid email');
 	});
 	test('password', async () => {
-		await expect(() => createHttpClient('testUsername@test.d', '')).toThrow(
-			'Invalid password'
-		);
+		await expect(() =>
+			createHttpClient({ username: 'testUsername@test.d', password: '' })
+		).toThrow('Invalid password');
 	});
 });
