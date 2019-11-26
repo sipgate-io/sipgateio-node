@@ -1,8 +1,8 @@
-import * as fs from 'fs';
 import { createClient } from '../../lib/core/sipgateIOClient';
+import { readFileSync } from 'fs';
 
 const filePath = './contacts.csv';
-const fileContent = fs.readFileSync(filePath).toString();
+const fileContent = readFileSync(filePath).toString();
 
 const password = process.env.SIPGATE_PASSWORD || '';
 const username = process.env.SIPGATE_USERNAME || '';
