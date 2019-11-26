@@ -96,6 +96,10 @@ async function send(sms: ShortMessage): Promise<void>;
 async function schedule(sms: ShortMessage, sendAt: Date): Promise<void>;
 ```
 
+Note: `sendAt` can be 30 days in advance at max.
+
+Note: you should be aware that the request will take a short time to be processed. So values for `sendAt` which are just a few seconds in advance won't make any sense.
+
 The `ShortMessage` type requires the following fields:
 
 ```typescript
@@ -296,6 +300,12 @@ The same is true for strings containing only the header row.
 ## Examples
 
 For some examples on how to use the library, please refer to the [`examples` folder](./examples).
+
+[npx](https://www.npmjs.com/package/npx) can be used to run the code examples:
+
+```
+npx ts-node some_example.ts
+```
 
 ## Privacy Note
 
