@@ -2,7 +2,7 @@ export interface Fax {
 	recipient: string;
 	fileContent: Buffer;
 	filename?: string;
-	faxlineId?: string;
+	faxlineId: string;
 }
 
 // DTOs
@@ -12,7 +12,7 @@ export interface SendFaxSessionResponse {
 }
 
 export interface FaxDTO {
-	faxlineId?: string;
+	faxlineId: string;
 	recipient: string;
 	filename?: string;
 	base64Content: string;
