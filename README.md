@@ -48,7 +48,7 @@ Import contacts in CSV format into your sipgate account.
 
 ### Creating a Client
 
-You can connect the Client by passing a valid OAuth Token (You have to implement the OAuth Flow yourself):
+You can connect the client by passing a valid OAuth token (You have to implement the OAuth flow yourself):
 
 ```typescript
 const client = createClient({
@@ -56,7 +56,7 @@ const client = createClient({
 });
 ```
 
-As alternative you can also pass your Credentials to the API-Client which will use Basic Auth. (Remember: This Way is **not** recommended)
+As alternative you can also pass your credentials to the API-Client which will use Basic Auth. (Remember: This way is **not** recommended)
 
 ```typescript
 const client = createClient({
@@ -65,7 +65,7 @@ const client = createClient({
 });
 ```
 
-Possible Authentication Objects:
+Possible authentication objects:
 
 ```typescript
 interface BasicAuthCredentials {
