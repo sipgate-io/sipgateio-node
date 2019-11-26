@@ -16,7 +16,7 @@ describe('ValidateExtension', () => {
 			const output = validateExtension(input, [ExtensionType.FAX]);
 			expect(output.isValid).toEqual(expected.isValid);
 
-			if (!output.isValid) {
+			if (output.isValid === false) {
 				expect(output.cause).toContain(expected.cause);
 			}
 		}

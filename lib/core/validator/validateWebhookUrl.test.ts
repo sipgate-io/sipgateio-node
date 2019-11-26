@@ -18,7 +18,7 @@ describe('ValidateWebhookUrl', () => {
 			const output = validateWebhookUrl(input);
 			expect(output.isValid).toEqual(expected.isValid);
 
-			if (!output.isValid) {
+			if (output.isValid === false) {
 				expect(output.cause).toContain(expected.cause);
 			}
 		}

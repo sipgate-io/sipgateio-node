@@ -1,4 +1,4 @@
-import { CallData } from "../models";
+import { CallData } from '../models';
 import { ErrorMessage } from '../errors';
 import { ExtensionType, validateExtension } from './validateExtension';
 import { ValidationResult } from './validationResult';

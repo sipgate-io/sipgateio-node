@@ -4,6 +4,8 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 import btoa from 'btoa';
 import nock from 'nock';
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
 import packageJson from '../../../package.json';
 import validOAuthToken from '../validator/validOAuthToken';
 
