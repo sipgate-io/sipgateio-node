@@ -69,7 +69,7 @@ export const createHttpClient = (
 	};
 };
 
-function getAuthHeader(credentials: AuthCredentials) {
+const getAuthHeader = (credentials: AuthCredentials): string => {
 	if ('token' in credentials) {
 		const tokenValidationResult = validateOAuthToken(credentials.token);
 
@@ -92,4 +92,4 @@ function getAuthHeader(credentials: AuthCredentials) {
 	}
 
 	return `Basic ${btoa(`${credentials.username}:${credentials.password}`)}`;
-}
+};
