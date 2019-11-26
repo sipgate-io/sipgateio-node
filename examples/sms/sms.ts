@@ -4,6 +4,9 @@ import { createClient } from '../../lib/core/sipgateIOClient';
 const username = process.env.SIPGATE_USERNAME || '';
 const password = process.env.SIPGATE_PASSWORD || '';
 
+/**
+ * See the example in examples/core/client.ts for how to connect to the client
+ */
 const client = createClient({ username, password });
 
 const recipient = process.env.SIPGATE_SMS_RECIPIENT || '';
