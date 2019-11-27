@@ -1,6 +1,6 @@
 # sipgateio-node [![Build Status](https://travis-ci.com/sipgate-io/sipgateio-node.svg?branch=master)](https://travis-ci.com/sipgate-io/sipgateio-node)
 
-A JavaScript library for sipgate.io
+A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 
 - [Installation](#installation)
 - [Available Functionality](#available-functionality)
@@ -15,7 +15,7 @@ A JavaScript library for sipgate.io
 For use in node applications you can install with
 
 ```console
-npm install https://github.com/sipgate-io/sipgateio-node
+npm install git://github.com/sipgate-io/sipgateio-node.git --save
 ```
 
 Alternatively, a bundled version can be obtained from the [github releases](https://github.com/sipgate-io/sipgateio-node/releases) page.
