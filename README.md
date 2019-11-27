@@ -93,11 +93,7 @@ interface OAuthCredentials {
 }
 ```
 
-```typescript
-type AuthCredentials = BasicAuthCredentials | OAuthCredentials;
-```
-
-The `sipgateIO` method accepts your valid sipgate credentials as defined in the `AuthCredentials` type and returns a sipgate.io Client.
+The `createClient` method accepts your valid sipgate credentials as defined in the `AuthCredentials` type and returns a sipgate.io Client.
 The client contains as members the supported modules (`sms`, `fax`, `call`, etc.).
 
 ### SMS
@@ -111,7 +107,7 @@ async function schedule(sms: ShortMessage, sendAt: Date): Promise<void>;
 
 Note: `sendAt` can be 30 days in advance at max.
 
-Note: you should be aware that the request will take a short time to be processed. So values for `sendAt` which are just a few seconds in advance won't make any sense.
+Note: you should be aware that the request will take a short time to be processed. Values for `sendAt` should not just be a few seconds in the future. If sendAt is in the past an error will be thrown.
 
 The `ShortMessage` type requires the following fields:
 
@@ -120,7 +116,6 @@ interface ShortMessage {
 	smsId: string;
 	recipient: string;
 	message: string;
-	sendAt?: number;
 }
 ```
 
@@ -174,7 +169,7 @@ async function initiate(
 ): Promise<InitiateNewCallSessionResponse>;
 ```
 
-The `CallData` type requires the following fields:
+The `CallData` contains the following fields:
 
 ```typescript
 interface CallData {
