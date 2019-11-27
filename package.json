@@ -17,7 +17,7 @@
 		"url": "git+https://github.com/sipgate-io/sipgateio-node.git"
 	},
 	"files": [
-		"/dist"
+		"/lib"
 	],
 	"author": {
 		"name": "sipgate GmbH",
