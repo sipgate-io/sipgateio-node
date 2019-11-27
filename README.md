@@ -296,12 +296,14 @@ async function disableWhitelist(): Promise<void>;
 The whitelist specifies extensions that should trigger webhooks.
 By default, webhooks are enabled for all phoneline and group extensions.
 This behavior is restored by calling `disableWhitelist`.
+The `disableWhitelist` completely removes the whitelisting and enables all phoneline and group extensions.
 
 ```typescript
 async function setLog(value: boolean): Promise<void>;
 ```
 
-The logging of webhook calls can be enabled and disabled with `setLog(true)` and `setLog(false)`.
+The `setLog` function toggles, the function to display all incoming and outgoing events, which have been sent to your `Incoming` and `Outgoing` Url.
+These parameters can be set using these functions: `setIncomingUrl` and `setOutgoingUrl`.
 
 ### Contacts
 
