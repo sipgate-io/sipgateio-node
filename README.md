@@ -22,6 +22,19 @@ Alternatively, a bundled version can be obtained from the [github releases](http
 
 ## Available Functionality
 
+For example a Text Message can be send with following code:
+
+```typescript
+import { createClient } from 'sipgateio';
+
+const client = createClient({ username: 'username', password: 'password' });
+client.sms.send({
+	recepient: '+491579999999',
+	message: 'Lorem Ipsum',
+	smsID: 's1',
+});
+```
+
 The following features are already implemented in the current version of this library:
 
 ### SMS
@@ -30,7 +43,7 @@ Send text messages, either instantly or scheduled. The caller ID can be set from
 
 ### Fax
 
-Send any PDF file buffer as a fax to a single number.
+Send any PDF file as a fax to a single number.
 
 ### Call
 
