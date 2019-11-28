@@ -19,8 +19,6 @@ export enum ErrorMessage {
 
 	FAX_NOT_FOUND = 'Fax was not found',
 	FAX_NOT_A_FAX = 'History item is not a fax',
-	FAX_NO_FAXLINE = 'Account has no faxline',
-
 	CALL_INVALID_EXTENSION = 'Cannot access extension - not found or forbidden',
 	CALL_INSUFFICIENT_FUNDS = 'Insufficient funds',
 	CALL_BAD_REQUEST = 'Invalid Call object',
