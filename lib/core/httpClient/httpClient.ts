@@ -3,9 +3,9 @@ import { AuthCredentials } from '../sipgateIOClient/sipgateIOClient.module';
 import { detect as detectPlatform } from 'detect-browser';
 import { validateEmail, validatePassword } from '../validator';
 import { validateOAuthToken } from '../validator/validateOAuthToken';
+import { version } from '../../version.json';
 import axios from 'axios';
 import btoa from 'btoa';
-import packageJson from '../../../package.json';
 
 import {
 	HttpClientModule,
@@ -24,7 +24,7 @@ export const createHttpClient = (
 		headers: {
 			Authorization: authorizationHeader,
 			'X-Sipgate-Client': JSON.stringify(platformInfo),
-			'X-Sipgate-Version': packageJson.version,
+			'X-Sipgate-Version': version,
 		},
 	});
 
