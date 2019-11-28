@@ -3,7 +3,7 @@ import { ValidationResult } from './validationResult';
 import atob from 'atob';
 
 export const validateOAuthToken = (token: string): ValidationResult => {
-	if (isValidToken(token) === false) {
+	if (!isValidToken(token)) {
 		return {
 			isValid: false,
 			cause: ErrorMessage.VALIDATOR_INVALID_OAUTH_TOKEN,
