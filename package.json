@@ -8,7 +8,7 @@
 		"format": "prettier --write **/**.ts",
 		"test:dev": "jest ./lib --env=node --watch",
 		"test:unit": "jest ./lib --env=node",
-		"test:integration": "jest ./bundle --env=jsdom",
+		"test:integration": "npm run bundle && jest ./bundle --env=jsdom",
 		"bundle": "browserify -r ./lib/index.ts:sipgate-io -p tsify -g uglifyify > ./bundle/sipgate-io.js",
 		"prepare": "tsc"
 	},
