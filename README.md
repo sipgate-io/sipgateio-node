@@ -262,19 +262,34 @@ The `deviceId` is needed for billing and determines the number which will be dis
 The webhook settings module provides the following functions to update settings:
 
 ```typescript
-interface WebhookSettingsModule {
-	setIncomingUrl: (url: string) => Promise<void>;
-	setOutgoingUrl: (url: string) => Promise<void>;
-	setWhitelist: (extensions: string[]) => Promise<void>;
-	setLog: (value: boolean) => Promise<void>;
-	clearIncomingUrl: () => Promise<void>;
-	clearOutgoingUrl: () => Promise<void>;
-	clearWhitelist: () => Promise<void>;
-	disableWhitelist: () => Promise<void>;
-}
+async function setIncomingUrl(url: string): Promise<void>;
+async function clearIncomingUrl(): Promise<void>;
 ```
 
-The `disableWhitelist` completely removes the whitelisting and enables all phoneline and group extensions.
+These two functions allow for the setting and clearing of the URL to be called when a webhook is triggered by an incoming call.
+
+```typescript
+async function setOutgoingUrl(url: string): Promise<void>;
+async function clearOutgoingUrl(): Promise<void>;
+```
+
+Analogous functions exist for the URL that handles outgoing calls.
+
+```typescript
+async function setWhitelist(extensions: string[]): Promise<void>;
+async function clearWhitelist(): Promise<void>;
+async function disableWhitelist(): Promise<void>;
+```
+
+The whitelist specifies extensions that should trigger webhooks.
+By default, webhooks are enabled for all phoneline and group extensions.
+This behavior is restored by calling `disableWhitelist`.
+
+```typescript
+async function setLog(value: boolean): Promise<void>;
+```
+
+The logging of webhook calls can be enabled and disabled with `setLog(true)` and `setLog(false)`.
 
 ### Contacts
 
