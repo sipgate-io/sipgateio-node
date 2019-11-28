@@ -31,7 +31,7 @@
 	"homepage": "https://github.com/sipgate-io/sipgateio-node#readme",
 	"husky": {
 		"hooks": {
-			"pre-commit": "grep '\"version\":' package.json | sed -e 's/\\(.*\\),/{\\n\\1\\n}/' > lib/version.json && git add lib/version.json && npm run test:unit && lint-staged"
+			"pre-commit": "./update_version.sh && npm run test:unit && lint-staged"
 		}
 	},
 	"lint-staged": {
