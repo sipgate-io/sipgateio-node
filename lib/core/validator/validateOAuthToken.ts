@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors/ErrorMessage';
+import { ErrorMessage } from '../errors';
 import { ValidationResult } from './validationResult';
 import atob from 'atob';
 

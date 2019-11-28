@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../core/errors';
-import { ExtensionType } from '../core/validator/validateExtension';
+import { ExtensionType } from '../core/validator';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { SMSModule } from './sms.module';
 import {
