@@ -239,7 +239,7 @@ client.call.initiate(callData);
 ```
 
 **Behavior**:
-Same situation as previous example, but displayed number is now `callerId` ([see hierarchy](###calldata-details)).
+Same situation as previous example, but displayed number is now `callerId` ([see hierarchy](#calldata-details)).
 
 **Scenario 3: group caller**
 
