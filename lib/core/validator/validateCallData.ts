@@ -4,24 +4,21 @@ import { ExtensionType, validateExtension } from './validateExtension';
 import { ValidationResult } from './validationResult';
 import { validatePhoneNumber } from './validatePhoneNumber';
 
-const validateCallData = (clickToDial: CallData): ValidationResult => {
-	const calleeValidationResult = validatePhoneNumber(clickToDial.callee);
+const validateCallData = (callData: CallData): ValidationResult => {
+	const calleeValidationResult = validatePhoneNumber(callData.callee);
 	if (!calleeValidationResult.isValid) {
 		return { isValid: false, cause: calleeValidationResult.cause };
 	}
 
 	const callerPhoneNumberValidationResult = validatePhoneNumber(
-		clickToDial.caller
+		callData.caller
 	);
-	const callerExtensionValidationResult = validateExtension(
-		clickToDial.caller,
-		[
-			ExtensionType.MOBILE,
-			ExtensionType.PERSON,
-			ExtensionType.EXTERNAL,
-			ExtensionType.REGISTER,
-		]
-	);
+	const callerExtensionValidationResult = validateExtension(callData.caller, [
+		ExtensionType.MOBILE,
+		ExtensionType.PERSON,
+		ExtensionType.EXTERNAL,
+		ExtensionType.REGISTER,
+	]);
 	if (
 		!callerPhoneNumberValidationResult.isValid &&
 		!callerExtensionValidationResult.isValid
@@ -32,8 +29,8 @@ const validateCallData = (clickToDial: CallData): ValidationResult => {
 		};
 	}
 
-	if (clickToDial.deviceId) {
-		const deviceIdValidationResult = validateExtension(clickToDial.deviceId, [
+	if (callData.deviceId) {
+		const deviceIdValidationResult = validateExtension(callData.deviceId, [
 			ExtensionType.MOBILE,
 			ExtensionType.PERSON,
 			ExtensionType.EXTERNAL,
@@ -54,8 +51,8 @@ const validateCallData = (clickToDial: CallData): ValidationResult => {
 		}
 	}
 
-	if (clickToDial.callerId) {
-		const callerIdValidationResult = validatePhoneNumber(clickToDial.callerId);
+	if (callData.callerId) {
+		const callerIdValidationResult = validatePhoneNumber(callData.callerId);
 		if (!callerIdValidationResult.isValid) {
 			return {
 				isValid: false,

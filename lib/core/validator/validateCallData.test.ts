@@ -1,7 +1,7 @@
 import { ErrorMessage } from '../errors';
 import { validateCallData } from './validateCallData';
 
-describe('ClickToDial validation', () => {
+describe('callData validation', () => {
 	test.each`
 		input                                                                                                 | expected
 		${{ callee: '+4915177777777', caller: '+49++', callerId: null, deviceId: null }}                      | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_CALLER }}

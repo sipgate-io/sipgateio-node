@@ -27,15 +27,15 @@ describe('Call Module', () => {
 		const validCalleeNumber = '+4915177777777';
 		const validCallerId = '+4915122222222';
 
-		const clickToDial: CallData = {
+		const callData: CallData = {
 			callee: validCalleeNumber,
 			caller: validExtension,
 			callerId: validCallerId,
 		};
 
-		await expect(callModule.initiate(clickToDial)).resolves.not.toThrow();
+		await expect(callModule.initiate(callData)).resolves.not.toThrow();
 
-		const { sessionId } = await callModule.initiate(clickToDial);
+		const { sessionId } = await callModule.initiate(callData);
 		expect(sessionId).toEqual(expectedSessionId);
 	});
 
@@ -44,13 +44,13 @@ describe('Call Module', () => {
 		const validCalleeNumber = '+4915177777777';
 		const validCallerId = '+4915122222222';
 
-		const clickToDial: CallData = {
+		const callData: CallData = {
 			callee: validCalleeNumber,
 			caller: invalidExtensionId,
 			callerId: validCallerId,
 		};
 
-		await expect(callModule.initiate(clickToDial)).rejects.toThrowError(
+		await expect(callModule.initiate(callData)).rejects.toThrowError(
 			ErrorMessage.VALIDATOR_INVALID_CALLER
 		);
 	});
@@ -68,13 +68,13 @@ describe('Call Module', () => {
 		const validCalleeNumber = '+4915177777777';
 		const validCallerId = '+4915122222222';
 
-		const clickToDial: CallData = {
+		const callData: CallData = {
 			callee: validCalleeNumber,
 			caller: validExtension,
 			callerId: validCallerId,
 		};
 
-		await expect(callModule.initiate(clickToDial)).rejects.toThrowError(
+		await expect(callModule.initiate(callData)).rejects.toThrowError(
 			ErrorMessage.CALL_INSUFFICIENT_FUNDS
 		);
 	});
@@ -84,13 +84,13 @@ describe('Call Module', () => {
 		const invalidCalleeNumber = 'not a phone number';
 		const validCallerId = '+494567787889';
 
-		const clickToDial: CallData = {
+		const callData: CallData = {
 			callee: invalidCalleeNumber,
 			caller: validExtensionId,
 			callerId: validCallerId,
 		};
 
-		await expect(callModule.initiate(clickToDial)).rejects.toThrowError(
+		await expect(callModule.initiate(callData)).rejects.toThrowError(
 			ErrorMessage.VALIDATOR_INVALID_PHONE_NUMBER
 		);
 	});
