@@ -29,6 +29,6 @@ export enum ErrorMessage {
 	CONTACTS_MISSING_HEADER_FIELD = 'Missing header field in CSV',
 	CONTACTS_MISSING_VALUES = 'Missing values in CSV',
 
-	HTTP_401 = 'Unauthenticated',
+	HTTP_401 = 'Unauthorized',
 	HTTP_403 = 'Forbidden',
 }
