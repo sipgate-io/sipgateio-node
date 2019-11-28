@@ -29,6 +29,8 @@ export enum ErrorMessage {
 	CONTACTS_MISSING_HEADER_FIELD = 'Missing header field in CSV',
 	CONTACTS_MISSING_VALUES = 'Missing values in CSV',
 
+	WEBHOOK_SETTINGS_FEATURE_NOT_BOOKED = 'sipgateIO is not booked for your account',
+
 	HTTP_401 = 'Unauthorized',
 	HTTP_403 = 'Forbidden',
 }

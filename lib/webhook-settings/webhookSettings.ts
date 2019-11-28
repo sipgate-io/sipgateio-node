@@ -111,9 +111,8 @@ const validateWhitelistExtensions = (extensions: string[]): void => {
 };
 
 const handleError = (error: HttpError): Error => {
-	if (!error.response) {
-		return error;
+	if (error.response && error.response.status === 403) {
+		return new Error(ErrorMessage.WEBHOOK_SETTINGS_FEATURE_NOT_BOOKED);
 	}
-
 	return handleCoreError(error);
 };
