@@ -1,4 +1,4 @@
-import { createClient } from '../../lib/core/sipgateIOClient/sipgateIOClient';
+import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 /**
  * Connecting the Client by using Basic Authentication
@@ -10,7 +10,7 @@ import { createClient } from '../../lib/core/sipgateIOClient/sipgateIOClient';
  * remember: This is not recommended!
  * reference: https://developer.sipgate.io/rest-api/authentication/#basic-auth
  */
-const basicAuthClient = createClient({
+const basicAuthClient = sipgateIO({
 	username: 'email@domain.com',
 	password: 'your-account-password',
 });
@@ -26,7 +26,7 @@ console.log(basicAuthClient);
  *
  * reference: https://developer.sipgate.io/rest-api/authentication/#oauth2
  */
-const oauthClient = createClient({
+const oauthClient = sipgateIO({
 	token: 'YOUR_OAUTH_TOKEN',
 });
 

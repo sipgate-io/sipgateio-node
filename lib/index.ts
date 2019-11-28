@@ -1,1 +1,1 @@
-export { createClient } from './core';
+export { sipgateIO } from './core';

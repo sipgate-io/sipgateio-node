@@ -12,8 +12,8 @@ describe('sipgate-io module', () => {
 		bundle = dom.window.require('sipgate-io');
 	});
 
-	it('should have a createClient method', () => {
-		expect(bundle.createClient).toBeDefined();
+	it('should have a sipgateIO method', () => {
+		expect(bundle.sipgateIO).toBeDefined();
 	});
 });
 
@@ -28,7 +28,7 @@ describe('sipgate-io client', () => {
 		const html = `<!DOCTYPE html><script>${io}</script>`;
 		dom = new JSDOM(html, { runScripts: 'dangerously' });
 		bundle = dom.window.require('sipgate-io');
-		sipgateClient = bundle.createClient({
+		sipgateClient = bundle.sipgateIO({
 			username: 'dummy@sipgate.de',
 			password: '1234',
 		});

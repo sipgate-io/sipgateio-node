@@ -1,4 +1,4 @@
-import { createClient } from '../../lib/core/sipgateIOClient';
+import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 (async (): Promise<void> => {
 	const username = process.env.SIPGATE_USERNAME || '';
@@ -7,7 +7,7 @@ import { createClient } from '../../lib/core/sipgateIOClient';
 	/**
 	 * See the example in examples/core/client.ts for how to connect to the client
 	 */
-	const client = createClient({ username, password });
+	const client = sipgateIO({ username, password });
 
 	await client.webhookSettings.setIncomingUrl(
 		'https://example.com/my/incoming/url2'

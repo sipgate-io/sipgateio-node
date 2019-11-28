@@ -6,7 +6,7 @@ import { createHttpClient } from '../httpClient';
 import { createSMSModule } from '../../sms';
 import { createSettingsModule } from '../../webhook-settings';
 
-export const createClient = (credentials: AuthCredentials): SipgateIOClient => {
+export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 	const httpClient = createHttpClient(credentials);
 	return {
 		call: createCallModule(httpClient),

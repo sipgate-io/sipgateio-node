@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { createClient } from '../../lib/core/sipgateIOClient';
+import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 (async (): Promise<void> => {
 	const password = process.env.SIPGATE_PASSWORD || '';
@@ -9,7 +9,7 @@ import { createClient } from '../../lib/core/sipgateIOClient';
 	/**
 	 * See the example in examples/core/client.ts for how to connect to the client
 	 */
-	const client = createClient({ username, password });
+	const client = sipgateIO({ username, password });
 
 	const faxlineId = process.env.SIPGATE_FAX_EXTENSION || '';
 	const recipient = process.env.SIPGATE_FAX_RECIPIENT || '';

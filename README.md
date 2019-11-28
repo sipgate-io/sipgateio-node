@@ -51,7 +51,7 @@ Import contacts in CSV format into your sipgate account.
 You can connect the client by passing a valid OAuth token (You have to implement the OAuth flow yourself):
 
 ```typescript
-const client = createClient({
+const client = sipgateIO({
 	token: '<valid Token>',
 });
 ```
@@ -59,7 +59,7 @@ const client = createClient({
 As alternative you can also pass your credentials to the API-Client which will use Basic Auth. (Remember: This way is **not** recommended)
 
 ```typescript
-const client = createClient({
+const client = sipgateIO({
 	username: '<your username>',
 	password: '<your password>',
 });
@@ -84,7 +84,7 @@ interface OAuthCredentials {
 type AuthCredentials = BasicAuthCredentials | OAuthCredentials;
 ```
 
-The `createClient` method accepts your valid sipgate credentials as defined in the `AuthCredentials` type and returns a sipgate.io Client.
+The `sipgateIO` method accepts your valid sipgate credentials as defined in the `AuthCredentials` type and returns a sipgate.io Client.
 The client contains as members the supported modules (`sms`, `fax`, `call`, etc.).
 
 ### SMS
