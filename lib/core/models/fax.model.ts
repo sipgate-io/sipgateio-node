@@ -20,10 +20,10 @@ export interface FaxDTO {
 
 export interface HistoryFaxResponse {
 	type: 'FAX';
-	faxStatusType: FaxStatusType;
+	faxStatusType: FaxStatus;
 }
 
-export enum FaxStatusType {
+export enum FaxStatus {
 	SENT = 'SENT',
 	PENDING = 'PENDING',
 	FAILED = 'FAILED',

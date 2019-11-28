@@ -117,7 +117,7 @@ The fax module provides the following functions:
 
 ```typescript
 async function send(fax: Fax): Promise<SendFaxSessionResponse>;
-async function getFaxStatus(sessionId: string): Promise<FaxStatusType>;
+async function getFaxStatus(sessionId: string): Promise<FaxStatus>;
 ```
 
 The `send` function allows you to send a fax by passing an object with the following fields:
@@ -142,7 +142,7 @@ interface SendFaxSessionResponse {
 By using `getFaxStatus` and passing the `sessionId` you received from the `send` function, you will receive one of the following values:
 
 ```typescript
-enum FaxStatusType {
+enum FaxStatus {
 	SENT = 'SENT',
 	PENDING = 'PENDING',
 	FAILED = 'FAILED',

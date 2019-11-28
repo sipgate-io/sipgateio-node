@@ -2,7 +2,7 @@ import { ErrorMessage } from '../core/errors';
 import {
 	Fax,
 	FaxDTO,
-	FaxStatusType,
+	FaxStatus,
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
 } from '../core/models';
@@ -36,7 +36,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 			.then(response => response.data)
 			.catch(error => Promise.reject(handleError(error)));
 	},
-	async getFaxStatus(sessionId: string): Promise<FaxStatusType> {
+	async getFaxStatus(sessionId: string): Promise<FaxStatus> {
 		return client
 			.get<HistoryFaxResponse>(`/history/${sessionId}`)
 			.then(({ data }) => {
