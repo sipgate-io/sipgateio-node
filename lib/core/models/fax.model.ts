@@ -18,18 +18,6 @@ export interface FaxDTO {
 	base64Content: string;
 }
 
-export interface FaxLine {
-	id: string;
-	alias: string;
-	tagline: string;
-	canSend: boolean;
-	canReceive: boolean;
-}
-
-export interface FaxLineListObject {
-	items: FaxLine[];
-}
-
 export interface HistoryFaxResponse {
 	type: 'FAX';
 	faxStatusType: FaxStatusType;
