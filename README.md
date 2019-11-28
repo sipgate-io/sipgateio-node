@@ -301,20 +301,28 @@ interface ContactsModule {
 }
 ```
 
-It takes a valid CSV-formatted string containing at least the following fields:
+It takes a valid CSV-formatted string (columns separated by ",") containing at least the following fields:
 
 - firstname
 - lastname
 - number
 
 These fields may be provided in an arbitrary order.
-Additional fields will be ignored.
-Empty records produce a warning but no error.
+Additional fields as well as empty lines will be ignored.
+Empty records (i.e. just separators) produce a warning but no error.
 The same is true for strings containing only the header row.
+
+_Example_:
+
+```
+lastname,firstname,number
+Turing,Alan,+4921163553355
+Lovelace,Ada,+4921163553355
+```
 
 ## Examples
 
-For some examples on how to use the library, please refer to the [`examples` folder](./examples).
+For some examples on how to use the library, please refer to the [examples folder](./examples).
 
 [npx](https://www.npmjs.com/package/npx) can be used to run the code examples:
 
