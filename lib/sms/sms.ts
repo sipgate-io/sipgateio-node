@@ -84,11 +84,7 @@ export const containsPhoneNumber = (
 };
 
 const handleError = (error: HttpError): Error => {
-	if (!error.response) {
-		return error;
-	}
-
-	if (error.response.status === 403) {
+	if (error.response && error.response.status === 403) {
 		return new Error(ErrorMessage.SMS_INVALID_EXTENSION);
 	}
 

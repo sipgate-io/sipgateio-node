@@ -76,11 +76,7 @@ const projectCsvString = (csvString: string): string => {
 };
 
 const handleError = (error: HttpError): Error => {
-	if (!error.response) {
-		return error;
-	}
-
-	if (error.response.status === 500) {
+	if (error.response && error.response.status === 500) {
 		return Error(`${ErrorMessage.CONTACTS_INVALID_CSV}`);
 	}
 

@@ -22,19 +22,15 @@ export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 });
 
 const handleError = (error: HttpError): Error => {
-	if (!error.response) {
-		return error;
-	}
-
-	if (error.response.status === 400) {
+	if (error.response && error.response.status === 400) {
 		return new Error(ErrorMessage.CALL_BAD_REQUEST);
 	}
 
-	if (error.response.status === 402) {
+	if (error.response && error.response.status === 402) {
 		return new Error(ErrorMessage.CALL_INSUFFICIENT_FUNDS);
 	}
 
-	if (error.response.status === 403) {
+	if (error.response && error.response.status === 403) {
 		return new Error(ErrorMessage.CALL_INVALID_EXTENSION);
 	}
 

@@ -60,11 +60,7 @@ const generateFilename = (): string => {
 };
 
 const handleError = (error: HttpError): Error => {
-	if (!error.response) {
-		return error;
-	}
-
-	if (error.response.status === 404) {
+	if (error.response && error.response.status === 404) {
 		return new Error(ErrorMessage.FAX_NOT_FOUND);
 	}
 
