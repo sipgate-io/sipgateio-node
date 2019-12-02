@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors';
+import { ErrorMessage } from '../errors/ErrorMessage';
 import { validateWebhookUrl } from './validateWebhookUrl';
 
 describe('ValidateWebhookUrl', () => {

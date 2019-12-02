@@ -1,2 +1,2 @@
 export * from './ErrorMessage';
-export * from './handleCoreError';
+export * from './handleError';

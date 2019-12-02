@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors';
+import { ErrorMessage } from '../errors/ErrorMessage';
 import { validatePdfFileContent } from './validatePdfFileContent';
 import validPDFBuffer from './validPDFBuffer';
 

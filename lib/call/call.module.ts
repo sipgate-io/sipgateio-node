@@ -1,4 +1,4 @@
-import { CallData, InitiateNewCallSessionResponse } from '../core/models';
+import { CallData, InitiateNewCallSessionResponse } from './models/call.model';
 
 export interface CallModule {
 	initiate: (

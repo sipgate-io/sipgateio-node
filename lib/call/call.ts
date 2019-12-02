@@ -1,9 +1,9 @@
-import { CallData, InitiateNewCallSessionResponse } from '../core/models';
+import { CallData, InitiateNewCallSessionResponse } from './models/call.model';
 import { CallModule } from './call.module';
-import { ErrorMessage } from '../core/errors';
+import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
-import { validateCallData } from '../core/validator/validateCallData';
-import handleCoreError from '../core/errors/handleCoreError';
+import { validateCallData } from './validators/validateCallData';
+import handleCoreError from '../core/errors/handleError';
 
 export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 	async initiate(

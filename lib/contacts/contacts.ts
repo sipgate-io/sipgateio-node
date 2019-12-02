@@ -1,9 +1,9 @@
 import { ContactsModule } from './contacts.module';
-import { ErrorMessage } from '../core/errors';
+import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
-import { ImportCSVRequestDTO } from '../core/models/contacts.model';
+import { ImportCSVRequestDTO } from './models/contacts.model';
 import btoa from 'btoa';
-import handleCoreError from '../core/errors/handleCoreError';
+import handleCoreError from '../core/errors/handleError';
 
 export const createContactsModule = (
 	client: HttpClientModule

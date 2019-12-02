@@ -1,15 +1,15 @@
-import { ErrorMessage } from '../core/errors';
+import { ErrorMessage } from './errors/ErrorMessage';
 import {
 	Fax,
 	FaxDTO,
 	FaxStatus,
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
-} from '../core/models';
+} from './models/fax.model';
 import { FaxModule } from './fax.module';
 import { HttpClientModule, HttpError } from '../core/httpClient';
-import { validatePdfFileContent } from '../core/validator';
-import handleCoreError from '../core/errors/handleCoreError';
+import { validatePdfFileContent } from './validators/validatePdfFileContent';
+import handleCoreError from '../core/errors/handleError';
 
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 	async send(faxObject: Fax): Promise<SendFaxSessionResponse> {

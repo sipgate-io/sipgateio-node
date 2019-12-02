@@ -1,5 +1,5 @@
-import { ErrorMessage } from '../errors';
-import { ValidationResult } from './validationResult';
+import { ErrorMessage } from '../errors/ErrorMessage';
+import { ValidationResult } from '../../core/validator/validationResult';
 
 const validateSendAt = (sendAt: Date): ValidationResult => {
 	if (Number.isNaN(sendAt.getTime())) {

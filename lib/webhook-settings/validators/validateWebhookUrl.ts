@@ -1,5 +1,5 @@
-import { ErrorMessage } from '../errors';
-import { ValidationResult } from './validationResult';
+import { ErrorMessage } from '../errors/ErrorMessage';
+import { ValidationResult } from '../../core';
 
 const validateWebhookUrl = (url: string): ValidationResult => {
 	const webhookUrlRegex = new RegExp(/^(http|https):\/\//i);

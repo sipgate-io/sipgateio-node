@@ -1,5 +1,5 @@
-import { ErrorMessage } from '../core/errors';
-import { ExtensionType } from '../core/validator';
+import { ErrorMessage } from './errors/ErrorMessage';
+import { ExtensionType } from '../fax/validators';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { SMSModule } from './sms.module';
 import {
@@ -9,13 +9,13 @@ import {
 	SmsCallerIds,
 	SmsExtension,
 	SmsExtensions,
-} from '../core/models';
+} from './models/sms.model';
 import {
 	validateExtension,
 	validatePhoneNumber,
 	validateSendAt,
-} from '../core/validator';
-import handleCoreError from '../core/errors/handleCoreError';
+} from '../fax/validators';
+import handleCoreError from '../core/errors/handleError';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 	async send(sms: ShortMessage, sendAt?: Date): Promise<void> {

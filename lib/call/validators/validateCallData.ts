@@ -1,8 +1,11 @@
-import { CallData } from '../models';
-import { ErrorMessage } from '../errors';
-import { ExtensionType, validateExtension } from './validateExtension';
-import { ValidationResult } from './validationResult';
-import { validatePhoneNumber } from './validatePhoneNumber';
+import { CallData } from '../models/call.model';
+import { ErrorMessage } from '../../core/errors';
+import {
+	ExtensionType,
+	validateExtension,
+} from '../../core/validator/validateExtension';
+import { ValidationResult } from '../../core/validator/validationResult';
+import { validatePhoneNumber } from '../../core/validator/validatePhoneNumber';
 
 const validateCallData = (callData: CallData): ValidationResult => {
 	const calleeValidationResult = validatePhoneNumber(callData.callee);

@@ -1,2 +1,2 @@
 export * from './webhookSettings';
-export * from './webhookSettingsModule';
+export * from './webhookSettings.module';

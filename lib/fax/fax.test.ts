@@ -1,9 +1,9 @@
 /* eslint @typescript-eslint/ban-ts-ignore: 0 */
-import { ErrorMessage } from '../core/errors';
-import { FaxDTO } from '../core/models';
+import { ErrorMessage } from './errors/ErrorMessage';
+import { FaxDTO } from './models/fax.model';
 import { HttpClientModule } from '../core/httpClient';
 import { createFaxModule } from './fax';
-import validPDFBuffer from '../core/validator/validPDFBuffer';
+import validPDFBuffer from './validators/validPDFBuffer';
 
 describe('SendFax', () => {
 	let mockClient: HttpClientModule;

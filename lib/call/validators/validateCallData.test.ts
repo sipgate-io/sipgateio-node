@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors';
+import { ErrorMessage } from '../../core/errors';
 import { validateCallData } from './validateCallData';
 
 describe('callData validation', () => {
