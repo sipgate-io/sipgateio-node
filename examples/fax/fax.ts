@@ -13,6 +13,7 @@ import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 	const faxlineId = process.env.SIPGATE_FAX_EXTENSION || '';
 	const recipient = process.env.SIPGATE_FAX_RECIPIENT || '';
+
 	const filePath = './testpage.pdf';
 	const { name: filename } = path.parse(path.basename(filePath));
 	const fileContent = fs.readFileSync(filePath);
