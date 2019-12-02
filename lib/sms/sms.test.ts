@@ -1,11 +1,8 @@
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
-import {
-	ShortMessage,
-	SmsCallerId,
-	SmsExtension,
-	UserInfo,
-} from '../core/models';
+import { ShortMessage, SmsCallerId, SmsExtension } from './models/sms.model';
+import { ErrorMessage as SmsErrors } from './errors/ErrorMessage';
+import { UserInfo } from '../core/models';
 import {
 	containsPhoneNumber,
 	createSMSModule,
@@ -52,7 +49,7 @@ describe('SMS Module', () => {
 		};
 
 		await expect(smsModule.send(message)).rejects.toThrowError(
-			ErrorMessage.SMS_INVALID_EXTENSION
+			SmsErrors.SMS_INVALID_EXTENSION
 		);
 	});
 
@@ -93,7 +90,7 @@ describe('SMS Module', () => {
 		};
 
 		await expect(smsModule.send(message)).rejects.toThrowError(
-			ErrorMessage.SMS_INVALID_MESSAGE
+			SmsErrors.SMS_INVALID_MESSAGE
 		);
 	});
 });
@@ -145,7 +142,7 @@ describe('schedule sms', () => {
 		);
 
 		await expect(smsModule.send(message, date)).rejects.toThrowError(
-			ErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE
+			SmsErrors.SMS_TIME_MUST_BE_IN_FUTURE
 		);
 	});
 
@@ -163,7 +160,7 @@ describe('schedule sms', () => {
 		);
 
 		await expect(smsModule.send(message, date)).rejects.toThrowError(
-			ErrorMessage.SMS_TIME_TOO_FAR_IN_FUTURE
+			SmsErrors.SMS_TIME_TOO_FAR_IN_FUTURE
 		);
 	});
 
@@ -179,7 +176,7 @@ describe('schedule sms', () => {
 		const date: Date = new Date('08 bar 2015');
 
 		await expect(smsModule.send(message, date)).rejects.toThrowError(
-			ErrorMessage.SMS_TIME_INVALID
+			SmsErrors.SMS_TIME_INVALID
 		);
 	});
 });

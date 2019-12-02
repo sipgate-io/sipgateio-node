@@ -1,4 +1,5 @@
-import { CallData } from '../core/models';
+import { CallData } from './models/call.model';
+import { ErrorMessage as CallErrorMessage } from './errors/ErrorMessage';
 import { CallModule } from './call.module';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
@@ -75,7 +76,7 @@ describe('Call Module', () => {
 		};
 
 		await expect(callModule.initiate(callData)).rejects.toThrowError(
-			ErrorMessage.CALL_INSUFFICIENT_FUNDS
+			CallErrorMessage.CALL_INSUFFICIENT_FUNDS
 		);
 	});
 

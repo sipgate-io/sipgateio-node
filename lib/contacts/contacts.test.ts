@@ -1,7 +1,7 @@
 import { ContactsModule } from './contacts.module';
-import { ErrorMessage } from '../core/errors';
+import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule } from '../core/httpClient';
-import { ImportCSVRequestDTO } from '../core/models/contacts.model';
+import { ImportCSVRequestDTO } from './models/contacts.model';
 import { createContactsModule } from './contacts';
 import atob from 'atob';
 

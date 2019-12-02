@@ -1,7 +1,8 @@
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
-import { WebhookSettings } from '../core/models';
-import { WebhookSettingsModule } from './webhookSettingsModule';
+import { ErrorMessage as WebhookErrorMessage } from './errors/ErrorMessage';
+import { WebhookSettings } from './models/webhook-settings.model';
+import { WebhookSettingsModule } from './webhookSettings.module';
 import { createSettingsModule } from './webhookSettings';
 
 describe('get settings', () => {
@@ -76,7 +77,7 @@ describe('setIncomingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setIncomingUrl('newUrl')).rejects.toThrowError(
-			ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
+			WebhookErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
 		);
 	});
 });
@@ -125,7 +126,7 @@ describe('setOutgoingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setOutgoingUrl('newUrl')).rejects.toThrowError(
-			ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
+			WebhookErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
 		);
 	});
 });
@@ -155,7 +156,7 @@ describe('setWhitelist', () => {
 		await expect(
 			settingsModule.setWhitelist(INVALID_P_EXT_WHITELIST)
 		).rejects.toThrowError(
-			ErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS
+			WebhookErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS
 		);
 	});
 
