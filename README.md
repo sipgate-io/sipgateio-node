@@ -259,6 +259,10 @@ The `deviceId` is needed for billing and determines the number which will be dis
 
 ### Webhook Settings
 
+#### What is a webhook?
+
+A webhook is a POST request that sipgate.io makes to a predefined URL when a certain event occurs. These requests contain information about the event that occurred in application/x-www-form-urlencoded format.
+
 The webhook settings module provides the following functions to update settings:
 
 ```typescript
