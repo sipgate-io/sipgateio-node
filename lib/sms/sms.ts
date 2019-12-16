@@ -108,7 +108,7 @@ async function sendSmsByPhoneNumber(
 	client: HttpClientModule,
 	sms: ShortMessage,
 	smsDTO: ShortMessageDTO
-) {
+): Promise<void> {
 	const webuserId = await getAuthenticatedWebuser(client);
 	const smsExtension = await getUserSmsExtension(client, webuserId);
 	const senderIds = await getSmsCallerIds(client, webuserId, smsExtension);
@@ -141,7 +141,7 @@ async function sendSmsBySmsId(
 	sms: ShortMessage,
 	smsDTO: ShortMessageDTO,
 	client: HttpClientModule
-) {
+): Promise<void> {
 	if (sms.smsId === undefined) {
 		throw new Error('smsId is undefined');
 	}
