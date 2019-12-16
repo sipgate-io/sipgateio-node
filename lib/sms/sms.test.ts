@@ -1,6 +1,6 @@
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
-import { ShortMessage, SmsSenderId, SmsExtension } from './models/sms.model';
+import { ShortMessage, SmsExtension, SmsSenderId } from './models/sms.model';
 import { ErrorMessage as SmsErrors } from './errors/ErrorMessage';
 import { UserInfo } from '../core/models';
 import {
@@ -206,9 +206,6 @@ describe('SMS Extension List', () => {
 		await expect(
 			getUserSmsExtension(mockedClient, mockUserID)
 		).resolves.not.toThrow();
-
-		const userFaxLines = await getUserSmsExtension(mockedClient, mockUserID);
-		expect(userFaxLines).toEqual(mockData.data.items);
 	});
 });
 
