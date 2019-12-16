@@ -268,9 +268,9 @@ describe('SMS Extension List', () => {
 			data: {
 				items: [
 					{
-						alias: '"Alexander Bain\'s fax"',
-						callerId: '+94123456789',
-						id: 'f0',
+						alias: '"Alexander Bain\'s phone"',
+						callerId: '+491517777777',
+						id: 's0',
 					},
 				],
 			},
