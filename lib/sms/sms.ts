@@ -41,8 +41,13 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 export const sendSms = async (
 	client: HttpClientModule,
 	smsDTO: ShortMessageDTO
-) => {
-	return client.post('/sessions/sms', smsDTO);
+): Promise<void> => {
+	return client
+		.post('/sessions/sms', smsDTO)
+		.then(() => {})
+		.catch(error => {
+			return Promise.reject(handleError(error));
+		});
 };
 
 export const getUserSmsExtension = async (
@@ -72,12 +77,14 @@ export const setDefaultSenderId = async (
 	smsId: string,
 	senderId: SmsSenderId
 ): Promise<void> => {
-	return client.put(
-		`${webuserExtension}/sms/${smsId}/callerids/${senderId.id}`,
-		{
+	return client
+		.put(`${webuserExtension}/sms/${smsId}/callerids/${senderId.id}`, {
 			defaultNumber: 'true',
-		}
-	);
+		})
+		.then(() => {})
+		.catch(error => {
+			return Promise.reject(handleError(error));
+		});
 };
 
 export const containsPhoneNumber = (

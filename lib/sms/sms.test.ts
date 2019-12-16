@@ -17,7 +17,87 @@ describe('SMS Module', () => {
 		mockClient = {} as HttpClientModule;
 	});
 
-	test('It sends a SMS successfully', async () => {
+	it('sends  a sms by using a validated phone number', async () => {
+		const smsModule = createSMSModule(mockClient);
+
+		mockClient.get = jest.fn().mockImplementation(args => {
+			if (args === 'authorization/userinfo') {
+				return Promise.resolve({
+					data: {
+						sub: 'w999',
+					},
+				});
+			}
+			if (args === 'w999/sms') {
+				return Promise.resolve({
+					data: {
+						items: [
+							{
+								id: 's999',
+								alias: 'SMS von Douglas Engelbart',
+								callerId: '+4915739777777',
+							},
+						],
+					},
+				});
+			}
+			if (args === 'w999/sms/s999/callerids') {
+				return Promise.resolve({
+					data: {
+						items: [
+							{
+								id: 0,
+								phonenumber: 'sipgate',
+								verified: true,
+								defaultNumber: true,
+							},
+							{
+								id: 123456,
+								phonenumber: '+4915739777777',
+								verified: true,
+								defaultNumber: false,
+							},
+						],
+					},
+				});
+			}
+			return Promise.reject({
+				response: {
+					status: 500,
+					uri: args,
+				},
+			});
+		});
+
+		mockClient.post = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve({ data: {} }));
+
+		mockClient.put = jest.fn().mockImplementation(args => {
+			if (
+				args === 'w999/sms/s999/callerids/123456' ||
+				args === 'w999/sms/s999/callerids/0'
+			) {
+				return Promise.resolve({});
+			}
+			return Promise.reject({
+				response: {
+					status: 500,
+					uri: args,
+				},
+			});
+		});
+
+		await expect(
+			smsModule.send({
+				message: 'Lorem Ipsum Dolor',
+				recipient: '+4915739777777',
+				phoneNumber: '+4915739777777',
+			})
+		).resolves.not.toThrow();
+	});
+
+	it('sends a SMS successfully', async () => {
 		const smsModule = createSMSModule(mockClient);
 
 		mockClient.post = jest
