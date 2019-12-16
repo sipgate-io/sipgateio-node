@@ -5,9 +5,9 @@ import { SMSModule } from './sms.module';
 import {
 	ShortMessage,
 	ShortMessageDTO,
-	SmsSenderId,
 	SmsCallerIds,
 	SmsExtensions,
+	SmsSenderId,
 } from './models/sms.model';
 import { getAuthenticatedWebuser } from '../core/helpers/authorizationInfo';
 import {
@@ -19,116 +19,31 @@ import handleCoreError from '../core/errors/handleError';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 	async send(sms: ShortMessage, sendAt?: Date): Promise<void> {
+		const smsDTO: ShortMessageDTO = {
+			smsId: '',
+			message: sms.message,
+			recipient: sms.recipient,
+		};
 		if (sendAt) {
 			const sendAtValidationResult = validateSendAt(sendAt);
 			if (!sendAtValidationResult.isValid) {
 				throw new Error(sendAtValidationResult.cause);
 			}
+			smsDTO.sendAt = sendAt.getTime() / 1000;
 		}
-
-		let smsDTO: ShortMessageDTO = {
-			smsId: 's0',
-			message: sms.message,
-			recipient: sms.recipient,
-		};
-
-		const webuserId = await getAuthenticatedWebuser(client);
-
-		const smsExtension = await getUserSmsExtension(client, webuserId);
-
-		const senderIds = await getSmsCallerIds(
-			client,
-			webuserId,
-			smsExtension
-		);
-
-		const senderId = senderIds.find(
-			value => value.phonenumber === sms.phoneNumber
-		);
-		if (senderId === undefined) {
-		  throw new Error(ErrorMessage.SMS_NUMBER_NOT_REGISTERED)
-    }
-		if (!senderId.verified) {
-		  throw new Error(ErrorMessage.SMS_NUMBER_NOT_VERIFIED)
-    }
-
-		const defaultSmsId = senderIds.find(value => value.defaultNumber);
-		if (defaultSmsId === undefined) {
-			throw new Error(ErrorMessage.SMS_NO_DEFAULT_SENDER_ID);
-		}
-
 		if (sms.phoneNumber !== undefined) {
-			await setDefaultSenderId(
-				client,
-				webuserId,
-				smsExtension,
-				senderId
-			);
-
-			if (sendAt !== undefined) {
-				smsDTO = {
-					smsId: 's0',
-					message: sms.message,
-					recipient: sms.recipient,
-					sendAt: sendAt.getTime() / 1000,
-				};
-			} else {
-				smsDTO = {
-					smsId: 's0',
-					message: sms.message,
-					recipient: sms.recipient,
-				};
-			}
+			return await sendSmsByPhoneNumber(client, sms, smsDTO);
 		}
-		if (sms.smsId !== undefined) {
-			const smsExtensionValidationResult = validateExtension(sms.smsId, [
-				ExtensionType.SMS,
-			]);
-			if (!smsExtensionValidationResult.isValid) {
-				throw new Error(smsExtensionValidationResult.cause);
-			}
-			if (sendAt !== undefined) {
-				smsDTO = {
-					smsId: sms.smsId,
-					message: sms.message,
-					recipient: sms.recipient,
-					sendAt: sendAt.getTime() / 1000,
-				};
-			} else {
-				smsDTO = {
-					smsId: sms.smsId,
-					message: sms.message,
-					recipient: sms.recipient,
-				};
-			}
-		}
-
-		const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
-
-		if (!phoneNumberValidationResult.isValid) {
-			throw new Error(phoneNumberValidationResult.cause);
-		}
-		if (sms.message === '') {
-			throw new Error(ErrorMessage.SMS_INVALID_MESSAGE);
-		}
-
-		return await client
-			.post('/sessions/sms', smsDTO)
-			.then(async () => {
-				if (sms.phoneNumber !== undefined) {
-					await setDefaultSenderId(
-						client,
-						webuserId,
-						smsExtension,
-						defaultSmsId
-					);
-				}
-			})
-			.catch(error => {
-				return Promise.reject(handleError(error));
-			});
+		return await sendSmsBySmsId(sms, smsDTO, client);
 	},
 });
+
+export const sendSms = async (
+	client: HttpClientModule,
+	smsDTO: ShortMessageDTO
+) => {
+	return client.post('/sessions/sms', smsDTO);
+};
 
 export const getUserSmsExtension = async (
 	client: HttpClientModule,
@@ -157,9 +72,12 @@ export const setDefaultSenderId = async (
 	smsId: string,
 	senderId: SmsSenderId
 ): Promise<void> => {
-	return client.put(`${webuserExtension}/sms/${smsId}/callerids/${senderId.id}`, {
-		defaultNumber: 'true',
-	});
+	return client.put(
+		`${webuserExtension}/sms/${smsId}/callerids/${senderId.id}`,
+		{
+			defaultNumber: 'true',
+		}
+	);
 };
 
 export const containsPhoneNumber = (
@@ -176,6 +94,69 @@ const handleError = (error: HttpError): Error => {
 	if (error.response && error.response.status === 403) {
 		return new Error(ErrorMessage.SMS_INVALID_EXTENSION);
 	}
-
 	return handleCoreError(error);
 };
+
+async function sendSmsByPhoneNumber(
+	client: HttpClientModule,
+	sms: ShortMessage,
+	smsDTO: ShortMessageDTO
+) {
+	const webuserId = await getAuthenticatedWebuser(client);
+	const smsExtension = await getUserSmsExtension(client, webuserId);
+	const senderIds = await getSmsCallerIds(client, webuserId, smsExtension);
+	const senderId = senderIds.find(
+		value => value.phonenumber === sms.phoneNumber
+	);
+	if (senderId === undefined) {
+		throw new Error(ErrorMessage.SMS_NUMBER_NOT_REGISTERED);
+	}
+	if (!senderId.verified) {
+		throw new Error(ErrorMessage.SMS_NUMBER_NOT_VERIFIED);
+	}
+	const defaultSmsId = senderIds.find(value => value.defaultNumber);
+	if (defaultSmsId === undefined) {
+		throw new Error(ErrorMessage.SMS_NO_DEFAULT_SENDER_ID);
+	}
+	smsDTO.smsId = smsExtension;
+	await setDefaultSenderId(client, webuserId, smsExtension, senderId);
+	return await sendSms(client, smsDTO)
+		.then(
+			async () =>
+				await setDefaultSenderId(client, webuserId, smsExtension, defaultSmsId)
+		)
+		.catch(error => {
+			return Promise.reject(handleError(error));
+		});
+}
+
+async function sendSmsBySmsId(
+	sms: ShortMessage,
+	smsDTO: ShortMessageDTO,
+	client: HttpClientModule
+) {
+	if (sms.smsId === undefined) {
+		throw new Error('smsId is undefined');
+	}
+	const smsExtensionValidationResult = validateExtension(sms.smsId, [
+		ExtensionType.SMS,
+	]);
+	if (!smsExtensionValidationResult.isValid) {
+		throw new Error(smsExtensionValidationResult.cause);
+	}
+	smsDTO.smsId = sms.smsId;
+
+	const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
+
+	if (!phoneNumberValidationResult.isValid) {
+		throw new Error(phoneNumberValidationResult.cause);
+	}
+	if (sms.message === '') {
+		throw new Error(ErrorMessage.SMS_INVALID_MESSAGE);
+	}
+	return await sendSms(client, smsDTO)
+		.then(() => {})
+		.catch(error => {
+			return Promise.reject(handleError(error));
+		});
+}
