@@ -1,5 +1,5 @@
 import { ErrorMessage } from './errors/ErrorMessage';
-import { ExtensionType, validateExtension } from '../fax/validators';
+import { ExtensionType, validateExtension } from '../core/validator';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { WebhookSettings } from './models/webhook-settings.model';
 import { WebhookSettingsModule } from './webhookSettings.module';
