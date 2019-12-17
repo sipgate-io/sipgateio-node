@@ -2,7 +2,7 @@
 	"name": "sipgateio",
 	"version": "0.0.1",
 	"description": "The official Node.js library for sipgate.io",
-	"main": "dist/lib/index.js",
+	"main": "./dist/index.js",
 	"scripts": {
 		"lint": "eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
 		"format": "prettier --write **/**.ts",
@@ -17,7 +17,7 @@
 		"url": "git+https://github.com/sipgate-io/sipgateio-node.git"
 	},
 	"files": [
-		"/lib"
+		"/dist"
 	],
 	"author": {
 		"name": "sipgate GmbH",
