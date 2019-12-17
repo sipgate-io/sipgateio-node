@@ -1,8 +1,21 @@
-export interface ShortMessage {
-	smsId: string;
+export interface GenericShortMessage {
+	smsId?: string;
 	recipient: string;
 	message: string;
+	phoneNumber?: string;
 }
+
+interface WithPhoneNumber {
+	smsId?: undefined;
+	phoneNumber: string;
+}
+
+interface WithSmsId {
+	smsId: string;
+	phoneNumber?: undefined;
+}
+
+export type ShortMessage = GenericShortMessage & (WithPhoneNumber | WithSmsId);
 
 export interface ShortMessageDTO {
 	smsId: string;
@@ -21,7 +34,7 @@ export interface SmsExtensions {
 	items: SmsExtension[];
 }
 
-export interface SmsCallerId {
+export interface SmsSenderId {
 	id: number;
 	phonenumber: string;
 	verified: boolean;
@@ -29,5 +42,5 @@ export interface SmsCallerId {
 }
 
 export interface SmsCallerIds {
-	items: SmsCallerId[];
+	items: SmsSenderId[];
 }

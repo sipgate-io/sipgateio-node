@@ -25,6 +25,7 @@ export const createHttpClient = (
 			Authorization: authorizationHeader,
 			'X-Sipgate-Client': JSON.stringify(platformInfo),
 			'X-Sipgate-Version': version,
+			'Content-Type': 'application/json',
 		},
 	});
 

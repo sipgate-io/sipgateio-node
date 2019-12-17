@@ -1,13 +1,13 @@
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
-import { ShortMessage, SmsCallerId, SmsExtension } from './models/sms.model';
+import { ShortMessage, SmsSenderId, SmsExtension } from './models/sms.model';
 import { ErrorMessage as SmsErrors } from './errors/ErrorMessage';
 import { UserInfo } from '../core/models';
 import {
 	containsPhoneNumber,
 	createSMSModule,
 	getSmsCallerIds,
-	getUserSMSExtensions,
+	getUserSmsExtension,
 } from './sms';
 
 describe('SMS Module', () => {
@@ -204,10 +204,10 @@ describe('SMS Extension List', () => {
 			.mockImplementation(() => Promise.resolve(mockData));
 
 		await expect(
-			getUserSMSExtensions(mockedClient, mockUserID)
+			getUserSmsExtension(mockedClient, mockUserID)
 		).resolves.not.toThrow();
 
-		const userFaxLines = await getUserSMSExtensions(mockedClient, mockUserID);
+		const userFaxLines = await getUserSmsExtension(mockedClient, mockUserID);
 		expect(userFaxLines).toEqual(mockData.data.items);
 	});
 });
@@ -263,7 +263,7 @@ describe('CallerIds for SMS Extension', () => {
 
 describe('Numbers Verification', () => {
 	test('should verify phone number correctly', async () => {
-		const smsCallerIds: SmsCallerId[] = [
+		const smsCallerIds: SmsSenderId[] = [
 			{
 				defaultNumber: true,
 				id: 0,
@@ -284,7 +284,7 @@ describe('Numbers Verification', () => {
 	});
 
 	test('should not verify phone number', async () => {
-		const smsCallerIds: SmsCallerId[] = [
+		const smsCallerIds: SmsSenderId[] = [
 			{
 				defaultNumber: true,
 				id: 0,
@@ -305,7 +305,7 @@ describe('Numbers Verification', () => {
 	});
 
 	test('should not verify phone unknown number', async () => {
-		const smsCallerIds: SmsCallerId[] = [
+		const smsCallerIds: SmsSenderId[] = [
 			{
 				defaultNumber: true,
 				id: 0,
