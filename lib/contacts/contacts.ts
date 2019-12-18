@@ -19,6 +19,12 @@ export const createContactsModule = (
 			.post('/contacts/import/csv', contactsDTO)
 			.catch(error => Promise.reject(handleError(error)));
 	},
+	async importVCardString(vcardContent: string): Promise<void> {
+		return new Promise(resolve => {
+			console.log(vcardContent);
+			resolve();
+		});
+	},
 });
 
 const findColumnIndex = (array: string[], needle: string): number => {

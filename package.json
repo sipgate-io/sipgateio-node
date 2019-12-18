@@ -77,11 +77,13 @@
 	},
 	"dependencies": {
 		"@types/google-libphonenumber": "^7.4.17",
+		"@types/vcf": "^2.0.1",
+		"atob": "^2.1.2",
 		"axios": "^0.19.0",
 		"btoa": "^1.2.1",
-		"atob": "^2.1.2",
 		"detect-browser": "^4.8.0",
 		"file-type": "^12.4.0",
-		"google-libphonenumber": "^3.2.6"
+		"google-libphonenumber": "^3.2.6",
+		"vcf": "^2.0.6"
 	}
 }
