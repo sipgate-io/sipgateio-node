@@ -307,13 +307,19 @@ These parameters can be set using these functions: `setIncomingUrl` and `setOutg
 
 ### Contacts
 
-The contacts module provides the following function:
+The contacts module provides the following functions:
 
 ```typescript
 interface ContactsModule {
 	importFromCsvString: (csvContent: string) => Promise<void>;
+	importVCardString: (
+		vcardContent: string,
+		scope: 'PRIVATE' | 'SHARED'
+	) => Promise<void>;
 }
 ```
+
+The `importFromCsvString` method:
 
 It takes a valid CSV-formatted string (columns separated by ",") containing at least the following fields:
 
@@ -333,6 +339,18 @@ lastname,firstname,number
 Turing,Alan,+4921163553355
 Lovelace,Ada,+4921163553355
 ```
+
+The `importVCardString` method:
+
+It takes a valid VCard 4.0 string containing at least the following fields:
+
+- Name with Firstname and Lastname
+- number
+
+The Difference between `private` and `shared` contacts:
+
+Shared Contacts are accessible to all Users in your sipgate Account.
+Private Contacts are only visible to you.
 
 ## Examples
 
