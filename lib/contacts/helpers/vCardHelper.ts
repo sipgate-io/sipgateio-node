@@ -43,8 +43,7 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 
 	validateAmountOfNames(names);
 
-	const lastname = names[0];
-	const firstname = names[1];
+	const [lastname, firstname] = names;
 
 	validateAmountOfPhoneNumbers(phoneAttribute);
 	validateAmountOfAddresses(addressAttribute);
