@@ -347,6 +347,10 @@ It takes a valid VCard 4.0 string containing at least the following fields:
 - Name with Firstname and Lastname
 - number
 
+**Adress and Numbers**:
+
+If you want to save an address and a number of a contact too, keep in Mind, that only **one** address and **one** account are allowed in the format.
+
 The Difference between `private` and `shared` contacts:
 
 Shared Contacts are accessible to all Users in your sipgate Account.
