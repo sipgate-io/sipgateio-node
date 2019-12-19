@@ -5,6 +5,7 @@ import { ImportCSVRequestDTO } from './models/contacts.model';
 import { createContactsModule } from './contacts';
 import {
 	example,
+	exampleWithAllValues,
 	exampleWithTwoAdresses,
 	exampleWithoutEmail,
 } from './contacts.test.examples';
@@ -99,6 +100,18 @@ describe('Contacts Module', () => {
 		expect(() => parseVCard(example)).not.toThrowError();
 	});
 
+	it('throws an Error if the vCard does not have a valid starting tag', () => {
+		expect(() => parseVCard('VERSION:4.0\r\nEND:VCARD\r\n')).toThrowError(
+			'vCard does not contain a valid BEGIN tag'
+		);
+	});
+
+	it('throws an Error if the vCard does not have a valid ending tag', () => {
+		expect(() => parseVCard('BEGIN:VCARD\r\nVERSION:4.0\r\n\r\n')).toThrowError(
+			'vCard does not contain a valid END tag'
+		);
+	});
+
 	it('throws an Error if the Names of the vCard Contact are not given', () => {
 		expect(() =>
 			parseVCard('BEGIN:VCARD\r\nVERSION:4.0\r\nEND:VCARD\r\n')
@@ -147,12 +160,34 @@ describe('Contacts Module', () => {
 			lastname: 'Doe',
 			phoneNumber: '+1 202 555 1212',
 			email: 'johnDoe@example.org',
+			organization: ['Example.com Inc.'],
 			address: {
+				poBox: '',
+				extendedAddress: '',
 				country: 'USA',
 				locality: 'Worktown',
 				postalCode: '01111',
 				region: 'NY',
 				streetAddress: '2 Enterprise Avenue',
+			},
+		});
+	});
+
+	it('parses all values correctly', () => {
+		expect(parseVCard(exampleWithAllValues)).toEqual({
+			firstname: 'Vorname',
+			lastname: 'Nachname',
+			phoneNumber: '+4915199999999',
+			email: 'email@example.com',
+			organization: ['Firma'],
+			address: {
+				poBox: 'Postfach',
+				extendedAddress: 'Adresszusatz',
+				country: 'Germany',
+				locality: 'ORT',
+				postalCode: 'PLZ',
+				region: 'Region',
+				streetAddress: 'Straße',
 			},
 		});
 	});
@@ -163,7 +198,10 @@ describe('Contacts Module', () => {
 			lastname: 'Doe',
 			phoneNumber: '+1 202 555 1212',
 			email: undefined,
+			organization: ['Example.com Inc.'],
 			address: {
+				poBox: '',
+				extendedAddress: '',
 				country: 'USA',
 				locality: 'Worktown',
 				postalCode: '01111',

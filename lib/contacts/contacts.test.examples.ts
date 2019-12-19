@@ -3,7 +3,7 @@ export const example =
 	'VERSION:4.0\r\n' +
 	'N:Doe;John;Mr.;\r\n' +
 	'FN:John Doe\r\n' +
-	'ORG:Example.com Inc.;\r\n' +
+	'ORG:Example.com Inc.\r\n' +
 	'TITLE:Imaginary test person\r\n' +
 	'EMAIL;type=INTERNET;type=WORK;type=pref:johnDoe@example.org\r\n' +
 	'TEL;type=HOME:+1 202 555 1212\r\n' +
@@ -25,7 +25,7 @@ export const exampleWithTwoAdresses =
 	'VERSION:4.0\r\n' +
 	'N:Doe;John;Mr.;\r\n' +
 	'FN:John Doe\r\n' +
-	'ORG:Example.com Inc.;\r\n' +
+	'ORG:Example.com Inc.\r\n' +
 	'TITLE:Imaginary test person\r\n' +
 	'EMAIL;type=INTERNET;type=WORK;type=pref:johnDoe@example.org\r\n' +
 	'TEL;type=HOME:+1 202 555 1212\r\n' +
@@ -44,12 +44,27 @@ export const exampleWithTwoAdresses =
 	'X-ABUID:5AD380FD-B2DE-4261-BA99-DE1D1DB52FBE\\:ABPerson\r\n' +
 	'END:VCARD\r\n';
 
+export const exampleWithAllValues =
+	'BEGIN:VCARD\r\n' +
+	'VERSION:4.0\r\n' +
+	'FN:Vorname Nachname\r\n' +
+	'N:Nachname;Vorname\r\n' +
+	'TITLE:Titel\r\n' +
+	'GENDER:U;\r\n' +
+	'BDAY:2000-02-13\r\n' +
+	'ORG:Firma\r\n' +
+	'TITLE:Rolle\r\n' +
+	'ADR;TYPE=HOME:Postfach;Adresszusatz;Straße;ORT;Region;PLZ;Germany\r\n' +
+	'TEL;TYPE=HOME:+4915199999999\r\n' +
+	'EMAIL;TYPE=HOME,INTERNET:email@example.com\r\n' +
+	'END:VCARD';
+
 export const exampleWithoutEmail =
 	'BEGIN:VCARD\r\n' +
 	'VERSION:4.0\r\n' +
 	'N:Doe;John;Mr.;\r\n' +
 	'FN:John Doe\r\n' +
-	'ORG:Example.com Inc.;\r\n' +
+	'ORG:Example.com Inc.\r\n' +
 	'TITLE:Imaginary test person\r\n' +
 	'TEL;type=HOME:+1 202 555 1212\r\n' +
 	'item1.ADR;type=WORK:;;2 Enterprise Avenue;Worktown;NY;01111;USA\r\n' +

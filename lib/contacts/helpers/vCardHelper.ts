@@ -2,8 +2,21 @@ import { ContactVCard } from './Address';
 import vCard from 'vcf';
 
 export const parseVCard = (vCardContent: string): ContactVCard => {
-	const parsedVCard = new vCard().parse(vCardContent);
+	let parsedVCard;
+	try {
+		parsedVCard = new vCard().parse(vCardContent);
+	} catch (ex) {
+		if (ex instanceof SyntaxError) {
+			if (ex.message.includes('Expected "BEGIN:VCARD"')) {
+				throw new Error('vCard does not contain a valid BEGIN tag');
+			}
+			if (ex.message.includes('Expected "END:VCARD"')) {
+				throw new Error('vCard does not contain a valid END tag');
+			}
+		}
 
+		throw new Error(ex);
+	}
 	if (parsedVCard.version !== '4.0') {
 		throw new Error('Invalid VCard Version given');
 	}
@@ -12,6 +25,7 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 	const phoneAttribute = parsedVCard.get('tel');
 	const emailAttribute = parsedVCard.get('email');
 	const addressAttribute = parsedVCard.get('adr');
+	const organizationAttribute = parsedVCard.get('org');
 
 	if (nameAttribute === undefined) {
 		throw new Error('Names not given');
@@ -23,7 +37,7 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 
 	const names = nameAttribute
 		.toString()
-		.replace('N:', '')
+		.replace(/(.*)N(.*):/, '')
 		.split(';');
 
 	validateAmountOfNames(names);
@@ -38,32 +52,46 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 	if (addressAttribute) {
 		addressValues = addressAttribute
 			.toString()
-			.replace('ADR:', '')
+			.replace(/(.*)ADR(.*):/, '')
 			.split(';');
 	}
 
-	validateAmountOfEmails(emailAttribute);
 	validateAtLeastRequiredAddressLength(addressValues);
+	validateAmountOfEmails(emailAttribute);
 
-	return {
+	let result: ContactVCard = {
 		firstname,
 		lastname,
 		phoneNumber: phoneAttribute.valueOf().toString(),
 		email: emailAttribute ? emailAttribute.valueOf().toString() : undefined,
-		address: {
-			streetAddress: addressValues ? addressValues[3] : undefined,
-			locality: addressValues ? addressValues[4] : undefined,
-			region: addressValues ? addressValues[5] : undefined,
-			postalCode: addressValues ? addressValues[6] : undefined,
-			country: addressValues ? addressValues[7] : undefined,
-		},
+		organization: organizationAttribute
+			.toString()
+			.replace(/(.*)ORG(.*):/, '')
+			.split(';'),
 	};
+
+	if (addressAttribute) {
+		result = {
+			...result,
+			address: {
+				poBox: addressValues ? addressValues[0] : '',
+				extendedAddress: addressValues ? addressValues[1] : '',
+				streetAddress: addressValues ? addressValues[2] : '',
+				locality: addressValues ? addressValues[3] : '',
+				region: addressValues ? addressValues[4] : '',
+				postalCode: addressValues ? addressValues[5] : '',
+				country: addressValues ? addressValues[6] : '',
+			},
+		};
+	}
+
+	return result;
 };
 
 const validateAtLeastRequiredAddressLength = (
 	addressValues: string[] | undefined
 ): void => {
-	if (addressValues && addressValues.length < 8)
+	if (addressValues && addressValues.length < 7)
 		throw new Error('Address Fields are invalid');
 };
 
