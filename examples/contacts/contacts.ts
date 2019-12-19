@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { sipgateIO } from '../../lib/core/sipgateIOClient';
+import { vcardExample } from './vcard';
 
 const filePath = './contacts.csv';
 const fileContent = readFileSync(filePath).toString();
@@ -20,3 +21,7 @@ client.contacts
 	.catch(error => {
 		console.error(error.message);
 	});
+
+client.contacts.importVCardString(vcardExample, 'PRIVATE');
+
+client.contacts.importVCardString(vcardExample, 'SHARED');
