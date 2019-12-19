@@ -21,10 +21,10 @@ export const createContactsModule = (
 			.catch(error => Promise.reject(handleError(error)));
 	},
 	async importVCardString(
-		vcardContent: string,
+		vCardContent: string,
 		scope: 'PRIVATE' | 'SHARED'
 	): Promise<void> {
-		const parsedVcard = parseVCard(vcardContent);
+		const parsedVcard = parseVCard(vCardContent);
 
 		const addresses = [];
 		if (parsedVcard.address) {
