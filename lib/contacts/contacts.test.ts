@@ -102,26 +102,26 @@ describe('Contacts Module', () => {
 
 	it('throws an Error if the vCard does not have a valid starting tag', () => {
 		expect(() => parseVCard('VERSION:4.0\r\nEND:VCARD\r\n')).toThrowError(
-			'vCard does not contain a valid BEGIN tag'
+			ErrorMessage.CONTACTS_VCARD_MISSING_BEGIN
 		);
 	});
 
 	it('throws an Error if the vCard does not have a valid ending tag', () => {
 		expect(() => parseVCard('BEGIN:VCARD\r\nVERSION:4.0\r\n\r\n')).toThrowError(
-			'vCard does not contain a valid END tag'
+			ErrorMessage.CONTACTS_VCARD_MISSING_END
 		);
 	});
 
 	it('throws an Error if the Names of the vCard Contact are not given', () => {
 		expect(() =>
 			parseVCard('BEGIN:VCARD\r\nVERSION:4.0\r\nEND:VCARD\r\n')
-		).toThrowError('Names not given');
+		).toThrowError(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
 	});
 
 	it('throws an Error if the Version is not 4.0', () => {
 		expect(() =>
 			parseVCard(example.replace('VERSION:4.0', 'VERSION:2.1'))
-		).toThrowError('Invalid VCard Version given');
+		).toThrowError(ErrorMessage.CONTACTS_INVALID_VCARD_VERSION);
 	});
 
 	it('throws an Error if no phone number is given', () => {
@@ -129,7 +129,7 @@ describe('Contacts Module', () => {
 			parseVCard(
 				'BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;Mr.;\r\nEND:VCARD\r\n'
 			)
-		).toThrowError('No phone number given');
+		).toThrowError(ErrorMessage.CONTACTS_MISSING_TEL_ATTRIBUTE);
 	});
 
 	it('throws an Error if multiple phone numbers are given', () => {
@@ -137,7 +137,7 @@ describe('Contacts Module', () => {
 			parseVCard(
 				'BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;Mr.;\r\nTEL;type=HOME:+1 202 555 1212\r\nTEL;type=WORK:+1 202 555 1212\r\nEND:VCARD\r\n'
 			)
-		).toThrowError('Only one phone number is allowed');
+		).toThrowError(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_PHONE_NUMBERS);
 	});
 
 	it('throws an Error if multiple email adresses are given', () => {
@@ -145,12 +145,12 @@ describe('Contacts Module', () => {
 			parseVCard(
 				'BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;Mr.;\r\nTEL;type=WORK:+1 202 555 1212\r\nEMAIL;type=INTERNET;type=WORK;type=pref:johnDoe@example.org\r\nEMAIL;type=INTERNET;type=WORK;type=pref:johnDoe@example.org\r\nEND:VCARD\r\n'
 			)
-		).toThrowError('Only one email is allowed');
+		).toThrowError(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS);
 	});
 
 	it('throws an Error if multiple addresses are given', () => {
 		expect(() => parseVCard(exampleWithTwoAdresses)).toThrowError(
-			'Only one address is allowed'
+			ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESSES
 		);
 	});
 

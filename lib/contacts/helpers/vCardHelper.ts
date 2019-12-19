@@ -1,4 +1,5 @@
 import { ContactVCard } from './Address';
+import { ErrorMessage } from '../errors/ErrorMessage';
 import vCard from 'vcf';
 
 export const parseVCard = (vCardContent: string): ContactVCard => {
@@ -8,17 +9,17 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 	} catch (ex) {
 		if (ex instanceof SyntaxError) {
 			if (ex.message.includes('Expected "BEGIN:VCARD"')) {
-				throw new Error('vCard does not contain a valid BEGIN tag');
+				throw new Error(ErrorMessage.CONTACTS_VCARD_MISSING_BEGIN);
 			}
 			if (ex.message.includes('Expected "END:VCARD"')) {
-				throw new Error('vCard does not contain a valid END tag');
+				throw new Error(ErrorMessage.CONTACTS_VCARD_MISSING_END);
 			}
 		}
-
 		throw new Error(ex);
 	}
+
 	if (parsedVCard.version !== '4.0') {
-		throw new Error('Invalid VCard Version given');
+		throw new Error(ErrorMessage.CONTACTS_INVALID_VCARD_VERSION);
 	}
 
 	const nameAttribute = parsedVCard.get('n');
@@ -28,11 +29,11 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 	const organizationAttribute = parsedVCard.get('org');
 
 	if (nameAttribute === undefined) {
-		throw new Error('Names not given');
+		throw new Error(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
 	}
 
 	if (phoneAttribute === undefined) {
-		throw new Error('No phone number given');
+		throw new Error(ErrorMessage.CONTACTS_MISSING_TEL_ATTRIBUTE);
 	}
 
 	const names = nameAttribute
@@ -92,30 +93,31 @@ const validateAtLeastRequiredAddressLength = (
 	addressValues: string[] | undefined
 ): void => {
 	if (addressValues && addressValues.length < 7)
-		throw new Error('Address Fields are invalid');
+		throw new Error(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESS_VALUES);
 };
 
 const validateAmountOfAddresses = (
 	addressAttribute: vCard.Property | vCard.Property[]
 ): void => {
 	if (addressAttribute && typeof addressAttribute.valueOf() === 'object')
-		throw new Error('Only one address is allowed');
+		throw new Error(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESSES);
 };
 
 const validateAmountOfEmails = (
 	emailAttribute: vCard.Property | vCard.Property[]
 ): void => {
 	if (emailAttribute && typeof emailAttribute.valueOf() === 'object')
-		throw new Error('Only one email is allowed');
+		throw new Error(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS);
 };
 
 const validateAmountOfPhoneNumbers = (
 	phoneAttribute: vCard.Property | vCard.Property[]
 ): void => {
 	if (typeof phoneAttribute.valueOf() === 'object')
-		throw new Error('Only one phone number is allowed');
+		throw new Error(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_PHONE_NUMBERS);
 };
 
 const validateAmountOfNames = (names: string[]): void => {
-	if (names.length < 2) throw new Error('Missing Name Fields');
+	if (names.length < 2)
+		throw new Error(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_NAMES);
 };
