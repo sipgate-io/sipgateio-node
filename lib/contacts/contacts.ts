@@ -1,7 +1,8 @@
-import { ContactsModule } from './contacts.module';
+import { ContactsDTO, ContactsModule } from './contacts.module';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { ImportCSVRequestDTO } from './models/contacts.model';
+import { parseVCard } from './helpers/vCardHelper';
 import btoa from 'btoa';
 import handleCoreError from '../core/errors/handleError';
 
@@ -19,11 +20,43 @@ export const createContactsModule = (
 			.post('/contacts/import/csv', contactsDTO)
 			.catch(error => Promise.reject(handleError(error)));
 	},
-	async importVCardString(vcardContent: string): Promise<void> {
-		return new Promise(resolve => {
-			console.log(vcardContent);
-			resolve();
-		});
+	async importVCardString(
+		vcardContent: string,
+		scope: 'PRIVATE' | 'SHARED'
+	): Promise<void> {
+		const parsedVcard = parseVCard(vcardContent);
+
+		const addresses = [];
+		if (parsedVcard.address) {
+			addresses.push(parsedVcard.address);
+		}
+		const emails = [];
+		if (parsedVcard.email) {
+			emails.push({
+				email: parsedVcard.email,
+				type: [],
+			});
+		}
+
+		const contactsDTO: ContactsDTO = {
+			name: `${parsedVcard.firstname} ${parsedVcard.lastname}`,
+			family: parsedVcard.lastname,
+			given: parsedVcard.firstname,
+			organization: [parsedVcard.organization],
+			picture: null,
+			scope,
+			addresses,
+			emails,
+			numbers: [
+				{
+					number: parsedVcard.phoneNumber,
+					type: [],
+				},
+			],
+		};
+		await client
+			.post('/contacts', contactsDTO)
+			.catch(error => Promise.reject(handleError(error)));
 	},
 });
 
