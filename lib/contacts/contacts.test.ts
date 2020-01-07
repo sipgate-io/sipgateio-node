@@ -1,4 +1,4 @@
-import { ContactsModule } from './contacts.module';
+import { ContactsDTO, ContactsModule } from './contacts.module';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule } from '../core/httpClient';
 import { ImportCSVRequestDTO } from './models/contacts.model';
@@ -13,6 +13,49 @@ import { parseVCard } from './helpers/vCardHelper';
 import atob from 'atob';
 
 describe('Contacts Module', () => {
+	let contactsModule: ContactsModule;
+	let mockClient: HttpClientModule;
+
+	beforeEach(() => {
+		mockClient = {} as HttpClientModule;
+		mockClient.post = jest
+			.fn()
+			.mockImplementation((_, contactsDTO: ContactsDTO) => {
+				console.log(contactsDTO);
+				return Promise.resolve({
+					status: 204,
+				});
+			});
+		contactsModule = createContactsModule(mockClient);
+	});
+
+	it('throws $expected when $input is given (some fields are missing)', async () => {
+		await expect(
+			contactsModule.import(
+				{
+					firstname: '',
+					lastname: '',
+				},
+				'PRIVATE'
+			)
+		).rejects.toThrowError(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
+	});
+
+	it.each`
+		input                                                                                                                                                                         | expected
+		${{ firstname: 'Vorname', lastname: 'Nachname' }}                                                                                                                             | ${undefined}
+		${{ firstname: 'Vorname', lastname: 'Nachname', phone: { number: '+4912121212', type: [] } }}                                                                                 | ${undefined}
+		${{ firstname: 'Vorname', lastname: 'Nachname', email: { mail: 'test@sipgate.de', type: [] } }}                                                                               | ${undefined}
+		${{ firstname: 'Vorname', lastname: 'Nachname', organization: ['companyExample'] }}                                                                                           | ${undefined}
+		${{ firstname: 'Vorname', lastname: 'Nachname', phone: { number: '+4912121212', type: [] }, email: { mail: 'test@sipgate.de', type: [] }, organization: ['companyExample'] }} | ${undefined}
+	`('does not throw when correct values are given', async ({ input }) => {
+		await expect(
+			contactsModule.import(input, 'PRIVATE')
+		).resolves.not.toThrow();
+	});
+});
+
+describe('Contacts Module by CSV', () => {
 	let contactsModule: ContactsModule;
 	let mockClient: HttpClientModule;
 
@@ -95,7 +138,7 @@ describe('Contacts Module', () => {
 	});
 });
 
-describe('Contacts Module', () => {
+describe('Contacts Module by vCard', () => {
 	it('parses a valid vCard', () => {
 		expect(() => parseVCard(example)).not.toThrowError();
 	});
