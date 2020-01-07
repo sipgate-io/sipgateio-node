@@ -322,19 +322,16 @@ interface ContactImport {
 }
 
 interface ContactsModule {
-	import: (contact: ContactImport, scope: Scope) => Promise<void>;
-	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
+	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
+	import: (contact: ContactImport, scope: Scope) => Promise<void>;
+	exportAsCsv: (scope: Scope) => Promise<string>;
 }
 ```
 
-The `import` method:
-
-It takes a valid `ContactImport` Object and creates a Contact in the requested `Scope`.
-
 The `importVCardString` method:
 
-It takes a valid VCard 4.0 string containing at least the following fields:
+It takes a valid VCard 4.0 string, containing at least the following fields:
 
 - Name with Firstname and Lastname
 - number
@@ -359,6 +356,16 @@ lastname,firstname,number
 Turing,Alan,+4921163553355
 Lovelace,Ada,+4921163553355
 ```
+
+The `import` method:
+
+It takes a valid `ContactImport` Object and creates a Contact in the requested `Scope`.
+
+The `exportAsCsv` method:
+
+It returns a csv strings containing all contacts for the given scope (`PRIVATE` or `SHARED`).
+
+`PRIVATE` is in this context a subset of `SHARED`.
 
 **Adress and Numbers**:
 
