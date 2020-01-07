@@ -310,14 +310,34 @@ These parameters can be set using these functions: `setIncomingUrl` and `setOutg
 The contacts module provides the following functions:
 
 ```typescript
+type Scope = 'PRIVATE' | 'SHARED';
+
+interface ContactImport {
+	firstname: string;
+	lastname: string;
+	address?: Address;
+	phone?: PhoneNumber;
+	email?: Email;
+	organization?: string[];
+}
+
 interface ContactsModule {
+	import: (contact: ContactImport, scope: Scope) => Promise<void>;
+	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
-	importVCardString: (
-		vcardContent: string,
-		scope: 'PRIVATE' | 'SHARED'
-	) => Promise<void>;
 }
 ```
+
+The `import` method:
+
+It takes a valid `ContactImport` Object and creates a Contact in the requested `Scope`.
+
+The `importVCardString` method:
+
+It takes a valid VCard 4.0 string containing at least the following fields:
+
+- Name with Firstname and Lastname
+- number
 
 The `importFromCsvString` method:
 
@@ -339,13 +359,6 @@ lastname,firstname,number
 Turing,Alan,+4921163553355
 Lovelace,Ada,+4921163553355
 ```
-
-The `importVCardString` method:
-
-It takes a valid VCard 4.0 string containing at least the following fields:
-
-- Name with Firstname and Lastname
-- number
 
 **Adress and Numbers**:
 
