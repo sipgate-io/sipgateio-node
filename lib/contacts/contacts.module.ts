@@ -1,9 +1,16 @@
 export interface ContactsModule {
 	importFromCsvString: (csvContent: string) => Promise<void>;
-	importVCardString: (
-		vcardContent: string,
-		scope: 'PRIVATE' | 'SHARED'
-	) => Promise<void>;
+	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
+	import: (contact: ContactImport, scope: Scope) => Promise<void>;
+}
+
+interface ContactImport {
+	firstname: string;
+	lastname: string;
+	address?: Address;
+	phone?: PhoneNumber;
+	email?: Email;
+	organization?: string[];
 }
 
 interface Email {
@@ -16,7 +23,7 @@ interface PhoneNumber {
 	type: string[];
 }
 
-interface Adress {
+interface Address {
 	poBox: string;
 	extendedAddress: string;
 	streetAddress: string;
@@ -33,7 +40,9 @@ export interface ContactsDTO {
 	picture: null;
 	emails: Email[];
 	numbers: PhoneNumber[];
-	addresses: Adress[];
+	addresses: Address[];
 	organization: string[][];
-	scope: string;
+	scope: Scope;
 }
+
+type Scope = 'PRIVATE' | 'SHARED';

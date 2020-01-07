@@ -20,10 +20,37 @@ export const createContactsModule = (
 			.post('/contacts/import/csv', contactsDTO)
 			.catch(error => Promise.reject(handleError(error)));
 	},
-	async importVCardString(
-		vCardContent: string,
-		scope: 'PRIVATE' | 'SHARED'
-	): Promise<void> {
+
+	async import(contact, scope): Promise<void> {
+		const {
+			firstname,
+			lastname,
+			organization,
+			address,
+			email,
+			phone,
+		} = contact;
+
+		if (firstname === '' && lastname === '') {
+			throw new Error(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
+		}
+		const contactsDTO: ContactsDTO = {
+			name: `${firstname} ${lastname}`,
+			family: lastname,
+			given: firstname,
+			organization: organization ? [organization] : [],
+			picture: null,
+			scope,
+			addresses: address ? [address] : [],
+			emails: email ? [email] : [],
+			numbers: phone ? [phone] : [],
+		};
+		await client
+			.post('/contacts', contactsDTO)
+			.catch(error => Promise.reject(handleError(error)));
+	},
+
+	async importVCardString(vCardContent: string, scope): Promise<void> {
 		const parsedVcard = parseVCard(vCardContent);
 
 		const addresses = [];
