@@ -42,12 +42,33 @@ describe('Contacts Module', () => {
 	});
 
 	it.each`
-		input                                                                                                                                                                         | expected
-		${{ firstname: 'Vorname', lastname: 'Nachname' }}                                                                                                                             | ${undefined}
-		${{ firstname: 'Vorname', lastname: 'Nachname', phone: { number: '+4912121212', type: [] } }}                                                                                 | ${undefined}
-		${{ firstname: 'Vorname', lastname: 'Nachname', email: { mail: 'test@sipgate.de', type: [] } }}                                                                               | ${undefined}
-		${{ firstname: 'Vorname', lastname: 'Nachname', organization: ['companyExample'] }}                                                                                           | ${undefined}
-		${{ firstname: 'Vorname', lastname: 'Nachname', phone: { number: '+4912121212', type: [] }, email: { mail: 'test@sipgate.de', type: [] }, organization: ['companyExample'] }} | ${undefined}
+		input | expected
+		${{
+	firstname: 'Vorname',
+	lastname: 'Nachname',
+}} | ${undefined}
+		${{
+	firstname: 'Vorname',
+	lastname: 'Nachname',
+	phone: { number: '+4912121212', type: [] },
+}} | ${undefined}
+		${{
+	firstname: 'Vorname',
+	lastname: 'Nachname',
+	email: { mail: 'test@sipgate.de', type: [] },
+}} | ${undefined}
+		${{
+	firstname: 'Vorname',
+	lastname: 'Nachname',
+	organization: ['companyExample'],
+}} | ${undefined}
+		${{
+	firstname: 'Vorname',
+	lastname: 'Nachname',
+	phone: { number: '+4912121212', type: [] },
+	email: { mail: 'test@sipgate.de', type: [] },
+	organization: ['companyExample'],
+}} | ${undefined}
 	`('does not throw when correct values are given', async ({ input }) => {
 		await expect(
 			contactsModule.import(input, 'PRIVATE')
@@ -252,5 +273,26 @@ describe('Contacts Module by vCard', () => {
 				streetAddress: '2 Enterprise Avenue',
 			},
 		});
+	});
+});
+
+describe('Export Contacts as CSV', () => {
+	let contactsModule: ContactsModule;
+	let mockClient: HttpClientModule;
+
+	beforeEach(() => {
+		mockClient = {} as HttpClientModule;
+		mockClient.post = jest
+			.fn()
+			.mockImplementation((_, contactsDTO: ContactsDTO) => {
+				console.log(contactsDTO);
+				return Promise.resolve({
+					status: 204,
+				});
+			});
+		contactsModule = createContactsModule(mockClient);
+	});
+	it('returns a csv by using scope', () => {
+		expect(() => contactsModule.exportAsCsv('PRIVATE')).not.toThrowError();
 	});
 });
