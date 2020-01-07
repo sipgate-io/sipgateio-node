@@ -69,3 +69,12 @@ client.contacts
 	.catch(error => {
 		console.error(error.message);
 	});
+
+client.contacts
+	.exportAsCsv('PRIVATE')
+	.then(data => {
+		console.log(data);
+	})
+	.catch(error => {
+		console.error(error.message);
+	});
