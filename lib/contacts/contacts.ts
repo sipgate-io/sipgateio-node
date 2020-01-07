@@ -2,6 +2,7 @@ import { ContactsDTO, ContactsModule } from './contacts.module';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { ImportCSVRequestDTO } from './models/contacts.model';
+import { Parser } from 'json2csv';
 import { parseVCard } from './helpers/vCardHelper';
 import btoa from 'btoa';
 import handleCoreError from '../core/errors/handleError';
@@ -84,6 +85,29 @@ export const createContactsModule = (
 		await client
 			.post('/contacts', contactsDTO)
 			.catch(error => Promise.reject(handleError(error)));
+	},
+
+	async exportAsCsv(scope): Promise<string> {
+		const contactsRequest = await client.get(
+			`contacts${scope === 'PRIVATE' ? '/internal' : ''}`
+		);
+
+		const fields = [
+			'id',
+			'name',
+			'emails',
+			'mobile',
+			'landline',
+			'fax',
+			'directdial',
+		];
+		const opts = { fields };
+		try {
+			const parser = new Parser(opts);
+			return parser.parse(contactsRequest.data.items);
+		} catch (err) {
+			throw Error(err);
+		}
 	},
 });
 

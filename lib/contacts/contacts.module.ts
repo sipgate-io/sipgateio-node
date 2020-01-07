@@ -2,6 +2,7 @@ export interface ContactsModule {
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
 	import: (contact: ContactImport, scope: Scope) => Promise<void>;
+	exportAsCsv: (scope: Scope) => Promise<string>;
 }
 
 interface ContactImport {
