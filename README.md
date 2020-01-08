@@ -311,6 +311,7 @@ The contacts module provides the following functions:
 
 ```typescript
 type Scope = 'PRIVATE' | 'SHARED';
+type ExportScope = Scope | 'INTERNAL';
 
 interface ContactImport {
 	firstname: string;
@@ -325,7 +326,9 @@ interface ContactsModule {
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
 	import: (contact: ContactImport, scope: Scope) => Promise<void>;
-	exportAsCsv: (scope: Scope) => Promise<string>;
+	exportAsCsv: (scope: ExportScope) => Promise<string>;
+	exportAsVCards: (scope: ExportScope) => Promise<string[]>;
+	exportAsSingleVCard: (scope: ExportScope) => Promise<string>;
 }
 ```
 
@@ -363,9 +366,23 @@ It takes a valid `ContactImport` Object and creates a Contact in the requested `
 
 The `exportAsCsv` method:
 
-It returns a csv strings containing all contacts for the given scope (`PRIVATE` or `SHARED`).
+It returns a csv strings containing all contacts for the given scope (`PRIVATE` or `SHARED` or `internal` - a explanation of these scopes can be found below).
 
-`PRIVATE` is in this context a subset of `SHARED`.
+The `exportAsVCards` method:
+
+It returns mulitple vCard-strings containing all contacts for the given scope (`PRIVATE` or `SHARED` or `internal` - a explanation of these scopes can be found below).
+
+The `exportAsSingleVCard` method:
+
+It returns a vCard-address-book containing all contacts for the given scope (`PRIVATE` or `SHARED` or `internal` - a explanation of these scopes can be found below).
+
+### Scopes
+
+The `PRIVATE` Scope are all contacts created by yourself and not shared with other people.
+
+The `SHARED` Scope includes all contacts created by anyone in your organization and are therefore shared with other people.
+
+The `INTERNAL` Scope contains the contacts which are created by `sipgate` such as a contact for any webuser in your organization.
 
 **Adress and Numbers**:
 
