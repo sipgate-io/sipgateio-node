@@ -96,7 +96,6 @@ export const createVCards = (contacts: ContactImport[]): string[] => {
 		contact.organizations.forEach(organization => {
 			card.add('org', organization.join(';'));
 		});
-		card.add('org', contact.organizations.join(';'));
 		contact.phoneNumbers.forEach(phoneNumber => {
 			card.add('tel', phoneNumber.phone, {
 				type: phoneNumber.type,

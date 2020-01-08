@@ -308,7 +308,7 @@ describe('Contacts Module by vCard', () => {
 			},
 		]);
 		expect(cards[0]).toBe(
-			'BEGIN:VCARD\r\nVERSION:4.0\r\nN:John;Doe\r\nORG:private;org\r\nORG:private,org\r\nTEL;TYPE=work:+00012345678\r\nEMAIL;TYPE=private,home:John.Doe@example.org\r\nADDR;TYPE=private:Post Box;Extended\r\n  ADdress;Street;Locality;Region;PostalCode;Country\r\nEND:VCARD'
+			'BEGIN:VCARD\r\nVERSION:4.0\r\nN:John;Doe\r\nORG:private;org\r\nTEL;TYPE=work:+00012345678\r\nEMAIL;TYPE=private,home:John.Doe@example.org\r\nADDR;TYPE=private:Post Box;Extended\r\n  ADdress;Street;Locality;Region;PostalCode;Country\r\nEND:VCARD'
 		);
 	});
 });
