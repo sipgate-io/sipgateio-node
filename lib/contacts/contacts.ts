@@ -125,23 +125,21 @@ export const createContactsModule = (
 			contact => contact.scope === scope
 		);
 
-		const contacts: ContactImport[] = contactsRequest.data.items.map(
-			contact => {
-				return {
-					firstname: contact.name,
-					lastname: '',
-					organizations: contact.organization,
-					phoneNumbers: contact.numbers,
-					emails: contact.emails,
-					addresses: contact.addresses.map(address => {
-						return {
-							...address,
-							type: ['home'],
-						};
-					}),
-				};
-			}
-		);
+		const contacts = contactsRequest.data.items.map<ContactImport>(contact => {
+			return {
+				firstname: contact.name,
+				lastname: '',
+				organizations: contact.organization,
+				phoneNumbers: contact.numbers,
+				emails: contact.emails,
+				addresses: contact.addresses.map(address => {
+					return {
+						...address,
+						type: ['home'],
+					};
+				}),
+			};
+		});
 
 		return createVCards(contacts);
 	},
