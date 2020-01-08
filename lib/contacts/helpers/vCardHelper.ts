@@ -1,4 +1,4 @@
-import { ContactVCard } from './Address';
+import { ContactImport, ContactVCard } from './Address';
 import { ErrorMessage } from '../errors/ErrorMessage';
 import vCard from 'vcf';
 
@@ -86,6 +86,44 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 	}
 
 	return result;
+};
+
+export const createVCards = (contacts: ContactImport[]): string[] => {
+	const cards: string[] = [];
+	contacts.map(contact => {
+		const card = new vCard();
+		card.add('n', `${contact.firstname};${contact.lastname}`);
+		contact.organizations.forEach(organization => {
+			card.add('org', organization.join(';'));
+		});
+		card.add('org', contact.organizations.join(';'));
+		contact.phoneNumbers.forEach(phoneNumber => {
+			card.add('tel', phoneNumber.phone, {
+				type: phoneNumber.type,
+			});
+		});
+		if (contact.emails !== undefined) {
+			contact.emails.forEach(mail => {
+				card.add('email', mail.email, {
+					type: mail.type,
+				});
+			});
+		}
+		if (contact.addresses !== undefined) {
+			const { addresses } = contact;
+			addresses.forEach(address => {
+				card.add(
+					'addr',
+					`${address.poBox};${address.extendedAddress};${address.streetAddress};${address.locality};${address.region};${address.postalCode};${address.country}`,
+					{
+						type: address.type,
+					}
+				);
+			});
+		}
+		cards.push(card.toString('4.0'));
+	});
+	return cards;
 };
 
 const validateAtLeastRequiredAddressLength = (
