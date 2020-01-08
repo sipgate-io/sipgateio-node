@@ -1,9 +1,14 @@
-import { ContactsDTO, ContactsModule } from './contacts.module';
+import { ContactImport } from './helpers/Address';
+import {
+	ContactsDTO,
+	ContactsModule,
+	ContactsRequest,
+} from './contacts.module';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { ImportCSVRequestDTO } from './models/contacts.model';
 import { Parser } from 'json2csv';
-import { parseVCard } from './helpers/vCardHelper';
+import { createVCards, parseVCard } from './helpers/vCardHelper';
 import btoa from 'btoa';
 import handleCoreError from '../core/errors/handleError';
 
@@ -108,6 +113,37 @@ export const createContactsModule = (
 		} catch (err) {
 			throw Error(err);
 		}
+	},
+	async exportAsSingleVCard(scope): Promise<string> {
+		const vCards = await this.exportAsVCards(scope);
+		return vCards.join('\r\n');
+	},
+	async exportAsVCards(scope): Promise<string[]> {
+		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
+
+		contactsRequest.data.items = contactsRequest.data.items.filter(
+			contact => contact.scope === scope
+		);
+
+		const contacts: ContactImport[] = contactsRequest.data.items.map(
+			contact => {
+				return {
+					firstname: contact.name,
+					lastname: '',
+					organizations: contact.organization,
+					phoneNumbers: contact.numbers,
+					emails: contact.emails,
+					addresses: contact.addresses.map(address => {
+						return {
+							...address,
+							type: ['home'],
+						};
+					}),
+				};
+			}
+		);
+
+		return createVCards(contacts);
 	},
 });
 

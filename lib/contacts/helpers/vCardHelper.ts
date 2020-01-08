@@ -97,7 +97,7 @@ export const createVCards = (contacts: ContactImport[]): string[] => {
 			card.add('org', organization.join(';'));
 		});
 		contact.phoneNumbers.forEach(phoneNumber => {
-			card.add('tel', phoneNumber.phone, {
+			card.add('tel', phoneNumber.number, {
 				type: phoneNumber.type,
 			});
 		});
@@ -113,7 +113,13 @@ export const createVCards = (contacts: ContactImport[]): string[] => {
 			addresses.forEach(address => {
 				card.add(
 					'addr',
-					`${address.poBox};${address.extendedAddress};${address.streetAddress};${address.locality};${address.region};${address.postalCode};${address.country}`,
+					`${address.poBox ? address.poBox : ''};${
+						address.extendedAddress ? address.extendedAddress : ''
+					};${address.streetAddress ? address.streetAddress : ''};${
+						address.locality ? address.locality : ''
+					};${address.region ? address.region : ''};${
+						address.postalCode ? address.postalCode : ''
+					};${address.country ? address.country : ''}`,
 					{
 						type: address.type,
 					}

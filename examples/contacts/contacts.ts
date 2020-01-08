@@ -78,3 +78,9 @@ client.contacts
 	.catch(error => {
 		console.error(error.message);
 	});
+
+client.contacts.exportAsVCards('SHARED').then(vCards => {
+	vCards.map(vcard => {
+		console.log(`${vcard}\n`);
+	});
+});

@@ -34,7 +34,7 @@ export interface EmailImport {
 }
 
 export interface PhoneImport {
-	phone: string;
+	number: string;
 	type: string[];
 }
 

@@ -301,7 +301,7 @@ describe('Contacts Module by vCard', () => {
 				organizations: [['private', 'org']],
 				phoneNumbers: [
 					{
-						phone: '+00012345678',
+						number: '+00012345678',
 						type: ['work'],
 					},
 				],
