@@ -3,13 +3,13 @@ import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule } from '../core/httpClient';
 import { ImportCSVRequestDTO } from './models/contacts.model';
 import { createContactsModule } from './contacts';
+import { createVCards, parseVCard } from './helpers/vCardHelper';
 import {
 	example,
 	exampleWithAllValues,
 	exampleWithTwoAdresses,
 	exampleWithoutEmail,
 } from './contacts.test.examples';
-import { parseVCard } from './helpers/vCardHelper';
 import atob from 'atob';
 
 describe('Contacts Module', () => {
@@ -273,6 +273,43 @@ describe('Contacts Module by vCard', () => {
 				streetAddress: '2 Enterprise Avenue',
 			},
 		});
+	});
+
+	it('returns a correct vCard parsed from a JSON Object', () => {
+		const cards = createVCards([
+			{
+				addresses: [
+					{
+						country: 'Country',
+						extendedAddress: 'Extended ADdress',
+						locality: 'Locality',
+						poBox: 'Post Box',
+						postalCode: 'PostalCode',
+						region: 'Region',
+						streetAddress: 'Street',
+						type: ['private'],
+					},
+				],
+				emails: [
+					{
+						email: 'John.Doe@example.org',
+						type: ['private', 'home'],
+					},
+				],
+				firstname: 'John',
+				lastname: 'Doe',
+				organizations: [['private', 'org']],
+				phoneNumbers: [
+					{
+						phone: '+00012345678',
+						type: ['work'],
+					},
+				],
+			},
+		]);
+		expect(cards[0]).toBe(
+			'BEGIN:VCARD\r\nVERSION:4.0\r\nN:John;Doe\r\nORG:private;org\r\nORG:private,org\r\nTEL;TYPE=work:+00012345678\r\nEMAIL;TYPE=private,home:John.Doe@example.org\r\nADDR;TYPE=private:Post Box;Extended\r\n  ADdress;Street;Locality;Region;PostalCode;Country\r\nEND:VCARD'
+		);
 	});
 });
 
