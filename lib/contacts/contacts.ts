@@ -52,32 +52,32 @@ export const createContactsModule = (
 	},
 
 	async importVCardString(vCardContent: string, scope): Promise<void> {
-		const parsedVcard = parseVCard(vCardContent);
+		const parsedVCard = parseVCard(vCardContent);
 
 		const addresses = [];
-		if (parsedVcard.address) {
-			addresses.push(parsedVcard.address);
+		if (parsedVCard.address) {
+			addresses.push(parsedVCard.address);
 		}
 		const emails = [];
-		if (parsedVcard.email) {
+		if (parsedVCard.email) {
 			emails.push({
-				email: parsedVcard.email,
+				email: parsedVCard.email,
 				type: [],
 			});
 		}
 
 		const contactsDTO: ContactsDTO = {
-			name: `${parsedVcard.firstname} ${parsedVcard.lastname}`,
-			family: parsedVcard.lastname,
-			given: parsedVcard.firstname,
-			organization: [parsedVcard.organization],
+			name: `${parsedVCard.firstname} ${parsedVCard.lastname}`,
+			family: parsedVCard.lastname,
+			given: parsedVCard.firstname,
+			organization: [parsedVCard.organization],
 			picture: null,
 			scope,
 			addresses,
 			emails,
 			numbers: [
 				{
-					number: parsedVcard.phoneNumber,
+					number: parsedVCard.phoneNumber,
 					type: [],
 				},
 			],
