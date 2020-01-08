@@ -71,7 +71,7 @@ client.contacts
 	});
 
 client.contacts
-	.exportAsCsv('PRIVATE')
+	.exportAsCsv('INTERNAL')
 	.then(data => {
 		console.log(data);
 	})

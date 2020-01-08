@@ -93,23 +93,34 @@ export const createContactsModule = (
 	},
 
 	async exportAsCsv(scope): Promise<string> {
-		const contactsRequest = await client.get(
-			`contacts${scope === 'PRIVATE' ? '/internal' : ''}`
+		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
+
+		contactsRequest.data.items = contactsRequest.data.items.filter(
+			contact => contact.scope === scope
 		);
 
 		const fields = [
 			'id',
 			'name',
 			'emails',
-			'mobile',
-			'landline',
-			'fax',
-			'directdial',
+			'numbers',
+			'addresses',
+			'organizations',
 		];
 		const opts = { fields };
+		const elements = contactsRequest.data.items.map(contact => {
+			return {
+				id: contact.id,
+				name: contact.name,
+				emails: contact.emails.map(email => email.email),
+				numbers: contact.numbers.map(number => number.number),
+				addresses: contact.addresses,
+				organizations: contact.organization,
+			};
+		});
 		try {
 			const parser = new Parser(opts);
-			return parser.parse(contactsRequest.data.items);
+			return parser.parse(elements);
 		} catch (err) {
 			throw Error(err);
 		}
