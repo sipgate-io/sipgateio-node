@@ -310,9 +310,6 @@ These parameters can be set using these functions: `setIncomingUrl` and `setOutg
 The contacts module provides the following functions:
 
 ```typescript
-type Scope = 'PRIVATE' | 'SHARED';
-type ExportScope = Scope | 'INTERNAL';
-
 interface ContactImport {
 	firstname: string;
 	lastname: string;
@@ -323,23 +320,20 @@ interface ContactImport {
 }
 
 interface ContactsModule {
+	import: (contact: ContactImport, scope: Scope) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
-	import: (contact: ContactImport, scope: Scope) => Promise<void>;
 	exportAsCsv: (scope: ExportScope) => Promise<string>;
 	exportAsVCards: (scope: ExportScope) => Promise<string[]>;
 	exportAsSingleVCard: (scope: ExportScope) => Promise<string>;
 }
 ```
 
-The `importVCardString` method:
+#### The `import` method:
 
-It takes a valid VCard 4.0 string, containing at least the following fields:
+It takes a valid `ContactImport` Object and creates a Contact in the requested `Scope`.
 
-- Name with Firstname and Lastname
-- number
-
-The `importFromCsvString` method:
+#### The `importFromCsvString` method:
 
 It takes a valid CSV-formatted string (columns separated by ",") containing at least the following fields:
 
@@ -360,38 +354,36 @@ Turing,Alan,+4921163553355
 Lovelace,Ada,+4921163553355
 ```
 
-The `import` method:
+#### The `importVCardString` method:
 
-It takes a valid `ContactImport` Object and creates a Contact in the requested `Scope`.
+It takes a valid VCard 4.0 string, containing at least the following fields:
 
-The `exportAsCsv` method:
+- `name` contains `firstname` and `lastname`
+- `number`
 
-It returns a csv strings containing all contacts for the given scope (`PRIVATE` or `SHARED` or `internal` - a explanation of these scopes can be found below).
+#### The `exportAsCsv` method:
 
-The `exportAsVCards` method:
+It returns a csv strings containing all contacts for the given scope
 
-It returns mulitple vCard-strings containing all contacts for the given scope (`PRIVATE` or `SHARED` or `internal` - a explanation of these scopes can be found below).
+#### The `exportAsVCards` method:
 
-The `exportAsSingleVCard` method:
+It returns mulitple vCard-strings containing all contacts for the given scope
 
-It returns a vCard-address-book containing all contacts for the given scope (`PRIVATE` or `SHARED` or `internal` - a explanation of these scopes can be found below).
+#### The `exportAsSingleVCard` method:
 
-### Scopes
+It returns a vCard-address-book containing all contacts for the given scope
 
-The `PRIVATE` Scope are all contacts created by yourself and not shared with other people.
+#### Scopes
+
+The `PRIVATE` Scope contains all contacts created by yourself and not shared with other people.
 
 The `SHARED` Scope includes all contacts created by anyone in your organization and are therefore shared with other people.
 
-The `INTERNAL` Scope contains the contacts which are created by `sipgate` such as a contact for any webuser in your organization.
+The `INTERNAL` Scope contains the contacts which are created by `sipgate` such as a contact for any `webuser` in your organization.
 
 **Adress and Numbers**:
 
-If you want to save an address and a number of a contact too, keep in Mind, that only **one** address and **one** account are allowed in the format.
-
-The Difference between `private` and `shared` contacts:
-
-Shared Contacts are accessible to all Users in your sipgate Account.
-Private Contacts are only visible to you.
+You can only save **one** address and **one** number using the Format.
 
 ## Examples
 
