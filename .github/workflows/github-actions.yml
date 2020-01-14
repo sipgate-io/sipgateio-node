@@ -1,25 +1,38 @@
-name: Bundle and release
+name: Build and Deploy
 
 on:
   push:
-    branches: master
     tags: v*
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
-    - name: Install dependencies and bundle
-      run: |
-        npm i
-        npm run bundle
-    - name: GitHub Releases
-      uses: fnkr/github-action-ghr@v1.2
-      if: startsWith(github.ref, 'refs/tags/')
-      env:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: npm install, bundle and test
+        run: |
+          npm install
+          npm run test:integration
+        env:
+          CI: true
+      - name: Commit Bundle
+        run: |
+          echo ${{ github.ref }}
+          git add --force bundle/sipgate-io.js
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "ci: Automated build push" -a | exit 0
+      - name: Push Bundle
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: GitHub Releases
+        uses: fnkr/github-action-ghr@v1.2
+        env:
           GHR_PATH: bundle/sipgate-io.js
           GITHUB_TOKEN: ${{ github.token }}

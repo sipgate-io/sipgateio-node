@@ -1,5 +1,4 @@
 ### Build artifacts ###
-bundle/sipgate-io.js
 dist/
 
 ### Node.js ###
