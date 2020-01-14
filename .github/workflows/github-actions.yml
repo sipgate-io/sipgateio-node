@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Release
 
 on:
   push:
@@ -13,7 +13,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12'
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: npm install, bundle and test
         run: |
           npm install
@@ -24,15 +23,15 @@ jobs:
         run: |
           echo ${{ github.ref }}
           git add --force bundle/sipgate-io.js
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -m "ci: Automated build push" -a | exit 0
+          git config --local user.email ${{ secrets.SECRET_MAIL }}
+          git config --local user.name "sipgateio-team"
+          git commit -m "ci: push updated bundle" -a | exit 0
       - name: Push Bundle
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.ACCESS_TOKEN }}
       - name: GitHub Releases
         uses: fnkr/github-action-ghr@v1.2
         env:
           GHR_PATH: bundle/sipgate-io.js
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
