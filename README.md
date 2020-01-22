@@ -26,9 +26,11 @@ For example a Text Message can be send with following code:
 
 ```typescript
 import { createClient } from 'sipgateio';
+import { createSMSModule } from './sms';
 
 const client = createClient({ username: 'username', password: 'password' });
-client.sms.send({
+const sms = createSMSModule(client);
+sms.send({
 	recepient: '+491579999999',
 	message: 'Lorem Ipsum',
 	smsID: 's1',
@@ -223,12 +225,13 @@ Valid extension types are _e_, _p_, _x_ and _y_.
 **Scenario 1: basic call**
 
 ```typescript
+const call = createCallModule(client);
 const callData = {
 	caller: 'e14',
 	callee: '+4921165432',
 };
 
-client.call.initiate(callData);
+call.initiate(callData);
 ```
 
 **Behavior**:
@@ -243,7 +246,7 @@ const callData = {
 	callerId: '+4917012345678',
 };
 
-client.call.initiate(callData);
+call.initiate(callData);
 ```
 
 **Behavior**:
@@ -258,7 +261,7 @@ const callData = {
 	callee: '+4921165432',
 };
 
-client.call.initiate(callData);
+call.initiate(callData);
 ```
 
 If the `caller` number refers to a group of phones rather than a single one all phones in the group will ring and the first to be picked up will establish the call with the `callee`.
