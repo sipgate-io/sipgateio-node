@@ -1,3 +1,4 @@
+import { createContactsModule } from '../../lib/contacts';
 import { readFileSync } from 'fs';
 import { sipgateIO } from '../../lib/core/sipgateIOClient';
 import { vcardExample } from './vcard';
@@ -12,8 +13,9 @@ const username = process.env.SIPGATE_USERNAME || '';
  * See the example in examples/core/client.ts for how to connect to the client
  */
 const client = sipgateIO({ username, password });
+const contacts = createContactsModule(client);
 
-client.contacts
+contacts
 	.importFromCsvString(fileContent)
 	.then(() => {
 		console.log('Contacts were imported successfully');
@@ -22,7 +24,7 @@ client.contacts
 		console.error(error.message);
 	});
 
-client.contacts
+contacts
 	.import(
 		{
 			firstname: 'John',
@@ -52,7 +54,7 @@ client.contacts
 		console.error(error.message);
 	});
 
-client.contacts
+contacts
 	.importVCardString(vcardExample, 'PRIVATE')
 	.then(() => {
 		console.log('Contact imported successfully');
@@ -61,7 +63,7 @@ client.contacts
 		console.error(error.message);
 	});
 
-client.contacts
+contacts
 	.importVCardString(vcardExample, 'SHARED')
 	.then(() => {
 		console.log('Contact imported successfully');
@@ -70,7 +72,7 @@ client.contacts
 		console.error(error.message);
 	});
 
-client.contacts
+contacts
 	.exportAsCsv('INTERNAL')
 	.then(data => {
 		console.log(data);
@@ -79,7 +81,7 @@ client.contacts
 		console.error(error.message);
 	});
 
-client.contacts.exportAsVCards('SHARED').then(vCards => {
+contacts.exportAsVCards('SHARED').then(vCards => {
 	vCards.map(vcard => {
 		console.log(`${vcard}\n`);
 	});

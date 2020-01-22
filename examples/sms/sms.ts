@@ -1,4 +1,5 @@
 import { ShortMessage } from '../../lib/sms/models/sms.model';
+import { createSMSModule } from '../../lib/sms';
 import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 const username = process.env.SIPGATE_USERNAME || '';
@@ -14,28 +15,29 @@ const from = process.env.SIPGATE_SMS_FROM || '';
 const smsExtension = process.env.SIPGATE_SMS_EXTENSION || '';
 const message = 'This is a test message.';
 
-const sms: ShortMessage = {
+const shortMessage: ShortMessage = {
 	message,
 	recipient,
 	smsId: smsExtension,
 };
+const sms = createSMSModule(client);
 
-client.sms
-	.send(sms)
+sms
+	.send(shortMessage)
 	.then(() => {
 		console.log('Sms sent.');
 	})
 	.catch(console.error);
 
 const inTwoMinutes = new Date(Date.now() + 2 * 60 * 1000); // now + 2 min
-client.sms
-	.send(sms, inTwoMinutes)
+sms
+	.send(shortMessage, inTwoMinutes)
 	.then(() => {
 		console.log(`Sms scheduled for ${inTwoMinutes}`);
 	})
 	.catch(console.error);
 
-client.sms
+sms
 	.send({
 		message: 'lorem',
 		recipient: recipient,

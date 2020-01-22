@@ -1,3 +1,4 @@
+import { createSettingsModule } from '../../lib/webhook-settings';
 import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 (async (): Promise<void> => {
@@ -8,26 +9,23 @@ import { sipgateIO } from '../../lib/core/sipgateIOClient';
 	 * See the example in examples/core/client.ts for how to connect to the client
 	 */
 	const client = sipgateIO({ username, password });
+	const webhookSettings = createSettingsModule(client);
 
-	await client.webhookSettings.setIncomingUrl(
-		'https://example.com/my/incoming/url2'
-	);
+	await webhookSettings.setIncomingUrl('https://example.com/my/incoming/url2');
 	console.log('Incoming URL updated.');
 
-	await client.webhookSettings.setOutgoingUrl(
-		'https://example.com/my/outgoing/url2'
-	);
+	await webhookSettings.setOutgoingUrl('https://example.com/my/outgoing/url2');
 	console.log('Outgoing URL updated.');
 
-	await client.webhookSettings.setLog(true);
+	await webhookSettings.setLog(true);
 	console.log('Logging enabled.');
 
-	await client.webhookSettings.setWhitelist(['p2', 'g10']);
+	await webhookSettings.setWhitelist(['p2', 'g10']);
 	console.log('Whitelist updated.');
 
-	await client.webhookSettings.clearWhitelist();
+	await webhookSettings.clearWhitelist();
 	console.log('Whitelist cleared.');
 
-	await client.webhookSettings.disableWhitelist();
+	await webhookSettings.disableWhitelist();
 	console.log('Whitelist disabled.');
 })();

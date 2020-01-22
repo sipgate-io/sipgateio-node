@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { createFaxModule } from '../../lib/fax';
 import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 (async (): Promise<void> => {
@@ -18,7 +19,8 @@ import { sipgateIO } from '../../lib/core/sipgateIOClient';
 	const { name: filename } = path.parse(path.basename(filePath));
 	const fileContent = fs.readFileSync(filePath);
 
-	const sendFaxResponse = await client.fax.send({
+	const fax = createFaxModule(client);
+	const sendFaxResponse = await fax.send({
 		recipient,
 		fileContent,
 		filename,
@@ -27,7 +29,7 @@ import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 	console.log(`Fax sent with id: ${sendFaxResponse.sessionId}`);
 
-	const faxStatus = await client.fax.getFaxStatus(sendFaxResponse.sessionId);
+	const faxStatus = await fax.getFaxStatus(sendFaxResponse.sessionId);
 
 	console.log(`Fax status: ${faxStatus}`);
 })();
