@@ -1,18 +1,6 @@
-import { AuthCredentials, SipgateIOClient } from './sipgateIOClient.module';
-import { createCallModule } from '../../call';
-import { createContactsModule } from '../../contacts';
-import { createFaxModule } from '../../fax';
-import { createHttpClient } from '../httpClient';
-import { createSMSModule } from '../../sms';
-import { createSettingsModule } from '../../webhook-settings';
+import { AuthCredentials } from './sipgateIOClient.module';
+import { HttpClientModule, createHttpClient } from '../httpClient';
 
-export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
-	const httpClient = createHttpClient(credentials);
-	return {
-		call: createCallModule(httpClient),
-		fax: createFaxModule(httpClient),
-		sms: createSMSModule(httpClient),
-		webhookSettings: createSettingsModule(httpClient),
-		contacts: createContactsModule(httpClient),
-	};
+export const sipgateIO = (credentials: AuthCredentials): HttpClientModule => {
+	return createHttpClient(credentials);
 };
