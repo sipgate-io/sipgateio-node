@@ -25,15 +25,14 @@ Alternatively, a bundled version can be obtained from the [github releases](http
 For example a Text Message can be send with following code:
 
 ```typescript
-import { createClient } from 'sipgateio';
-import { createSMSModule } from './sms';
+import { sipgateIO, createSMSModule } from 'sipgateio';
 
 const client = createClient({ username: 'username', password: 'password' });
 const sms = createSMSModule(client);
 sms.send({
-	recepient: '+491579999999',
+	recipient: '+491579999999',
 	message: 'Lorem Ipsum',
-	smsID: 's1',
+	smsId: 's1',
 });
 ```
 
