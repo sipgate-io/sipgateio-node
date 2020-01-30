@@ -15,7 +15,7 @@ A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 For use in node applications you can install with
 
 ```console
-npm install git://github.com/sipgate-io/sipgateio-node.git --save
+npm install sipgateio --save
 ```
 
 Alternatively, a bundled version can be obtained from the [github releases](https://github.com/sipgate-io/sipgateio-node/releases) page.
