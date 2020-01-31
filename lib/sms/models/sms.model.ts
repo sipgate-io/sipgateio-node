@@ -1,6 +1,6 @@
 export interface GenericShortMessage {
 	smsId?: string;
-	recipient: string;
+	to: string;
 	message: string;
 	phoneNumber?: string;
 }
@@ -19,7 +19,7 @@ export type ShortMessage = GenericShortMessage & (WithPhoneNumber | WithSmsId);
 
 export interface ShortMessageDTO {
 	smsId: string;
-	recipient: string;
+	to: string;
 	message: string;
 	sendAt?: number;
 }

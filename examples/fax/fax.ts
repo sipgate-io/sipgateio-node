@@ -13,7 +13,7 @@ import { sipgateIO } from '../../lib/core/sipgateIOClient';
 	const client = sipgateIO({ username, password });
 
 	const faxlineId = process.env.SIPGATE_FAX_EXTENSION || '';
-	const recipient = process.env.SIPGATE_FAX_RECIPIENT || '';
+	const to = process.env.SIPGATE_FAX_RECIPIENT || '';
 
 	const filePath = './testpage.pdf';
 	const { name: filename } = path.parse(path.basename(filePath));
@@ -21,7 +21,7 @@ import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 	const fax = createFaxModule(client);
 	const sendFaxResponse = await fax.send({
-		recipient,
+		to,
 		fileContent,
 		filename,
 		faxlineId,

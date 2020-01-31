@@ -30,7 +30,7 @@ import { sipgateIO, createSMSModule } from 'sipgateio';
 const client = sipgateIO({ username: 'username', password: 'password' });
 const sms = createSMSModule(client);
 sms.send({
-	recipient: '+491579999999',
+	to: '+491579999999',
 	message: 'Lorem Ipsum',
 	smsId: 's1',
 });
@@ -115,7 +115,7 @@ The `ShortMessage` type requires the following fields:
 ```typescript
 interface ShortMessage {
 	smsId: string;
-	recipient: string;
+	to: string;
 	message: string;
 }
 ```
@@ -133,7 +133,7 @@ The `send` function allows you to send a fax by passing an object with the follo
 
 ```typescript
 interface Fax {
-	recipient: string;
+	to: string;
 	fileContent: Buffer;
 	filename?: string;
 	faxlineId?: string;

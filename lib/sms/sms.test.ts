@@ -91,7 +91,7 @@ describe('SMS Module', () => {
 		await expect(
 			smsModule.send({
 				message: 'Lorem Ipsum Dolor',
-				recipient: '+4915739777777',
+				to: '+4915739777777',
 				phoneNumber: '+4915739777777',
 			})
 		).resolves.not.toThrow();
@@ -106,7 +106,7 @@ describe('SMS Module', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '+4915739777777',
+			to: '+4915739777777',
 			smsId: 's0',
 		};
 
@@ -124,7 +124,7 @@ describe('SMS Module', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '+4915739777777',
+			to: '+4915739777777',
 			smsId: 's999',
 		};
 
@@ -138,7 +138,7 @@ describe('SMS Module', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '015739777777',
+			to: '015739777777',
 			smsId: 'xyz123',
 		};
 
@@ -151,7 +151,7 @@ describe('SMS Module', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '',
+			to: '',
 			smsId: 's0',
 		};
 
@@ -165,7 +165,7 @@ describe('SMS Module', () => {
 
 		const message: ShortMessage = {
 			message: '',
-			recipient: '+4915739777777',
+			to: '+4915739777777',
 			smsId: 's0',
 		};
 
@@ -186,7 +186,7 @@ describe('schedule sms', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '+4915739777777',
+			to: '+4915739777777',
 			smsId: 's0',
 		};
 
@@ -213,7 +213,7 @@ describe('schedule sms', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '+4915739777777',
+			to: '+4915739777777',
 			smsId: 's0',
 		};
 
@@ -231,7 +231,7 @@ describe('schedule sms', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '+4915739777777',
+			to: '+4915739777777',
 			smsId: 's0',
 		};
 
@@ -249,7 +249,7 @@ describe('schedule sms', () => {
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
-			recipient: '+4915739777777',
+			to: '+4915739777777',
 			smsId: 's0',
 		};
 
