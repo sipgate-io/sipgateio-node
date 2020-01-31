@@ -27,7 +27,7 @@ For example a Text Message can be send with following code:
 ```typescript
 import { sipgateIO, createSMSModule } from 'sipgateio';
 
-const client = createClient({ username: 'username', password: 'password' });
+const client = sipgateIO({ username: 'username', password: 'password' });
 const sms = createSMSModule(client);
 sms.send({
 	recipient: '+491579999999',
@@ -94,7 +94,7 @@ interface OAuthCredentials {
 }
 ```
 
-The `createClient` method accepts your valid sipgate credentials as defined in the `AuthCredentials` type and returns a sipgate.io Client.
+The `sipgateIO` method accepts your valid sipgate credentials as defined in the `AuthCredentials` type and returns a sipgate.io Client.
 The client contains as members the supported modules (`sms`, `fax`, `call`, etc.).
 
 ### SMS
