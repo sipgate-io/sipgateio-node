@@ -29,6 +29,21 @@
 		"url": "https://github.com/sipgate-io/sipgateio-node/issues"
 	},
 	"homepage": "https://github.com/sipgate-io/sipgateio-node#readme",
+	"keywords": [
+		"sipgateio",
+		"node",
+		"sipgate",
+		"call",
+		"fax",
+		"sms",
+		"text",
+		"contacts",
+		"phone",
+		"telephony",
+		"rest",
+		"api",
+		"client"
+	],
 	"husky": {
 		"hooks": {
 			"pre-commit": "./update_version.sh && npm run test:unit && lint-staged"
