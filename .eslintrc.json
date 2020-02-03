@@ -44,6 +44,8 @@
 		"no-unused-vars": "error",
 		"@typescript-eslint/no-unused-vars": "error",
 		"prefer-const": "error",
+		"deprecation": 2,
+		"@typescript-eslint/deprecation": "error",
 		"prefer-destructuring": [
 			"error",
 			{
