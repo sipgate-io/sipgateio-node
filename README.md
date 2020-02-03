@@ -133,7 +133,7 @@ The `send` function allows you to send a fax by passing an object with the follo
 
 ```typescript
 interface Fax {
-	recipient: string;
+	to: string;
 	fileContent: Buffer;
 	filename?: string;
 	faxlineId?: string;

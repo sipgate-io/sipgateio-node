@@ -8,20 +8,22 @@ import { sipgateIO } from '../../lib/core/sipgateIOClient';
 	const username = process.env.SIPGATE_USERNAME || '';
 
 	/**
+	 *
 	 * See the example in examples/core/client.ts for how to connect to the client
 	 */
 	const client = sipgateIO({ username, password });
 
 	const faxlineId = process.env.SIPGATE_FAX_EXTENSION || '';
-	const recipient = process.env.SIPGATE_FAX_RECIPIENT || '';
+	const to = process.env.SIPGATE_FAX_RECIPIENT || '';
 
 	const filePath = './testpage.pdf';
 	const { name: filename } = path.parse(path.basename(filePath));
 	const fileContent = fs.readFileSync(filePath);
 
 	const fax = createFaxModule(client);
+
 	const sendFaxResponse = await fax.send({
-		recipient,
+		to,
 		fileContent,
 		filename,
 		faxlineId,
