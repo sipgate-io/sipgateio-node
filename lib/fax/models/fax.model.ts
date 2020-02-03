@@ -1,5 +1,5 @@
 export interface Fax {
-	to: string;
+	recipient: string;
 	fileContent: Buffer;
 	filename?: string;
 	faxlineId: string;
@@ -13,7 +13,7 @@ export interface SendFaxSessionResponse {
 
 export interface FaxDTO {
 	faxlineId: string;
-	to: string;
+	recipient: string;
 	filename?: string;
 	base64Content: string;
 }

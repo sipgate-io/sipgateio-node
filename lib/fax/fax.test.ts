@@ -26,7 +26,7 @@ describe('SendFax', () => {
 				Promise.resolve({ data: { type: 'FAX', faxStatusType: 'SENT' } })
 			);
 
-		const to = '+4912368712';
+		const recipient = '+4912368712';
 		const fileContent = validPDFBuffer;
 		const faxlineId = 'f0';
 
@@ -35,7 +35,7 @@ describe('SendFax', () => {
 				faxlineId,
 				fileContent,
 				filename: 'testPdfFileName',
-				to,
+				recipient,
 			})
 		).resolves.not.toThrow();
 	});
@@ -56,11 +56,11 @@ describe('SendFax', () => {
 
 		const faxModule = createFaxModule(mockClient);
 
-		const to = '+4912368712';
+		const recipient = '+4912368712';
 		const fileContent = validPDFBuffer;
 		const faxlineId = 'f0';
 
-		await faxModule.send({ to, fileContent, faxlineId });
+		await faxModule.send({ recipient, fileContent, faxlineId });
 	});
 });
 

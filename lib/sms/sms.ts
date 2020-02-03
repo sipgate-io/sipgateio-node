@@ -22,7 +22,7 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 		const smsDTO: ShortMessageDTO = {
 			smsId: '',
 			message: sms.message,
-			to: sms.to,
+			recipient: sms.recipient,
 		};
 		if (sendAt) {
 			const sendAtValidationResult = validateSendAt(sendAt);
@@ -153,7 +153,7 @@ async function sendSmsBySmsId(
 	}
 	smsDTO.smsId = sms.smsId;
 
-	const phoneNumberValidationResult = validatePhoneNumber(sms.to);
+	const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
 
 	if (!phoneNumberValidationResult.isValid) {
 		throw new Error(phoneNumberValidationResult.cause);
