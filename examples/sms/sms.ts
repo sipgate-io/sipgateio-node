@@ -10,14 +10,14 @@ const password = process.env.SIPGATE_PASSWORD || '';
  */
 const client = sipgateIO({ username, password });
 
-const recipient = process.env.SIPGATE_SMS_RECIPIENT || '';
+const to = process.env.SIPGATE_SMS_RECIPIENT || '';
 const from = process.env.SIPGATE_SMS_FROM || '';
 const smsExtension = process.env.SIPGATE_SMS_EXTENSION || '';
 const message = 'This is a test message.';
 
 const shortMessage: ShortMessage = {
 	message,
-	recipient,
+	to,
 	smsId: smsExtension,
 };
 const sms = createSMSModule(client);
@@ -40,8 +40,8 @@ sms
 sms
 	.send({
 		message: 'lorem',
-		recipient: recipient,
-		phoneNumber: from,
+		to,
+		from,
 	})
 	.then(() => {
 		console.log('with phone number sent');

@@ -30,9 +30,9 @@ import { sipgateIO, createSMSModule } from 'sipgateio';
 const client = sipgateIO({ username: 'username', password: 'password' });
 const sms = createSMSModule(client);
 sms.send({
-	recipient: '+491579999999',
+	from: '+4901570000000',
+	to: '+491579999999',
 	message: 'Lorem Ipsum',
-	smsId: 's1',
 });
 ```
 
@@ -115,7 +115,17 @@ The `ShortMessage` type requires the following fields:
 ```typescript
 interface ShortMessage {
 	smsId: string;
-	recipient: string;
+	to: string;
+	message: string;
+}
+```
+
+or
+
+```typescript
+interface ShortMessage {
+	from: string;
+	to: string;
 	message: string;
 }
 ```

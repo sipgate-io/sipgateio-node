@@ -22,7 +22,7 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 		const smsDTO: ShortMessageDTO = {
 			smsId: '',
 			message: sms.message,
-			recipient: sms.recipient,
+			recipient: 'to' in sms ? sms.to : sms.recipient,
 		};
 		if (sendAt) {
 			const sendAtValidationResult = validateSendAt(sendAt);
@@ -31,7 +31,7 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 			}
 			smsDTO.sendAt = sendAt.getTime() / 1000;
 		}
-		if (sms.phoneNumber !== undefined) {
+		if (('from' in sms ? sms.from : sms.phoneNumber) !== undefined) {
 			return await sendSmsByPhoneNumber(client, sms, smsDTO);
 		}
 		return await sendSmsBySmsId(sms, smsDTO, client);
@@ -113,7 +113,7 @@ async function sendSmsByPhoneNumber(
 	const smsExtension = await getUserSmsExtension(client, webuserId);
 	const senderIds = await getSmsCallerIds(client, webuserId, smsExtension);
 	const senderId = senderIds.find(
-		value => value.phonenumber === sms.phoneNumber
+		value => value.phonenumber === ('from' in sms ? sms.from : sms.phoneNumber)
 	);
 	if (senderId === undefined) {
 		throw new Error(ErrorMessage.SMS_NUMBER_NOT_REGISTERED);
@@ -153,7 +153,9 @@ async function sendSmsBySmsId(
 	}
 	smsDTO.smsId = sms.smsId;
 
-	const phoneNumberValidationResult = validatePhoneNumber(sms.recipient);
+	const phoneNumberValidationResult = validatePhoneNumber(
+		'to' in sms ? sms.to : sms.recipient
+	);
 
 	if (!phoneNumberValidationResult.isValid) {
 		throw new Error(phoneNumberValidationResult.cause);

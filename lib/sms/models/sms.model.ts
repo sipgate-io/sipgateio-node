@@ -1,21 +1,50 @@
 export interface GenericShortMessage {
-	smsId?: string;
-	recipient: string;
 	message: string;
-	phoneNumber?: string;
 }
 
-interface WithPhoneNumber {
-	smsId?: undefined;
+export interface DefaultRecipient {
+	to: string;
+}
+
+export interface DefaultPhoneNumber {
+	from: string;
+}
+
+/**
+ * @deprecated
+ * @since 1.0.1
+ * use @interface Recipient instead
+ */
+export interface DeprecatedRecipient {
+	recipient: string;
+}
+/**
+ * @deprecated
+ * @since 1.0.1
+ * use @interface  instead
+ */
+export interface DeprecatedPhoneNumber {
 	phoneNumber: string;
 }
+
+type Recipient = DefaultRecipient | DeprecatedRecipient;
+type PhoneNumber = DeprecatedPhoneNumber | DefaultPhoneNumber;
+
+interface DefaultWithPhoneNumber {
+	smsId?: undefined;
+}
+
+type WithPhoneNumber = DefaultWithPhoneNumber & PhoneNumber;
 
 interface WithSmsId {
 	smsId: string;
 	phoneNumber?: undefined;
+	from?: undefined;
 }
 
-export type ShortMessage = GenericShortMessage & (WithPhoneNumber | WithSmsId);
+export type ShortMessage = GenericShortMessage &
+	Recipient &
+	(WithPhoneNumber | WithSmsId);
 
 export interface ShortMessageDTO {
 	smsId: string;
