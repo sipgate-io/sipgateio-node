@@ -185,8 +185,8 @@ The `CallData` contains the following fields:
 ```typescript
 interface CallData {
 	deviceId?: string;
-	caller: string;
-	callee: string;
+	from: string;
+	to: string;
 	callerId?: string;
 }
 ```
@@ -203,7 +203,7 @@ interface InitiateNewCallSessionResponse {
 
 The following table shows valid parameter combinations
 
-| callee | caller    | callerId | deviceId  |
+| to     | from      | callerId | deviceId  |
 | ------ | --------- | -------- | --------- |
 | number | extension | -        | -         |
 | number | extension | number   | -         |
@@ -218,9 +218,9 @@ If not set it falls back to the next stage:
 
 1. `callerId`
 2. `deviceId` (related phone number)
-3. `caller` (related phone number if `caller` is an extension)
+3. `from` (related phone number if `from` is an extension)
 
-The param `deviceId` is only mandatory if `caller` is not an extension.
+The param `deviceId` is only mandatory if `from` is not an extension.
 
 Valid extension types are _e_, _p_, _x_ and _y_.
 
@@ -236,8 +236,8 @@ Valid extension types are _e_, _p_, _x_ and _y_.
 ```typescript
 const call = createCallModule(client);
 const callData = {
-	caller: 'e14',
-	callee: '+4921165432',
+	from: 'e14',
+	to: '+4921165432',
 };
 
 call.initiate(callData);
@@ -250,8 +250,8 @@ The phone with extension `e14` rings first, after pick-up the `callee` is called
 
 ```typescript
 const callData = {
-	caller: 'p0',
-	callee: '+4921165432',
+	from: 'p0',
+	to: '+4921165432',
 	callerId: '+4917012345678',
 };
 
@@ -261,21 +261,21 @@ call.initiate(callData);
 **Behavior**:
 Same situation as previous example, but displayed number is now `callerId` ([see hierarchy](#calldata-details)).
 
-**Scenario 3: group caller**
+**Scenario 3: group call**
 
 ```typescript
 const callData = {
-	caller: '+4921123456',
+	from: '+4921123456',
 	deviceId: 'e14',
-	callee: '+4921165432',
+	to: '+4921165432',
 };
 
 call.initiate(callData);
 ```
 
-If the `caller` number refers to a group of phones rather than a single one all phones in the group will ring and the first to be picked up will establish the call with the `callee`.
+If the `from` number refers to a group of phones rather than a single one all phones in the group will ring and the first to be picked up will establish the call with the `to`.
 
-The `deviceId` is needed for billing and determines the number which will be displayed at the callee device. For instance, `e14` has the default number '+4921156789'.
+The `deviceId` is needed for billing and determines the number which will be displayed at the `to` device. For instance, `e14` has the default number '+4921156789'.
 
 ### Webhook Settings
 
