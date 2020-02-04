@@ -33,7 +33,7 @@ jobs:
           git tag ${{ steps.get_version.outputs.VERSION }} --force
           git push --tags --force | exit 0
       - name: GitHub Releases
-          uses: fnkr/github-action-ghr@v1.2
+        uses: fnkr/github-action-ghr@v1.2
         env:
           GHR_PATH: bundle/sipgate-io.js
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
