@@ -4,7 +4,7 @@ interface FaxObject {
 	faxlineId: string;
 }
 
-export interface Recipient {
+interface Recipient {
 	to: string;
 }
 
@@ -13,7 +13,7 @@ export interface Recipient {
  * @since 1.0.1
  * use @interface Recipient instead
  */
-export interface DeprecatedRecipient {
+interface DeprecatedRecipient {
 	recipient: string;
 }
 
