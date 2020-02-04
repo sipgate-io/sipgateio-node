@@ -36,3 +36,6 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+#Bundle
+bundle/sipgate-io.js
