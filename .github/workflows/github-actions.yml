@@ -8,30 +8,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 12
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Install Node-Version 12
         uses: actions/setup-node@v1
         with:
-          node-version: '12'
+          node-version: "12"
       - name: npm install, bundle and test
         run: |
           npm install
           npm run test:integration
         env:
           CI: true
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: Commit Bundle
         run: |
-          echo ${{ github.ref }}
-          git add --force bundle/sipgate-io.js
+          git checkout -b bundle/publish
           git config --local user.email ${{ secrets.SECRET_MAIL }}
           git config --local user.name "sipgateio-team"
-          git commit -m "ci: push updated bundle" -a | exit 0
-      - name: Push Bundle
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
+          git add --force bundle/sipgate-io.js
+          git commit -m "publish version ${{ steps.get_version.outputs.VERSION }}" -a --no-verify
+          git tag ${{ steps.get_version.outputs.VERSION }} --force
+          git push --tags --force | exit 0
       - name: GitHub Releases
-        uses: fnkr/github-action-ghr@v1.2
+          uses: fnkr/github-action-ghr@v1.2
         env:
           GHR_PATH: bundle/sipgate-io.js
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
