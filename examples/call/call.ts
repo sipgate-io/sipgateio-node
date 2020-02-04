@@ -8,14 +8,13 @@ const password = process.env.SIPGATE_PASSWORD || '';
  */
 const client = sipgateIO({ username, password });
 
-const caller = process.env.SIPGATE_CALLER || '';
-const callee = process.env.SIPGATE_CALLEE || '';
+const from = process.env.SIPGATE_CALLER || '';
+const to = process.env.SIPGATE_CALLEE || '';
 const callerId = process.env.SIPGATE_CALLER_ID || '';
 
 const call = createCallModule(client);
-
 call
-	.initiate({ callee, caller, callerId })
+	.initiate({ to, from, callerId })
 	.then(() => {
 		console.log('Call initiated');
 	})

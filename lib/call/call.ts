@@ -1,4 +1,8 @@
-import { CallData, InitiateNewCallSessionResponse } from './models/call.model';
+import {
+	CallDTO,
+	CallData,
+	InitiateNewCallSessionResponse,
+} from './models/call.model';
 import { CallModule } from './call.module';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
@@ -13,9 +17,14 @@ export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 		if (!clickToDialValidation.isValid) {
 			throw new Error(clickToDialValidation.cause);
 		}
-
+		const callDTO: CallDTO = {
+			callee: 'to' in clickToDial ? clickToDial.to : clickToDial.callee,
+			caller: 'from' in clickToDial ? clickToDial.from : clickToDial.caller,
+			callerId: clickToDial.callerId,
+			deviceId: clickToDial.deviceId,
+		};
 		return httpClient
-			.post<InitiateNewCallSessionResponse>('/sessions/calls', clickToDial)
+			.post<InitiateNewCallSessionResponse>('/sessions/calls', callDTO)
 			.then(response => response.data)
 			.catch(error => Promise.reject(handleError(error)));
 	},

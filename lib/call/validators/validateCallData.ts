@@ -8,20 +8,25 @@ import { ValidationResult } from '../../core/validator/validationResult';
 import { validatePhoneNumber } from '../../core/validator/validatePhoneNumber';
 
 const validateCallData = (callData: CallData): ValidationResult => {
-	const calleeValidationResult = validatePhoneNumber(callData.callee);
+	const calleeValidationResult = validatePhoneNumber(
+		'to' in callData ? callData.to : callData.callee
+	);
 	if (!calleeValidationResult.isValid) {
 		return { isValid: false, cause: calleeValidationResult.cause };
 	}
 
 	const callerPhoneNumberValidationResult = validatePhoneNumber(
-		callData.caller
+		'from' in callData ? callData.from : callData.caller
 	);
-	const callerExtensionValidationResult = validateExtension(callData.caller, [
-		ExtensionType.MOBILE,
-		ExtensionType.PERSON,
-		ExtensionType.EXTERNAL,
-		ExtensionType.REGISTER,
-	]);
+	const callerExtensionValidationResult = validateExtension(
+		'from' in callData ? callData.from : callData.caller,
+		[
+			ExtensionType.MOBILE,
+			ExtensionType.PERSON,
+			ExtensionType.EXTERNAL,
+			ExtensionType.REGISTER,
+		]
+	);
 	if (
 		!callerPhoneNumberValidationResult.isValid &&
 		!callerExtensionValidationResult.isValid
