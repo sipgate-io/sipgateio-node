@@ -22,16 +22,26 @@ import { sipgateIO } from '../../lib/core/sipgateIOClient';
 
 	const fax = createFaxModule(client);
 
-	const sendFaxResponse = await fax.send({
+	const faxSendResponsePromise = fax.send({
 		to,
 		fileContent,
 		filename,
 		faxlineId,
 	});
 
-	console.log(`Fax sent with id: ${sendFaxResponse.sessionId}`);
-
-	const faxStatus = await fax.getFaxStatus(sendFaxResponse.sessionId);
-
-	console.log(`Fax status: ${faxStatus}`);
+	faxSendResponsePromise
+		.then(sendFaxResponse => {
+			console.log(`Fax sent with id: ${sendFaxResponse.sessionId}`);
+			const faxStatusPromise = fax.getFaxStatus(sendFaxResponse.sessionId);
+			faxStatusPromise
+				.then(faxStatus => {
+					console.log(`Fax status: ${faxStatus}`);
+				})
+				.catch(error => {
+					console.error('Fax status could not be retrieved: ', error);
+				});
+		})
+		.catch(error => {
+			console.error('Fax could not be sent with Error: ', error);
+		});
 })();
