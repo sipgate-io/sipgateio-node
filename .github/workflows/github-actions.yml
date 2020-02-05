@@ -14,7 +14,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "12"
-      - name: npm install, bundle and test
+      - name: Run npm install, bundle and test
         run: |
           npm install
           npm run test:integration
@@ -29,10 +29,10 @@ jobs:
           git config --local user.email ${{ secrets.SECRET_MAIL }}
           git config --local user.name "sipgateio-team"
           git add --force bundle/sipgate-io.js
-          git commit -m "publish version ${{ steps.get_version.outputs.VERSION }}" -a --no-verify
+          git commit -m "publish: version ${{ steps.get_version.outputs.VERSION }}" --no-verify
           git tag ${{ steps.get_version.outputs.VERSION }} --force
-          git push --tags --force | exit 0
-      - name: GitHub Releases
+          git push --tags --force
+      - name: Create GitHub Release
         uses: fnkr/github-action-ghr@v1.2
         env:
           GHR_PATH: bundle/sipgate-io.js
