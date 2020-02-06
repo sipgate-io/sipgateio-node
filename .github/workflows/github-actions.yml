@@ -25,10 +25,12 @@ jobs:
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: Commit Bundle
         run: |
-          git checkout -b bundle/publish
           git config --local user.email ${{ secrets.SECRET_MAIL }}
           git config --local user.name "sipgateio-team"
+          git checkout -b bundle/publish
           git add --force bundle/sipgate-io.js
+          sed -i 's|https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@latest/bundle/sipgate-io.js|https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@${{ steps.get_version.outputs.VERSION }}/bundle/sipgate-io.js|g' README.md
+          git add README.md
           git commit -m "publish: version ${{ steps.get_version.outputs.VERSION }}" --no-verify
           git tag ${{ steps.get_version.outputs.VERSION }} --force
           git push --tags --force
