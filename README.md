@@ -18,7 +18,9 @@ For use in node applications you can install with
 npm install sipgateio --save
 ```
 
-Alternatively, a bundled version can be obtained from the [github releases](https://github.com/sipgate-io/sipgateio-node/releases) page.
+Alternatively, a bundled version can be obtained from the [github releases](https://github.com/sipgate-io/sipgateio-node/releases) page.  
+Or use a CDN like jsDelivr instead:  
+[https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@latest/bundle/sipgate-io.js](https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@latest/bundle/sipgate-io.js)
 
 ## Available Functionality
 

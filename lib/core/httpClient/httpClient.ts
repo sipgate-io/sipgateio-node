@@ -1,8 +1,11 @@
 /* eslint  @typescript-eslint/no-explicit-any: 0 */
 import { AuthCredentials } from '../sipgateIOClient/sipgateIOClient.module';
 import { detect as detectPlatform } from 'detect-browser';
-import { validateEmail, validatePassword } from '../validator';
-import { validateOAuthToken } from '../validator/validateOAuthToken';
+import {
+	validateEmail,
+	validateOAuthToken,
+	validatePassword,
+} from '../validator';
 import { version } from '../../version.json';
 import axios from 'axios';
 import btoa from 'btoa';

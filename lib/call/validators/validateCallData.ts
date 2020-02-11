@@ -2,10 +2,10 @@ import { CallData } from '../models/call.model';
 import { ErrorMessage } from '../../core/errors';
 import {
 	ExtensionType,
+	ValidationResult,
 	validateExtension,
-} from '../../core/validator/validateExtension';
-import { ValidationResult } from '../../core/validator/validationResult';
-import { validatePhoneNumber } from '../../core/validator/validatePhoneNumber';
+	validatePhoneNumber,
+} from '../../core/validator';
 
 const validateCallData = (callData: CallData): ValidationResult => {
 	const calleeValidationResult = validatePhoneNumber(
