@@ -10,7 +10,7 @@ const password = process.env.SIPGATE_PASSWORD || '';
 const username = process.env.SIPGATE_USERNAME || '';
 
 /**
- * See the example in examples/core/client.ts for how to connect to the client
+ * For details on how to instantiate the client, see 'examples/client/client.ts'
  */
 const client = sipgateIO({ username, password });
 const contacts = createContactsModule(client);
