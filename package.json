@@ -89,7 +89,8 @@
 		"tsify": "^4.0.1",
 		"typescript": "^3.7.2",
 		"uglifyify": "^5.0.2",
-		"uglify-js": "^3.7.7"
+		"uglify-js": "^3.7.7",
+		"terser": "^4.6.3"
 	},
 	"dependencies": {
 		"@types/google-libphonenumber": "^7.4.17",
