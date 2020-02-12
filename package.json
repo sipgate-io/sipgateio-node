@@ -9,7 +9,7 @@
 		"test:dev": "jest ./lib --env=node --watch",
 		"test:unit": "jest ./lib --env=node",
 		"test:integration": "npm run bundle && jest ./bundle --env=jsdom",
-		"bundle": "browserify -r ./lib/index.ts:sipgate-io -p tsify -g uglifyify > ./bundle/sipgate-io.js",
+		"bundle": "browserify -r ./lib/index.ts:sipgate-io -p tsify -g uglifyify  > ./bundle/sipgate-io.js && terser --compress --mangle -o ./bundle/sipgate-io.min.js -- ./bundle/sipgate-io.js",
 		"prepare": "tsc"
 	},
 	"repository": {
@@ -88,7 +88,8 @@
 		"ts-jest": "^24.2.0",
 		"tsify": "^4.0.1",
 		"typescript": "^3.7.2",
-		"uglifyify": "^5.0.2"
+		"uglifyify": "^5.0.2",
+		"uglify-js": "^3.7.7"
 	},
 	"dependencies": {
 		"@types/google-libphonenumber": "^7.4.17",
