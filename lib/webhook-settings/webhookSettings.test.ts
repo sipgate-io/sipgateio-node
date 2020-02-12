@@ -67,10 +67,7 @@ describe('setIncomingUrl', () => {
 
 		await settingsModule.setIncomingUrl(TEST_INCOMING_URL);
 
-		await expect(mockClient.put).toBeCalledWith(
-			expect.anything(),
-			expectedSettings
-		);
+		expect(mockClient.put).toBeCalledWith(expect.anything(), expectedSettings);
 	});
 
 	it('should throw an error when supplied with an invalid url', async () => {
@@ -116,10 +113,7 @@ describe('setOutgoingUrl', () => {
 
 		await settingsModule.setOutgoingUrl(TEST_OUTGOING_URL);
 
-		await expect(mockClient.put).toBeCalledWith(
-			expect.anything(),
-			expectedSettings
-		);
+		expect(mockClient.put).toBeCalledWith(expect.anything(), expectedSettings);
 	});
 
 	it('should throw an error when supplied with an invalid url', async () => {
@@ -185,9 +179,6 @@ describe('setWhitelist', () => {
 
 		await settingsModule.setWhitelist(VALID_WHITELIST);
 
-		await expect(mockClient.put).toBeCalledWith(
-			expect.anything(),
-			expectedSettings
-		);
+		expect(mockClient.put).toBeCalledWith(expect.anything(), expectedSettings);
 	});
 });

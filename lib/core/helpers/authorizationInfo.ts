@@ -4,10 +4,9 @@ export interface AuthInfo {
 	sub: string;
 }
 
-export const getAuthenticatedWebuser = (
+export const getAuthenticatedWebuser = async (
 	httpClient: HttpClientModule
 ): Promise<string> => {
-	return httpClient
-		.get<AuthInfo>('authorization/userinfo')
-		.then(requestData => requestData.data.sub);
+	const requestData = await httpClient.get<AuthInfo>('authorization/userinfo');
+	return requestData.data.sub;
 };
