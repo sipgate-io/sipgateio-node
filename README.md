@@ -1,4 +1,4 @@
-# sipgateio-node [![Build Status](https://travis-ci.com/sipgate-io/sipgateio-node.svg?branch=master)](https://travis-ci.com/sipgate-io/sipgateio-node)
+# sipgateio-node [![Build Status](https://travis-ci.com/sipgate-io/sipgateio-node.svg?branch=master)](https://travis-ci.com/sipgate-io/sipgateio-node) [![](https://data.jsdelivr.com/v1/package/gh/sipgate-io/sipgateio-node/badge)](https://www.jsdelivr.com/package/gh/sipgate-io/sipgateio-node)
 
 A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 
