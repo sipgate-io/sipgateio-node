@@ -1,5 +1,6 @@
 import { ContactImport } from './helpers/Address';
 import {
+	ContactRequest,
 	ContactsDTO,
 	ContactsModule,
 	ContactsRequest,
@@ -125,6 +126,14 @@ export const createContactsModule = (
 			throw Error(err);
 		}
 	},
+	async exportAsObjects(scope): Promise<ContactRequest[]> {
+		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
+		contactsRequest.data.items = contactsRequest.data.items.filter(
+			contact => contact.scope === scope
+		);
+		return contactsRequest.data.items;
+	},
+
 	async exportAsSingleVCard(scope): Promise<string> {
 		const vCards = await this.exportAsVCards(scope);
 		return vCards.join('\r\n');

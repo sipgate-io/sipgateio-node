@@ -5,6 +5,7 @@ export interface ContactsModule {
 	exportAsCsv: (scope: ExportScope) => Promise<string>;
 	exportAsVCards: (scope: ExportScope) => Promise<string[]>;
 	exportAsSingleVCard: (scope: ExportScope) => Promise<string>;
+	exportAsObjects: (scope: ExportScope) => Promise<ContactRequest[]>;
 }
 
 interface ContactImport {
@@ -52,7 +53,7 @@ type Scope = 'PRIVATE' | 'SHARED';
 
 type ExportScope = Scope | 'INTERNAL';
 
-interface ContactRequest {
+export interface ContactRequest {
 	id: string;
 	name: string;
 	picture: string;
