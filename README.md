@@ -340,6 +340,7 @@ interface ContactsModule {
 	exportAsCsv: (scope: ExportScope) => Promise<string>;
 	exportAsVCards: (scope: ExportScope) => Promise<string[]>;
 	exportAsSingleVCard: (scope: ExportScope) => Promise<string>;
+	exportAsObjects: (scope: ExportScope) => Promise<ContactRequest[]>;
 }
 ```
 
@@ -386,6 +387,23 @@ It returns mulitple vCard-strings containing all contacts for the given scope
 #### The `exportAsSingleVCard` method:
 
 It returns a vCard-address-book containing all contacts for the given scope
+
+#### The `exportAsObjects` method:
+
+It returns a list of contacts for the given scope as described in the following interface.
+
+```typescript
+interface ContactRequest {
+	id: string;
+	name: string;
+	picture: string;
+	emails: { email: string; type: string[] }[];
+	numbers: { number: string; type: string[] }[];
+	addresses: Address[];
+	organization: string[][];
+	scope: Scope;
+}
+```
 
 #### Scopes
 
