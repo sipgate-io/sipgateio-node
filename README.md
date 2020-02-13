@@ -401,9 +401,7 @@ You can only save **one** address and **one** number using the Format.
 
 ## Examples
 
-For some examples on how to use the library, please refer to the [examples folder](./examples).
-
-[npx](https://www.npmjs.com/package/npx) can be used to run the code examples:
+For some examples on how to use the library, please refer to this repository: [sipgateio-node-examples](https://github.com/sipgate-io/sipgateio-node-examples/)
 
 ```
 npx ts-node some_example.ts
