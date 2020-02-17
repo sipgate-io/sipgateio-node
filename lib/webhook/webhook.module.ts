@@ -1,3 +1,5 @@
+import { Server } from 'http';
+
 export type HandlerCallback = () => string;
 
 export interface WebhookServer {
@@ -5,6 +7,7 @@ export interface WebhookServer {
 }
 
 export interface WebhookModule {
+	server: Server | undefined;
 	createServer: (port: number) => WebhookServer;
 	handlers: Map<EventType, HandlerCallback>;
 }

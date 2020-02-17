@@ -10,5 +10,10 @@ describe('get settings', () => {
 
 	it('should use the endpoint "settings/sipgateio"', async () => {
 		webhookModule.createServer(1234);
+		const { server } = webhookModule;
+		expect(server).toBeDefined();
+		if (server !== undefined) {
+			server.close();
+		}
 	});
 });

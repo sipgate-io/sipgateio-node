@@ -11,6 +11,7 @@ export const createWebhookModule = (): WebhookModule => ({
 	handlers: new Map<EventType, HandlerCallback>([
 		[EventType.UNUSED, (): string => 'DefaultCallbackValue'],
 	]),
+	server: undefined,
 	createServer(port: number): WebhookServer {
 		const requestHandler = (
 			req: IncomingMessage,
@@ -21,8 +22,7 @@ export const createWebhookModule = (): WebhookModule => ({
 			res.end(handler());
 		};
 
-		createServer(requestHandler).listen(port);
-
+		this.server = createServer(requestHandler).listen(port);
 		return {
 			on: (eventType, handler): void => {
 				this.handlers.set(eventType, handler);
