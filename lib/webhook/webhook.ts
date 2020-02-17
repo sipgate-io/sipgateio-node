@@ -4,12 +4,12 @@ import {
 	WebhookModule,
 	WebhookServer,
 } from './webhook.module';
-
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
+import { JSDOM } from 'jsdom';
 
 export const createWebhookModule = (): WebhookModule => ({
 	handlers: new Map<EventType, HandlerCallback>([
-		[EventType.UNUSED, (): string => 'DefaultCallbackValue'],
+		[EventType.UNUSED, (): string => ''],
 	]),
 	server: undefined,
 	createServer(port: number): WebhookServer {
@@ -19,7 +19,14 @@ export const createWebhookModule = (): WebhookModule => ({
 		): void => {
 			const type = getEventTypeFromRequest(req);
 			const handler = getHandlerFromEventType(type, this.handlers);
-			res.end(handler());
+			const xmlResponse = handler();
+			try {
+				new JSDOM(xmlResponse, { contentType: 'application/xml' });
+				res.end(xmlResponse);
+			} catch (e) {
+				console.log(e);
+				res.end('');
+			}
 		};
 
 		this.server = createServer(requestHandler).listen(port);
