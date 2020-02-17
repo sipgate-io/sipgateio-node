@@ -8,7 +8,7 @@ export interface WebhookServer {
 
 export interface WebhookModule {
 	server: Server | undefined;
-	createServer: (port: number) => WebhookServer;
+	createServer: (port: number) => Promise<WebhookServer>;
 	handlers: Map<EventType, HandlerCallback>;
 }
 

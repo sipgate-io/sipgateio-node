@@ -15,29 +15,36 @@ export const createWebhookModule = (): WebhookModule => ({
 		],
 	]),
 	server: undefined,
-	createServer(port: number): WebhookServer {
-		const requestHandler = (
-			req: IncomingMessage,
-			res: OutgoingMessage
-		): void => {
-			const type = getEventTypeFromRequest(req);
-			const handler = getHandlerFromEventType(type, this.handlers);
-			const xmlResponse = handler();
-			try {
-				new JSDOM(xmlResponse, { contentType: 'application/xml' });
-				res.end(xmlResponse);
-			} catch (e) {
-				console.log(e);
-				res.end('');
-			}
-		};
+	async createServer(
+		port: number,
+		hostname = 'localhost'
+	): Promise<WebhookServer> {
+		return new Promise((resolve, reject) => {
+			const requestHandler = (
+				req: IncomingMessage,
+				res: OutgoingMessage
+			): void => {
+				const type = getEventTypeFromRequest(req);
+				const handler = getHandlerFromEventType(type, this.handlers);
+				const xmlResponse = handler();
+				try {
+					new JSDOM(xmlResponse, { contentType: 'application/xml' });
+					res.end(xmlResponse);
+				} catch (error) {
+					console.log(error);
+					res.end('');
+				}
+			};
 
-		this.server = createServer(requestHandler).listen(port);
-		return {
-			on: (eventType, handler): void => {
-				this.handlers.set(eventType, handler);
-			},
-		};
+			this.server = createServer(requestHandler).on('error', reject);
+			this.server.listen({ port, hostname }, () => {
+				resolve({
+					on: (eventType, handler): void => {
+						this.handlers.set(eventType, handler);
+					},
+				});
+			});
+		});
 	},
 });
 
