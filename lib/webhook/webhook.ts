@@ -9,7 +9,10 @@ import { JSDOM } from 'jsdom';
 
 export const createWebhookModule = (): WebhookModule => ({
 	handlers: new Map<EventType, HandlerCallback>([
-		[EventType.UNUSED, (): string => ''],
+		[
+			EventType.UNUSED,
+			(): string => '<?xml version="1.0" encoding="UTF-8"?><Response />',
+		],
 	]),
 	server: undefined,
 	createServer(port: number): WebhookServer {
