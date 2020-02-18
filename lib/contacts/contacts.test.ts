@@ -332,4 +332,12 @@ describe('Export Contacts as CSV', () => {
 	it('returns a csv by using scope', () => {
 		expect(() => contactsModule.exportAsCsv('PRIVATE')).not.toThrowError();
 	});
+
+	it('throws no error when setting delimiter', () => {
+		expect(() => contactsModule.exportAsCsv('PRIVATE', ';')).not.toThrowError();
+	});
+
+	it('throws no error when setting delimiter with shared scope', () => {
+		expect(() => contactsModule.exportAsCsv('SHARED', ';')).not.toThrowError();
+	});
 });
