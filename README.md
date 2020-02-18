@@ -337,7 +337,7 @@ interface ContactsModule {
 	import: (contact: ContactImport, scope: Scope) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
-	exportAsCsv: (scope: ExportScope) => Promise<string>;
+	exportAsCsv: (scope: ExportScope, delimiter?: string) => Promise<string>;
 	exportAsVCards: (scope: ExportScope) => Promise<string[]>;
 	exportAsSingleVCard: (scope: ExportScope) => Promise<string>;
 	exportAsObjects: (scope: ExportScope) => Promise<ContactRequest[]>;
@@ -378,7 +378,8 @@ It takes a valid VCard 4.0 string, containing at least the following fields:
 
 #### The `exportAsCsv` method:
 
-It returns a csv strings containing all contacts for the given scope
+It returns a csv strings containing all contacts for the given scope.  
+You can also add a specific delimiter for the csv format.
 
 #### The `exportAsVCards` method:
 
