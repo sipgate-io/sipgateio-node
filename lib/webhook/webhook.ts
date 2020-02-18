@@ -29,10 +29,12 @@ export const createWebhookModule = (): WebhookModule => ({
 				const xmlResponse = handler();
 				try {
 					new JSDOM(xmlResponse, { contentType: 'application/xml' });
+					res.setHeader('Content-Type', 'application/xml');
 					res.end(xmlResponse);
 				} catch (error) {
 					console.log(error);
-					res.end('');
+					res.setHeader('Content-Type', 'application/xml');
+					res.end('<?xml version="1.0" encoding="UTF-8"?><Response />');
 				}
 			};
 
