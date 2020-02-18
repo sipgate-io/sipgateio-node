@@ -93,7 +93,7 @@ export const createContactsModule = (
 			.catch(error => Promise.reject(handleError(error)));
 	},
 
-	async exportAsCsv(scope): Promise<string> {
+	async exportAsCsv(scope, delimiter = ','): Promise<string> {
 		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
 
 		contactsRequest.data.items = contactsRequest.data.items.filter(
@@ -108,7 +108,7 @@ export const createContactsModule = (
 			'addresses',
 			'organizations',
 		];
-		const opts = { fields };
+		const opts = { fields, delimiter };
 		const elements = contactsRequest.data.items.map(contact => {
 			return {
 				id: contact.id,
