@@ -1,21 +1,19 @@
-import { Server } from 'http';
+import { CallEvent } from './models/webhook.model';
 
-export type HandlerCallback = () => string;
+export type HandlerCallback = (callData: CallEvent) => string;
 
 export interface WebhookServer {
 	on: (eventType: EventType, fn: HandlerCallback) => void;
 }
 
 export interface WebhookModule {
-	server: Server | undefined;
 	createServer: (port: number) => Promise<WebhookServer>;
-	handlers: Map<EventType, HandlerCallback>;
 }
 
 export enum EventType {
-	'NEW_CALL',
-	'ON_ANSWER',
-	'ON_HANGUP',
-	'ON_DATA',
-	'UNUSED',
+	NEW_CALL = 'new_call',
+	ANSWER = 'answer',
+	HANGUP = 'hangup',
+	DATA = 'data',
+	UNUSED = 'unused',
 }
