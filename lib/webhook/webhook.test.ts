@@ -10,7 +10,6 @@ describe('create webhook module', () => {
 
 	it('should create server', async () => {
 		const server = await webhookModule.createServer(1234);
-		expect(server.on).toBeDefined();
 		server.stop();
 	});
 
