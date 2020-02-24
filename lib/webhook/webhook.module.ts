@@ -1,9 +1,17 @@
-import { CallEvent } from './models/webhook.model';
+import {
+	AnswerEvent,
+	DataEvent,
+	HangupEvent,
+	NewCallEvent,
+} from './models/webhook.model';
 
-export type HandlerCallback = (callData: CallEvent) => string;
+export type HandlerCallback<T> = (event: T) => string;
 
 export interface WebhookServer {
-	on: (eventType: EventType, fn: HandlerCallback) => void;
+	onNewCall: (fn: HandlerCallback<NewCallEvent>) => void;
+	onAnswer: (fn: HandlerCallback<AnswerEvent>) => void;
+	onHangup: (fn: HandlerCallback<HangupEvent>) => void;
+	onData: (fn: HandlerCallback<DataEvent>) => void;
 	stop: () => void;
 }
 
@@ -16,5 +24,4 @@ export enum EventType {
 	ANSWER = 'answer',
 	HANGUP = 'hangup',
 	DATA = 'data',
-	UNUSED = 'unused',
 }

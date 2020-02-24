@@ -1,11 +1,6 @@
 import { CallEvent } from './models/webhook.model';
-import {
-	EventType,
-	HandlerCallback,
-	WebhookModule,
-	WebhookServer,
-} from './webhook.module';
-import { IncomingMessage, OutgoingMessage, Server, createServer } from 'http';
+import { EventType, WebhookModule, WebhookServer } from './webhook.module';
+import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { JSDOM } from 'jsdom';
 import { parse } from 'querystring';
 
@@ -13,46 +8,59 @@ export const createWebhookModule = (): WebhookModule => ({
 	createServer: createWebhookServer,
 });
 
-const handlers = new Map<EventType, HandlerCallback>([
-	[
-		EventType.UNUSED,
-		(): string => '<?xml version="1.0" encoding="UTF-8"?><Response />',
-	],
-]);
-
 const createWebhookServer = async (
 	port: number,
 	hostname = 'localhost'
 ): Promise<WebhookServer> => {
+	const handlers = new Map<EventType, (event: any) => string>();
+
 	return new Promise((resolve, reject) => {
-		let server: Server | undefined = undefined;
 		const requestHandler = (
 			req: IncomingMessage,
 			res: OutgoingMessage
 		): void => {
-			const type = getEventTypeFromRequest(req);
-			const handler = getHandlerFromEventType(type, handlers);
+			res.setHeader('Content-Type', 'application/xml');
 
 			collectRequestData(req, body => {
-				const xmlResponse = handler(body as CallEvent);
+				const requestBody = body as CallEvent;
+
+				const requestCallback = handlers.get(requestBody.event);
+				if (requestCallback === undefined) {
+					res.end(
+						`<?xml version="1.0" encoding="UTF-8"?><Error message="No handler for ${requestBody.event} event" />`
+					);
+					return;
+				}
+
+				const xmlResponse = requestCallback(requestBody);
+
 				try {
 					new JSDOM(xmlResponse, { contentType: 'application/xml' });
-					res.setHeader('Content-Type', 'application/xml');
 					res.end(xmlResponse);
 				} catch (error) {
 					console.log(error);
-					res.setHeader('Content-Type', 'application/xml');
-					res.end('<?xml version="1.0" encoding="UTF-8"?><Response />');
+					res.end(
+						`<?xml version="1.0" encoding="UTF-8"?><Error message="XML parse error: ${error}" />`
+					);
 				}
 			});
 		};
 
-		server = createServer(requestHandler).on('error', reject);
+		const server = createServer(requestHandler).on('error', reject);
 
 		server.listen({ port, hostname }, () => {
 			resolve({
-				on: (eventType, handler): void => {
-					handlers.set(eventType, handler);
+				onNewCall: handler => {
+					handlers.set(EventType.NEW_CALL, handler);
+				},
+				onAnswer: handler => {
+					handlers.set(EventType.ANSWER, handler);
+				},
+				onHangup: handler => {
+					handlers.set(EventType.HANGUP, handler);
+				},
+				onData: handler => {
+					handlers.set(EventType.DATA, handler);
 				},
 				stop: () => {
 					if (server) {
@@ -63,30 +71,6 @@ const createWebhookServer = async (
 		});
 	});
 };
-
-const getEventTypeFromRequest = (req: IncomingMessage): EventType => {
-	if (req.url === undefined || !requestUrlToEventTypeMapping.has(req.url)) {
-		return EventType.UNUSED;
-	}
-	return requestUrlToEventTypeMapping.get(req.url) as EventType;
-};
-
-const getHandlerFromEventType = (
-	type: EventType,
-	handlers: Map<EventType, HandlerCallback>
-): HandlerCallback => {
-	if (type === EventType.UNUSED || !handlers.has(type)) {
-		return handlers.get(EventType.UNUSED) as HandlerCallback;
-	}
-	return handlers.get(type) as HandlerCallback;
-};
-
-const requestUrlToEventTypeMapping = new Map<string, EventType>([
-	['/newCall', EventType.NEW_CALL],
-	['/onAnswer', EventType.ANSWER],
-	['/onHangup', EventType.HANGUP],
-	['/onData', EventType.DATA],
-]);
 
 const collectRequestData = (
 	request: IncomingMessage,
