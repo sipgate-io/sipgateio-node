@@ -15,35 +15,33 @@ const createWebhookServer = async (
 	const handlers = new Map<EventType, (event: any) => string>();
 
 	return new Promise((resolve, reject) => {
-		const requestHandler = (
+		const requestHandler = async (
 			req: IncomingMessage,
 			res: OutgoingMessage
-		): void => {
+		): Promise<void> => {
 			res.setHeader('Content-Type', 'application/xml');
 
-			collectRequestData(req, body => {
-				const requestBody = body as CallEvent;
+			const requestBody = await collectRequestData(req);
 
-				const requestCallback = handlers.get(requestBody.event);
-				if (requestCallback === undefined) {
-					res.end(
-						`<?xml version="1.0" encoding="UTF-8"?><Error message="No handler for ${requestBody.event} event" />`
-					);
-					return;
-				}
+			const requestCallback = handlers.get(requestBody.event);
+			if (requestCallback === undefined) {
+				res.end(
+					`<?xml version="1.0" encoding="UTF-8"?><Error message="No handler for ${requestBody.event} event" />`
+				);
+				return;
+			}
 
-				const xmlResponse = requestCallback(requestBody);
+			const xmlResponse = requestCallback(requestBody);
 
-				try {
-					new JSDOM(xmlResponse, { contentType: 'application/xml' });
-					res.end(xmlResponse);
-				} catch (error) {
-					console.log(error);
-					res.end(
-						`<?xml version="1.0" encoding="UTF-8"?><Error message="XML parse error: ${error}" />`
-					);
-				}
-			});
+			try {
+				new JSDOM(xmlResponse, { contentType: 'application/xml' });
+				res.end(xmlResponse);
+			} catch (error) {
+				console.log(error);
+				res.end(
+					`<?xml version="1.0" encoding="UTF-8"?><Error message="XML parse error: ${error}" />`
+				);
+			}
 		};
 
 		const server = createServer(requestHandler).on('error', reject);
@@ -72,21 +70,19 @@ const createWebhookServer = async (
 	});
 };
 
-const collectRequestData = (
-	request: IncomingMessage,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	callback: (obj: any) => void
-): void => {
-	const FORM_URLENCODED = 'application/x-www-form-urlencoded';
-	if (request.headers['content-type'] === FORM_URLENCODED) {
-		let body = '';
-		request.on('data', chunk => {
-			body += chunk.toString();
-		});
-		request.on('end', () => {
-			callback(parse(body));
-		});
-	} else {
-		callback(null);
-	}
+const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
+	return new Promise<CallEvent>((resolve, reject) => {
+		const FORM_URLENCODED = 'application/x-www-form-urlencoded';
+		if (request.headers['content-type'] === FORM_URLENCODED) {
+			let body = '';
+			request.on('data', chunk => {
+				body += chunk.toString();
+			});
+			request.on('end', () => {
+				resolve(parse(body).valueOf() as CallEvent);
+			});
+		} else {
+			reject();
+		}
+	});
 };
