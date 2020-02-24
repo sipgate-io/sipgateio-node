@@ -5,13 +5,13 @@ import {
 	NewCallEvent,
 } from './models/webhook.model';
 
-export type HandlerCallback<T> = (event: T) => string;
+export type HandlerCallback<T, U> = (event: T) => U;
 
 export interface WebhookServer {
-	onNewCall: (fn: HandlerCallback<NewCallEvent>) => void;
-	onAnswer: (fn: HandlerCallback<AnswerEvent>) => void;
-	onHangup: (fn: HandlerCallback<HangupEvent>) => void;
-	onData: (fn: HandlerCallback<DataEvent>) => void;
+	onNewCall: (fn: HandlerCallback<NewCallEvent, string>) => void;
+	onAnswer: (fn: HandlerCallback<AnswerEvent, void>) => void;
+	onHangup: (fn: HandlerCallback<HangupEvent, void>) => void;
+	onData: (fn: HandlerCallback<DataEvent, void>) => void;
 	stop: () => void;
 }
 
@@ -20,7 +20,7 @@ export interface WebhookModule {
 }
 
 export enum EventType {
-	NEW_CALL = 'new_call',
+	NEW_CALL = 'newCall',
 	ANSWER = 'answer',
 	HANGUP = 'hangup',
 	DATA = 'data',

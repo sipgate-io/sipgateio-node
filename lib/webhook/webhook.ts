@@ -12,7 +12,7 @@ const createWebhookServer = async (
 	port: number,
 	hostname = 'localhost'
 ): Promise<WebhookServer> => {
-	const handlers = new Map<EventType, (event: any) => string>();
+	const handlers = new Map<EventType, (event: any) => any>();
 
 	return new Promise((resolve, reject) => {
 		const requestHandler = async (
@@ -73,16 +73,19 @@ const createWebhookServer = async (
 const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 	return new Promise<CallEvent>((resolve, reject) => {
 		const FORM_URLENCODED = 'application/x-www-form-urlencoded';
-		if (request.headers['content-type'] === FORM_URLENCODED) {
-			let body = '';
-			request.on('data', chunk => {
-				body += chunk.toString();
-			});
-			request.on('end', () => {
-				resolve(parse(body).valueOf() as CallEvent);
-			});
-		} else {
+		if (
+			request.headers['content-type'] &&
+			!request.headers['content-type'].includes(FORM_URLENCODED)
+		) {
 			reject();
 		}
+
+		let body = '';
+		request.on('data', chunk => {
+			body += chunk.toString();
+		});
+		request.on('end', () => {
+			resolve((parse(body) as unknown) as CallEvent);
+		});
 	});
 };
