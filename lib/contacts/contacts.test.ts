@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { ContactsDTO, ContactsModule } from './contacts.module';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule } from '../core/httpClient';
@@ -20,8 +21,8 @@ describe('Contacts Module', () => {
 		mockClient = {} as HttpClientModule;
 		mockClient.post = jest
 			.fn()
-			.mockImplementation((_, contactsDTO: ContactsDTO) => {
-				console.log(contactsDTO);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			.mockImplementation((_, _contactsDTO: ContactsDTO) => {
 				return Promise.resolve({
 					status: 204,
 				});
@@ -319,8 +320,8 @@ describe('Export Contacts as CSV', () => {
 
 	beforeEach(() => {
 		mockClient = {} as HttpClientModule;
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		mockClient.get = jest.fn().mockImplementationOnce(_ => {
-			console.log(_);
 			return Promise.resolve({
 				data: {
 					items: [],
@@ -330,8 +331,8 @@ describe('Export Contacts as CSV', () => {
 		});
 		mockClient.post = jest
 			.fn()
-			.mockImplementation((_, contactsDTO: ContactsDTO) => {
-				console.log(contactsDTO);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			.mockImplementation((_, _contactsDTO: ContactsDTO) => {
 				return Promise.resolve({
 					status: 204,
 				});
