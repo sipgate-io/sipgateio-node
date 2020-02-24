@@ -319,6 +319,15 @@ describe('Export Contacts as CSV', () => {
 
 	beforeEach(() => {
 		mockClient = {} as HttpClientModule;
+		mockClient.get = jest.fn().mockImplementationOnce(_ => {
+			console.log(_);
+			return Promise.resolve({
+				data: {
+					items: [],
+				},
+				status: 200,
+			});
+		});
 		mockClient.post = jest
 			.fn()
 			.mockImplementation((_, contactsDTO: ContactsDTO) => {
@@ -329,7 +338,7 @@ describe('Export Contacts as CSV', () => {
 			});
 		contactsModule = createContactsModule(mockClient);
 	});
-	it('returns a csv by using scope', () => {
-		expect(() => contactsModule.exportAsCsv('PRIVATE')).not.toThrowError();
+	it('returns a csv by using scope', async () => {
+		await expect(contactsModule.exportAsCsv('PRIVATE')).resolves.not.toThrow();
 	});
 });
