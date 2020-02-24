@@ -4,6 +4,7 @@ export type HandlerCallback = (callData: CallEvent) => string;
 
 export interface WebhookServer {
 	on: (eventType: EventType, fn: HandlerCallback) => void;
+	stop: () => void;
 }
 
 export interface WebhookModule {

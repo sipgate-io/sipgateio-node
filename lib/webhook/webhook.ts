@@ -20,13 +20,12 @@ const handlers = new Map<EventType, HandlerCallback>([
 	],
 ]);
 
-let server: Server | undefined = undefined;
-
 const createWebhookServer = async (
 	port: number,
 	hostname = 'localhost'
 ): Promise<WebhookServer> => {
 	return new Promise((resolve, reject) => {
+		let server: Server | undefined = undefined;
 		const requestHandler = (
 			req: IncomingMessage,
 			res: OutgoingMessage
@@ -49,10 +48,16 @@ const createWebhookServer = async (
 		};
 
 		server = createServer(requestHandler).on('error', reject);
+
 		server.listen({ port, hostname }, () => {
 			resolve({
 				on: (eventType, handler): void => {
 					handlers.set(eventType, handler);
+				},
+				stop: () => {
+					if (server) {
+						server.close();
+					}
 				},
 			});
 		});

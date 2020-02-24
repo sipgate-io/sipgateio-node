@@ -8,13 +8,16 @@ describe('create webhook module', () => {
 		webhookModule = createWebhookModule();
 	});
 
-	it('should create server', () => {
-		webhookModule.createServer(1234);
+	it('should create server', async () => {
+		const server = await webhookModule.createServer(1234);
+		expect(server.on).toBeDefined();
+		server.stop();
 	});
 
-	// it('expect exception when starting on same port', async () => {
-	// 	const webhookModuleTwo = createWebhookModule();
-	// 	await webhookModule.createServer(1234);
-	// 	await expect(webhookModuleTwo.createServer(1234)).rejects.toThrow();
-	// });
+	it('expect exception when starting on same port', async () => {
+		const webhookModuleTwo = createWebhookModule();
+		const server = await webhookModule.createServer(1234);
+		await expect(webhookModuleTwo.createServer(1234)).rejects.toThrow();
+		server.stop();
+	});
 });
