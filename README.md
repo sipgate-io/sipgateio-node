@@ -329,6 +329,8 @@ The webhook module provides the following features:
 - subscribing to **data** events
 - subscribing to **hangup** events
 
+**Please note:** The feature is only available in node.js environments and not available in browser environments
+
 #### Structure
 
 ```typescript
