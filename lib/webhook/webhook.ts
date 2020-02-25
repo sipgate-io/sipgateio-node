@@ -37,7 +37,6 @@ const createWebhookServer = async (
 				new JSDOM(xmlResponse, { contentType: 'application/xml' });
 				res.end(xmlResponse);
 			} catch (error) {
-				console.log(error);
 				res.end(
 					`<?xml version="1.0" encoding="UTF-8"?><Error message="XML parse error: ${error}" />`
 				);
@@ -72,10 +71,11 @@ const createWebhookServer = async (
 
 const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 	return new Promise<CallEvent>((resolve, reject) => {
-		const FORM_URLENCODED = 'application/x-www-form-urlencoded';
 		if (
 			request.headers['content-type'] &&
-			!request.headers['content-type'].includes(FORM_URLENCODED)
+			!request.headers['content-type'].includes(
+				'application/x-www-form-urlencoded'
+			)
 		) {
 			reject();
 		}
