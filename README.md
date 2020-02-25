@@ -491,6 +491,58 @@ The custom `callerId` can be set to any validated number in your sipgate account
 </Response>
 ```
 
+#### Subscribing to _onAnswer_ events
+
+After creating the server, you can subscribe to onAnswer events by passing a callback function to the `.onAnswer` method. This callback function will receive a `AnswerEvent` (described below) when called and expects nothing to be returned.
+To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
+
+```typescript
+interface AnswerEvent {
+	callId: string;
+	direction: Direction;
+	from: string;
+	to: string;
+	xcid: string;
+	event: EventType.ANSWER;
+	user: string;
+	userId: string;
+	fullUserId: string;
+	answeringNumber: string;
+	diversion?: string;
+}
+```
+
+#### Subscribing to _data_ events
+
+After creating the server, you can subscribe to onData events by passing a callback function to the `.onData` method. This callback function will receive a `DataEvent` (described below) when called and expects nothing to be returned.
+To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
+
+```typescript
+interface DataEvent {
+	callId: string;
+	event: EventType.DATA;
+	dtmf: string;
+}
+```
+
+#### Subscribing to _hangup_ events
+
+After creating the server, you can subscribe to onHangup events by passing a callback function to the `.onHangup` method. This callback function will receive a `HangupEvent` (described below) when called and expects nothing to be returned.
+To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
+
+```typescript
+interface HangupEvent {
+	callId: string;
+	direction: Direction;
+	from: string;
+	to: string;
+	xcid: string;
+	event: EventType.HANGUP;
+	cause: HangupCause;
+	answeringNumber: string;
+}
+```
+
 ### Contacts
 
 The contacts module provides the following functions:
