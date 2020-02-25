@@ -365,6 +365,11 @@ To receive any further Events, you can subscribe to them with the following XML:
 ```
 
 ```typescript
+enum Direction {
+	IN = 'in',
+	OUT = 'out',
+}
+
 interface NewCallEvent {
 	event: EventType;
 	callId: string;
@@ -531,6 +536,16 @@ After creating the server, you can subscribe to onHangup events by passing a cal
 To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
 
 ```typescript
+enum HangupCause {
+	NORMAL_CLEARING = 'normalClearing',
+	BUSY = 'busy',
+	CANCEL = 'cancel',
+	NO_ANSWER = 'noAnswer',
+	CONGESTION = 'congestion',
+	NOT_FOUND = 'notFound',
+	FORWARDED = 'forwarded',
+}
+
 interface HangupEvent {
 	callId: string;
 	direction: Direction;
