@@ -4,7 +4,7 @@
 	"description": "The official Node.js library for sipgate.io",
 	"main": "./dist/index.js",
 	"scripts": {
-		"lint": "eslint --fix ./lib/**/*.ts ./examples/**/*.ts",
+		"lint": "eslint --fix ./lib/**/*.ts",
 		"format": "prettier --write **/**.ts",
 		"test:dev": "jest ./lib --env=node --watch",
 		"test:unit": "jest ./lib --env=node",
@@ -92,6 +92,7 @@
 	},
 	"dependencies": {
 		"@types/google-libphonenumber": "^7.4.17",
+		"@types/jsdom": "^16.1.0",
 		"@types/json2csv": "^4.5.1",
 		"@types/vcf": "^2.0.1",
 		"atob": "^2.1.2",
@@ -100,6 +101,7 @@
 		"detect-browser": "^4.8.0",
 		"file-type": "^12.4.0",
 		"google-libphonenumber": "^3.2.6",
+		"jsdom": "15.2.1",
 		"json2csv": "^4.5.4",
 		"vcf": "^2.0.6"
 	}

@@ -319,6 +319,247 @@ async function setLog(value: boolean): Promise<void>;
 The `setLog` function toggles, the function to display all incoming and outgoing events, which have been sent to your `Incoming` and `Outgoing` Url.
 These parameters can be set using these functions: `setIncomingUrl` and `setOutgoingUrl`.
 
+### Webhooks (PUSH-API)
+
+The webhook module provides the following features:
+
+- subscribing to **newCall** events
+- replying to **newCall** events with XML
+- subscribing to **answer** events
+- subscribing to **data** events
+- subscribing to **hangup** events
+
+**Please note:** The feature is only available in node.js environments and not available in browser environments
+
+#### Structure
+
+```typescript
+interface WebhookModule {
+	createServer: (port: number) => Promise<WebhookServer>;
+}
+
+type HandlerCallback<T, U> = (event: T) => U;
+
+interface WebhookServer {
+	onNewCall: (fn: HandlerCallback<NewCallEvent, string>) => void;
+	onAnswer: (fn: HandlerCallback<AnswerEvent, void>) => void;
+	onHangup: (fn: HandlerCallback<HangupEvent, void>) => void;
+	onData: (fn: HandlerCallback<DataEvent, void>) => void;
+	stop: () => void;
+}
+```
+
+#### Creating the webhook server
+
+By passing a `port` to the `createServer` method, you receive a `Promise<WebhookServer>`.
+After the server has been instantiated, you can subscribe to various `Events` (`NewCallEvent`,`AnswerEvent`,`HangupEvent`,`DataEvent`) which are described below.
+
+#### Subscribing to _newCall_ events
+
+After creating the server, you can subscribe to newCall events by passing a callback function to the `.onNewCall` method. This callback function will receive a `NewCallEvent` (described below) when called and expects a valid XML response to be returned.
+To receive any further `Events`, you can subscribe to them with the following XML:  
+**Keep in mind:** you have to replace `https://www.sipgate.de/` with your server URL
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+	<Response onAnswer="https://www.sipgate.de/" onHangup="https://www.sipgate.de/">
+</Response>
+```
+
+```typescript
+enum Direction {
+	IN = 'in',
+	OUT = 'out',
+}
+
+interface NewCallEvent {
+	event: EventType;
+	callId: string;
+	direction: Direction;
+	from: string;
+	to: string;
+	xcid: string;
+	event: EventType.NEW_CALL;
+	originalCallId: string;
+	user: string[];
+	userId: string[];
+	fullUserId: string[];
+}
+```
+
+#### Replying to _newCall_ events with valid XML
+
+You can return different `XML-Responses` in your callback, which will be passed to the PUSH-API:
+
+##### Redirecting a call:
+
+You can redirect the call to a specific phone number using the following XML:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Dial>
+        <Number>4915799912345</Number>
+    </Dial>
+</Response>
+```
+
+##### Sending a call to the voicemail:
+
+Redirecting a call to the voicemail can be achieved by using the following XML snippet:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Dial>
+        <Voicemail />
+    </Dial>
+</Response>
+```
+
+##### Supressing your phone number and redirecting the call
+
+The snippet mentioned below supresses your phone number and redirects you to a different number:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Dial anonymous="true">
+        <Number>4915799912345</Number>
+    </Dial>
+</Response>
+```
+
+##### Set custom callerId and redirect the call
+
+The custom `callerId` can be set to any validated number in your sipgate account:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Dial callerId="492111234567">
+        <Number>4915799912345</Number>
+    </Dial>
+</Response>
+```
+
+##### Playing a sound file
+
+**Please note:** Currently the sound file needs to be a mono 16bit PCM WAV file with a sampling rate of 8kHz. You can use conversion tools like the open source audio editor Audacity to convert any sound file to the correct format.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Play>
+        <Url>http://example.com/example.wav</Url>
+    </Play>
+</Response>
+```
+
+##### Gathering DTMF sounds
+
+**Please note:** If you want to gather DTMF sounds, no future `onAnswer` and `onHangup` events will be pushed for the specific call.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Gather onData="http://localhost:3000/dtmf" maxDigits="3" timeout="10000">
+        <Play>
+            <Url>https://example.com/example.wav</Url>
+        </Play>
+    </Gather>
+</Response>
+```
+
+##### Rejecting a call
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Reject />
+</Response>
+```
+
+##### Rejecting a call like you are busy
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Reject reason="busy"/>
+</Response>
+```
+
+##### Hangup calls
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Hangup />
+</Response>
+```
+
+#### Subscribing to _onAnswer_ events
+
+After creating the server, you can subscribe to onAnswer events by passing a callback function to the `.onAnswer` method. This callback function will receive a `AnswerEvent` (described below) when called and expects nothing to be returned.
+To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
+
+```typescript
+interface AnswerEvent {
+	callId: string;
+	direction: Direction;
+	from: string;
+	to: string;
+	xcid: string;
+	event: EventType.ANSWER;
+	user: string;
+	userId: string;
+	fullUserId: string;
+	answeringNumber: string;
+	diversion?: string;
+}
+```
+
+#### Subscribing to _data_ events
+
+After creating the server, you can subscribe to onData events by passing a callback function to the `.onData` method. This callback function will receive a `DataEvent` (described below) when called and expects nothing to be returned.
+To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
+
+```typescript
+interface DataEvent {
+	callId: string;
+	event: EventType.DATA;
+	dtmf: string;
+}
+```
+
+#### Subscribing to _hangup_ events
+
+After creating the server, you can subscribe to onHangup events by passing a callback function to the `.onHangup` method. This callback function will receive a `HangupEvent` (described below) when called and expects nothing to be returned.
+To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
+
+```typescript
+enum HangupCause {
+	NORMAL_CLEARING = 'normalClearing',
+	BUSY = 'busy',
+	CANCEL = 'cancel',
+	NO_ANSWER = 'noAnswer',
+	CONGESTION = 'congestion',
+	NOT_FOUND = 'notFound',
+	FORWARDED = 'forwarded',
+}
+
+interface HangupEvent {
+	callId: string;
+	direction: Direction;
+	from: string;
+	to: string;
+	xcid: string;
+	event: EventType.HANGUP;
+	cause: HangupCause;
+	answeringNumber: string;
+}
+```
+
 ### Contacts
 
 The contacts module provides the following functions:
@@ -337,9 +578,10 @@ interface ContactsModule {
 	import: (contact: ContactImport, scope: Scope) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
-	exportAsCsv: (scope: ExportScope) => Promise<string>;
+	exportAsCsv: (scope: ExportScope, delimiter?: string) => Promise<string>;
 	exportAsVCards: (scope: ExportScope) => Promise<string[]>;
 	exportAsSingleVCard: (scope: ExportScope) => Promise<string>;
+	exportAsObjects: (scope: ExportScope) => Promise<ContactRequest[]>;
 }
 ```
 
@@ -377,7 +619,8 @@ It takes a valid VCard 4.0 string, containing at least the following fields:
 
 #### The `exportAsCsv` method:
 
-It returns a csv strings containing all contacts for the given scope
+It returns a csv strings containing all contacts for the given scope.  
+You can also add a specific delimiter for the csv format.
 
 #### The `exportAsVCards` method:
 
@@ -386,6 +629,23 @@ It returns mulitple vCard-strings containing all contacts for the given scope
 #### The `exportAsSingleVCard` method:
 
 It returns a vCard-address-book containing all contacts for the given scope
+
+#### The `exportAsObjects` method:
+
+It returns a list of contacts for the given scope as described in the following interface.
+
+```typescript
+interface ContactRequest {
+	id: string;
+	name: string;
+	picture: string;
+	emails: { email: string; type: string[] }[];
+	numbers: { number: string; type: string[] }[];
+	addresses: Address[];
+	organization: string[][];
+	scope: Scope;
+}
+```
 
 #### Scopes
 
@@ -401,9 +661,7 @@ You can only save **one** address and **one** number using the Format.
 
 ## Examples
 
-For some examples on how to use the library, please refer to the [examples folder](./examples).
-
-[npx](https://www.npmjs.com/package/npx) can be used to run the code examples:
+For some examples on how to use the library, please refer to this repository: [sipgateio-node-examples](https://github.com/sipgate-io/sipgateio-node-examples/)
 
 ```
 npx ts-node some_example.ts

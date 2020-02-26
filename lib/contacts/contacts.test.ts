@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { ContactsDTO, ContactsModule } from './contacts.module';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule } from '../core/httpClient';
@@ -20,8 +21,8 @@ describe('Contacts Module', () => {
 		mockClient = {} as HttpClientModule;
 		mockClient.post = jest
 			.fn()
-			.mockImplementation((_, contactsDTO: ContactsDTO) => {
-				console.log(contactsDTO);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			.mockImplementation((_, _contactsDTO: ContactsDTO) => {
 				return Promise.resolve({
 					status: 204,
 				});
@@ -319,17 +320,34 @@ describe('Export Contacts as CSV', () => {
 
 	beforeEach(() => {
 		mockClient = {} as HttpClientModule;
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		mockClient.get = jest.fn().mockImplementationOnce(_ => {
+			return Promise.resolve({
+				data: {
+					items: [],
+				},
+				status: 200,
+			});
+		});
 		mockClient.post = jest
 			.fn()
-			.mockImplementation((_, contactsDTO: ContactsDTO) => {
-				console.log(contactsDTO);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			.mockImplementation((_, _contactsDTO: ContactsDTO) => {
 				return Promise.resolve({
 					status: 204,
 				});
 			});
 		contactsModule = createContactsModule(mockClient);
 	});
-	it('returns a csv by using scope', () => {
-		expect(() => contactsModule.exportAsCsv('PRIVATE')).not.toThrowError();
+	it('returns a csv by using scope', async () => {
+		await expect(contactsModule.exportAsCsv('PRIVATE')).resolves.not.toThrow();
+	});
+
+	it('throws no error when setting delimiter', () => {
+		expect(() => contactsModule.exportAsCsv('PRIVATE', ';')).not.toThrowError();
+	});
+
+	it('throws no error when setting delimiter with shared scope', () => {
+		expect(() => contactsModule.exportAsCsv('SHARED', ';')).not.toThrowError();
 	});
 });
