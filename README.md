@@ -357,7 +357,7 @@ After the server has been instantiated, you can subscribe to various `Events` (`
 #### Subscribing to _newCall_ events
 
 After creating the server, you can subscribe to newCall events by passing a callback function to the `.onNewCall` method. This callback function will receive a `NewCallEvent` (described below) when called and expects a valid XML response to be returned.
-To receive any further Events, you can subscribe to them with the following XML:  
+To receive any further `Events`, you can subscribe to them with the following XML:  
 **Keep in mind:** you have to replace `https://www.sipgate.de/` with your server URL
 
 ```xml
