@@ -2,6 +2,7 @@ import { CallEvent } from './models/webhook.model';
 import { EventType, WebhookModule, WebhookServer } from './webhook.module';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { JSDOM } from 'jsdom';
+import { js2xml } from 'xml-js';
 import { parse } from 'querystring';
 
 export const createWebhookModule = (): WebhookModule => ({
@@ -31,7 +32,13 @@ const createWebhookServer = async (
 				return;
 			}
 
-			const xmlResponse = requestCallback(requestBody);
+			const responseObject = requestCallback(requestBody);
+			const xmljsOptions = {
+				compact: true,
+				ignoreComment: true,
+				spaces: 4,
+			};
+			const xmlResponse = js2xml(responseObject, xmljsOptions);
 
 			try {
 				new JSDOM(xmlResponse, { contentType: 'application/xml' });
