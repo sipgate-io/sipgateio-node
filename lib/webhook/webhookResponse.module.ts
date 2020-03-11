@@ -19,3 +19,8 @@ export interface WebhookResponse {
 	hangupCall: () => HangupObject;
 	sendToVoicemail: () => VoicemailObject;
 }
+
+export enum RejectReason {
+	BUSY = 'busy',
+	REJECTED = 'rejected',
+}

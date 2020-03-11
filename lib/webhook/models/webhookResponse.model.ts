@@ -1,3 +1,5 @@
+import { RejectReason } from '../webhookResponse.module';
+
 export type RedirectOptions = {
 	numbers: string[];
 	anonymous?: boolean;
@@ -15,7 +17,7 @@ export type PlayOptions = {
 };
 
 export type RejectOptions = {
-	reason: string;
+	reason: RejectReason;
 };
 
 export type RedirectObject = {
