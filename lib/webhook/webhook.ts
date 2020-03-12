@@ -1,7 +1,6 @@
 import { CallEvent } from './models/webhook.model';
 import { EventType, WebhookModule, WebhookServer } from './webhook.module';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
-import { JSDOM } from 'jsdom';
 import { parse } from 'querystring';
 
 export const createWebhookModule = (): WebhookModule => ({
@@ -28,17 +27,8 @@ const createWebhookServer = async (
 				);
 				return;
 			}
-
 			const xmlResponse = requestCallback(requestBody);
-
-			try {
-				new JSDOM(xmlResponse, { contentType: 'application/xml' });
-				res.end(xmlResponse);
-			} catch (error) {
-				res.end(
-					`<?xml version="1.0" encoding="UTF-8"?><Error message="XML parse error: ${error}" />`
-				);
-			}
+			res.end(xmlResponse);
 		};
 
 		const server = createServer(requestHandler).on('error', reject);
