@@ -2,7 +2,6 @@ import { CallEvent } from './models/webhook.model';
 import { EventType, WebhookModule, WebhookServer } from './webhook.module';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { JSDOM } from 'jsdom';
-import { js2xml } from 'xml-js';
 import { parse } from 'querystring';
 
 export const createWebhookModule = (): WebhookModule => ({
@@ -14,7 +13,6 @@ const createWebhookServer = async (
 	hostname = 'localhost'
 ): Promise<WebhookServer> => {
 	const handlers = new Map<EventType, (event: any) => any>();
-
 	return new Promise((resolve, reject) => {
 		const requestHandler = async (
 			req: IncomingMessage,
@@ -23,7 +21,6 @@ const createWebhookServer = async (
 			res.setHeader('Content-Type', 'application/xml');
 
 			const requestBody = await collectRequestData(req);
-
 			const requestCallback = handlers.get(requestBody.event);
 			if (requestCallback === undefined) {
 				res.end(
@@ -32,13 +29,7 @@ const createWebhookServer = async (
 				return;
 			}
 
-			const responseObject = requestCallback(requestBody);
-			const xmljsOptions = {
-				compact: true,
-				ignoreComment: true,
-				spaces: 4,
-			};
-			const xmlResponse = js2xml(responseObject, xmljsOptions);
+			const xmlResponse = requestCallback(requestBody);
 
 			try {
 				new JSDOM(xmlResponse, { contentType: 'application/xml' });

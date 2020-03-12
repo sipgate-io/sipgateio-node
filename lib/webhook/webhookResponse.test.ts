@@ -1,16 +1,13 @@
-import { WebhookResponse as WebhookResponseType } from './webhookResponse';
+import { createGatherObject } from './webhookResponse';
 
 describe('create webhookResponse module', () => {
-	const webhookResponse = WebhookResponseType;
-
 	it('should return a gather object without play tag', () => {
 		const gatherOptions = { maxDigits: 1, timeout: 2000 };
 		const gatherObject = {
 			Gather: { _attributes: { maxDigits: '1', timeout: '2000' } },
 		};
-		const result = webhookResponse.gatherDTMF(gatherOptions);
-
-		expect(gatherObject).toEqual(result);
+		const result = createGatherObject(gatherOptions);
+		expect(result).toEqual(gatherObject);
 	});
 
 	it('should return a gather object with play tag', () => {
@@ -26,8 +23,7 @@ describe('create webhookResponse module', () => {
 				Play: { Url: testUrl },
 			},
 		};
-		const result = webhookResponse.gatherDTMF(gatherOptions);
-
+		const result = createGatherObject(gatherOptions);
 		expect(result).toEqual(gatherObject);
 	});
 });
