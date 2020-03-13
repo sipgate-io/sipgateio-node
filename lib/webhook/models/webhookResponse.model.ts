@@ -49,3 +49,11 @@ export type HangupObject = {
 export type VoicemailObject = {
 	Dial: { Voicemail: {} };
 };
+
+export type ResponseObject =
+	| RedirectObject
+	| VoicemailObject
+	| PlayObject
+	| GatherObject
+	| HangupObject
+	| RejectObject;

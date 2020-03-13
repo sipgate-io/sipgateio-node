@@ -1,17 +1,23 @@
 import {
+	GatherObject,
 	GatherOptions,
+	HangupObject,
+	PlayObject,
 	PlayOptions,
+	RedirectObject,
 	RedirectOptions,
+	RejectObject,
 	RejectOptions,
+	VoicemailObject,
 } from './models/webhookResponse.model';
 
 export interface WebhookResponse {
-	redirectCall: (redirectOptions: RedirectOptions) => string;
-	gatherDTMF: (gatherOptions: GatherOptions) => string;
-	playAudio: (playOptions: PlayOptions) => string;
-	rejectCall: (rejectOptions: RejectOptions) => string;
-	hangupCall: () => string;
-	sendToVoicemail: () => string;
+	redirectCall: (redirectOptions: RedirectOptions) => RedirectObject;
+	gatherDTMF: (gatherOptions: GatherOptions) => GatherObject;
+	playAudio: (playOptions: PlayOptions) => PlayObject;
+	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
+	hangupCall: () => HangupObject;
+	sendToVoicemail: () => VoicemailObject;
 }
 
 export enum RejectReason {
