@@ -39,3 +39,7 @@ jobs:
         env:
           GHR_PATH: bundle/sipgate-io.js
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - name: NPM Publish 
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_AUTH_TOKEN }}
