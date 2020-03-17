@@ -319,7 +319,7 @@ async function setLog(value: boolean): Promise<void>;
 The `setLog` function toggles, the function to display all incoming and outgoing events, which have been sent to your `Incoming` and `Outgoing` Url.
 These parameters can be set using these functions: `setIncomingUrl` and `setOutgoingUrl`.
 
-### Webhooks (PUSH-API)
+### Webhooks
 
 The webhook module provides the following features:
 
