@@ -26,14 +26,14 @@ export interface WebhookServer {
 	stop: () => void;
 }
 
-export interface ServerSettings {
+export interface ServerOptions {
 	port: number;
 	serverAddress: string;
 	hostname?: string;
 }
 
 export interface WebhookModule {
-	createServer: (serverSettings: ServerSettings) => Promise<WebhookServer>;
+	createServer: (serverOptions: ServerOptions) => Promise<WebhookServer>;
 }
 
 export enum EventType {

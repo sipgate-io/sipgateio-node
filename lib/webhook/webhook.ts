@@ -14,7 +14,7 @@ import {
 } from './models/webhook.model';
 import {
 	EventType,
-	ServerSettings,
+	ServerOptions,
 	WebhookModule,
 	WebhookResponseInterface,
 	WebhookServer,
@@ -28,7 +28,7 @@ export const createWebhookModule = (): WebhookModule => ({
 });
 
 const createWebhookServer = async (
-	serverSettings: ServerSettings
+	serverOptions: ServerOptions
 ): Promise<WebhookServer> => {
 	const handlers = new Map<EventType, (event: any) => any>();
 	return new Promise((resolve, reject) => {
@@ -52,7 +52,7 @@ const createWebhookServer = async (
 			if (callbackResult) {
 				const responseObject = createResponseObject(
 					callbackResult,
-					serverSettings.serverAddress
+					serverOptions.serverAddress
 				);
 				const xmlResponse = createXmlResponse(responseObject);
 				res.end(xmlResponse);
@@ -65,8 +65,8 @@ const createWebhookServer = async (
 
 		server.listen(
 			{
-				port: serverSettings.port,
-				hostname: serverSettings.hostname || 'localhost',
+				port: serverOptions.port,
+				hostname: serverOptions.hostname || 'localhost',
 			},
 			() => {
 				resolve({
