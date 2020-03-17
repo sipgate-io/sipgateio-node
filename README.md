@@ -279,63 +279,35 @@ If the `from` number refers to a group of phones rather than a single one all ph
 
 The `deviceId` is needed for billing and determines the number which will be displayed at the `to` device. For instance, `e14` has the default number '+4921156789'.
 
-### Webhook Settings
+### Webhooks
+
+**Please note:** The webhook feature is only available in node.js environments.
 
 #### What is a webhook?
 
+The Webhook API provides processing of real-time call data.  
 A webhook is a POST request that sipgate.io makes to a predefined URL when a certain event occurs. These requests contain information about the event that occurred in application/x-www-form-urlencoded format.
 
-The webhook settings module provides the following functions to update settings:
+The following types of events can trigger webhooks:
 
-```typescript
-async function setIncomingUrl(url: string): Promise<void>;
-async function clearIncomingUrl(): Promise<void>;
-```
+| Event Type | Description                             |
+| ---------- | --------------------------------------- |
+| newCall    | signals that a new call is ringing      |
+| answer     | signals that the call has been answered |
+| hangup     | signals that the call has been hung up  |
+| dtmf       | signals dtmf tones sent in the call     |
 
-These two functions allow for the setting and clearing of the URL to be called when a webhook is triggered by an incoming call.
+The webhook module provides a simple means to set up a server for handling these webhooks.
 
-```typescript
-async function setOutgoingUrl(url: string): Promise<void>;
-async function clearOutgoingUrl(): Promise<void>;
-```
+For any of the event types listed above, a callback function can be registered to be called upon receiving the respective webhook. Additionally, for the types `newCall` and `dtmf` commands can be returned to sipgate.io to control how it shall deal with future call data or to trigger actions like hanging up or redirecting calls.
 
-Analogous functions exist for the URL that handles outgoing calls.
-
-```typescript
-async function setWhitelist(extensions: string[]): Promise<void>;
-async function clearWhitelist(): Promise<void>;
-async function disableWhitelist(): Promise<void>;
-```
-
-The whitelist specifies extensions that should trigger webhooks.
-By default, webhooks are enabled for all phoneline and group extensions.
-This behavior is restored by calling `disableWhitelist`.
-The `disableWhitelist` completely removes the whitelisting and enables all phoneline and group extensions.
-
-```typescript
-async function setLog(value: boolean): Promise<void>;
-```
-
-The `setLog` function toggles, the function to display all incoming and outgoing events, which have been sent to your `Incoming` and `Outgoing` Url.
-These parameters can be set using these functions: `setIncomingUrl` and `setOutgoingUrl`.
-
-### Webhooks
-
-The webhook module provides the following features:
-
-- subscribing to **newCall** events
-- replying to **newCall** events with XML
-- subscribing to **answer** events
-- subscribing to **data** events
-- subscribing to **hangup** events
-
-**Please note:** The feature is only available in node.js environments and not available in browser environments
+For generating those commands our library provides a convenient [response builder](#webhookresponse-builder).
 
 #### Structure
 
 ```typescript
 interface WebhookModule {
-	createServer: (port: number) => Promise<WebhookServer>;
+	createServer: (serverOptions: ServerOptions) => Promise<WebhookServer>;
 }
 
 type HandlerCallback<T, U> = (event: T) => U;
@@ -349,14 +321,44 @@ interface WebhookServer {
 }
 ```
 
+#### Usage
+
+To begin, instantiate the webhook module by calling `createWebhookModule`. The resulting object provides only one method, `createServer` which takes a configuration object of type `ServerOptions` containing a port number, server address, and an optional hostname (default: `localhost`). It returns a `Promise<WebhookServer>` which, when ready, in turn provides the following methods:
+
 #### Creating the webhook server
 
 By passing a `port` to the `createServer` method, you receive a `Promise<WebhookServer>`.
 After the server has been instantiated, you can subscribe to various `Events` (`NewCallEvent`,`AnswerEvent`,`HangupEvent`,`DataEvent`) which are described below.
 
+### WebhookResponse Builder
+
+You can use the provided XML-Builder to compose
+
+```tmp
+	redirectCall: (redirectOptions: RedirectOptions) => RedirectObject;
+	gatherDTMF: (gatherOptions: GatherOptions) => GatherObject;
+	playAudio: (playOptions: PlayOptions) => PlayObject;
+	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
+	hangupCall: () => HangupObject;
+	sendToVoicemail: () => VoicemailObject;
+```
+
+#### Rejecting Calls
+
+You can reject a Call by passing one of the following Reasons:
+
+```typescript
+enum RejectReason {
+	BUSY = 'busy',
+	REJECTED = 'rejected',
+}
+
+return WebhookResponse.rejectCall({ reason: RejectReason.BUSY });
+```
+
 #### Subscribing to _newCall_ events
 
-After creating the server, you can subscribe to newCall events by passing a callback function to the `.onNewCall` method. This callback function will receive a `NewCallEvent` (described below) when called and expects a valid XML response to be returned.
+After creating the server, you can subscribe to newCall events by passing a callback function to the `onNewCall` method. This callback function will receive a `NewCallEvent` (described below) when called and expects a valid XML response to be returned.
 To receive any further `Events`, you can subscribe to them with the following XML:  
 **Keep in mind:** you have to replace `https://www.sipgate.de/` with your server URL
 
@@ -559,6 +561,42 @@ interface HangupEvent {
 	answeringNumber: string;
 }
 ```
+
+### Webhook Settings
+
+The webhook settings module provides the following functions to update settings:
+
+```typescript
+async function setIncomingUrl(url: string): Promise<void>;
+async function clearIncomingUrl(): Promise<void>;
+```
+
+These two functions allow for the setting and clearing of the URL to be called when a webhook is triggered by an incoming call.
+
+```typescript
+async function setOutgoingUrl(url: string): Promise<void>;
+async function clearOutgoingUrl(): Promise<void>;
+```
+
+Analogous functions exist for the URL that handles outgoing calls.
+
+```typescript
+async function setWhitelist(extensions: string[]): Promise<void>;
+async function clearWhitelist(): Promise<void>;
+async function disableWhitelist(): Promise<void>;
+```
+
+The whitelist specifies extensions that should trigger webhooks.
+By default, webhooks are enabled for all phoneline and group extensions.
+This behavior is restored by calling `disableWhitelist`.
+The `disableWhitelist` completely removes the whitelisting and enables all phoneline and group extensions.
+
+```typescript
+async function setLog(value: boolean): Promise<void>;
+```
+
+The `setLog` function toggles, the function to display all incoming and outgoing events, which have been sent to your `Incoming` and `Outgoing` Url.
+These parameters can be set using these functions: `setIncomingUrl` and `setOutgoingUrl`.
 
 ### Contacts
 
