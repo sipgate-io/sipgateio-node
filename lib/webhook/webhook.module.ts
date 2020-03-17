@@ -1,10 +1,20 @@
 import {
 	AnswerEvent,
 	DataEvent,
+	GatherObject,
+	GatherOptions,
 	HangupEvent,
+	HangupObject,
 	NewCallEvent,
+	PlayObject,
+	PlayOptions,
+	RedirectObject,
+	RedirectOptions,
+	RejectObject,
+	RejectOptions,
+	ResponseObject,
+	VoicemailObject,
 } from './models/webhook.model';
-import { ResponseObject } from './models/webhookResponse.model';
 
 export type HandlerCallback<T, U> = (event: T) => U;
 
@@ -31,4 +41,18 @@ export enum EventType {
 	ANSWER = 'answer',
 	HANGUP = 'hangup',
 	DATA = 'dtmf',
+}
+
+export interface WebhookResponseInterface {
+	redirectCall: (redirectOptions: RedirectOptions) => RedirectObject;
+	gatherDTMF: (gatherOptions: GatherOptions) => GatherObject;
+	playAudio: (playOptions: PlayOptions) => PlayObject;
+	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
+	hangupCall: () => HangupObject;
+	sendToVoicemail: () => VoicemailObject;
+}
+
+export enum RejectReason {
+	BUSY = 'busy',
+	REJECTED = 'rejected',
 }

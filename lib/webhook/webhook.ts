@@ -1,11 +1,24 @@
-import { CallEvent } from './models/webhook.model';
+import {
+	CallEvent,
+	GatherObject,
+	GatherOptions,
+	HangupObject,
+	PlayObject,
+	PlayOptions,
+	RedirectObject,
+	RedirectOptions,
+	RejectObject,
+	RejectOptions,
+	ResponseObject,
+	VoicemailObject,
+} from './models/webhook.model';
 import {
 	EventType,
 	ServerSettings,
 	WebhookModule,
+	WebhookResponseInterface,
 	WebhookServer,
 } from './webhook.module';
-import { GatherObject, ResponseObject } from './models/webhookResponse.model';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { js2xml } from 'xml-js';
 import { parse } from 'querystring';
@@ -104,7 +117,7 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 const createResponseObject = (
 	responseObject: ResponseObject,
 	serverAddress: string
-) => {
+): Record<string, any> => {
 	if (responseObject && isGatherObject(responseObject)) {
 		responseObject.Gather._attributes['onData'] = serverAddress;
 	}
@@ -121,7 +134,7 @@ const createResponseObject = (
 	};
 };
 
-const createXmlResponse = (responseObject: any): string => {
+const createXmlResponse = (responseObject: Record<string, any>): string => {
 	const options = {
 		compact: true,
 		ignoreComment: true,
@@ -134,4 +147,48 @@ const isGatherObject = (
 	gatherCandidate: ResponseObject
 ): gatherCandidate is GatherObject => {
 	return (gatherCandidate as GatherObject)?.Gather !== undefined;
+};
+
+export const WebhookResponse: WebhookResponseInterface = {
+	gatherDTMF: (gatherOptions: GatherOptions): GatherObject => {
+		const gatherObject: GatherObject = {
+			Gather: {
+				_attributes: {
+					maxDigits: String(gatherOptions.maxDigits),
+					timeout: String(gatherOptions.timeout),
+				},
+			},
+		};
+		if (gatherOptions.announcement) {
+			gatherObject.Gather['Play'] = {
+				Url: gatherOptions.announcement,
+			};
+		}
+		return gatherObject;
+	},
+	hangupCall: (): HangupObject => {
+		return { Hangup: {} };
+	},
+	playAudio: (playOptions: PlayOptions): PlayObject => {
+		return { Play: { Url: playOptions.announcement } };
+	},
+
+	redirectCall: (redirectOptions: RedirectOptions): RedirectObject => {
+		return {
+			Dial: {
+				_attributes: {
+					callerId: redirectOptions.callerId,
+					anonymous: String(redirectOptions.anonymous),
+				},
+				Number: redirectOptions.numbers,
+			},
+		};
+	},
+	rejectCall: (rejectOptions: RejectOptions): RejectObject => {
+		return { Reject: { _attributes: { reason: rejectOptions.reason } } };
+	},
+
+	sendToVoicemail: (): VoicemailObject => {
+		return { Dial: { Voicemail: {} } };
+	},
 };

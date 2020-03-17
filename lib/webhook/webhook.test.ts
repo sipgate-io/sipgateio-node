@@ -1,5 +1,5 @@
 import { WebhookModule, WebhookServer } from './webhook.module';
-import { createWebhookModule } from './webhook';
+import { WebhookResponse, createWebhookModule } from './webhook';
 
 describe('create webhook module', () => {
 	let webhookModule: WebhookModule;
@@ -98,5 +98,33 @@ describe('create webhook module', () => {
 			server.onHangup(() => {});
 		}).not.toThrow();
 		server.stop();
+	});
+});
+
+describe('create webhook-"Response" module', () => {
+	it('should return a gather object without play tag', () => {
+		const gatherOptions = { maxDigits: 1, timeout: 2000 };
+		const gatherObject = {
+			Gather: { _attributes: { maxDigits: '1', timeout: '2000' } },
+		};
+		const result = WebhookResponse.gatherDTMF(gatherOptions);
+		expect(result).toEqual(gatherObject);
+	});
+
+	it('should return a gather object with play tag', () => {
+		const testUrl = 'www.testurl.de';
+		const gatherOptions = {
+			announcement: testUrl,
+			maxDigits: 1,
+			timeout: 2000,
+		};
+		const gatherObject = {
+			Gather: {
+				_attributes: { maxDigits: '1', timeout: '2000' },
+				Play: { Url: testUrl },
+			},
+		};
+		const result = WebhookResponse.gatherDTMF(gatherOptions);
+		expect(result).toEqual(gatherObject);
 	});
 });
