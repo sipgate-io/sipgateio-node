@@ -2,7 +2,7 @@ import {
 	CallEvent,
 	GatherObject,
 	GatherOptions,
-	HangupObject,
+	HangUpObject,
 	PlayObject,
 	PlayOptions,
 	RedirectObject,
@@ -72,7 +72,7 @@ const createWebhookServer = async (
 					onAnswer: handler => {
 						handlers.set(EventType.ANSWER, handler);
 					},
-					onHangup: handler => {
+					onHangUp: handler => {
 						handlers.set(EventType.HANGUP, handler);
 					},
 					onData: handler => {
@@ -162,7 +162,7 @@ export const WebhookResponse: WebhookResponseInterface = {
 		}
 		return gatherObject;
 	},
-	hangupCall: (): HangupObject => {
+	hangUpCall: (): HangUpObject => {
 		return { Hangup: {} };
 	},
 	playAudio: (playOptions: PlayOptions): PlayObject => {

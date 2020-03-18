@@ -5,7 +5,7 @@ enum Direction {
 	OUT = 'out',
 }
 
-enum HangupCause {
+enum HangUpCause {
 	NORMAL_CLEARING = 'normalClearing',
 	BUSY = 'busy',
 	CANCEL = 'cancel',
@@ -49,13 +49,13 @@ export interface DataEvent extends Event {
 	dtmf: string; // Can begin with zero, so it has to be a string
 }
 
-export interface HangupEvent extends GenericCallEvent {
+export interface HangUpEvent extends GenericCallEvent {
 	event: EventType.HANGUP;
-	cause: HangupCause;
+	cause: HangUpCause;
 	answeringNumber: string;
 }
 
-export type CallEvent = NewCallEvent | AnswerEvent | HangupEvent | DataEvent;
+export type CallEvent = NewCallEvent | AnswerEvent | HangUpEvent | DataEvent;
 
 export type RedirectOptions = {
 	numbers: string[];
@@ -99,7 +99,7 @@ export type RejectObject = {
 	Reject: { _attributes: { reason?: string } };
 };
 
-export type HangupObject = {
+export type HangUpObject = {
 	Hangup: {};
 };
 
@@ -112,5 +112,5 @@ export type ResponseObject =
 	| VoicemailObject
 	| PlayObject
 	| GatherObject
-	| HangupObject
+	| HangUpObject
 	| RejectObject;

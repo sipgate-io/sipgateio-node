@@ -91,13 +91,13 @@ describe('create webhook module', () => {
 		server.stop();
 	});
 
-	it('should subscribe to onHangupEvent without throwing an exception', async () => {
+	it('should subscribe to onHangUpEvent without throwing an exception', async () => {
 		const server = await webhookModule.createServer({
 			port: SERVER_PORT,
 			serverAddress: SERVER_ADDRESS,
 		});
 		expect(() => {
-			server.onHangup(() => {});
+			server.onHangUp(() => {});
 		}).not.toThrow();
 		server.stop();
 	});

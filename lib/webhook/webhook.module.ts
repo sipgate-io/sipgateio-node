@@ -3,8 +3,8 @@ import {
 	DataEvent,
 	GatherObject,
 	GatherOptions,
-	HangupEvent,
-	HangupObject,
+	HangUpEvent,
+	HangUpObject,
 	NewCallEvent,
 	PlayObject,
 	PlayOptions,
@@ -21,7 +21,7 @@ export type HandlerCallback<T, U> = (event: T) => U;
 export interface WebhookServer {
 	onNewCall: (fn: HandlerCallback<NewCallEvent, ResponseObject | void>) => void;
 	onAnswer: (fn: HandlerCallback<AnswerEvent, void>) => void;
-	onHangup: (fn: HandlerCallback<HangupEvent, void>) => void;
+	onHangUp: (fn: HandlerCallback<HangUpEvent, void>) => void;
 	onData: (fn: HandlerCallback<DataEvent, ResponseObject | void>) => void;
 	stop: () => void;
 }
@@ -48,7 +48,7 @@ export interface WebhookResponseInterface {
 	gatherDTMF: (gatherOptions: GatherOptions) => GatherObject;
 	playAudio: (playOptions: PlayOptions) => PlayObject;
 	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
-	hangupCall: () => HangupObject;
+	hangUpCall: () => HangUpObject;
 	sendToVoicemail: () => VoicemailObject;
 }
 
