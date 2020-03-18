@@ -22,7 +22,7 @@ export interface WebhookServer {
 	onNewCall: (fn: HandlerCallback<NewCallEvent, ResponseObject | void>) => void;
 	onAnswer: (fn: HandlerCallback<AnswerEvent, void>) => void;
 	onHangup: (fn: HandlerCallback<HangupEvent, void>) => void;
-	onData: (fn: HandlerCallback<DataEvent, void>) => void;
+	onData: (fn: HandlerCallback<DataEvent, ResponseObject | void>) => void;
 	stop: () => void;
 }
 
