@@ -288,49 +288,111 @@ The `deviceId` is needed for billing and determines the number which will be dis
 The Webhook API provides processing of real-time call data.  
 A webhook is a POST request that sipgate.io makes to a predefined URL when a certain event occurs. These requests contain information about the event that occurred in application/x-www-form-urlencoded format.
 
-The following types of events can trigger webhooks:
-
-| Event Type | Description                             |
-| ---------- | --------------------------------------- |
-| newCall    | signals that a new call is ringing      |
-| answer     | signals that the call has been answered |
-| hangup     | signals that the call has been hung up  |
-| dtmf       | signals dtmf tones sent in the call     |
-
 The webhook module provides a simple means to set up a server for handling these webhooks.
 
-For any of the event types listed above, a callback function can be registered to be called upon receiving the respective webhook. Additionally, for the types `newCall` and `dtmf` commands can be returned to sipgate.io to control how it shall deal with future call data or to trigger actions like hanging up or redirecting calls.
+The following types of events can trigger webhooks:
 
-For generating those commands our library provides a convenient [response builder](#webhookresponse-builder).
+| EventType | Description                             |
+| --------- | --------------------------------------- |
+| NEW_CALL  | signals that a new call is ringing      |
+| ANSWER    | signals that the call has been answered |
+| HANGUP    | signals that the call has been hung up  |
+| DATA      | signals dtmf tones sent in the call     |
 
-#### Structure
+For any of those events, a callback function can be registered to be called upon receiving the respective webhook.
+
+Additionally, for the types `NEW_CALL` and `DATA` a response may be returned containing commands to trigger actions like hanging up or redirecting calls.
+
+For generating that response our library provides a convenient [response builder](#webhookresponse-builder).
+
+#### Usage
+
+To begin, instantiate the webhook module by calling `createWebhookModule`. The resulting object provides only one method, `createServer` which takes a configuration object of type `ServerOptions` containing a port number, server address, and an optional hostname (default: `localhost`). It returns a `Promise<WebhookServer>` which, when started, provides the following methods:
 
 ```typescript
-interface WebhookModule {
-	createServer: (serverOptions: ServerOptions) => Promise<WebhookServer>;
-}
-
-type HandlerCallback<T, U> = (event: T) => U;
-
 interface WebhookServer {
-	onNewCall: (fn: HandlerCallback<NewCallEvent, string>) => void;
+	onNewCall: (fn: HandlerCallback<NewCallEvent, ResponseObject | void>) => void;
 	onAnswer: (fn: HandlerCallback<AnswerEvent, void>) => void;
 	onHangup: (fn: HandlerCallback<HangupEvent, void>) => void;
-	onData: (fn: HandlerCallback<DataEvent, void>) => void;
+	onData: (fn: HandlerCallback<DataEvent, ResponseObject | void>) => void;
 	stop: () => void;
 }
 ```
 
-#### Usage
+The `stop` method simply kills the server, the other methods each take a callback function for handling the respective types of events suggested by their name.
 
-To begin, instantiate the webhook module by calling `createWebhookModule`. The resulting object provides only one method, `createServer` which takes a configuration object of type `ServerOptions` containing a port number, server address, and an optional hostname (default: `localhost`). It returns a `Promise<WebhookServer>` which, when ready, in turn provides the following methods:
+#### Registering event callbacks
 
-#### Creating the webhook server
+Each of the four callback registration methods takes a single callback function that accepts a webhook object of the respective type (i.e. `NewCallEvent`, `AnswerEvent`, `HangupEvent`, or `DataEvent`). In the case of `onNewCall` and `onData` the provided function may return a `ResponseObject` (details [below](#webhookresponse-builder))
 
-By passing a `port` to the `createServer` method, you receive a `Promise<WebhookServer>`.
-After the server has been instantiated, you can subscribe to various `Events` (`NewCallEvent`,`AnswerEvent`,`HangupEvent`,`DataEvent`) which are described below.
+Within the callback function the following fields are accessible:
 
-### WebhookResponse Builder
+##### All event types
+
+In all callback functions there is a common subset of available fields:
+
+```typescript
+interface GenericCallEvent extends Event {
+	direction: Direction;
+	from: string;
+	to: string;
+	xcid: string;
+}
+```
+
+##### onNewCall
+
+In addition the `NewCallEvent` type offers the following fields:
+
+```typescript
+export interface NewCallEvent extends GenericCallEvent {
+	event: EventType.NEW_CALL;
+	originalCallId: string;
+	user: string[];
+	userId: string[];
+	fullUserId: string[];
+}
+```
+
+##### onAnswer
+
+the `AnswerEvent` type offers the following fields:
+
+```typescript
+interface AnswerEvent extends GenericCallEvent {
+	event: EventType.ANSWER;
+	user: string;
+	userId: string;
+	fullUserId: string;
+	answeringNumber: string;
+	diversion?: string;
+}
+```
+
+##### onHangup
+
+the `HangupEvent` type offers the following fields:
+
+```typescript
+interface HangupEvent extends GenericCallEvent {
+	event: EventType.HANGUP;
+	cause: HangupCause;
+	answeringNumber: string;
+}
+```
+
+##### onData
+
+the `DataEvent` type offers the following fields:
+
+```typescript
+interface DataEvent extends Event {
+	event: EventType.DATA;
+	dtmf: string; // Can begin with zero, so it has to be a string
+}
+```
+
+### WebhookResponse builder
 
 You can use the provided XML-Builder to compose
 
@@ -343,7 +405,7 @@ You can use the provided XML-Builder to compose
 	sendToVoicemail: () => VoicemailObject;
 ```
 
-#### Rejecting Calls
+#### Rejecting calls
 
 You can reject a Call by passing one of the following Reasons:
 
@@ -359,12 +421,11 @@ return WebhookResponse.rejectCall({ reason: RejectReason.BUSY });
 #### Subscribing to _newCall_ events
 
 After creating the server, you can subscribe to newCall events by passing a callback function to the `onNewCall` method. This callback function will receive a `NewCallEvent` (described below) when called and expects a valid XML response to be returned.
-To receive any further `Events`, you can subscribe to them with the following XML:  
-**Keep in mind:** you have to replace `https://www.sipgate.de/` with your server URL
+To receive any further `Events`, you can subscribe to them with the following XML:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-	<Response onAnswer="https://www.sipgate.de/" onHangup="https://www.sipgate.de/">
+	<Response onAnswer="https://example.com/" onHangup="https://example.com/">
 </Response>
 ```
 
