@@ -103,6 +103,7 @@
 		"google-libphonenumber": "^3.2.6",
 		"jsdom": "15.2.1",
 		"json2csv": "^4.5.4",
-		"vcf": "^2.0.6"
+		"vcf": "^2.0.6",
+		"xml-js": "^1.6.11"
 	}
 }

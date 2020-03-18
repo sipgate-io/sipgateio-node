@@ -1,11 +1,11 @@
-import { EventType } from '../webhook.module';
+import { EventType, RejectReason } from '../webhook.module';
 
 enum Direction {
 	IN = 'in',
 	OUT = 'out',
 }
 
-enum HangupCause {
+enum HangUpCause {
 	NORMAL_CLEARING = 'normalClearing',
 	BUSY = 'busy',
 	CANCEL = 'cancel',
@@ -49,10 +49,68 @@ export interface DataEvent extends Event {
 	dtmf: string; // Can begin with zero, so it has to be a string
 }
 
-export interface HangupEvent extends GenericCallEvent {
+export interface HangUpEvent extends GenericCallEvent {
 	event: EventType.HANGUP;
-	cause: HangupCause;
+	cause: HangUpCause;
 	answeringNumber: string;
 }
 
-export type CallEvent = NewCallEvent | AnswerEvent | HangupEvent | DataEvent;
+export type CallEvent = NewCallEvent | AnswerEvent | HangUpEvent | DataEvent;
+
+export type RedirectOptions = {
+	numbers: string[];
+	anonymous?: boolean;
+	callerId?: string;
+};
+
+export type GatherOptions = {
+	announcement?: string;
+	maxDigits: number;
+	timeout: number;
+};
+
+export type PlayOptions = {
+	announcement: string;
+};
+
+export type RejectOptions = {
+	reason: RejectReason;
+};
+
+export type RedirectObject = {
+	Dial: {
+		_attributes: { callerId?: string; anonymous?: string };
+		Number: string[];
+	};
+};
+
+export type GatherObject = {
+	Gather: {
+		_attributes: { onData?: string; maxDigits?: string; timeout?: string };
+		Play?: { Url: string };
+	};
+};
+
+export type PlayObject = {
+	Play: { Url: string };
+};
+
+export type RejectObject = {
+	Reject: { _attributes: { reason?: string } };
+};
+
+export type HangUpObject = {
+	Hangup: {};
+};
+
+export type VoicemailObject = {
+	Dial: { Voicemail: {} };
+};
+
+export type ResponseObject =
+	| RedirectObject
+	| VoicemailObject
+	| PlayObject
+	| GatherObject
+	| HangUpObject
+	| RejectObject;
