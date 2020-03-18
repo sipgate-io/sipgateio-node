@@ -1,5 +1,7 @@
 import { WebhookModule, WebhookServer } from './webhook.module';
 import { WebhookResponse, createWebhookModule } from './webhook';
+import axios from 'axios';
+import querystring from 'querystring';
 
 describe('create webhook module', () => {
 	let webhookModule: WebhookModule;
@@ -126,5 +128,43 @@ describe('create webhook-"Response" module', () => {
 		};
 		const result = WebhookResponse.gatherDTMF(gatherOptions);
 		expect(result).toEqual(gatherObject);
+	});
+});
+
+describe('The webhook server', () => {
+	it('should generate a valid XML response without any actions', async () => {
+		const port = 9999;
+		const serverAddress = `localhost:${port}`;
+		const webhookModule = createWebhookModule();
+		const webhookServer = await webhookModule.createServer({
+			port,
+			serverAddress,
+		});
+		webhookServer.onNewCall(() => {});
+
+		const webhook = {
+			callId: '',
+			direction: 'in',
+			event: 'newCall',
+			from: '',
+			fullUserId: [],
+			originalCallId: '',
+			to: '',
+			user: [],
+			userId: [],
+			xcid: '',
+		};
+
+		const response = await axios.post(
+			`http://${serverAddress}`,
+			querystring.stringify(webhook),
+			{
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			}
+		);
+
+		expect(response.data).toEqual(
+			`<?xml version="1.0" encoding="utf-8"?>\n<Response onAnswer="${serverAddress}" onHangup="${serverAddress}"/>`
+		);
 	});
 });
