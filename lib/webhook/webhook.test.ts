@@ -163,6 +163,8 @@ describe('The webhook server', () => {
 			}
 		);
 
+		webhookServer.stop();
+
 		expect(response.data).toEqual(
 			`<?xml version="1.0" encoding="utf-8"?>\n<Response onAnswer="${serverAddress}" onHangup="${serverAddress}"/>`
 		);
