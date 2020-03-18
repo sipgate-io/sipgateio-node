@@ -49,16 +49,12 @@ const createWebhookServer = async (
 
 			const callbackResult = requestCallback(requestBody);
 
-			if (callbackResult) {
-				const responseObject = createResponseObject(
-					callbackResult,
-					serverOptions.serverAddress
-				);
-				const xmlResponse = createXmlResponse(responseObject);
-				res.end(xmlResponse);
-			}
-
-			res.end();
+			const responseObject = createResponseObject(
+				callbackResult,
+				serverOptions.serverAddress
+			);
+			const xmlResponse = createXmlResponse(responseObject);
+			res.end(xmlResponse);
 		};
 
 		const server = createServer(requestHandler).on('error', reject);
