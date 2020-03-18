@@ -313,7 +313,7 @@ To begin, instantiate the webhook module by calling `createWebhookModule`. The r
 interface WebhookServer {
 	onNewCall: (fn: HandlerCallback<NewCallEvent, ResponseObject | void>) => void;
 	onAnswer: (fn: HandlerCallback<AnswerEvent, void>) => void;
-	onHangup: (fn: HandlerCallback<HangupEvent, void>) => void;
+	onHangup: (fn: HandlerCallback<HangUpEvent, void>) => void;
 	onData: (fn: HandlerCallback<DataEvent, ResponseObject | void>) => void;
 	stop: () => void;
 }
@@ -323,7 +323,7 @@ The `stop` method simply kills the server, the other methods each take a callbac
 
 #### Registering event callbacks
 
-Each of the four callback registration methods takes a single callback function that accepts a webhook object of the respective type (i.e. `NewCallEvent`, `AnswerEvent`, `HangupEvent`, or `DataEvent`). In the case of `onNewCall` and `onData` the provided function may return a `ResponseObject` (details [below](#webhookresponse-builder))
+Each of the four callback registration methods takes a single callback function that accepts a webhook object of the respective type (i.e. `NewCallEvent`, `AnswerEvent`, `HangUpEvent`, or `DataEvent`). In the case of `onNewCall` and `onData` the provided function may return a `ResponseObject` (details [below](#webhookresponse-builder))
 
 Within the callback function the following fields are accessible:
 
@@ -332,7 +332,8 @@ Within the callback function the following fields are accessible:
 In all callback functions there is a common subset of available fields:
 
 ```typescript
-interface GenericCallEvent extends Event {
+interface GenericCallEvent {
+	callId: string;
 	direction: Direction;
 	from: string;
 	to: string;
@@ -345,7 +346,7 @@ interface GenericCallEvent extends Event {
 In addition the `NewCallEvent` type offers the following fields:
 
 ```typescript
-export interface NewCallEvent extends GenericCallEvent {
+interface NewCallEvent extends GenericCallEvent {
 	event: EventType.NEW_CALL;
 	originalCallId: string;
 	user: string[];
@@ -369,14 +370,14 @@ interface AnswerEvent extends GenericCallEvent {
 }
 ```
 
-##### onHangup
+##### onHangUp
 
-the `HangupEvent` type offers the following fields:
+the `HangUpEvent` type offers the following fields:
 
 ```typescript
-interface HangupEvent extends GenericCallEvent {
+interface HangUpEvent extends GenericCallEvent {
 	event: EventType.HANGUP;
-	cause: HangupCause;
+	cause: HangUpCause;
 	answeringNumber: string;
 }
 ```
@@ -392,236 +393,80 @@ interface DataEvent extends Event {
 }
 ```
 
-### WebhookResponse builder
+#### Sending a response
 
-You can use the provided XML-Builder to compose
+For composing an XML response from withing a callback function our library offers a convenient response builder:
 
-```tmp
+```typescript
+interface WebhookResponseInterface {
 	redirectCall: (redirectOptions: RedirectOptions) => RedirectObject;
-	gatherDTMF: (gatherOptions: GatherOptions) => GatherObject;
-	playAudio: (playOptions: PlayOptions) => PlayObject;
-	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
-	hangupCall: () => HangupObject;
 	sendToVoicemail: () => VoicemailObject;
+	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
+	playAudio: (playOptions: PlayOptions) => PlayObject;
+	gatherDTMF: (gatherOptions: GatherOptions) => GatherObject;
+	hangUpCall: () => HangUpObject;
+}
 ```
 
-#### Rejecting calls
+##### Redirecting calls
 
-You can reject a Call by passing one of the following Reasons:
+The `redirectCall` method accepts an options object of type `RedirectOptions` with the following fields:
+
+```typescript
+type RedirectOptions = {
+	numbers: string[];
+	anonymous?: boolean;
+	callerId?: string;
+};
+```
+
+##### Sending calls to voicemail
+
+The `sendToVoicemail` method accepts no further options.
+
+##### Rejecting calls
+
+The `rejectCall` method accepts an options object of type `RejectOptions` with a single field, the reason for rejecting the call. This reason may be one of the following:
 
 ```typescript
 enum RejectReason {
 	BUSY = 'busy',
 	REJECTED = 'rejected',
 }
-
-return WebhookResponse.rejectCall({ reason: RejectReason.BUSY });
 ```
 
-#### Subscribing to _newCall_ events
+##### Play audio
 
-After creating the server, you can subscribe to newCall events by passing a callback function to the `onNewCall` method. This callback function will receive a `NewCallEvent` (described below) when called and expects a valid XML response to be returned.
-To receive any further `Events`, you can subscribe to them with the following XML:
+The `playAudio` method accepts an options object of type `PlayOptions` with a single field, the URL to a sound file to be played.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-	<Response onAnswer="https://example.com/" onHangup="https://example.com/">
-</Response>
+**Note:** Currently the sound file needs to be a mono 16bit PCM WAV file with a sampling rate of 8kHz. You can use conversion tools like the open source audio editor Audacity to convert any sound file to the correct format.
+
+Linux users might want to use mpg123 to convert the file:
+
+```shell
+mpg123 --rate 8000 --mono -w output.wav input.mp3
 ```
+
+##### Gather DTMF tones
+
+The `gatherDTMF` method accepts an options object of type `GatherOptions` with the following fields:
 
 ```typescript
-enum Direction {
-	IN = 'in',
-	OUT = 'out',
-}
-
-interface NewCallEvent {
-	event: EventType;
-	callId: string;
-	direction: Direction;
-	from: string;
-	to: string;
-	xcid: string;
-	event: EventType.NEW_CALL;
-	originalCallId: string;
-	user: string[];
-	userId: string[];
-	fullUserId: string[];
-}
+type GatherOptions = {
+	announcement?: string;
+	maxDigits: number;
+	timeout: number;
+};
 ```
 
-#### Replying to _newCall_ events with valid XML
+`maxDigits` specifies to maximum number of DTMF tones to be gathered, the `timeout` is the period in milliseconds to wait for DTMF input from a caller before processing. Please note that the establishment of the call is delayed until this period has elapsed.
+By specifying a URL to a sound file as `announcement` an audio message can be played to inform callers what DTMF tones they should send.
 
-You can return different `XML-Responses` in your callback, which will be passed to the PUSH-API:
+**Note:** Please consider the above restrictions concerning the format of the announcement file.
 
-##### Redirecting a call:
+##### Hang up calls
 
-You can redirect the call to a specific phone number using the following XML:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Dial>
-        <Number>4915799912345</Number>
-    </Dial>
-</Response>
-```
-
-##### Sending a call to the voicemail:
-
-Redirecting a call to the voicemail can be achieved by using the following XML snippet:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Dial>
-        <Voicemail />
-    </Dial>
-</Response>
-```
-
-##### Supressing your phone number and redirecting the call
-
-The snippet mentioned below supresses your phone number and redirects you to a different number:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Dial anonymous="true">
-        <Number>4915799912345</Number>
-    </Dial>
-</Response>
-```
-
-##### Set custom callerId and redirect the call
-
-The custom `callerId` can be set to any validated number in your sipgate account:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Dial callerId="492111234567">
-        <Number>4915799912345</Number>
-    </Dial>
-</Response>
-```
-
-##### Playing a sound file
-
-**Please note:** Currently the sound file needs to be a mono 16bit PCM WAV file with a sampling rate of 8kHz. You can use conversion tools like the open source audio editor Audacity to convert any sound file to the correct format.
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Play>
-        <Url>http://example.com/example.wav</Url>
-    </Play>
-</Response>
-```
-
-##### Gathering DTMF sounds
-
-**Please note:** If you want to gather DTMF sounds, no future `onAnswer` and `onHangup` events will be pushed for the specific call.
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Gather onData="http://localhost:3000/dtmf" maxDigits="3" timeout="10000">
-        <Play>
-            <Url>https://example.com/example.wav</Url>
-        </Play>
-    </Gather>
-</Response>
-```
-
-##### Rejecting a call
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Reject />
-</Response>
-```
-
-##### Rejecting a call like you are busy
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Reject reason="busy"/>
-</Response>
-```
-
-##### Hangup calls
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Hangup />
-</Response>
-```
-
-#### Subscribing to _onAnswer_ events
-
-After creating the server, you can subscribe to onAnswer events by passing a callback function to the `.onAnswer` method. This callback function will receive a `AnswerEvent` (described below) when called and expects nothing to be returned.
-To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
-
-```typescript
-interface AnswerEvent {
-	callId: string;
-	direction: Direction;
-	from: string;
-	to: string;
-	xcid: string;
-	event: EventType.ANSWER;
-	user: string;
-	userId: string;
-	fullUserId: string;
-	answeringNumber: string;
-	diversion?: string;
-}
-```
-
-#### Subscribing to _data_ events
-
-After creating the server, you can subscribe to onData events by passing a callback function to the `.onData` method. This callback function will receive a `DataEvent` (described below) when called and expects nothing to be returned.
-To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
-
-```typescript
-interface DataEvent {
-	callId: string;
-	event: EventType.DATA;
-	dtmf: string;
-}
-```
-
-#### Subscribing to _hangup_ events
-
-After creating the server, you can subscribe to onHangup events by passing a callback function to the `.onHangup` method. This callback function will receive a `HangupEvent` (described below) when called and expects nothing to be returned.
-To receive this event you have to subscribe to them with the XML mentioned in [Subscribing to **newCall** Events](#subscribing-to-newcall-events)
-
-```typescript
-enum HangupCause {
-	NORMAL_CLEARING = 'normalClearing',
-	BUSY = 'busy',
-	CANCEL = 'cancel',
-	NO_ANSWER = 'noAnswer',
-	CONGESTION = 'congestion',
-	NOT_FOUND = 'notFound',
-	FORWARDED = 'forwarded',
-}
-
-interface HangupEvent {
-	callId: string;
-	direction: Direction;
-	from: string;
-	to: string;
-	xcid: string;
-	event: EventType.HANGUP;
-	cause: HangupCause;
-	answeringNumber: string;
-}
-```
+The `hangUpCall` method accepts no further options.
 
 ### Webhook Settings
 
