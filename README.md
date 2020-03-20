@@ -38,6 +38,10 @@ Send any PDF file as a fax to a single number.
 
 Initiate a call between two phones of your choice – no matter if inside your sipgate account or outside.
 
+### Webhook (node.js only)
+
+Set up a webserver to process real-time call data from sipgate.io.
+
 ### Webhook Settings
 
 Configure the webhook functionality of sipgate.io. Currently, you can set URLs and whitelist extensions for triggering webhooks as well as toggle the debug log.
