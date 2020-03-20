@@ -24,20 +24,6 @@ Or use a CDN like jsDelivr instead:
 
 ## Available Functionality
 
-For example a Text Message can be send with following code:
-
-```typescript
-import { sipgateIO, createSMSModule } from 'sipgateio';
-
-const client = sipgateIO({ username: 'username', password: 'password' });
-const sms = createSMSModule(client);
-sms.send({
-	from: '+4901570000000',
-	to: '+491579999999',
-	message: 'Lorem Ipsum',
-});
-```
-
 The following features are already implemented in the current version of this library:
 
 ### SMS
