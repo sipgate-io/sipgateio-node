@@ -8,8 +8,8 @@ import {
 } from './models/fax.model';
 import { FaxModule } from './fax.module';
 import { HttpClientModule, HttpError } from '../core/httpClient';
+import { handleCoreError } from '../core/errors/handleError';
 import { validatePdfFileContent } from './validators/validatePdfFileContent';
-import handleCoreError from '../core/errors/handleError';
 
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 	async send(faxObject: Fax): Promise<SendFaxSessionResponse> {

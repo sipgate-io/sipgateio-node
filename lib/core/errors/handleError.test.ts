@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { ErrorMessage } from './ErrorMessage';
-import handleCoreError from './handleError';
+import { handleCoreError } from './handleError';
 
 describe('handleCoreError', () => {
 	it('AuthenticationError', () => {

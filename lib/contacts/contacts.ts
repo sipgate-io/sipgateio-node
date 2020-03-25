@@ -10,8 +10,8 @@ import { HttpClientModule, HttpError } from '../core/httpClient';
 import { ImportCSVRequestDTO } from './models/contacts.model';
 import { Parser } from 'json2csv';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
+import { handleCoreError } from '../core/errors/handleError';
 import btoa from 'btoa';
-import handleCoreError from '../core/errors/handleError';
 
 export const createContactsModule = (
 	client: HttpClientModule

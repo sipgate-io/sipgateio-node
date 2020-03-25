@@ -14,8 +14,8 @@ import {
 	SmsSenderId,
 } from './models/sms.model';
 import { getAuthenticatedWebuser } from '../core/helpers/authorizationInfo';
+import { handleCoreError } from '../core/errors/handleError';
 import { validateSendAt } from './validators/validateSendAt';
-import handleCoreError from '../core/errors/handleError';
 
 export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 	async send(sms: ShortMessage, sendAt?: Date): Promise<void> {

@@ -6,8 +6,8 @@ import {
 import { CallModule } from './call.module';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
+import { handleCoreError } from '../core/errors/handleError';
 import { validateCallData } from './validators/validateCallData';
-import handleCoreError from '../core/errors/handleError';
 
 export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 	async initiate(

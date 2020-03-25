@@ -3,8 +3,8 @@ import { ExtensionType, validateExtension } from '../core/validator';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { WebhookSettings } from './models/webhook-settings.model';
 import { WebhookSettingsModule } from './webhookSettings.module';
+import { handleCoreError } from '../core/errors/handleError';
 import { validateWebhookUrl } from './validators/validateWebhookUrl';
-import handleCoreError from '../core/errors/handleError';
 
 const SETTINGS_ENDPOINT = 'settings/sipgateio';
 
