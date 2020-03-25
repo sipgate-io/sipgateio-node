@@ -1,7 +1,7 @@
 import { ErrorMessage } from './ErrorMessage';
 import { HttpError } from '../httpClient';
 
-export default (error: HttpError): Error => {
+export const handleCoreError = (error: HttpError): Error => {
 	if (error.response && error.response.status === 401) {
 		return new Error(ErrorMessage.HTTP_401);
 	}
