@@ -6,7 +6,7 @@ describe('sipgate-io module', () => {
 
 	beforeAll(() => {
 		const { JSDOM } = require('jsdom');
-		const io = fs.readFileSync('./bundle/sipgate-io.js');
+		const io = fs.readFileSync('./bundle/sipgate-io.min.js');
 		const html = `<!DOCTYPE html><script>${io}</script>`;
 		dom = new JSDOM(html, { runScripts: 'dangerously' });
 		bundle = dom.window.require('sipgate-io');
@@ -24,7 +24,7 @@ describe('sipgate-io client', () => {
 
 	beforeAll(() => {
 		const { JSDOM } = require('jsdom');
-		const io = fs.readFileSync('./bundle/sipgate-io.js');
+		const io = fs.readFileSync('./bundle/sipgate-io.min.js');
 		const html = `<!DOCTYPE html><script>${io}</script>`;
 		dom = new JSDOM(html, { runScripts: 'dangerously' });
 		bundle = dom.window.require('sipgate-io');

@@ -28,8 +28,8 @@ jobs:
           git config --local user.email ${{ secrets.SECRET_MAIL }}
           git config --local user.name "sipgateio-team"
           git checkout -b bundle/publish
-          git add --force bundle/sipgate-io.js
-          sed -i 's|https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@latest/bundle/sipgate-io.js|https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@${{ steps.get_version.outputs.VERSION }}/bundle/sipgate-io.js|g' README.md
+          git add --force bundle/sipgate-io.min.js
+          sed -i 's|https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@latest/bundle/sipgate-io.min.js|https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@${{ steps.get_version.outputs.VERSION }}/bundle/sipgate-io.min.js|g' README.md
           git add README.md
           git commit -m "publish: version ${{ steps.get_version.outputs.VERSION }}" --no-verify
           git tag ${{ steps.get_version.outputs.VERSION }} --force
@@ -37,7 +37,7 @@ jobs:
       - name: Create GitHub Release
         uses: fnkr/github-action-ghr@v1.2
         env:
-          GHR_PATH: bundle/sipgate-io.js
+          GHR_PATH: bundle/sipgate-io.min.js
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       - name: NPM Publish 
         uses: JS-DevTools/npm-publish@v1

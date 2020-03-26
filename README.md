@@ -1,4 +1,4 @@
-# sipgateio-node [![Build Status](https://travis-ci.com/sipgate-io/sipgateio-node.svg?branch=master)](https://travis-ci.com/sipgate-io/sipgateio-node)
+# sipgateio-node [![Build Status](https://travis-ci.com/sipgate-io/sipgateio-node.svg?branch=master)](https://travis-ci.com/sipgate-io/sipgateio-node) [![](https://data.jsdelivr.com/v1/package/gh/sipgate-io/sipgateio-node/badge)](https://www.jsdelivr.com/package/gh/sipgate-io/sipgateio-node)
 
 A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 
@@ -20,7 +20,7 @@ npm install sipgateio --save
 
 Alternatively, a bundled version can be obtained from the [github releases](https://github.com/sipgate-io/sipgateio-node/releases) page.  
 Or use a CDN like jsDelivr instead:  
-[https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@latest/bundle/sipgate-io.js](https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@latest/bundle/sipgate-io.js)
+[https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@latest/bundle/sipgate-io.min.js](https://cdn.jsdelivr.net/gh/sipgate-io/sipgateio-node@latest/bundle/sipgate-io.min.js)
 
 ## Available Functionality
 
