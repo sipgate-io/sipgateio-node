@@ -47,7 +47,7 @@
 	],
 	"husky": {
 		"hooks": {
-			"pre-commit": "./update_version.sh && prettier --write lib/version.json && npm run test:unit-staged && lint-staged"
+			"pre-commit": "./update_version.sh && npm run test:unit-staged && lint-staged"
 		}
 	},
 	"lint-staged": {
