@@ -99,7 +99,7 @@
 		"@types/json2csv": "^4.5.1",
 		"@types/vcf": "^2.0.1",
 		"atob": "^2.1.2",
-		"axios": "^0.19.0",
+		"axios": "^0.19.2",
 		"btoa": "^1.2.1",
 		"file-type": "^14.1.4",
 		"detect-browser": "^5.0.0",

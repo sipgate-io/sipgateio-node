@@ -19,6 +19,7 @@ describe('handleCoreError', () => {
 			message: 'test error message',
 			config: {},
 			response,
+			toJSON: () => Object,
 		};
 		expect(handleCoreError(error)).toEqual(new Error(ErrorMessage.HTTP_401));
 	});
@@ -39,6 +40,7 @@ describe('handleCoreError', () => {
 			message: 'test error message',
 			config: {},
 			response,
+			toJSON: () => Object,
 		};
 		expect(handleCoreError(error)).toEqual(new Error(ErrorMessage.HTTP_403));
 	});
@@ -59,6 +61,7 @@ describe('handleCoreError', () => {
 			message: '',
 			config: {},
 			response,
+			toJSON: () => Object,
 		};
 		expect(handleCoreError(error)).toEqual(new Error());
 	});
