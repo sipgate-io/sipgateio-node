@@ -2,8 +2,10 @@ import { ErrorMessage } from '../errors/ErrorMessage';
 import { ValidationResult } from '../../core/validator';
 import fileType from 'file-type';
 
-const validatePdfFileContent = (content: Buffer): ValidationResult => {
-	const fileTypeResult = fileType(content);
+const validatePdfFileContent = async (
+	content: Buffer
+): Promise<ValidationResult> => {
+	const fileTypeResult = await fileType.fromBuffer(content);
 
 	if (!fileTypeResult || fileTypeResult.mime !== 'application/pdf') {
 		return {

@@ -14,7 +14,9 @@ import { validatePdfFileContent } from './validators/validatePdfFileContent';
 export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 	async send(faxObject: Fax): Promise<SendFaxSessionResponse> {
 		const fax = faxObject;
-		const fileContentValidationResult = validatePdfFileContent(fax.fileContent);
+		const fileContentValidationResult = await validatePdfFileContent(
+			fax.fileContent
+		);
 
 		if (!fileContentValidationResult.isValid) {
 			throw new Error(fileContentValidationResult.cause);
@@ -33,8 +35,8 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 
 		return await client
 			.post<SendFaxSessionResponse>('/sessions/fax', faxDTO)
-			.then(response => response.data)
-			.catch(error => Promise.reject(handleError(error)));
+			.then((response) => response.data)
+			.catch((error) => Promise.reject(handleError(error)));
 	},
 	async getFaxStatus(sessionId: string): Promise<FaxStatus> {
 		return client
@@ -46,7 +48,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 
 				return data.faxStatusType;
 			})
-			.catch(error => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleError(error)));
 	},
 });
 
