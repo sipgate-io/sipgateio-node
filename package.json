@@ -6,6 +6,7 @@
 	"scripts": {
 		"lint": "eslint --fix ./lib/**/*.ts",
 		"format": "prettier --write **/**.ts",
+		"test:unit-staged": "git stash -k -u && npm run test:unit ; git stash pop",
 		"test:dev": "jest ./lib --env=node --watch",
 		"test:unit": "jest ./lib --env=node",
 		"test:integration": "npm run bundle && jest ./bundle --env=jsdom",
@@ -46,7 +47,7 @@
 	],
 	"husky": {
 		"hooks": {
-			"pre-commit": "./update_version.sh && npm run test:unit && lint-staged"
+			"pre-commit": "./update_version.sh && prettier --write lib/version.json && npm run test:unit-staged && lint-staged"
 		}
 	},
 	"lint-staged": {
