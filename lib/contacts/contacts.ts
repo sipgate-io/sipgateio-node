@@ -25,7 +25,7 @@ export const createContactsModule = (
 
 		await client
 			.post('/contacts/import/csv', contactsDTO)
-			.catch(error => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleError(error)));
 	},
 
 	async import(contact, scope): Promise<void> {
@@ -54,7 +54,7 @@ export const createContactsModule = (
 		};
 		await client
 			.post('/contacts', contactsDTO)
-			.catch(error => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleError(error)));
 	},
 
 	async importVCardString(vCardContent: string, scope): Promise<void> {
@@ -90,14 +90,14 @@ export const createContactsModule = (
 		};
 		await client
 			.post('/contacts', contactsDTO)
-			.catch(error => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleError(error)));
 	},
 
 	async exportAsCsv(scope, delimiter = ','): Promise<string> {
 		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
 
 		contactsRequest.data.items = contactsRequest.data.items.filter(
-			contact => contact.scope === scope
+			(contact) => contact.scope === scope
 		);
 
 		const fields = [
@@ -109,12 +109,12 @@ export const createContactsModule = (
 			'organizations',
 		];
 		const opts = { fields, delimiter };
-		const elements = contactsRequest.data.items.map(contact => {
+		const elements = contactsRequest.data.items.map((contact) => {
 			return {
 				id: contact.id,
 				name: contact.name,
-				emails: contact.emails.map(email => email.email),
-				numbers: contact.numbers.map(number => number.number),
+				emails: contact.emails.map((email) => email.email),
+				numbers: contact.numbers.map((number) => number.number),
 				addresses: contact.addresses,
 				organizations: contact.organization,
 			};
@@ -129,7 +129,7 @@ export const createContactsModule = (
 	async exportAsObjects(scope): Promise<ContactRequest[]> {
 		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
 		contactsRequest.data.items = contactsRequest.data.items.filter(
-			contact => contact.scope === scope
+			(contact) => contact.scope === scope
 		);
 		return contactsRequest.data.items;
 	},
@@ -142,24 +142,26 @@ export const createContactsModule = (
 		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
 
 		contactsRequest.data.items = contactsRequest.data.items.filter(
-			contact => contact.scope === scope
+			(contact) => contact.scope === scope
 		);
 
-		const contacts = contactsRequest.data.items.map<ContactImport>(contact => {
-			return {
-				firstname: contact.name,
-				lastname: '',
-				organizations: contact.organization,
-				phoneNumbers: contact.numbers,
-				emails: contact.emails,
-				addresses: contact.addresses.map(address => {
-					return {
-						...address,
-						type: ['home'],
-					};
-				}),
-			};
-		});
+		const contacts = contactsRequest.data.items.map<ContactImport>(
+			(contact) => {
+				return {
+					firstname: contact.name,
+					lastname: '',
+					organizations: contact.organization,
+					phoneNumbers: contact.numbers,
+					emails: contact.emails,
+					addresses: contact.addresses.map((address) => {
+						return {
+							...address,
+							type: ['home'],
+						};
+					}),
+				};
+			}
+		);
 
 		return createVCards(contacts);
 	},
@@ -176,7 +178,7 @@ const findColumnIndex = (array: string[], needle: string): number => {
 const projectCsvString = (csvString: string): string => {
 	const csvLines: string[] = csvString
 		.split(/\n|\r\n/)
-		.filter(line => line !== '');
+		.filter((line) => line !== '');
 
 	if (csvLines.length < 1) {
 		throw new Error(ErrorMessage.CONTACTS_INVALID_CSV);
@@ -188,7 +190,7 @@ const projectCsvString = (csvString: string): string => {
 
 	const csvHeader: string[] = csvLines[0]
 		.split(',')
-		.map(header => header.toLowerCase());
+		.map((header) => header.toLowerCase());
 	const columnIndices = {
 		firstname: findColumnIndex(csvHeader, 'firstname'),
 		lastname: findColumnIndex(csvHeader, 'lastname'),
@@ -198,7 +200,7 @@ const projectCsvString = (csvString: string): string => {
 	csvLines.shift();
 
 	const lines = csvLines
-		.map(lines => lines.split(','))
+		.map((lines) => lines.split(','))
 		.map((columns, index) => {
 			if (columns.length !== csvHeader.length) {
 				throw Error(ErrorMessage.CONTACTS_MISSING_VALUES);

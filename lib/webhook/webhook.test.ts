@@ -21,7 +21,7 @@ describe('create webhook module', () => {
 				serverAddress: SERVER_ADDRESS,
 			}))
 		).resolves.not.toThrow();
-		server.then(server => server.stop());
+		server.then((server) => server.stop());
 	});
 
 	it('should expect exception when starting on same port', async () => {
@@ -54,8 +54,8 @@ describe('create webhook module', () => {
 				serverAddress: SERVER_ADDRESS,
 			}))
 		).resolves.not.toThrow();
-		serverOne.then(server => server.stop());
-		serverTwo.then(server => server.stop());
+		serverOne.then((server) => server.stop());
+		serverTwo.then((server) => server.stop());
 	});
 
 	it('should subscribe to newCallEvent without throwing an exception', async () => {
@@ -64,6 +64,7 @@ describe('create webhook module', () => {
 			serverAddress: SERVER_ADDRESS,
 		});
 		expect(() => {
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			server.onNewCall(() => {});
 		}).not.toThrow();
 		server.stop();
@@ -75,6 +76,7 @@ describe('create webhook module', () => {
 			serverAddress: SERVER_ADDRESS,
 		});
 		expect(() => {
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			server.onAnswer(() => {});
 		}).not.toThrow();
 		server.stop();
@@ -86,6 +88,7 @@ describe('create webhook module', () => {
 			serverAddress: SERVER_ADDRESS,
 		});
 		expect(() => {
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			server.onData(() => {});
 		}).not.toThrow();
 		server.stop();
@@ -97,6 +100,7 @@ describe('create webhook module', () => {
 			serverAddress: SERVER_ADDRESS,
 		});
 		expect(() => {
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			server.onHangUp(() => {});
 		}).not.toThrow();
 		server.stop();
@@ -140,6 +144,7 @@ describe('The webhook server', () => {
 			port,
 			serverAddress,
 		});
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		webhookServer.onNewCall(() => {});
 
 		const webhook = {

@@ -20,7 +20,7 @@ describe('SMS Module', () => {
 	it('sends  a sms by using a validated phone number', async () => {
 		const smsModule = createSMSModule(mockClient);
 
-		mockClient.get = jest.fn().mockImplementation(args => {
+		mockClient.get = jest.fn().mockImplementation((args) => {
 			if (args === 'authorization/userinfo') {
 				return Promise.resolve({
 					data: {
@@ -73,7 +73,7 @@ describe('SMS Module', () => {
 			.fn()
 			.mockImplementationOnce(() => Promise.resolve({ data: {} }));
 
-		mockClient.put = jest.fn().mockImplementation(args => {
+		mockClient.put = jest.fn().mockImplementation((args) => {
 			if (
 				args === 'w999/sms/s999/callerids/123456' ||
 				args === 'w999/sms/s999/callerids/0'

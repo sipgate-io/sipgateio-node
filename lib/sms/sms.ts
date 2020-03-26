@@ -42,12 +42,9 @@ export const sendSms = async (
 	client: HttpClientModule,
 	smsDTO: ShortMessageDTO
 ): Promise<void> => {
-	return client
-		.post('/sessions/sms', smsDTO)
-		.then(() => {})
-		.catch(error => {
-			return Promise.reject(handleError(error));
-		});
+	await client.post('/sessions/sms', smsDTO).catch((error) => {
+		throw handleError(error);
+	});
 };
 
 export const getUserSmsExtension = async (
@@ -56,8 +53,8 @@ export const getUserSmsExtension = async (
 ): Promise<string> => {
 	return client
 		.get<SmsExtensions>(`${webuserId}/sms`)
-		.then(value => value.data.items[0].id)
-		.catch(error => Promise.reject(handleError(error)));
+		.then((value) => value.data.items[0].id)
+		.catch((error) => Promise.reject(handleError(error)));
 };
 
 export const getSmsCallerIds = async (
@@ -67,8 +64,8 @@ export const getSmsCallerIds = async (
 ): Promise<SmsSenderId[]> => {
 	return client
 		.get<SmsCallerIds>(`${webuserExtension}/sms/${smsExtension}/callerids`)
-		.then(value => value.data.items)
-		.catch(error => Promise.reject(handleError(error)));
+		.then((value) => value.data.items)
+		.catch((error) => Promise.reject(handleError(error)));
 };
 
 export const setDefaultSenderId = async (
@@ -77,13 +74,12 @@ export const setDefaultSenderId = async (
 	smsId: string,
 	senderId: SmsSenderId
 ): Promise<void> => {
-	return client
+	await client
 		.put(`${webuserExtension}/sms/${smsId}/callerids/${senderId.id}`, {
 			defaultNumber: 'true',
 		})
-		.then(() => {})
-		.catch(error => {
-			return Promise.reject(handleError(error));
+		.catch((error) => {
+			throw handleError(error);
 		});
 };
 
@@ -92,7 +88,7 @@ export const containsPhoneNumber = (
 	phoneNumber: string
 ): boolean => {
 	const foundCallerId = smsCallerIds.find(
-		smsCallerId => smsCallerId.phonenumber === phoneNumber
+		(smsCallerId) => smsCallerId.phonenumber === phoneNumber
 	);
 	return foundCallerId ? foundCallerId.verified : false;
 };
@@ -113,7 +109,8 @@ async function sendSmsByPhoneNumber(
 	const smsExtension = await getUserSmsExtension(client, webuserId);
 	const senderIds = await getSmsCallerIds(client, webuserId, smsExtension);
 	const senderId = senderIds.find(
-		value => value.phonenumber === ('from' in sms ? sms.from : sms.phoneNumber)
+		(value) =>
+			value.phonenumber === ('from' in sms ? sms.from : sms.phoneNumber)
 	);
 	if (senderId === undefined) {
 		throw new Error(ErrorMessage.SMS_NUMBER_NOT_REGISTERED);
@@ -121,7 +118,7 @@ async function sendSmsByPhoneNumber(
 	if (!senderId.verified) {
 		throw new Error(ErrorMessage.SMS_NUMBER_NOT_VERIFIED);
 	}
-	const defaultSmsId = senderIds.find(value => value.defaultNumber);
+	const defaultSmsId = senderIds.find((value) => value.defaultNumber);
 	if (defaultSmsId === undefined) {
 		throw new Error(ErrorMessage.SMS_NO_DEFAULT_SENDER_ID);
 	}
@@ -132,7 +129,7 @@ async function sendSmsByPhoneNumber(
 			async () =>
 				await setDefaultSenderId(client, webuserId, smsExtension, defaultSmsId)
 		)
-		.catch(error => {
+		.catch((error) => {
 			return Promise.reject(handleError(error));
 		});
 }
@@ -163,9 +160,7 @@ async function sendSmsBySmsId(
 	if (sms.message === '') {
 		throw new Error(ErrorMessage.SMS_INVALID_MESSAGE);
 	}
-	return await sendSms(client, smsDTO)
-		.then(() => {})
-		.catch(error => {
-			return Promise.reject(handleError(error));
-		});
+	return await sendSms(client, smsDTO).catch((error) => {
+		throw handleError(error);
+	});
 }

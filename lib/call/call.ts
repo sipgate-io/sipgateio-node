@@ -25,8 +25,8 @@ export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 		};
 		return httpClient
 			.post<InitiateNewCallSessionResponse>('/sessions/calls', callDTO)
-			.then(response => response.data)
-			.catch(error => Promise.reject(handleError(error)));
+			.then((response) => response.data)
+			.catch((error) => Promise.reject(handleError(error)));
 	},
 });
 

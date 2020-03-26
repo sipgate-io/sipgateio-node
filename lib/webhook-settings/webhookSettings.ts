@@ -20,7 +20,7 @@ export const createSettingsModule = (
 
 		await modifyWebhookSettings(
 			client,
-			settings => (settings.incomingUrl = url)
+			(settings) => (settings.incomingUrl = url)
 		);
 	},
 
@@ -32,7 +32,7 @@ export const createSettingsModule = (
 
 		await modifyWebhookSettings(
 			client,
-			settings => (settings.outgoingUrl = url)
+			(settings) => (settings.outgoingUrl = url)
 		);
 	},
 
@@ -41,36 +41,39 @@ export const createSettingsModule = (
 
 		await modifyWebhookSettings(
 			client,
-			settings => (settings.whitelist = extensions)
+			(settings) => (settings.whitelist = extensions)
 		);
 	},
 
 	async setLog(value): Promise<void> {
-		await modifyWebhookSettings(client, settings => (settings.log = value));
+		await modifyWebhookSettings(client, (settings) => (settings.log = value));
 	},
 
 	async clearIncomingUrl(): Promise<void> {
 		await modifyWebhookSettings(
 			client,
-			settings => (settings.incomingUrl = '')
+			(settings) => (settings.incomingUrl = '')
 		);
 	},
 
 	async clearOutgoingUrl(): Promise<void> {
 		await modifyWebhookSettings(
 			client,
-			settings => (settings.outgoingUrl = '')
+			(settings) => (settings.outgoingUrl = '')
 		);
 	},
 
 	async clearWhitelist(): Promise<void> {
-		await modifyWebhookSettings(client, settings => (settings.whitelist = []));
+		await modifyWebhookSettings(
+			client,
+			(settings) => (settings.whitelist = [])
+		);
 	},
 
 	async disableWhitelist(): Promise<void> {
 		await modifyWebhookSettings(
 			client,
-			settings => (settings.whitelist = null)
+			(settings) => (settings.whitelist = null)
 		);
 	},
 });
@@ -80,8 +83,8 @@ const getWebhookSettings = async (
 ): Promise<WebhookSettings> => {
 	return client
 		.get(SETTINGS_ENDPOINT)
-		.then(res => res.data)
-		.catch(error => handleError(error));
+		.then((res) => res.data)
+		.catch((error) => handleError(error));
 };
 
 const modifyWebhookSettings = async (
@@ -89,15 +92,15 @@ const modifyWebhookSettings = async (
 	fn: (s: WebhookSettings) => void
 ): Promise<void> => {
 	await getWebhookSettings(client)
-		.then(settings => {
+		.then((settings) => {
 			fn(settings);
 			return client.put(SETTINGS_ENDPOINT, settings);
 		})
-		.catch(error => handleError(error));
+		.catch((error) => handleError(error));
 };
 
 const validateWhitelistExtensions = (extensions: string[]): void => {
-	extensions.forEach(extension => {
+	extensions.forEach((extension) => {
 		const validationResult = validateExtension(extension, [
 			ExtensionType.PERSON,
 			ExtensionType.GROUP,

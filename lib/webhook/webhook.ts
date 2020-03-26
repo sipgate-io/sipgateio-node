@@ -30,6 +30,7 @@ export const createWebhookModule = (): WebhookModule => ({
 const createWebhookServer = async (
 	serverOptions: ServerOptions
 ): Promise<WebhookServer> => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handlers = new Map<EventType, (event: any) => any>();
 	return new Promise((resolve, reject) => {
 		const requestHandler = async (
@@ -66,16 +67,16 @@ const createWebhookServer = async (
 			},
 			() => {
 				resolve({
-					onNewCall: handler => {
+					onNewCall: (handler) => {
 						handlers.set(EventType.NEW_CALL, handler);
 					},
-					onAnswer: handler => {
+					onAnswer: (handler) => {
 						handlers.set(EventType.ANSWER, handler);
 					},
-					onHangUp: handler => {
+					onHangUp: (handler) => {
 						handlers.set(EventType.HANGUP, handler);
 					},
-					onData: handler => {
+					onData: (handler) => {
 						handlers.set(EventType.DATA, handler);
 					},
 					stop: () => {
@@ -101,7 +102,7 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 		}
 
 		let body = '';
-		request.on('data', chunk => {
+		request.on('data', (chunk) => {
 			body += chunk.toString();
 		});
 		request.on('end', () => {
@@ -113,6 +114,7 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 const createResponseObject = (
 	responseObject: ResponseObject,
 	serverAddress: string
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Record<string, any> => {
 	if (responseObject && isGatherObject(responseObject)) {
 		responseObject.Gather._attributes['onData'] = serverAddress;
@@ -130,6 +132,7 @@ const createResponseObject = (
 	};
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createXmlResponse = (responseObject: Record<string, any>): string => {
 	const options = {
 		compact: true,

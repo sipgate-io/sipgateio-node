@@ -321,7 +321,7 @@ describe('Export Contacts as CSV', () => {
 	beforeEach(() => {
 		mockClient = {} as HttpClientModule;
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		mockClient.get = jest.fn().mockImplementationOnce(_ => {
+		mockClient.get = jest.fn().mockImplementationOnce((_) => {
 			return Promise.resolve({
 				data: {
 					items: [],
