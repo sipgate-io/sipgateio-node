@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/ban-ts-ignore: 0 */
 import { ErrorMessage } from './errors/ErrorMessage';
 import { FaxDTO } from './models/fax.model';
 import { HttpClientModule } from '../core/httpClient';

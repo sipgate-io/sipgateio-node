@@ -1,4 +1,4 @@
 module.exports = {
-  preset: 'ts-jest',
-  roots: ["./"]
+	preset: 'ts-jest',
+	roots: ['./'],
 };

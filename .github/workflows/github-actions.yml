@@ -2,7 +2,8 @@ name: Build and Release
 
 on:
   push:
-    tags: v*
+    tags:
+      - v*
 
 jobs:
   build:
@@ -13,7 +14,7 @@ jobs:
       - name: Install Node-Version 12
         uses: actions/setup-node@v1
         with:
-          node-version: "12"
+          node-version: '12'
       - name: Run npm install, bundle and test
         run: |
           npm install
