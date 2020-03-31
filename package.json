@@ -64,9 +64,7 @@
 	"devDependencies": {
 		"@types/atob": "^2.1.2",
 		"@types/btoa": "^1.2.3",
-		"@types/detect-browser": "^4.0.0",
 		"@types/jest": "^25.1.4",
-		"@types/nock": "^11.1.0",
 		"@typescript-eslint/eslint-plugin": "^2.25.0",
 		"@typescript-eslint/parser": "^2.25.0",
 		"axios-mock-adapter": "^1.18.1",
