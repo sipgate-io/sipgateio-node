@@ -15,6 +15,7 @@ import {
 	ResponseObject,
 	VoicemailObject,
 } from './models/webhook.model';
+import { Server } from 'http';
 
 export type HandlerCallback<T, U> = (event: T) => U;
 
@@ -24,6 +25,7 @@ export interface WebhookServer {
 	onHangUp: (fn: HandlerCallback<HangUpEvent, void>) => void;
 	onData: (fn: HandlerCallback<DataEvent, ResponseObject | void>) => void;
 	stop: () => void;
+	getHttpServer: () => Server;
 }
 
 export interface ServerOptions {

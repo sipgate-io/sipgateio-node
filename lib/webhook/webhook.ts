@@ -84,6 +84,7 @@ const createWebhookServer = async (
 							server.close();
 						}
 					},
+					getHttpServer: () => server,
 				});
 			}
 		);
