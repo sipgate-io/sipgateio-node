@@ -54,6 +54,16 @@ const createWebhookServer = async (
 				callbackResult,
 				serverOptions.serverAddress
 			);
+
+			if (handlers.has(EventType.HANGUP)) {
+				responseObject.Response['_attributes'].onHangUp =
+					serverOptions.serverAddress;
+			}
+
+			if (handlers.has(EventType.ANSWER)) {
+				responseObject.Response['_attributes'].onAnswer =
+					serverOptions.serverAddress;
+			}
 			const xmlResponse = createXmlResponse(responseObject);
 			res.end(xmlResponse);
 		};
@@ -120,14 +130,10 @@ const createResponseObject = (
 	if (responseObject && isGatherObject(responseObject)) {
 		responseObject.Gather._attributes['onData'] = serverAddress;
 	}
-
 	return {
 		_declaration: { _attributes: { version: '1.0', encoding: 'utf-8' } },
 		Response: {
-			_attributes: {
-				onAnswer: serverAddress,
-				onHangup: serverAddress,
-			},
+			_attributes: {},
 			...responseObject,
 		},
 	};
