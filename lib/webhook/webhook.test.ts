@@ -136,83 +136,99 @@ describe('create webhook-"Response" module', () => {
 });
 
 describe('The webhook server', () => {
-	it('should generate a valid XML response with no handlers for answer or hangup event', async () => {
-		const port = 9999;
-		const serverAddress = `localhost:${port}`;
-		const webhookModule = createWebhookModule();
-		const webhookServer = await webhookModule.createServer({
-			port,
-			serverAddress,
-		});
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
+	const webhookModule = createWebhookModule();
+	let webhookServer: WebhookServer;
 
-		const webhook = {
-			callId: '',
-			direction: 'in',
-			event: 'newCall',
-			from: '',
-			fullUserId: [],
-			originalCallId: '',
-			to: '',
-			user: [],
-			userId: [],
-			xcid: '',
-		};
+	const port = 9999;
+	const serverAddress = `localhost:9999`;
 
-		const response = await axios.post(
+	const newCallWebhook = {
+		callId: '',
+		direction: 'in',
+		event: 'newCall',
+		from: '',
+		fullUserId: [],
+		originalCallId: '',
+		to: '',
+		user: [],
+		userId: [],
+		xcid: '',
+	};
+
+	const sendTestWebhook = async () => {
+		return await axios.post(
 			`http://${serverAddress}`,
-			querystring.stringify(webhook),
+			querystring.stringify(newCallWebhook),
 			{
 				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 			}
 		);
+	};
 
+	beforeEach(async () => {
+		webhookServer = await webhookModule.createServer({
+			port,
+			serverAddress,
+		});
+	});
+
+	afterEach(() => {
 		webhookServer.stop();
+	});
+
+	it('should generate a valid XML response with no handlers for answer or hangup event', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onNewCall(() => {});
+
+		const response = await sendTestWebhook();
 
 		expect(response.data).toEqual(
 			`<?xml version="1.0" encoding="utf-8"?>\n<Response/>`
 		);
 	});
 
-	/*it('should generate a valid XML response with answer event', async () => {
-		const port = 9999;
-		const serverAddress = `localhost:${port}`;
-		const webhookModule = createWebhookModule();
-		const webhookServer = await webhookModule.createServer({
-			port,
-			serverAddress,
-		});
+	it('should generate a valid XML response with answer event', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {
-		});
+		webhookServer.onNewCall(() => {});
 
-		const webhook = {
-			callId: '',
-			direction: 'in',
-			event: 'newCall',
-			from: '',
-			fullUserId: [],
-			originalCallId: '',
-			to: '',
-			user: [],
-			userId: [],
-			xcid: '',
-		};
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onAnswer(() => {});
 
-		const response = await axios.post(
-			`http://${serverAddress}`,
-			querystring.stringify(webhook),
-			{
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			}
+		const response = await sendTestWebhook();
+
+		expect(response.data).toEqual(
+			`<?xml version="1.0" encoding="utf-8"?>\n<Response onAnswer="${serverAddress}"/>`
 		);
+	});
 
-		webhookServer.stop();
+	it('should generate a valid XML response with hangup event', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onNewCall(() => {});
+
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onHangUp(() => {});
+
+		const response = await sendTestWebhook();
+
+		expect(response.data).toEqual(
+			`<?xml version="1.0" encoding="utf-8"?>\n<Response onHangup="${serverAddress}"/>`
+		);
+	});
+
+	it('should generate a valid XML response with answer and hangup event', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onNewCall(() => {});
+
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onAnswer(() => {});
+
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onHangUp(() => {});
+
+		const response = await sendTestWebhook();
 
 		expect(response.data).toEqual(
 			`<?xml version="1.0" encoding="utf-8"?>\n<Response onAnswer="${serverAddress}" onHangup="${serverAddress}"/>`
 		);
 	});
-	*/
 });
