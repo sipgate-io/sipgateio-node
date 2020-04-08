@@ -55,15 +55,16 @@ const createWebhookServer = async (
 				serverOptions.serverAddress
 			);
 
-			if (handlers.has(EventType.HANGUP)) {
-				responseObject.Response['_attributes'].onHangUp =
-					serverOptions.serverAddress;
-			}
-
 			if (handlers.has(EventType.ANSWER)) {
 				responseObject.Response['_attributes'].onAnswer =
 					serverOptions.serverAddress;
 			}
+
+			if (handlers.has(EventType.HANGUP)) {
+				responseObject.Response['_attributes'].onHangup =
+					serverOptions.serverAddress;
+			}
+
 			const xmlResponse = createXmlResponse(responseObject);
 			res.end(xmlResponse);
 		};
