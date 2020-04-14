@@ -6,21 +6,46 @@ on:
       - v*
 
 jobs:
-  build:
+  run-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-      - name: Install Node-Version 12
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
         with:
           node-version: '12'
-      - name: Run npm install, bundle and test
-        run: |
+      - run: |
           npm install
+          npm run test:unit
           npm run test:integration
         env:
           CI: true
+
+  publish-github-package:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+          registry-url: https://npm.pkg.github.com/
+      - run: npm install
+      - run: sed -i '2s/sipgateio/\@sipgate-io\/sipgateio/' package.json
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.ACCESS_TOKEN}}
+
+  publish-github-release:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - run: |
+          npm install
+          npm run bundle
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
@@ -40,7 +65,16 @@ jobs:
         env:
           GHR_PATH: bundle/sipgate-io.min.js
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      - name: NPM Publish 
-        uses: JS-DevTools/npm-publish@v1
+
+  publish-npm-package:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - run: npm install
+      - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_AUTH_TOKEN }}
