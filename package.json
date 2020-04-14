@@ -1,6 +1,6 @@
 {
 	"name": "sipgateio",
-	"version": "1.4.1",
+	"version": "1.4.2",
 	"description": "The official Node.js library for sipgate.io",
 	"main": "./dist/index.js",
 	"scripts": {
