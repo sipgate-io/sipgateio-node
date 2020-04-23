@@ -99,11 +99,12 @@
 		"atob": "^2.1.2",
 		"axios": "^0.19.2",
 		"btoa": "^1.2.1",
-		"file-type": "^14.1.4",
 		"detect-browser": "^5.0.0",
+		"file-type": "^14.1.4",
 		"google-libphonenumber": "^3.2.8",
 		"jsdom": "15.2.1",
 		"json2csv": "^5.0.0",
+		"qs": "^6.9.3",
 		"vcf": "^2.0.6",
 		"xml-js": "^1.6.11"
 	}
