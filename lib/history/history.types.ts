@@ -4,6 +4,7 @@ export interface HistoryModule {
 		pagination?: Pagination
 	) => Promise<HistoryEntry[]>;
 	fetchById: (entryId: string) => Promise<HistoryEntry>;
+	deleteById: (entryId: string) => Promise<string>;
 }
 
 export interface HistoryFilter {

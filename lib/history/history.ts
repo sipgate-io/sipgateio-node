@@ -36,6 +36,12 @@ export const createHistoryModule = (
 			.then((response) => response.data)
 			.catch((error) => Promise.reject(handleError(error)));
 	},
+	async deleteById(entryId): Promise<string> {
+		return await client
+			.delete<string>(`/history/${entryId}`)
+			.then((response) => response.data)
+			.catch((error) => Promise.reject(handleError(error)));
+	},
 });
 
 const handleError = (error: HttpError): Error => {
