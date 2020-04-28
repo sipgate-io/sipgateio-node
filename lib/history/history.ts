@@ -43,5 +43,9 @@ const handleError = (error: HttpError): Error => {
 		return new Error(ErrorMessage.HISTORY_BAD_REQUEST);
 	}
 
+	if (error.response && error.response.status === 404) {
+		return new Error(ErrorMessage.HISTORY_EVENT_NOT_FOUND);
+	}
+
 	return handleCoreError(error);
 };
