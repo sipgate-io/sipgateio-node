@@ -3,8 +3,8 @@
 A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 
 - [Installation](#installation)
-- [Available Functionality](#available-functionality)
-- [Usage](#usage)
+- [Available Functionality](#available-functionality) - [SMS](#sms) - [Fax](#fax) - [Call](#call) - [Webhook (node.js only)](#webhook-nodejs-only) - [Webhook Settings](#webhook-settings) - [Contacts](#contacts) - [History](#history)
+- [Usage](#usage) - [Creating a Client](#creating-a-client) - [SMS](#sms-1) - [Fax](#fax-1) - [Call](#call-1) - [Webhooks](#webhooks) - [Webhook Settings](#webhook-settings-1) - [Contacts](#contacts-1) - [History](#history-1)
 - [Examples](#examples)
 - [Privacy Note](#privacy-note)
 
@@ -49,6 +49,10 @@ Configure the webhook functionality of sipgate.io. Currently, you can set URLs a
 ### Contacts
 
 Import contacts in CSV format into your sipgate account.
+
+### History
+
+Fetch multiple or a specific event from your history
 
 ## Usage
 
@@ -592,6 +596,65 @@ The `INTERNAL` Scope contains the contacts which are created by `sipgate` such a
 **Adress and Numbers**:
 
 You can only save **one** address and **one** number using the Format.
+
+### History
+
+The history module provides functionality to fetch all or specific history events.
+
+```typescript
+export interface HistoryModule {
+	fetchAll: (
+		filter?: HistoryFilter,
+		pagination?: Pagination
+	) => Promise<HistoryEntry[]>;
+	fetchById: (entryId: string) => Promise<HistoryEntry>;
+}
+
+export interface HistoryFilter {
+	connectionIds?: string[];
+	types?: HistoryEntryType[];
+	directions?: Direction[];
+	archived?: boolean;
+	starred?: Starred;
+	from?: Date;
+	to?: Date;
+	phonenumber?: string;
+}
+
+export interface Pagination {
+	offset?: number;
+	limit?: number;
+}
+```
+
+Each method returns one or multiple history events described by the following base-structure:
+
+```typescript
+export interface BaseHistoryEntry {
+	id: string;
+	source: string;
+	target: string;
+	sourceAlias: string;
+	targetAlias: string;
+	type: HistoryEntryType;
+	created: Date;
+	lastModified: Date;
+	direction: Direction;
+	incoming: boolean;
+	status: string;
+	connectionIds: string[];
+	read: boolean;
+	archived: boolean;
+	note: string;
+	endpoints: RoutedEndpoint[];
+	starred: boolean;
+	labels: string[];
+}
+```
+
+There are multiple event-types, such as:  
+`CallHistoryEntry`, `FaxHistoryEntry`, `SmsHistoryEntry`, `VoicemailHistoryEntry`.  
+A more detailed description of these types can be found [here](/lib/history/history.types.ts).
 
 ## Examples
 
