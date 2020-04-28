@@ -6,8 +6,6 @@ export interface HistoryModule {
 	fetchById: (entryId: string) => Promise<HistoryEntry>;
 }
 
-// -------------------------------------------
-
 export interface HistoryFilter {
 	connectionIds?: string[];
 	types?: HistoryEntryType[];
@@ -38,14 +36,10 @@ export enum Starred {
 	UNSTARRED = 'UNSTARRED',
 }
 
-// ------------------------------------------
-
 export interface Pagination {
 	offset?: number;
 	limit?: number;
 }
-
-// -----------------------------------------
 
 export interface BaseHistoryEntry {
 	id: string;
@@ -78,8 +72,6 @@ export interface RoutedEndpoint {
 	endpoint: Endpoint;
 }
 
-// -----------------------------------------
-
 export interface FaxHistoryEntry extends BaseHistoryEntry {
 	type: HistoryEntryType.FAX;
 	faxStatus: FaxStatusType;
@@ -97,8 +89,6 @@ export enum FaxStatusType {
 	SENT = 'SENT',
 	SCHEDULED = 'SCHEDULED',
 }
-
-// -----------------------------------------
 
 export interface CallHistoryEntry extends BaseHistoryEntry {
 	type: HistoryEntryType.CALL;
@@ -124,15 +114,11 @@ export enum CallStatusType {
 	MISSED = 'MISSED',
 }
 
-// -----------------------------------------
-
 export interface SmsHistoryEntry extends BaseHistoryEntry {
 	type: HistoryEntryType.SMS;
 	content: string;
 	scheduled: string;
 }
-
-// -----------------------------------------
 
 export interface VoicemailHistoryEntry extends BaseHistoryEntry {
 	type: HistoryEntryType.VOICEMAIL;
@@ -140,8 +126,6 @@ export interface VoicemailHistoryEntry extends BaseHistoryEntry {
 	recordingUrl: string;
 	duration: number;
 }
-
-// -----------------------------------------
 
 export type HistoryEntry =
 	| CallHistoryEntry
