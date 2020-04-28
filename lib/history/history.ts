@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../history/errors/ErrorMessage';
-import { validateExtension, ExtensionType } from '../core/validator';
+import { ExtensionType, validateExtension } from '../core/validator';
 import { HistoryEntry, HistoryModule, HistoryResponse } from './history.types';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core';
