@@ -8,7 +8,9 @@
 		"format": "prettier --write **/**.ts",
 		"test:unit-staged": "git stash -k -u && npm run test:unit ; git stash pop",
 		"test:dev": "jest ./lib --env=node --watch",
+		"test:dev:coverage": "jest ./lib --env=node --watch --coverage",
 		"test:unit": "jest ./lib --env=node",
+		"test:unit:coverage": "jest ./lib --env=node --coverage",
 		"test:integration": "npm run bundle && jest ./bundle --env=jsdom",
 		"bundle": "browserify -r ./lib/index.ts:sipgate-io -p tsify -g uglifyify  > ./bundle/sipgate-io.js && terser --compress --mangle -o ./bundle/sipgate-io.min.js -- ./bundle/sipgate-io.js",
 		"prepare": "tsc"
