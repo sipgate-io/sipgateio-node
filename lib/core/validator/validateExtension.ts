@@ -22,7 +22,7 @@ enum ExtensionType {
 
 const validateExtension = (
 	extension: string,
-	validTypes: ExtensionType[]
+	validTypes: ExtensionType[] = Object.values(ExtensionType)
 ): ValidationResult => {
 	for (const type of validTypes) {
 		const extensionRegEx = new RegExp(`^${type}(0|[1-9][0-9]*)$`);
