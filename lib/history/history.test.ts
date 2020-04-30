@@ -7,24 +7,8 @@ import { createHistoryModule } from './history';
 describe('History Module', () => {
 	let mockClient: HttpClientModule;
 
-	beforeAll(() => {
+	beforeEach(() => {
 		mockClient = {} as HttpClientModule;
-		mockClient.get = jest
-			.fn()
-			.mockImplementationOnce((_) => {
-				return Promise.reject({
-					response: {
-						status: 404,
-					},
-				});
-			})
-			.mockImplementationOnce((_) => {
-				return Promise.reject({
-					response: {
-						status: 400,
-					},
-				});
-			});
 	});
 
 	it('validates the Extensions and throws an error including the message from the extension-validator', async () => {
@@ -35,14 +19,30 @@ describe('History Module', () => {
 		).rejects.toThrowError('Invalid extension: sokx5');
 	});
 
-	it('returns an exception except 404.NotFound when an invalid historyEntryId is supplied', async () => {
+	it('throws an error when the API answers with 404 Not Found', async () => {
+		mockClient.get = jest.fn().mockImplementationOnce((_) => {
+			return Promise.reject({
+				response: {
+					status: 404,
+				},
+			});
+		});
+
 		const historyModule = createHistoryModule(mockClient);
 
 		await expect(
-			historyModule.fetchById('invalidEntryId')
+			historyModule.fetchById('someUnknownEntryId')
 		).rejects.toThrowError(ErrorMessage.HISTORY_EVENT_NOT_FOUND);
 	});
-	it('returns an exception except 400.BadRequest when an invalid historyEntryId is supplied', async () => {
+	it('throws an error when the API answers with 400 Bad Request', async () => {
+		mockClient.get = jest.fn().mockImplementationOnce((_) => {
+			return Promise.reject({
+				response: {
+					status: 400,
+				},
+			});
+		});
+
 		const historyModule = createHistoryModule(mockClient);
 
 		await expect(
