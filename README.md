@@ -608,8 +608,16 @@ export interface HistoryModule {
 		pagination?: Pagination
 	) => Promise<HistoryEntry[]>;
 	fetchById: (entryId: string) => Promise<HistoryEntry>;
+	deleteByListOfIds: (entryIds: string[]) => Promise<void>;
+	deleteById: (entryId: string) => Promise<void>;
 }
+```
 
+#### The `fetchAll` method:
+
+The fetchAll method can filter the result by using the 'HistoryFilter' interface. You can decide how many history events you recieve by adjusting the values in the pagination object.
+
+```typescript
 export interface HistoryFilter {
 	connectionIds?: string[];
 	types?: HistoryEntryType[];
@@ -627,7 +635,7 @@ export interface Pagination {
 }
 ```
 
-Each method returns one or multiple history events described by the following base-structure:
+`fetchById` and `fetchAll` methods returns one or multiple history events described by the following base-structure:
 
 ```typescript
 export interface BaseHistoryEntry {

@@ -36,6 +36,22 @@ export const createHistoryModule = (
 			.then((response) => response.data)
 			.catch((error) => Promise.reject(handleError(error)));
 	},
+	async deleteById(entryId): Promise<void> {
+		await client
+			.delete<string>(`/history/${entryId}`)
+			.catch((error) => Promise.reject(handleError(error)));
+	},
+	async deleteByListOfIds(entryIds): Promise<void> {
+		await client
+			.delete<string>(`/history`, {
+				params: {
+					id: entryIds,
+				},
+				paramsSerializer: (params) =>
+					qs.stringify(params, { arrayFormat: 'repeat' }),
+			})
+			.catch((error) => Promise.reject(handleError(error)));
+	},
 });
 
 const handleError = (error: HttpError): Error => {
