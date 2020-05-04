@@ -34,6 +34,7 @@ describe('History Module', () => {
 			historyModule.fetchById('someUnknownEntryId')
 		).rejects.toThrowError(ErrorMessage.HISTORY_EVENT_NOT_FOUND);
 	});
+
 	it('throws an error when the API answers with 400 Bad Request', async () => {
 		mockClient.get = jest.fn().mockImplementationOnce((_) => {
 			return Promise.reject({

@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../history/errors/ErrorMessage';
+import { ErrorMessage } from './errors/ErrorMessage';
 import { HistoryEntry, HistoryModule, HistoryResponse } from './history.types';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core';
@@ -12,9 +12,9 @@ export const createHistoryModule = (
 		if (filter && filter.connectionIds) {
 			const result = filter.connectionIds
 				.map((id) => validateExtension(id))
-				.filter((validationResult) => validationResult.isValid === false);
-			if (result.length > 0 && result[0].isValid === false) {
-				throw new Error(result[0].cause);
+				.find((validationResult) => validationResult.isValid === false);
+			if (result && result.isValid === false) {
+				throw new Error(result.cause);
 			}
 		}
 
