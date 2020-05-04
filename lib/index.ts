@@ -5,3 +5,4 @@ export { createSettingsModule } from './webhook-settings';
 export { createSMSModule } from './sms';
 export { createContactsModule } from './contacts';
 export { createWebhookModule, WebhookResponse } from './webhook';
+export { createHistoryModule } from './history';
