@@ -44,7 +44,7 @@ export const createRTCMModule = (client: HttpClientModule): RTCMModule => ({
 
 		await client
 			.post(`/calls/${call.callId}/dtmf`, {
-				upperCasedSequence,
+				sequence: upperCasedSequence,
 			})
 			.catch((error) => Promise.reject(handleError(error)));
 	},
