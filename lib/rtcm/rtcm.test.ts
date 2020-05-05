@@ -1,6 +1,6 @@
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule } from '../core/httpClient';
-import { RTCMCall } from '../../dist/rtcm/rtcm.types.d';
+import { RTCMCall } from '../../dist/rtcm/rtcm.types';
 import { createRTCMModule } from './rtcm';
 
 describe('RTCM Module', () => {
