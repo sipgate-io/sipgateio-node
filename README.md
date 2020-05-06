@@ -2,11 +2,30 @@
 
 A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 
+<!-- prettier-ignore -->
 - [Installation](#installation)
-- [Available Functionality](#available-functionality) - [SMS](#sms) - [Fax](#fax) - [Call](#call) - [Webhook (node.js only)](#webhook-nodejs-only) - [Webhook Settings](#webhook-settings) - [Contacts](#contacts) - [History](#history) - [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm)
-- [Usage](#usage) - [Creating a Client](#creating-a-client) - [SMS](#sms-1) - [Fax](#fax-1) - [Call](#call-1) - [Webhooks](#webhooks) - [Webhook Settings](#webhook-settings-1) - [Contacts](#contacts-1) - [History](#history-1) - [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm-1)
+- [Available Functionality](#available-functionality)
+	- [SMS](#sms)
+	- [Fax](#fax)
+	- [Call](#call)
+	- [Webhook (node.js only)](#webhook-nodejs-only)
+	- [Webhook Settings](#webhook-settings)
+	- [Contacts](#contacts)
+	- [History](#history)
+	- [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm)
+- [Usage](#usage)
+	- [Creating a Client](#creating-a-client)
+	- [SMS](#sms-1)
+	- [Fax](#fax-1)
+	- [Call](#call-1)
+	- [Webhooks](#webhooks)
+	- [Webhook Settings](#webhook-settings-1)
+	- [Contacts](#contacts-1)
+	- [History](#history-1)
+	- [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm-1)
 - [Examples](#examples)
 - [Privacy Note](#privacy-note)
+<!-- prettier-ignore -->
 
 # Get Started
 
