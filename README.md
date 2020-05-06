@@ -3,8 +3,8 @@
 A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 
 - [Installation](#installation)
-- [Available Functionality](#available-functionality) - [SMS](#sms) - [Fax](#fax) - [Call](#call) - [Webhook (node.js only)](#webhook-nodejs-only) - [Webhook Settings](#webhook-settings) - [Contacts](#contacts) - [History](#history)
-- [Usage](#usage) - [Creating a Client](#creating-a-client) - [SMS](#sms-1) - [Fax](#fax-1) - [Call](#call-1) - [Webhooks](#webhooks) - [Webhook Settings](#webhook-settings-1) - [Contacts](#contacts-1) - [History](#history-1)
+- [Available Functionality](#available-functionality) - [SMS](#sms) - [Fax](#fax) - [Call](#call) - [Webhook (node.js only)](#webhook-nodejs-only) - [Webhook Settings](#webhook-settings) - [Contacts](#contacts) - [History](#history) - [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm)
+- [Usage](#usage) - [Creating a Client](#creating-a-client) - [SMS](#sms-1) - [Fax](#fax-1) - [Call](#call-1) - [Webhooks](#webhooks) - [Webhook Settings](#webhook-settings-1) - [Contacts](#contacts-1) - [History](#history-1) - [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm-1)
 - [Examples](#examples)
 - [Privacy Note](#privacy-note)
 
@@ -53,6 +53,10 @@ Import contacts in CSV format into your sipgate account.
 ### History
 
 Fetch multiple or a specific event from your history
+
+### Real Time Call Manipulation (RTCM)
+
+Manipulate present calls that containts playing announcements with own audio-files. Also you can hangup, hold, mute an exist call and send DTMF singals.
 
 ## Usage
 
@@ -602,7 +606,7 @@ You can only save **one** address and **one** number using the Format.
 The history module provides functionality to fetch all or specific history events.
 
 ```typescript
-export interface HistoryModule {
+interface HistoryModule {
 	fetchAll: (
 		filter?: HistoryFilter,
 		pagination?: Pagination
@@ -618,7 +622,7 @@ export interface HistoryModule {
 The fetchAll method can filter the result by using the 'HistoryFilter' interface. You can decide how many history events you recieve by adjusting the values in the pagination object.
 
 ```typescript
-export interface HistoryFilter {
+interface HistoryFilter {
 	connectionIds?: string[];
 	types?: HistoryEntryType[];
 	directions?: Direction[];
@@ -629,7 +633,7 @@ export interface HistoryFilter {
 	phonenumber?: string;
 }
 
-export interface Pagination {
+interface Pagination {
 	offset?: number;
 	limit?: number;
 }
@@ -638,7 +642,7 @@ export interface Pagination {
 `fetchById` and `fetchAll` methods returns one or multiple history events described by the following base-structure:
 
 ```typescript
-export interface BaseHistoryEntry {
+interface BaseHistoryEntry {
 	id: string;
 	source: string;
 	target: string;
@@ -663,6 +667,82 @@ export interface BaseHistoryEntry {
 There are multiple event-types, such as:  
 `CallHistoryEntry`, `FaxHistoryEntry`, `SmsHistoryEntry`, `VoicemailHistoryEntry`.  
 A more detailed description of these types can be found [here](/lib/history/history.types.ts).
+
+### Real Time Call Manipulation (RTCM)
+
+The real time call manipulation module provides the following functions:
+
+```typescript
+interface RTCMModule {
+	getEstablishedCalls: () => Promise<RTCMCall[]>;
+	mute: (call: RTCMCall, status: boolean) => Promise<void>;
+	record: (call: RTCMCall, recordOptions: RecordOptions) => Promise<void>;
+	announce: (call: RTCMCall, announcement: string) => Promise<void>;
+	transfer: (call: RTCMCall, transferOptions: TransferOptions) => Promise<void>;
+	sendDTMF: (call: RTCMCall, sequence: string) => Promise<void>;
+	hold: (call: RTCMCall, status: boolean) => Promise<void>;
+	hangUp: (call: RTCMCall) => Promise<void>;
+}
+```
+
+The structure of a present call is provide by a `RTCMCall` and containts the following attributes:
+
+```typescript
+interface RTCMCall {
+	callId: string;
+	muted: boolean;
+	recording: boolean;
+	hold: boolean;
+	participants: Participant[];
+}
+
+interface Participant {
+	participantId: string;
+	phoneNumber: string;
+	muted: boolean;
+	hold: boolean;
+	owner: boolean;
+}
+```
+
+#### The `getEstablishedCalls` method:
+
+It returns all present calls of this account and return an array of `RTCMCall`.
+
+#### The `mute` method:
+
+You can pass a `RTCMCall` and set your microphone muted or unmuted.
+
+#### The `record` method:
+
+You can start or stop a recording and find this later in the history entry.
+
+#### The `announce` method:
+
+You can play an audiofile that needs to be a mono 16bit PCM WAV file with a sampling rate of 8kHz. Insert the URL of this audiofile as parameter in the announcment.
+
+#### The `transfer` method:
+
+You can attend a call and transfer it to a phonenumber with the following structure:
+
+```typescript
+interface TransferOptions {
+	attended: boolean;
+	phoneNumber: string;
+}
+```
+
+#### The `sendDTMF` method:
+
+You can send a sequence of valid DTMFs digits to the passed call.
+
+#### The `hold` method:
+
+You can hold and continue a present call.
+
+#### The `hangUp` method:
+
+You can abort or terminate a current call.
 
 ## Examples
 
