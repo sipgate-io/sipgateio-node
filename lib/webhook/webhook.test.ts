@@ -1,3 +1,4 @@
+import { HttpResponse } from '../core/httpClient';
 import { WebhookModule, WebhookServer } from './webhook.module';
 import { WebhookResponse, createWebhookModule } from './webhook';
 import axios from 'axios';
@@ -155,7 +156,7 @@ describe('The webhook server', () => {
 		xcid: '',
 	};
 
-	const sendTestWebhook = async () => {
+	const sendTestWebhook = async (): Promise<HttpResponse<string>> => {
 		return await axios.post(
 			`http://${serverAddress}`,
 			qs.stringify(newCallWebhook),
