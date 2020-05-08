@@ -21,7 +21,7 @@ import {
 } from './webhook.module';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { js2xml } from 'xml-js';
-import { parse } from 'querystring';
+import { parse } from 'qs';
 
 export const createWebhookModule = (): WebhookModule => ({
 	createServer: createWebhookServer,

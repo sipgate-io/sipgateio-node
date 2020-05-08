@@ -1,7 +1,7 @@
 import { WebhookModule, WebhookServer } from './webhook.module';
 import { WebhookResponse, createWebhookModule } from './webhook';
 import axios from 'axios';
-import querystring from 'querystring';
+import qs from 'qs';
 
 describe('create webhook module', () => {
 	let webhookModule: WebhookModule;
@@ -158,7 +158,7 @@ describe('The webhook server', () => {
 	const sendTestWebhook = async () => {
 		return await axios.post(
 			`http://${serverAddress}`,
-			querystring.stringify(newCallWebhook),
+			qs.stringify(newCallWebhook),
 			{
 				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 			}
