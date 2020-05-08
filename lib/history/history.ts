@@ -3,7 +3,6 @@ import { HistoryEntry, HistoryModule, HistoryResponse } from './history.types';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core';
 import { validateExtension } from '../core/validator';
-import qs from 'qs';
 
 export const createHistoryModule = (
 	client: HttpClientModule
@@ -24,8 +23,6 @@ export const createHistoryModule = (
 					...filter,
 					...pagination,
 				},
-				paramsSerializer: (params) =>
-					qs.stringify(params, { arrayFormat: 'repeat' }),
 			})
 			.then((response) => response.data.items)
 			.catch((error) => Promise.reject(handleError(error)));
@@ -47,8 +44,6 @@ export const createHistoryModule = (
 				params: {
 					id: entryIds,
 				},
-				paramsSerializer: (params) =>
-					qs.stringify(params, { arrayFormat: 'repeat' }),
 			})
 			.catch((error) => Promise.reject(handleError(error)));
 	},

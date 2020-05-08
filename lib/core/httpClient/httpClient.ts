@@ -15,6 +15,7 @@ import {
 	HttpRequestConfig,
 	HttpResponse,
 } from './httpClient.module';
+import qs from 'qs';
 
 export const createHttpClient = (
 	credentials: AuthCredentials
@@ -30,6 +31,8 @@ export const createHttpClient = (
 			'X-Sipgate-Version': version,
 			'Content-Type': 'application/json',
 		},
+		paramsSerializer: (params) =>
+			qs.stringify(params, { arrayFormat: 'repeat' }),
 	});
 
 	return {
