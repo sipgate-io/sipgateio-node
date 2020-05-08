@@ -56,6 +56,13 @@ describe('sipgate-io client', () => {
 		expect(typeof sms.send).toEqual('function');
 	});
 
+	it('should contain a history module with a fetchById function', () => {
+		const history = bundle.createHistoryModule(sipgateClient);
+		expect(history).toBeDefined();
+		expect(history.fetchById).toBeDefined();
+		expect(typeof history.fetchById).toEqual('function');
+	});
+
 	it('should contain a settings module with a setIncomingUrl function', () => {
 		const webhookSettings = bundle.createSettingsModule(sipgateClient);
 		expect(webhookSettings.setIncomingUrl).toBeDefined();
