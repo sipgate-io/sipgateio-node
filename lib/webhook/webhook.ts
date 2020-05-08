@@ -118,7 +118,7 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 			body += chunk.toString();
 		});
 		request.on('end', () => {
-			resolve((parse(body) as unknown) as CallEvent);
+			resolve(parse(body) as CallEvent);
 		});
 	});
 };
