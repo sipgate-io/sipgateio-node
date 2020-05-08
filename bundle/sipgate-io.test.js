@@ -111,4 +111,8 @@ describe('sipgate-io client', () => {
 		expect(contacts.importFromCsvString).toBeDefined();
 		expect(typeof contacts.importFromCsvString).toEqual('function');
 	});
+
+	it('should not contain a webhook module', () => {
+		expect(bundle.createWebhookModule).toBeUndefined();
+	});
 });
