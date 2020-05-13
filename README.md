@@ -521,6 +521,19 @@ async function setLog(value: boolean): Promise<void>;
 The `setLog` function toggles, the function to display all incoming and outgoing events, which have been sent to your `Incoming` and `Outgoing` Url.
 These parameters can be set using these functions: `setIncomingUrl` and `setOutgoingUrl`.
 
+```typescript
+interface WebhookSettings {
+	incomingUrl: string;
+	outgoingUrl: string;
+	log: boolean;
+	whitelist: string[] | null;
+}
+
+async function getWebhookSettings(): Promise<WebhookSettings>;
+```
+
+The `getWebhookSettings` function returns you the current settings of sipgate.io including the incoming/outgoing URL, whether logging is enabled or if a specific whitelist of devices is set for your incoming & outgoing URL.
+
 ### Contacts
 
 The contacts module provides the following functions:
