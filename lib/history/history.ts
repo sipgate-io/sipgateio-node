@@ -1,5 +1,10 @@
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HistoryEntry, HistoryModule, HistoryResponse } from './history.types';
+import {
+	HistoryEntry,
+	HistoryFilter,
+	HistoryModule,
+	HistoryResponse,
+} from './history.types';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core';
 import { validateExtension } from '../core/validator';
@@ -8,14 +13,7 @@ export const createHistoryModule = (
 	client: HttpClientModule
 ): HistoryModule => ({
 	async fetchAll(filter, pagination): Promise<HistoryEntry[]> {
-		if (filter && filter.connectionIds) {
-			const result = filter.connectionIds
-				.map((id) => validateExtension(id))
-				.find((validationResult) => validationResult.isValid === false);
-			if (result && result.isValid === false) {
-				throw new Error(result.cause);
-			}
-		}
+		validateFilteredExtension(filter);
 
 		return await client
 			.get<HistoryResponse>('/history', {
@@ -47,6 +45,17 @@ export const createHistoryModule = (
 			})
 			.catch((error) => Promise.reject(handleError(error)));
 	},
+	async exportAsCsvString(filter, pagination): Promise<string> {
+		validateFilteredExtension(filter);
+		return await client
+			.get('/history/export', {
+				params: {
+					...filter,
+					...pagination,
+				},
+			})
+			.then((response) => response.data);
+	},
 });
 
 const handleError = (error: HttpError): Error => {
@@ -59,4 +68,15 @@ const handleError = (error: HttpError): Error => {
 	}
 
 	return handleCoreError(error);
+};
+
+const validateFilteredExtension = (filter?: HistoryFilter): void => {
+	if (filter && filter.connectionIds) {
+		const result = filter.connectionIds
+			.map((id) => validateExtension(id))
+			.find((validationResult) => validationResult.isValid === false);
+		if (result && result.isValid === false) {
+			throw new Error(result.cause);
+		}
+	}
 };

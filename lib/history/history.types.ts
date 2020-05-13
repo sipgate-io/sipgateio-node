@@ -1,11 +1,15 @@
 export interface HistoryModule {
 	fetchAll: (
-		filter?: HistoryFilter,
+		filter?: HistoryFilterWithPhoneNumber,
 		pagination?: Pagination
 	) => Promise<HistoryEntry[]>;
 	fetchById: (entryId: string) => Promise<HistoryEntry>;
 	deleteByListOfIds: (entryIds: string[]) => Promise<void>;
 	deleteById: (entryId: string) => Promise<void>;
+	exportAsCsvString: (
+		filter?: HistoryFilter,
+		pagination?: Pagination
+	) => Promise<string>;
 }
 
 export interface HistoryFilter {
@@ -16,6 +20,9 @@ export interface HistoryFilter {
 	starred?: Starred;
 	from?: Date;
 	to?: Date;
+}
+
+export interface HistoryFilterWithPhoneNumber extends HistoryFilter {
 	phonenumber?: string;
 }
 
