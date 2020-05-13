@@ -1,10 +1,10 @@
-import { ErrorMessage } from './errors/ErrorMessage';
 import {
+	BaseHistoryFilter,
 	HistoryEntry,
-	HistoryFilter,
 	HistoryModule,
 	HistoryResponse,
 } from './history.types';
+import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core';
 import { validateExtension } from '../core/validator';
@@ -71,7 +71,7 @@ const handleError = (error: HttpError): Error => {
 	return handleCoreError(error);
 };
 
-const validateFilteredExtension = (filter?: HistoryFilter): void => {
+const validateFilteredExtension = (filter?: BaseHistoryFilter): void => {
 	if (filter && filter.connectionIds) {
 		const result = filter.connectionIds
 			.map((id) => validateExtension(id))
