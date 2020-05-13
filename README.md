@@ -633,12 +633,16 @@ interface HistoryModule {
 	fetchById: (entryId: string) => Promise<HistoryEntry>;
 	deleteByListOfIds: (entryIds: string[]) => Promise<void>;
 	deleteById: (entryId: string) => Promise<void>;
+	exportAsCsvString: (
+		filter?: BaseHistoryFilter,
+		pagination?: Pagination
+	) => Promise<string>;
 }
 ```
 
 #### The `fetchAll` method:
 
-The fetchAll method can filter the result by using the 'HistoryFilter' interface. You can decide how many history events you recieve by adjusting the values in the pagination object.
+The fetchAll method can filter the result by using the 'HistoryFilter' interface. You can decide how many history events you receive by adjusting the values in the pagination object.
 
 ```typescript
 interface HistoryFilter {
@@ -686,6 +690,34 @@ interface BaseHistoryEntry {
 There are multiple event-types, such as:  
 `CallHistoryEntry`, `FaxHistoryEntry`, `SmsHistoryEntry`, `VoicemailHistoryEntry`.  
 A more detailed description of these types can be found [here](/lib/history/history.types.ts).
+
+#### History deletion
+
+The `deleteById` method allows you to delete an history entry with the given id.
+
+The `deleteByListOfIds` method allows you to delete multiple history entries by a given list of ids.
+
+#### The `exportAsCsvString` method
+
+The `exportAsCsvString` method allows you to export your history entries as a csv string.
+Optionally you can filter and paginate the response by using the following parameters:
+
+```typescript
+interface BaseHistoryFilter {
+	connectionIds?: string[];
+	types?: HistoryEntryType[];
+	directions?: Direction[];
+	archived?: boolean;
+	starred?: Starred;
+	from?: Date;
+	to?: Date;
+}
+
+interface Pagination {
+	offset?: number;
+	limit?: number;
+}
+```
 
 ### Real Time Call Manipulation (RTCM)
 
