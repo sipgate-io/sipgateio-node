@@ -1,3 +1,5 @@
+import { WebhookSettings } from './models/webhook-settings.model';
+
 export interface WebhookSettingsModule {
 	setIncomingUrl: (url: string) => Promise<void>;
 	setOutgoingUrl: (url: string) => Promise<void>;
@@ -7,4 +9,5 @@ export interface WebhookSettingsModule {
 	clearOutgoingUrl: () => Promise<void>;
 	clearWhitelist: () => Promise<void>;
 	disableWhitelist: () => Promise<void>;
+	getWebhookSettings: () => Promise<WebhookSettings>;
 }

@@ -3,7 +3,7 @@ import { ExtensionType, validateExtension } from '../core/validator';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { WebhookSettings } from './models/webhook-settings.model';
 import { WebhookSettingsModule } from './webhookSettings.module';
-import { handleCoreError } from '../core/errors/handleError';
+import { handleCoreError } from '../core/errors';
 import { validateWebhookUrl } from './validators/validateWebhookUrl';
 
 const SETTINGS_ENDPOINT = 'settings/sipgateio';
@@ -76,9 +76,13 @@ export const createSettingsModule = (
 			(settings) => (settings.whitelist = null)
 		);
 	},
+
+	async getWebhookSettings(): Promise<WebhookSettings> {
+		return getWebhookSettingsFromClient(client);
+	},
 });
 
-const getWebhookSettings = async (
+const getWebhookSettingsFromClient = async (
 	client: HttpClientModule
 ): Promise<WebhookSettings> => {
 	return client
@@ -91,7 +95,7 @@ const modifyWebhookSettings = async (
 	client: HttpClientModule,
 	fn: (s: WebhookSettings) => void
 ): Promise<void> => {
-	await getWebhookSettings(client)
+	await getWebhookSettingsFromClient(client)
 		.then((settings) => {
 			fn(settings);
 			return client.put(SETTINGS_ENDPOINT, settings);
