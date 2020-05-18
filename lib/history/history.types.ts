@@ -10,6 +10,10 @@ export interface HistoryModule {
 		events: HistoryEntry[],
 		callback: (entry: HistoryEntry) => HistoryEntryUpdateOptions
 	) => Promise<void>;
+	exportAsCsvString: (
+		filter?: BaseHistoryFilter,
+		pagination?: Pagination
+	) => Promise<string>;
 }
 
 export interface HistoryEntryUpdateOptions {
@@ -24,7 +28,7 @@ export interface HistoryEntryUpdateOptionsWithId
 	id: string;
 }
 
-export interface HistoryFilter {
+export interface BaseHistoryFilter {
 	connectionIds?: string[];
 	types?: HistoryEntryType[];
 	directions?: Direction[];
@@ -32,6 +36,9 @@ export interface HistoryFilter {
 	starred?: Starred;
 	from?: Date;
 	to?: Date;
+}
+
+export interface HistoryFilter extends BaseHistoryFilter {
 	phonenumber?: string;
 }
 

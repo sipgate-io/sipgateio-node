@@ -95,4 +95,12 @@ describe('History Module', () => {
 		});
 		expect(mockClient.put).toHaveBeenCalledTimes(3);
 	});
+	
+	it('throws an error when a connection id is invalid', async () => {
+		const historyModule = createHistoryModule(mockClient);
+
+		await expect(
+			historyModule.exportAsCsvString({ connectionIds: ['s0', 'sokx5', 'e0'] })
+		).rejects.toThrowError('Invalid extension: sokx5');
+	});
 });

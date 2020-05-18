@@ -650,12 +650,16 @@ interface HistoryModule {
 		events: HistoryEntry[],
 		callback: (entry: HistoryEntry) => HistoryEntryUpdateOptions
 	) => Promise<void>;
+	exportAsCsvString: (
+		filter?: BaseHistoryFilter,
+		pagination?: Pagination
+	) => Promise<string>;
 }
 ```
 
 #### The `fetchAll` method:
 
-The fetchAll method can filter the result by using the 'HistoryFilter' interface. You can decide how many history events you recieve by adjusting the values in the pagination object.
+The fetchAll method can filter the result by using the 'HistoryFilter' interface. You can decide how many history events you receive by adjusting the values in the pagination object.
 
 ```typescript
 interface HistoryFilter {
@@ -714,6 +718,34 @@ export interface HistoryEntryUpdateOptions {
 	starred?: boolean;
 	note?: string;
 	read?: boolean;
+}
+```
+
+#### History deletion
+
+The `deleteById` method allows you to delete an history entry with the given id.
+
+The `deleteByListOfIds` method allows you to delete multiple history entries by a given list of ids.
+
+#### The `exportAsCsvString` method
+
+The `exportAsCsvString` method allows you to export your history entries as a csv string.
+Optionally you can filter and paginate the response by using the following parameters:
+
+```typescript
+interface BaseHistoryFilter {
+	connectionIds?: string[];
+	types?: HistoryEntryType[];
+	directions?: Direction[];
+	archived?: boolean;
+	starred?: Starred;
+	from?: Date;
+	to?: Date;
+}
+
+interface Pagination {
+	offset?: number;
+	limit?: number;
 }
 ```
 
