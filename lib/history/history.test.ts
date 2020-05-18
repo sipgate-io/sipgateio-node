@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import { ErrorMessage } from './errors/ErrorMessage';
+import { HistoryEntry } from './history.types';
 import { HttpClientModule } from '../core/httpClient';
 import { createHistoryModule } from './history';
 
@@ -49,5 +50,49 @@ describe('History Module', () => {
 		await expect(
 			historyModule.fetchAll({}, { limit: 100000 })
 		).rejects.toThrowError(ErrorMessage.HISTORY_BAD_REQUEST);
+	});
+
+	it('batchUpdates historyUpdates which include no note', async () => {
+		mockClient.put = jest.fn().mockImplementation((path, args) => {
+			return Promise.resolve({
+				status: 200,
+			});
+		});
+
+		const historyModule = createHistoryModule(mockClient);
+
+		const events: HistoryEntry[] = [
+			({ id: '1' } as unknown) as HistoryEntry,
+			({ id: '2' } as unknown) as HistoryEntry,
+			({ id: '3' } as unknown) as HistoryEntry,
+			({ id: '4' } as unknown) as HistoryEntry,
+			({ id: '5' } as unknown) as HistoryEntry,
+		];
+
+		await expect(
+			historyModule.batchUpdateEvents(events, (evt) => {
+				if (evt.id === '3' || evt.id === '4') {
+					return { note: 'Note Event' };
+				}
+				return {
+					starred: true,
+				};
+			})
+		).resolves.not.toThrow();
+
+		expect(mockClient.put).toHaveBeenCalledWith('history', [
+			{ id: '1', starred: true },
+			{ id: '2', starred: true },
+			{ id: '5', starred: true },
+		]);
+		expect(mockClient.put).toHaveBeenCalledWith('history/3', {
+			id: undefined,
+			note: 'Note Event',
+		});
+		expect(mockClient.put).toHaveBeenCalledWith('history/4', {
+			id: undefined,
+			note: 'Note Event',
+		});
+		expect(mockClient.put).toHaveBeenCalledTimes(3);
 	});
 });

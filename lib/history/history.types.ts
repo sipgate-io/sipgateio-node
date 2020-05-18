@@ -6,6 +6,22 @@ export interface HistoryModule {
 	fetchById: (entryId: string) => Promise<HistoryEntry>;
 	deleteByListOfIds: (entryIds: string[]) => Promise<void>;
 	deleteById: (entryId: string) => Promise<void>;
+	batchUpdateEvents: (
+		events: HistoryEntry[],
+		callback: (entry: HistoryEntry) => HistoryEntryUpdateOptions
+	) => Promise<void>;
+}
+
+export interface HistoryEntryUpdateOptions {
+	archived?: boolean;
+	starred?: boolean;
+	note?: string;
+	read?: boolean;
+}
+
+export interface HistoryEntryUpdateOptionsWithId
+	extends HistoryEntryUpdateOptions {
+	id: string;
 }
 
 export interface HistoryFilter {

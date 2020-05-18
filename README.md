@@ -646,6 +646,10 @@ interface HistoryModule {
 	fetchById: (entryId: string) => Promise<HistoryEntry>;
 	deleteByListOfIds: (entryIds: string[]) => Promise<void>;
 	deleteById: (entryId: string) => Promise<void>;
+	batchUpdateEvents: (
+		events: HistoryEntry[],
+		callback: (entry: HistoryEntry) => HistoryEntryUpdateOptions
+	) => Promise<void>;
 }
 ```
 
@@ -699,6 +703,19 @@ interface BaseHistoryEntry {
 There are multiple event-types, such as:  
 `CallHistoryEntry`, `FaxHistoryEntry`, `SmsHistoryEntry`, `VoicemailHistoryEntry`.  
 A more detailed description of these types can be found [here](/lib/history/history.types.ts).
+
+#### The `batchUpdateEvents` function
+
+You have to pass events, which should be updated, to the `batchUpdateEvents` function. The second parameter is a mapping function which gives you the ability to return `HistoryEntryUpdateOptions` for every event which is used to set the specified parameters in the history entry.
+
+```typescript
+export interface HistoryEntryUpdateOptions {
+	archived?: boolean;
+	starred?: boolean;
+	note?: string;
+	read?: boolean;
+}
+```
 
 ### Real Time Call Manipulation (RTCM)
 

@@ -1,5 +1,10 @@
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HistoryEntry, HistoryModule, HistoryResponse } from './history.types';
+import {
+	HistoryEntry,
+	HistoryEntryUpdateOptionsWithId,
+	HistoryModule,
+	HistoryResponse,
+} from './history.types';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core';
 import { validateExtension } from '../core/validator';
@@ -46,6 +51,39 @@ export const createHistoryModule = (
 				},
 			})
 			.catch((error) => Promise.reject(handleError(error)));
+	},
+	async batchUpdateEvents(events, callback): Promise<void> {
+		const mappedEvents = events.map((event) => {
+			return {
+				id: event.id,
+				...callback(event),
+			};
+		});
+
+		const eventsToModify = mappedEvents.filter(
+			(eventUpdate) => Object.keys(eventUpdate).length > 1
+		);
+
+		const eventsWithNote: HistoryEntryUpdateOptionsWithId[] = [];
+		const eventsWithoutNote: HistoryEntryUpdateOptionsWithId[] = [];
+
+		eventsToModify.forEach((event) => {
+			if (event.note === undefined) {
+				eventsWithoutNote.push(event);
+			} else {
+				eventsWithNote.push(event);
+			}
+		});
+
+		await Promise.all([
+			...eventsWithNote.map((event) =>
+				client.put(`history/${event.id}`, {
+					...event,
+					id: undefined,
+				})
+			),
+			client.put('history', eventsWithoutNote),
+		]).catch((error) => Promise.reject(handleError(error)));
 	},
 });
 
