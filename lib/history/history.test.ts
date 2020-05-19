@@ -95,7 +95,7 @@ describe('History Module', () => {
 		});
 		expect(mockClient.put).toHaveBeenCalledTimes(3);
 	});
-	
+
 	it('throws an error when a connection id is invalid', async () => {
 		const historyModule = createHistoryModule(mockClient);
 

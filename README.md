@@ -596,17 +596,25 @@ It takes a valid VCard 4.0 string, containing at least the following fields:
 It returns a csv strings containing all contacts for the given scope.  
 You can also add a specific delimiter for the csv format.
 
+**Note:** using a filter will ignore pagination
+
 #### The `exportAsVCards` method:
 
 It returns mulitple vCard-strings containing all contacts for the given scope
+
+**Note:** using a filter will ignore pagination
 
 #### The `exportAsSingleVCard` method:
 
 It returns a vCard-address-book containing all contacts for the given scope
 
+**Note:** using a filter will ignore pagination
+
 #### The `exportAsObjects` method:
 
 It returns a list of contacts for the given scope as described in the following interface.
+
+**Note:** using a filter will ignore pagination
 
 ```typescript
 interface ContactRequest {

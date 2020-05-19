@@ -1,11 +1,30 @@
+import { Pagination } from '../history/history.types';
+
 export interface ContactsModule {
 	import: (contact: ContactImport, scope: Scope) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
-	exportAsCsv: (scope: ExportScope, delimiter?: string) => Promise<string>;
-	exportAsVCards: (scope: ExportScope) => Promise<string[]>;
-	exportAsSingleVCard: (scope: ExportScope) => Promise<string>;
-	exportAsObjects: (scope: ExportScope) => Promise<ContactRequest[]>;
+	exportAsCsv: (
+		scope: ExportScope,
+		delimiter?: string,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<string>;
+	exportAsVCards: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<string[]>;
+	exportAsSingleVCard: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<string>;
+	exportAsObjects: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<ContactRequest[]>;
 }
 
 interface ContactImport {
@@ -67,4 +86,8 @@ export interface ContactRequest {
 export interface ContactsRequest {
 	items: ContactRequest[];
 	totalCount: number;
+}
+
+export interface ContactsExportFilter {
+	phonenumbers: string[];
 }
