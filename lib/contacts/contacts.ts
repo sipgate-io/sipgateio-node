@@ -106,7 +106,7 @@ export const createContactsModule = (
 			},
 		});
 
-		contactsRequest.data.items = contactsRequest.data.items.filter(
+		contactsRequest.items = contactsRequest.items.filter(
 			(contact) => contact.scope === scope
 		);
 
@@ -119,7 +119,7 @@ export const createContactsModule = (
 			'organizations',
 		];
 		const opts = { fields, delimiter };
-		const elements = contactsRequest.data.items.map((contact) => {
+		const elements = contactsRequest.items.map((contact) => {
 			return {
 				id: contact.id,
 				name: contact.name,
@@ -143,10 +143,10 @@ export const createContactsModule = (
 				...filter,
 			},
 		});
-		contactsRequest.data.items = contactsRequest.data.items.filter(
+		contactsRequest.items = contactsRequest.items.filter(
 			(contact) => contact.scope === scope
 		);
-		return contactsRequest.data.items;
+		return contactsRequest.items;
 	},
 
 	async exportAsSingleVCard(scope, pagination, filter): Promise<string> {
@@ -161,27 +161,25 @@ export const createContactsModule = (
 			},
 		});
 
-		contactsRequest.data.items = contactsRequest.data.items.filter(
+		contactsRequest.items = contactsRequest.items.filter(
 			(contact) => contact.scope === scope
 		);
 
-		const contacts = contactsRequest.data.items.map<ContactImport>(
-			(contact) => {
-				return {
-					firstname: contact.name,
-					lastname: '',
-					organizations: contact.organization,
-					phoneNumbers: contact.numbers,
-					emails: contact.emails,
-					addresses: contact.addresses.map((address) => {
-						return {
-							...address,
-							type: ['home'],
-						};
-					}),
-				};
-			}
-		);
+		const contacts = contactsRequest.items.map<ContactImport>((contact) => {
+			return {
+				firstname: contact.name,
+				lastname: '',
+				organizations: contact.organization,
+				phoneNumbers: contact.numbers,
+				emails: contact.emails,
+				addresses: contact.addresses.map((address) => {
+					return {
+						...address,
+						type: ['home'],
+					};
+				}),
+			};
+		});
 
 		return createVCards(contacts);
 	},

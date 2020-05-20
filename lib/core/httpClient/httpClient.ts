@@ -10,11 +10,7 @@ import { version } from '../../version.json';
 import axios from 'axios';
 import btoa from 'btoa';
 
-import {
-	HttpClientModule,
-	HttpRequestConfig,
-	HttpResponse,
-} from './httpClient.module';
+import { HttpClientModule, HttpRequestConfig } from './httpClient.module';
 import qs from 'qs';
 
 export const createHttpClient = (
@@ -36,42 +32,41 @@ export const createHttpClient = (
 	});
 
 	return {
-		delete<T = any, R = HttpResponse<T>>(
-			url: string,
-			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.delete(url, config);
+		async delete<T = any>(url: string, config?: HttpRequestConfig): Promise<T> {
+			const response = await client.delete<T>(url, config);
+			return response.data;
 		},
 
-		get<T = any, R = HttpResponse<T>>(
-			url: string,
-			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.get(url, config);
+		async get<T = any>(url: string, config?: HttpRequestConfig): Promise<T> {
+			const response = await client.get<T>(url, config);
+			return response.data;
 		},
 
-		patch<T = any, R = HttpResponse<T>>(
+		async patch<T = any>(
 			url: string,
 			data?: any,
 			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.patch(url, data, config);
+		): Promise<T> {
+			const response = await client.patch<T>(url, data, config);
+			return response.data;
 		},
 
-		post<T = any, R = HttpResponse<T>>(
+		async post<T = any>(
 			url: string,
 			data?: any,
 			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.post(url, data, config);
+		): Promise<T> {
+			const response = await client.post<T>(url, data, config);
+			return response.data;
 		},
 
-		put<T = any, R = HttpResponse<T>>(
+		async put<T = any>(
 			url: string,
 			data?: any,
 			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.put(url, data, config);
+		): Promise<T> {
+			const response = await client.put<T>(url, data, config);
+			return response.data;
 		},
 	};
 };

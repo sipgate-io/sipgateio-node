@@ -32,9 +32,8 @@ describe('Test header', () => {
 			.reply(201, expectedData);
 
 		const response = await basicAuthHttpClient.get('/test');
-		const { data } = response;
 
-		expect(data).toEqual(expectedData);
+		expect(response).toEqual(expectedData);
 	});
 
 	test('test oAuth authorization header', async () => {
@@ -47,9 +46,8 @@ describe('Test header', () => {
 			.reply(201, expectedData);
 
 		const response = await oAuthHttpClient.get('/test');
-		const { data } = response;
 
-		expect(data).toEqual(expectedData);
+		expect(response).toEqual(expectedData);
 	});
 
 	test('x-header', async () => {
@@ -63,9 +61,7 @@ describe('Test header', () => {
 			.reply(201, expectedData);
 
 		const response = await basicAuthHttpClient.get('/test');
-		const { data } = response;
-
-		expect(data).toEqual(expectedData);
+		expect(response).toEqual(expectedData);
 	});
 
 	test('test x-sipgate-client header', async () => {
@@ -79,9 +75,8 @@ describe('Test header', () => {
 			.reply(201, expectedData);
 
 		const response = await basicAuthHttpClient.get('/test');
-		const { data } = response;
 
-		expect(data).toEqual(expectedData);
+		expect(response).toEqual(expectedData);
 	});
 });
 
@@ -108,7 +103,7 @@ describe('Test wrapper methods', () => {
 		mock.onGet('').reply(200, expectedData);
 
 		const response = await httpClient.get('');
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Valid URL Concatenation for Get Requests', async () => {
@@ -122,7 +117,7 @@ describe('Test wrapper methods', () => {
 		mock.onGet(`${baseUrl}/sessions`).reply(200, expectedData);
 
 		const response = await httpClient.get('/sessions');
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Get Requests', async () => {
@@ -136,7 +131,7 @@ describe('Test wrapper methods', () => {
 		mock.onGet(`${baseUrl}/sessions`).reply(204, expectedData);
 
 		const response = await httpClient.get('/sessions');
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Post to Post Mapping', async () => {
@@ -150,7 +145,7 @@ describe('Test wrapper methods', () => {
 		mock.onPost('', testData).reply(200, expectedData);
 
 		const response = await httpClient.post('', testData);
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Put to Put Mapping', async () => {
@@ -164,7 +159,7 @@ describe('Test wrapper methods', () => {
 		mock.onPut('', testData).reply(200, expectedData);
 
 		const response = await httpClient.put('', testData);
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Delete to Delete Mapping', async () => {
@@ -177,7 +172,7 @@ describe('Test wrapper methods', () => {
 		mock.onDelete('').reply(200, expectedData);
 
 		const response = await httpClient.delete('');
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Patch to Patch Mapping', async () => {
@@ -191,7 +186,7 @@ describe('Test wrapper methods', () => {
 		mock.onPatch('', testData).reply(200, expectedData);
 
 		const response = await httpClient.patch('', testData);
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 });
 

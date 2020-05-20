@@ -18,9 +18,7 @@ describe('Call Module', () => {
 		const expectedSessionId = '123456';
 		mockClient.post = jest.fn().mockImplementation(() => {
 			return Promise.resolve({
-				data: {
-					sessionId: expectedSessionId,
-				},
+				sessionId: expectedSessionId,
 				status: 200,
 			});
 		});

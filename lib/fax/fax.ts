@@ -35,13 +35,12 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 
 		return await client
 			.post<SendFaxSessionResponse>('/sessions/fax', faxDTO)
-			.then((response) => response.data)
 			.catch((error) => Promise.reject(handleError(error)));
 	},
 	async getFaxStatus(sessionId: string): Promise<FaxStatus> {
 		return client
 			.get<HistoryFaxResponse>(`/history/${sessionId}`)
-			.then(({ data }) => {
+			.then((data) => {
 				if (!data.type || data.type !== 'FAX') {
 					throw new Error(ErrorMessage.FAX_NOT_A_FAX);
 				}
