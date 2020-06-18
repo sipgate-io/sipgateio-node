@@ -30,23 +30,6 @@ export interface HistoryEntryUpdateOptionsWithId
 	id: string;
 }
 
-export interface HistoryEntryUpdateOptionsWithId
-	extends HistoryEntryUpdateOptions {
-	id: string;
-}
-
-export interface HistoryEntryUpdateOptions {
-	archived?: boolean;
-	starred?: boolean;
-	note?: string;
-	read?: boolean;
-}
-
-export interface HistoryEntryUpdateOptionsWithId
-	extends HistoryEntryUpdateOptions {
-	id: string;
-}
-
 export interface BaseHistoryFilter {
 	connectionIds?: string[];
 	types?: HistoryEntryType[];
