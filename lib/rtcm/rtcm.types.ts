@@ -1,12 +1,15 @@
 export interface RTCMModule {
 	getEstablishedCalls: () => Promise<RTCMCall[]>;
-	mute: (call: RTCMCall, status: boolean) => Promise<void>;
-	record: (call: RTCMCall, recordOptions: RecordOptions) => Promise<void>;
-	announce: (call: RTCMCall, announcement: string) => Promise<void>;
-	transfer: (call: RTCMCall, transferOptions: TransferOptions) => Promise<void>;
-	sendDTMF: (call: RTCMCall, sequence: string) => Promise<void>;
-	hold: (call: RTCMCall, status: boolean) => Promise<void>;
-	hangUp: (call: RTCMCall) => Promise<void>;
+	mute: (call: GenericCall, status: boolean) => Promise<void>;
+	record: (call: GenericCall, recordOptions: RecordOptions) => Promise<void>;
+	announce: (call: GenericCall, announcement: string) => Promise<void>;
+	transfer: (
+		call: GenericCall,
+		transferOptions: TransferOptions
+	) => Promise<void>;
+	sendDTMF: (call: GenericCall, sequence: string) => Promise<void>;
+	hold: (call: GenericCall, status: boolean) => Promise<void>;
+	hangUp: (call: GenericCall) => Promise<void>;
 }
 
 export interface TransferOptions {
@@ -31,8 +34,11 @@ export interface Participant {
 	owner: boolean;
 }
 
-export interface RTCMCall {
+interface GenericCall {
 	callId: string;
+}
+
+export interface RTCMCall extends GenericCall {
 	muted: boolean;
 	recording: boolean;
 	hold: boolean;
