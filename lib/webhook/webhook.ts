@@ -118,6 +118,11 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 			body += chunk.toString();
 		});
 		request.on('end', () => {
+			body = body
+				.replace('user%5B%5D', 'users%5B%5D')
+				.replace('userId%5B%5D', 'userIds%5B%5D')
+				.replace('fullUserId%5B%5D', 'fullUserIds%5B%5D');
+
 			resolve(parse(body) as CallEvent);
 		});
 	});
