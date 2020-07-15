@@ -1,9 +1,9 @@
 import { ContactImport } from './helpers/Address';
 import {
-	ContactRequest,
+	ContactResponse,
 	ContactsDTO,
 	ContactsModule,
-	ContactsRequest,
+	ContactsListResponse,
 } from './contacts.module';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
@@ -99,14 +99,17 @@ export const createContactsModule = (
 		pagination,
 		filter
 	): Promise<string> {
-		const contactsRequest = await client.get<ContactsRequest>(`contacts`, {
-			params: {
-				...pagination,
-				...filter,
-			},
-		});
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
 
-		contactsRequest.data.items = contactsRequest.data.items.filter(
+		contactsResponse.data.items = contactsResponse.data.items.filter(
 			(contact) => contact.scope === scope
 		);
 
@@ -119,7 +122,7 @@ export const createContactsModule = (
 			'organizations',
 		];
 		const opts = { fields, delimiter };
-		const elements = contactsRequest.data.items.map((contact) => {
+		const elements = contactsResponse.data.items.map((contact) => {
 			return {
 				id: contact.id,
 				name: contact.name,
@@ -136,17 +139,20 @@ export const createContactsModule = (
 			throw Error(err);
 		}
 	},
-	async exportAsObjects(scope, pagination, filter): Promise<ContactRequest[]> {
-		const contactsRequest = await client.get<ContactsRequest>(`contacts`, {
-			params: {
-				...pagination,
-				...filter,
-			},
-		});
-		contactsRequest.data.items = contactsRequest.data.items.filter(
+	async exportAsObjects(scope, pagination, filter): Promise<ContactResponse[]> {
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
+		contactsResponse.data.items = contactsResponse.data.items.filter(
 			(contact) => contact.scope === scope
 		);
-		return contactsRequest.data.items;
+		return contactsResponse.data.items;
 	},
 
 	async exportAsSingleVCard(scope, pagination, filter): Promise<string> {
@@ -154,18 +160,21 @@ export const createContactsModule = (
 		return vCards.join('\r\n');
 	},
 	async exportAsVCards(scope, pagination, filter): Promise<string[]> {
-		const contactsRequest = await client.get<ContactsRequest>(`contacts`, {
-			params: {
-				...pagination,
-				...filter,
-			},
-		});
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
 
-		contactsRequest.data.items = contactsRequest.data.items.filter(
+		contactsResponse.data.items = contactsResponse.data.items.filter(
 			(contact) => contact.scope === scope
 		);
 
-		const contacts = contactsRequest.data.items.map<ContactImport>(
+		const contacts = contactsResponse.data.items.map<ContactImport>(
 			(contact) => {
 				return {
 					firstname: contact.name,

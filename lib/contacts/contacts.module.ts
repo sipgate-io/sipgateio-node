@@ -24,7 +24,7 @@ export interface ContactsModule {
 		scope: ExportScope,
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
-	) => Promise<ContactRequest[]>;
+	) => Promise<ContactResponse[]>;
 }
 
 interface ContactImport {
@@ -72,7 +72,7 @@ type Scope = 'PRIVATE' | 'SHARED';
 
 type ExportScope = Scope | 'INTERNAL';
 
-export interface ContactRequest {
+export interface ContactResponse {
 	id: string;
 	name: string;
 	picture: string;
@@ -83,8 +83,8 @@ export interface ContactRequest {
 	scope: Scope;
 }
 
-export interface ContactsRequest {
-	items: ContactRequest[];
+export interface ContactsListResponse {
+	items: ContactResponse[];
 	totalCount: number;
 }
 
