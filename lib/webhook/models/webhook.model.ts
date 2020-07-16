@@ -15,13 +15,13 @@ enum HangUpCause {
 	FORWARDED = 'forwarded',
 }
 
-export interface Event {
+interface Event {
 	event: EventType;
 	callId: string;
 	originalCallId: string;
 }
 
-export interface GenericCallEvent extends Event {
+interface GenericCallEvent extends Event {
 	direction: Direction;
 	from: string;
 	to: string;
