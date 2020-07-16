@@ -18,6 +18,7 @@ enum HangUpCause {
 export interface Event {
 	event: EventType;
 	callId: string;
+	originalCallId: string;
 }
 
 export interface GenericCallEvent extends Event {
@@ -29,7 +30,6 @@ export interface GenericCallEvent extends Event {
 
 export interface NewCallEvent extends GenericCallEvent {
 	event: EventType.NEW_CALL;
-	originalCallId: string;
 	'user[]': string[];
 	'userId[]': string[];
 	'fullUserId[]': string[];
