@@ -344,73 +344,87 @@ Each of the four callback registration methods takes a single callback function 
 
 Within the callback function the following fields are accessible:
 
-##### All event types
+#### All event types
 
-In all callback functions there is a common subset of available fields:
+##### NewCall
 
-```typescript
-interface GenericCallEvent {
-	callId: string;
-	direction: Direction;
-	from: string;
-	to: string;
-	xcid: string;
-}
-```
+The `NewCallEvent` type offers the following fields:
 
-##### onNewCall
+| Parameter        | Description                                                                                                                                                                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `event`          | `EventType.NEW_CALL`                                                                                                                                                                                                                                                    |
+| `from`           | The calling number (e.g. `"492111234567"` or `"anonymous"`)                                                                                                                                                                                                             |
+| `to`             | The called number (e.g. `"4915791234567"`)                                                                                                                                                                                                                              |
+| `direction`      | The direction of the call (either `"in"` or `"out"`)                                                                                                                                                                                                                    |
+| `callId`         | A unique alphanumeric identifier to match events to specific calls.                                                                                                                                                                                                     |
+| `originalCallId` | A unique alphanumeric identifier to match events to specific calls across transfers.                                                                                                                                                                                    |
+| `user`           | The sipgate user(s) involved. It is the name of the calling user when direction is `"out"`, or of the users receiving the call when direction is `"in"`. Group calls may be received by multiple users. In that case a `user` parameter is set for each of these users. |
+| `userId`         | The IDs of sipgate user(s) involved (e.g. `"w0"`).                                                                                                                                                                                                                      |
+| `fullUserId`     | The full IDs of sipgate user(s) involved (e.g. `"1234567w0"`).                                                                                                                                                                                                          |
+| `xcid`           | Another unique alphanumeric identifier to match events to specific calls                                                                                                                                                                                                |
 
-In addition the `NewCallEvent` type offers the following fields:
-
-```typescript
-interface NewCallEvent extends GenericCallEvent {
-	event: EventType.NEW_CALL;
-	originalCallId: string;
-	user: string[];
-	userId: string[];
-	fullUserId: string[];
-}
-```
-
-##### onAnswer
+##### Answer
 
 the `AnswerEvent` type offers the following fields:
 
-```typescript
-interface AnswerEvent extends GenericCallEvent {
-	event: EventType.ANSWER;
-	user: string;
-	userId: string;
-	fullUserId: string;
-	answeringNumber: string;
-	diversion?: string;
-}
-```
+| Parameter         | Description                                                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------------- |
+| `event`           | `EventType.ANSWER`                                                                              |
+| `from`            | The calling number (e.g. `"492111234567"` or `"anonymous"`)                                     |
+| `to`              | The called number (e.g. `"4915791234567"`)                                                      |
+| `direction`       | The direction of the call (either `"in"` or `"out"`)                                            |
+| `callId`          | A unique alphanumeric identifier to match events to specific calls.                             |
+| `originalCallId`  | A unique alphanumeric identifier to match events to specific calls across transfers.            |
+| `user`            | Name of the user who answered this call. Only incoming calls can have this parameter            |
+| `userId`          | The IDs of sipgate user(s) involved (e.g. `"w0"`).                                              |
+| `fullUserId`      | The full IDs of sipgate user(s) involved (e.g. `"1234567w0"`).                                  |
+| `answeringNumber` | The number of the answering destination. Useful when redirecting to multiple destinations       |
+| `diversion`       | If a call was diverted before it reached sipgate.io this contains the originally dialed number. |
+| `xcid`            | Another unique alphanumeric identifier to match events to specific calls                        |
 
-##### onHangUp
+##### HangUp
 
 the `HangUpEvent` type offers the following fields:
 
-```typescript
-interface HangUpEvent extends GenericCallEvent {
-	event: EventType.HANGUP;
-	cause: HangUpCause;
-	answeringNumber: string;
-}
-```
+| Parameter         | Description                                                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------------- |
+| `event`           | `EventType.HANGUP`                                                                              |
+| `from`            | The calling number (e.g. `"492111234567"` or `"anonymous"`)                                     |
+| `to`              | The called number (e.g. `"4915791234567"`)                                                      |
+| `direction`       | The direction of the call (either `"in"` or `"out"`)                                            |
+| `callId`          | Same as in `NewCallEvent` for a specific call                                                   |
+| `originalCallId`  | A unique alphanumeric identifier to match events to specific calls across transfers.            |
+| `cause`           | The cause for the hangup event (see [table](#hangup-causes) below)                              |
+| `answeringNumber` | The number of the answering destination. Useful when redirecting to multiple destinations       |
+| `diversion`       | If a call was diverted before it reached sipgate.io this contains the originally dialed number. |
+| `xcid`            | Another unique alphanumeric identifier to match events to specific calls                        |
 
-##### onData
+###### Hangup causes
+
+Hangups can occur due to these causes:
+
+| Cause              | Description                                                     |
+| ------------------ | --------------------------------------------------------------- |
+| `"normalClearing"` | One of the participants hung up after the call was established  |
+| `"busy"`           | The called party was busy                                       |
+| `"cancel"`         | The caller hung up before the called party picked up            |
+| `"noAnswer"`       | The called party rejected the call (e.g. through a DND setting) |
+| `"congestion"`     | The called party could not be reached                           |
+| `"notFound"`       | The called number does not exist or called party is offline     |
+| `"forwarded"`      | The call was forwarded to a different party                     |
+
+##### Data
 
 the `DataEvent` type offers the following fields:
 
-```typescript
-interface DataEvent extends Event {
-	event: EventType.DATA;
-	dtmf: string; // Can begin with zero, so it has to be a string
-}
-```
+| Parameter        | Description                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| `event`          | `EventType.DATA`                                                                         |
+| `callId`         | Same as in `NewCallEvent` for a specific call                                            |
+| `originalCallId` | A unique alphanumeric identifier to match events to specific calls across transfers.     |
+| `dtmf`           | Digit(s) the user has entered. If no input is received, the value of dtmf will be empty. |
 
-#### Sending a response
+##### Sending a response
 
 For composing an XML response from withing a callback function our library offers a convenient response builder:
 
@@ -596,17 +610,25 @@ It takes a valid VCard 4.0 string, containing at least the following fields:
 It returns a csv strings containing all contacts for the given scope.  
 You can also add a specific delimiter for the csv format.
 
+**Note:** using a filter will ignore pagination
+
 #### The `exportAsVCards` method:
 
 It returns mulitple vCard-strings containing all contacts for the given scope
+
+**Note:** using a filter will ignore pagination
 
 #### The `exportAsSingleVCard` method:
 
 It returns a vCard-address-book containing all contacts for the given scope
 
+**Note:** using a filter will ignore pagination
+
 #### The `exportAsObjects` method:
 
 It returns a list of contacts for the given scope as described in the following interface.
+
+**Note:** using a filter will ignore pagination
 
 ```typescript
 interface ContactRequest {

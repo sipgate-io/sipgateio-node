@@ -1,3 +1,5 @@
+import { Pagination } from '../core/models';
+
 export interface HistoryModule {
 	fetchAll: (
 		filter?: HistoryFilter,
@@ -59,11 +61,6 @@ export enum Direction {
 export enum Starred {
 	STARRED = 'STARRED',
 	UNSTARRED = 'UNSTARRED',
-}
-
-export interface Pagination {
-	offset?: number;
-	limit?: number;
 }
 
 export interface BaseHistoryEntry {

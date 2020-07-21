@@ -177,10 +177,7 @@ describe('The webhook server', () => {
 		webhookServer.stop();
 	});
 
-	it('should generate a valid XML response with no handlers for answer or hangup event', async () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
-
+	it('should generate a valid XML response with no handlers set', async () => {
 		const response = await sendTestWebhook();
 
 		expect(response.data).toEqual(
@@ -188,12 +185,8 @@ describe('The webhook server', () => {
 		);
 	});
 
-	it('should generate a valid XML response with answer event', async () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
-
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onAnswer(() => {});
+	it('should generate a valid XML response with onAnswer URL', async () => {
+		webhookServer.onAnswer(() => null);
 
 		const response = await sendTestWebhook();
 
@@ -202,12 +195,8 @@ describe('The webhook server', () => {
 		);
 	});
 
-	it('should generate a valid XML response with hangup event', async () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
-
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onHangUp(() => {});
+	it('should generate a valid XML response with onHangup URL', async () => {
+		webhookServer.onHangUp(() => null);
 
 		const response = await sendTestWebhook();
 
@@ -216,15 +205,9 @@ describe('The webhook server', () => {
 		);
 	});
 
-	it('should generate a valid XML response with answer and hangup event', async () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
-
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onAnswer(() => {});
-
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onHangUp(() => {});
+	it('should generate a valid XML response with onAnswer and onHangup URL', async () => {
+		webhookServer.onAnswer(() => null);
+		webhookServer.onHangUp(() => null);
 
 		const response = await sendTestWebhook();
 

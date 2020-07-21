@@ -314,7 +314,7 @@ describe('Contacts Module by vCard', () => {
 	});
 });
 
-describe('Export Contacts as CSV', () => {
+describe('Export Contacts', () => {
 	let contactsModule: ContactsModule;
 	let mockClient: HttpClientModule;
 
@@ -349,5 +349,86 @@ describe('Export Contacts as CSV', () => {
 
 	it('throws no error when setting delimiter with shared scope', () => {
 		expect(() => contactsModule.exportAsCsv('SHARED', ';')).not.toThrowError();
+	});
+
+	it('transfers the given filter and pagination parameters when exporting as csv', () => {
+		contactsModule.exportAsCsv(
+			'INTERNAL',
+			',',
+			{
+				limit: 3,
+				offset: 10,
+			},
+			{ phonenumbers: ['+490123456789'] }
+		);
+
+		expect(mockClient.get).toHaveBeenCalledWith('contacts', {
+			params: {
+				limit: 3,
+				offset: 10,
+				phonenumbers: ['+490123456789'],
+			},
+		});
+		expect(mockClient.get).toHaveBeenCalledTimes(1);
+	});
+
+	it('transfers the given filter and pagination parameters when exporting as vCards', () => {
+		contactsModule.exportAsVCards(
+			'INTERNAL',
+			{
+				limit: 3,
+				offset: 10,
+			},
+			{ phonenumbers: ['+490123456789'] }
+		);
+
+		expect(mockClient.get).toHaveBeenCalledWith('contacts', {
+			params: {
+				limit: 3,
+				offset: 10,
+				phonenumbers: ['+490123456789'],
+			},
+		});
+		expect(mockClient.get).toHaveBeenCalledTimes(1);
+	});
+
+	it('transfers the given filter and pagination parameters when exporting as single vCard', () => {
+		contactsModule.exportAsSingleVCard(
+			'INTERNAL',
+			{
+				limit: 3,
+				offset: 10,
+			},
+			{ phonenumbers: ['+490123456789'] }
+		);
+
+		expect(mockClient.get).toHaveBeenCalledWith('contacts', {
+			params: {
+				limit: 3,
+				offset: 10,
+				phonenumbers: ['+490123456789'],
+			},
+		});
+		expect(mockClient.get).toHaveBeenCalledTimes(1);
+	});
+
+	it('transfers the given filter and pagination parameters when exporting as objects', () => {
+		contactsModule.exportAsObjects(
+			'INTERNAL',
+			{
+				limit: 3,
+				offset: 10,
+			},
+			{ phonenumbers: ['+490123456789'] }
+		);
+
+		expect(mockClient.get).toHaveBeenCalledWith('contacts', {
+			params: {
+				limit: 3,
+				offset: 10,
+				phonenumbers: ['+490123456789'],
+			},
+		});
+		expect(mockClient.get).toHaveBeenCalledTimes(1);
 	});
 });

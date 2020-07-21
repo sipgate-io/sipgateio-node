@@ -1,11 +1,11 @@
-import { ErrorMessage } from './errors/ErrorMessage';
 import {
+	BaseHistoryFilter,
 	HistoryEntry,
 	HistoryEntryUpdateOptionsWithId,
 	HistoryModule,
 	HistoryResponse,
-	BaseHistoryFilter,
 } from './history.types';
+import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core';
 import { validateExtension } from '../core/validator';
@@ -78,7 +78,6 @@ export const createHistoryModule = (
 			),
 			client.put('history', eventsWithoutNote),
 		]).catch((error) => Promise.reject(handleError(error)));
-
 	},
 	async exportAsCsvString(filter, pagination): Promise<string> {
 		validateFilteredExtension(filter);

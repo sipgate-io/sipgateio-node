@@ -32,6 +32,9 @@ const createWebhookServer = async (
 ): Promise<WebhookServer> => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handlers = new Map<EventType, (event: any) => any>();
+
+	handlers.set(EventType.NEW_CALL, () => null);
+
 	return new Promise((resolve, reject) => {
 		const requestHandler = async (
 			req: IncomingMessage,

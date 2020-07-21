@@ -93,8 +93,18 @@ export const createContactsModule = (
 			.catch((error) => Promise.reject(handleError(error)));
 	},
 
-	async exportAsCsv(scope, delimiter = ','): Promise<string> {
-		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
+	async exportAsCsv(
+		scope,
+		delimiter = ',',
+		pagination,
+		filter
+	): Promise<string> {
+		const contactsRequest = await client.get<ContactsRequest>(`contacts`, {
+			params: {
+				...pagination,
+				...filter,
+			},
+		});
 
 		contactsRequest.data.items = contactsRequest.data.items.filter(
 			(contact) => contact.scope === scope
@@ -126,20 +136,30 @@ export const createContactsModule = (
 			throw Error(err);
 		}
 	},
-	async exportAsObjects(scope): Promise<ContactRequest[]> {
-		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
+	async exportAsObjects(scope, pagination, filter): Promise<ContactRequest[]> {
+		const contactsRequest = await client.get<ContactsRequest>(`contacts`, {
+			params: {
+				...pagination,
+				...filter,
+			},
+		});
 		contactsRequest.data.items = contactsRequest.data.items.filter(
 			(contact) => contact.scope === scope
 		);
 		return contactsRequest.data.items;
 	},
 
-	async exportAsSingleVCard(scope): Promise<string> {
-		const vCards = await this.exportAsVCards(scope);
+	async exportAsSingleVCard(scope, pagination, filter): Promise<string> {
+		const vCards = await this.exportAsVCards(scope, pagination, filter);
 		return vCards.join('\r\n');
 	},
-	async exportAsVCards(scope): Promise<string[]> {
-		const contactsRequest = await client.get<ContactsRequest>(`contacts`);
+	async exportAsVCards(scope, pagination, filter): Promise<string[]> {
+		const contactsRequest = await client.get<ContactsRequest>(`contacts`, {
+			params: {
+				...pagination,
+				...filter,
+			},
+		});
 
 		contactsRequest.data.items = contactsRequest.data.items.filter(
 			(contact) => contact.scope === scope
