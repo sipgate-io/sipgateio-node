@@ -2,7 +2,7 @@ import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
 import { ShortMessage, SmsExtension, SmsSenderId } from './models/sms.model';
 import { ErrorMessage as SmsErrors } from './errors/ErrorMessage';
-import { UserInfo } from '../core/models';
+import { UserInfo } from '../core/core.types';
 import {
 	containsPhoneNumber,
 	createSMSModule,

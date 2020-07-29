@@ -1,4 +1,4 @@
-import { Pagination } from '../core/models';
+import { Pagination } from '../core';
 
 export interface ContactsModule {
 	import: (contact: ContactImport, scope: Scope) => Promise<void>;
