@@ -1,12 +1,5 @@
-export interface Address {
-	poBox: string;
-	extendedAddress: string;
-	streetAddress: string;
-	locality: string;
-	region: string;
-	postalCode: string;
-	country: string;
-}
+import { Address } from '../contacts.types';
+import { Email, PhoneNumber } from './../contacts.types';
 
 export interface ContactVCard {
 	firstname: string;
@@ -17,24 +10,7 @@ export interface ContactVCard {
 	address?: Address;
 }
 
-export interface AddressImport {
-	poBox: string;
-	extendedAddress: string;
-	streetAddress: string;
-	locality: string;
-	region: string;
-	postalCode: string;
-	country: string;
-	type: string[];
-}
-
-export interface EmailImport {
-	email: string;
-	type: string[];
-}
-
-export interface PhoneImport {
-	number: string;
+export interface AddressImport extends Address {
 	type: string[];
 }
 
@@ -42,7 +18,7 @@ export interface ContactImport {
 	firstname: string;
 	lastname: string;
 	organizations: string[][];
-	phoneNumbers: PhoneImport[];
-	emails?: EmailImport[];
+	phoneNumbers: PhoneNumber[];
+	emails?: Email[];
 	addresses?: AddressImport[];
 }
