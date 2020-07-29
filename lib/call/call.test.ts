@@ -3,6 +3,7 @@ import { ErrorMessage as CallErrorMessage } from './errors/ErrorMessage';
 import { CallModule } from './call.module';
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
+import { ValidationErrors } from './validators/validateCallData';
 import { createCallModule } from './call';
 
 describe('Call Module', () => {
@@ -52,7 +53,7 @@ describe('Call Module', () => {
 		};
 
 		await expect(callModule.initiate(callData)).rejects.toThrowError(
-			ErrorMessage.VALIDATOR_INVALID_CALLER
+			ValidationErrors.INVALID_CALLER
 		);
 	});
 
