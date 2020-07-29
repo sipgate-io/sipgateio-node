@@ -1,8 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { ContactsDTO, ContactsModule } from './contacts.module';
+import {
+	ContactsDTO,
+	ContactsModule,
+	ImportCSVRequestDTO,
+} from './contacts.types';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule } from '../core/httpClient';
-import { ImportCSVRequestDTO } from './models/contacts.model';
 import { createContactsModule } from './contacts';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
 import {

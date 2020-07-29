@@ -91,3 +91,7 @@ export interface ContactsRequest {
 export interface ContactsExportFilter {
 	phonenumbers: string[];
 }
+
+export interface ImportCSVRequestDTO {
+	base64Content: string;
+}

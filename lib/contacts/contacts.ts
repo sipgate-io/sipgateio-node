@@ -4,10 +4,10 @@ import {
 	ContactsDTO,
 	ContactsModule,
 	ContactsRequest,
-} from './contacts.module';
+	ImportCSVRequestDTO,
+} from './contacts.types';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
-import { ImportCSVRequestDTO } from './models/contacts.model';
 import { Parser } from 'json2csv';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
 import { handleCoreError } from '../core/errors/handleError';
