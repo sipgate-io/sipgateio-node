@@ -1,11 +1,11 @@
 import { EventType, RejectReason } from '../webhook.module';
 
-enum Direction {
+export enum Direction {
 	IN = 'in',
 	OUT = 'out',
 }
 
-enum HangUpCause {
+export enum HangUpCause {
 	NORMAL_CLEARING = 'normalClearing',
 	BUSY = 'busy',
 	CANCEL = 'cancel',
