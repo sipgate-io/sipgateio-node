@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../errors';
-import { ValidationResult } from './validationResult';
+import { ValidationResult } from './validator.types';
 
 const validateEmail = (email: string): ValidationResult => {
 	const emailRegex = new RegExp(

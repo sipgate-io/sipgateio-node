@@ -1,4 +1,4 @@
-export * from './validationResult';
+export * from './validator.types';
 export * from './validateEmail';
 export * from './validateExtension';
 export * from './validateOAuthToken';
