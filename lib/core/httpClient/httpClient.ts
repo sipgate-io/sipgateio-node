@@ -14,7 +14,7 @@ import {
 	HttpClientModule,
 	HttpRequestConfig,
 	HttpResponse,
-} from './httpClient.module';
+} from './httpClient.types';
 import qs from 'qs';
 
 export const createHttpClient = (
