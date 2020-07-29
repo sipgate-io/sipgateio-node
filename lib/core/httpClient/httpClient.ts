@@ -1,5 +1,5 @@
 /* eslint  @typescript-eslint/no-explicit-any: 0 */
-import { AuthCredentials } from '../sipgateIOClient/sipgateIOClient.module';
+import { AuthCredentials } from '../sipgateIOClient/sipgateIOClient.types';
 import { detect as detectPlatform } from 'detect-browser';
 import {
 	validateEmail,
