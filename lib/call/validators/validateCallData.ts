@@ -1,5 +1,5 @@
-import { CallData } from '../models/call.model';
-import { ErrorMessage } from '../../core/errors';
+import { CallData } from '../call.types';
+import { ErrorMessage } from '../../core';
 import {
 	ExtensionType,
 	ValidationResult,

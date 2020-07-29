@@ -1,7 +1,6 @@
-import { CallData } from './models/call.model';
+import { CallData, CallModule } from './call.types';
 import { ErrorMessage as CallErrorMessage } from './errors/ErrorMessage';
-import { CallModule } from './call.module';
-import { ErrorMessage } from '../core/errors';
+import { ErrorMessage } from '../core';
 import { HttpClientModule } from '../core/httpClient';
 import { ValidationErrors } from './validators/validateCallData';
 import { createCallModule } from './call';

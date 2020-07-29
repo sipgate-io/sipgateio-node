@@ -1,9 +1,9 @@
 import {
 	CallDTO,
 	CallData,
+	CallModule,
 	InitiateNewCallSessionResponse,
-} from './models/call.model';
-import { CallModule } from './call.module';
+} from './call.types';
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core/errors/handleError';
