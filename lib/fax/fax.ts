@@ -2,10 +2,11 @@ import { ErrorMessage } from './errors/ErrorMessage';
 import {
 	Fax,
 	FaxDTO,
+	FaxModule,
 	FaxStatus,
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
-	FaxModule } from './fax.types';
+} from './fax.types';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core/errors/handleError';
 import { validatePdfFileContent } from './validators/validatePdfFileContent';
