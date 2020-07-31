@@ -1,8 +1,10 @@
 import { ErrorMessage } from './errors/ErrorMessage';
 import { ExtensionType, validateExtension } from '../core/validator';
 import { HttpClientModule, HttpError } from '../core/httpClient';
-import { WebhookSettings } from './models/webhook-settings.model';
-import { WebhookSettingsModule } from './webhookSettings.module';
+import {
+	WebhookSettings,
+	WebhookSettingsModule,
+} from './webhookSettings.types';
 import { handleCoreError } from '../core/errors';
 import { validateWebhookUrl } from './validators/validateWebhookUrl';
 

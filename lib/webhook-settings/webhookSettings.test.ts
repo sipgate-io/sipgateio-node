@@ -1,8 +1,10 @@
 import { ErrorMessage } from '../core/errors';
 import { HttpClientModule } from '../core/httpClient';
 import { ErrorMessage as WebhookErrorMessage } from './errors/ErrorMessage';
-import { WebhookSettings } from './models/webhook-settings.model';
-import { WebhookSettingsModule } from './webhookSettings.module';
+import {
+	WebhookSettings,
+	WebhookSettingsModule,
+} from './webhookSettings.types';
 import { createSettingsModule } from './webhookSettings';
 
 describe('get settings', () => {
