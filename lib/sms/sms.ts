@@ -5,14 +5,14 @@ import {
 	validatePhoneNumber,
 } from '../core/validator';
 import { HttpClientModule, HttpError } from '../core/httpClient';
-import { SMSModule } from './sms.module';
 import {
+	SMSModule,
 	ShortMessage,
 	ShortMessageDTO,
 	SmsCallerIds,
 	SmsExtensions,
 	SmsSenderId,
-} from './models/sms.model';
+} from './sms.types';
 import { getAuthenticatedWebuser } from '../core/helpers/authorizationInfo';
 import { handleCoreError } from '../core/errors/handleError';
 import { validateSendAt } from './validators/validateSendAt';

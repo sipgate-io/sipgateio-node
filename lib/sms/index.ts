@@ -1,2 +1,2 @@
 export * from './sms';
-export * from './sms.module';
+export * from './sms.types';
