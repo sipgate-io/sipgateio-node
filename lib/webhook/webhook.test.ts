@@ -1,5 +1,5 @@
 import { HttpResponse } from '../core/httpClient';
-import { WebhookModule, WebhookServer } from './webhook.module';
+import { WebhookModule, WebhookServer } from './webhook.types';
 import { WebhookResponse, createWebhookModule } from './webhook';
 import axios from 'axios';
 import qs from 'qs';

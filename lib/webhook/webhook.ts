@@ -1,5 +1,6 @@
 import {
 	CallEvent,
+	EventType,
 	GatherObject,
 	GatherOptions,
 	HangUpObject,
@@ -10,15 +11,12 @@ import {
 	RejectObject,
 	RejectOptions,
 	ResponseObject,
-	VoicemailObject,
-} from './models/webhook.model';
-import {
-	EventType,
 	ServerOptions,
+	VoicemailObject,
 	WebhookModule,
 	WebhookResponseInterface,
 	WebhookServer,
-} from './webhook.module';
+} from './webhook.types';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
