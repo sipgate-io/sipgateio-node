@@ -1,5 +1,5 @@
 import { ErrorMessage } from './errors/ErrorMessage';
-import { FaxDTO } from './models/fax.model';
+import { FaxDTO } from './fax.types';
 import { HttpClientModule } from '../core/httpClient';
 import { createFaxModule } from './fax';
 import validPDFBuffer from './validators/validPDFBuffer';

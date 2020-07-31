@@ -5,8 +5,7 @@ import {
 	FaxStatus,
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
-} from './models/fax.model';
-import { FaxModule } from './fax.module';
+	FaxModule } from './fax.types';
 import { HttpClientModule, HttpError } from '../core/httpClient';
 import { handleCoreError } from '../core/errors/handleError';
 import { validatePdfFileContent } from './validators/validatePdfFileContent';
