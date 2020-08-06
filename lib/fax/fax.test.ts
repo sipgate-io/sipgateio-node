@@ -1,14 +1,14 @@
 import { ErrorMessage } from './errors/ErrorMessage';
 import { FaxDTO } from './fax.types';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createFaxModule } from './fax';
 import validPDFBuffer from './validators/validPDFBuffer';
 
 describe('SendFax', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	test('fax is sent', async () => {
@@ -62,10 +62,10 @@ describe('SendFax', () => {
 });
 
 describe('GetFaxStatus', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	test('throws exception when fax status could not be fetched', async () => {

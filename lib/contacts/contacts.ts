@@ -7,14 +7,14 @@ import {
 	ImportCSVRequestDTO,
 } from './contacts.types';
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
+import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
 import { Parser } from 'json2csv';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
 import { handleCoreError } from '../core/errors/handleError';
 import btoa from 'btoa';
 
 export const createContactsModule = (
-	client: HttpClientModule
+	client: SipgateIOClient
 ): ContactsModule => ({
 	async importFromCsvString(csvContent: string): Promise<void> {
 		const projectedCsv = projectCsvString(csvContent);

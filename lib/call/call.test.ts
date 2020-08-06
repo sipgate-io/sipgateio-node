@@ -1,16 +1,16 @@
 import { CallData, CallModule } from './call.types';
 import { ErrorMessage as CallErrorMessage } from './errors/ErrorMessage';
 import { ErrorMessage } from '../core';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { ValidationErrors } from './validators/validateCallData';
 import { createCallModule } from './call';
 
 describe('Call Module', () => {
 	let callModule: CallModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		callModule = createCallModule(mockClient);
 	});
 

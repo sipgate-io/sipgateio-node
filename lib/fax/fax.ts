@@ -7,11 +7,11 @@ import {
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
 } from './fax.types';
-import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
+import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
 import { handleCoreError } from '../core/errors/handleError';
 import { validatePdfFileContent } from './validators/validatePdfFileContent';
 
-export const createFaxModule = (client: HttpClientModule): FaxModule => ({
+export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
 	async send(faxObject: Fax): Promise<SendFaxSessionResponse> {
 		const fax = faxObject;
 		const fileContentValidationResult = await validatePdfFileContent(

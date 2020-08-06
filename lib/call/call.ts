@@ -5,11 +5,11 @@ import {
 	InitiateNewCallSessionResponse,
 } from './call.types';
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
+import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
 import { handleCoreError } from '../core/errors/handleError';
 import { validateCallData } from './validators/validateCallData';
 
-export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
+export const createCallModule = (httpClient: SipgateIOClient): CallModule => ({
 	async initiate(
 		clickToDial: CallData
 	): Promise<InitiateNewCallSessionResponse> {

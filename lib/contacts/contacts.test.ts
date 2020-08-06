@@ -5,7 +5,7 @@ import {
 	ImportCSVRequestDTO,
 } from './contacts.types';
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createContactsModule } from './contacts';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
 import {
@@ -18,10 +18,10 @@ import atob from 'atob';
 
 describe('Contacts Module', () => {
 	let contactsModule: ContactsModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		mockClient.post = jest
 			.fn()
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -82,13 +82,13 @@ describe('Contacts Module', () => {
 
 describe('Contacts Module by CSV', () => {
 	let contactsModule: ContactsModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	let csvContent: string;
 
 	beforeEach(() => {
 		csvContent = '';
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		mockClient.post = jest
 			.fn()
 			.mockImplementation((_, contactsDTO: ImportCSVRequestDTO) => {
@@ -319,10 +319,10 @@ describe('Contacts Module by vCard', () => {
 
 describe('Export Contacts', () => {
 	let contactsModule: ContactsModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		mockClient.get = jest.fn().mockImplementationOnce((_) => {
 			return Promise.resolve({

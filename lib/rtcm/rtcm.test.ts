@@ -1,13 +1,13 @@
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { RTCMCall } from './rtcm.types';
 import { createRTCMModule } from './rtcm';
 
 describe('RTCM Module', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('validates the DTMF sequence correctly and throws an error if invalid', async () => {

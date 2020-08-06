@@ -1,6 +1,6 @@
 import {
 	AuthCredentials,
-	HttpClientModule,
+	SipgateIOClient,
 	HttpRequestConfig,
 } from './sipgateIOClient.types';
 
@@ -16,7 +16,7 @@ import btoa from 'btoa';
 
 import qs from 'qs';
 
-export const sipgateIO = (credentials: AuthCredentials): HttpClientModule => {
+export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 	const authorizationHeader = getAuthHeader(credentials);
 
 	const platformInfo = detectPlatform();

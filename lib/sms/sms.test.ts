@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../core/errors';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { ShortMessage, SmsExtension, SmsSenderId } from './sms.types';
 import { ErrorMessage as SmsErrors } from './errors/ErrorMessage';
 import { UserInfo } from '../core/core.types';
@@ -11,10 +11,10 @@ import {
 } from './sms';
 
 describe('SMS Module', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('sends  a sms by using a validated phone number', async () => {
@@ -170,9 +170,9 @@ describe('SMS Module', () => {
 });
 
 describe('schedule sms', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	test('should use sendAt', async () => {
@@ -271,7 +271,7 @@ describe('SMS Extension List', () => {
 			status: 200,
 		};
 
-		const mockedClient = {} as HttpClientModule;
+		const mockedClient = {} as SipgateIOClient;
 
 		mockedClient.get = jest
 			.fn()
@@ -315,7 +315,7 @@ describe('CallerIds for SMS Extension', () => {
 			id: 's0',
 		};
 
-		const mockedClient = {} as HttpClientModule;
+		const mockedClient = {} as SipgateIOClient;
 
 		mockedClient.get = jest
 			.fn()

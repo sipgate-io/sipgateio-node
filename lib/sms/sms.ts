@@ -4,7 +4,7 @@ import {
 	validateExtension,
 	validatePhoneNumber,
 } from '../core/validator';
-import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
+import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
 import {
 	SMSModule,
 	ShortMessage,
@@ -17,7 +17,7 @@ import { getAuthenticatedWebuser } from '../core/helpers/authorizationInfo';
 import { handleCoreError } from '../core/errors/handleError';
 import { validateSendAt } from './validators/validateSendAt';
 
-export const createSMSModule = (client: HttpClientModule): SMSModule => ({
+export const createSMSModule = (client: SipgateIOClient): SMSModule => ({
 	async send(sms: ShortMessage, sendAt?: Date): Promise<void> {
 		const smsDTO: ShortMessageDTO = {
 			smsId: '',
@@ -39,7 +39,7 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 });
 
 export const sendSms = async (
-	client: HttpClientModule,
+	client: SipgateIOClient,
 	smsDTO: ShortMessageDTO
 ): Promise<void> => {
 	await client.post('/sessions/sms', smsDTO).catch((error) => {
@@ -48,7 +48,7 @@ export const sendSms = async (
 };
 
 export const getUserSmsExtension = async (
-	client: HttpClientModule,
+	client: SipgateIOClient,
 	webuserId: string
 ): Promise<string> => {
 	return client
@@ -58,7 +58,7 @@ export const getUserSmsExtension = async (
 };
 
 export const getSmsCallerIds = async (
-	client: HttpClientModule,
+	client: SipgateIOClient,
 	webuserExtension: string,
 	smsExtension: string
 ): Promise<SmsSenderId[]> => {
@@ -69,7 +69,7 @@ export const getSmsCallerIds = async (
 };
 
 export const setDefaultSenderId = async (
-	client: HttpClientModule,
+	client: SipgateIOClient,
 	webuserExtension: string,
 	smsId: string,
 	senderId: SmsSenderId
@@ -101,7 +101,7 @@ const handleError = (error: HttpError): Error => {
 };
 
 async function sendSmsByPhoneNumber(
-	client: HttpClientModule,
+	client: SipgateIOClient,
 	sms: ShortMessage,
 	smsDTO: ShortMessageDTO
 ): Promise<void> {
@@ -137,7 +137,7 @@ async function sendSmsByPhoneNumber(
 async function sendSmsBySmsId(
 	sms: ShortMessage,
 	smsDTO: ShortMessageDTO,
-	client: HttpClientModule
+	client: SipgateIOClient
 ): Promise<void> {
 	if (sms.smsId === undefined) {
 		throw new Error('smsId is undefined');

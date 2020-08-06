@@ -16,7 +16,7 @@ export type HttpResponse<T = any> = AxiosResponse<T>;
 
 export type HttpError<T = any> = AxiosError<T>;
 
-export interface HttpClientModule {
+export interface SipgateIOClient {
 	get: <T = any>(url: string, config?: HttpRequestConfig) => Promise<T>;
 	post: <T = any>(
 		url: string,

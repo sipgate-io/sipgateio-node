@@ -2,14 +2,14 @@
 /* eslint-disable no-unused-vars */
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HistoryEntry } from './history.types';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
 
 describe('History Module', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('validates the Extensions and throws an error including the message from the extension-validator', async () => {

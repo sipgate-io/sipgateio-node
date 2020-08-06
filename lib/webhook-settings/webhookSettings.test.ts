@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../core/errors';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { ErrorMessage as WebhookErrorMessage } from './errors/ErrorMessage';
 import {
 	WebhookSettings,
@@ -9,10 +9,10 @@ import { createSettingsModule } from './webhookSettings';
 
 describe('get settings', () => {
 	let mockedSettingsModule: WebhookSettingsModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		mockedSettingsModule = createSettingsModule(mockClient);
 	});
 
@@ -36,12 +36,12 @@ describe('get settings', () => {
 });
 
 describe('setIncomingUrl', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	const TEST_INCOMING_URL = 'http://newIncoming.url';
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('should set supplied incomingUrl in fetched settings object', async () => {
@@ -82,12 +82,12 @@ describe('setIncomingUrl', () => {
 });
 
 describe('setOutgoingUrl', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	const TEST_OUTGOING_URL = 'http://newOutgoing.url';
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('should set supplied incomingUrl in fetched settings object', async () => {
@@ -128,14 +128,14 @@ describe('setOutgoingUrl', () => {
 });
 
 describe('setWhitelist', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	const INVALID_WHITELIST = ['g0', 'greatAgain'];
 	const INVALID_P_EXT_WHITELIST = ['f19'];
 	const VALID_WHITELIST = ['g0', 'p19'];
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('should throw an error when supplied with an invalid array of extensions', async () => {

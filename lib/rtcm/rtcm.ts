@@ -1,10 +1,10 @@
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
+import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
 import { RTCMCall, RTCMCallsResponse, RTCMModule } from './rtcm.types';
 import { handleCoreError } from '../core/errors/handleError';
 import { validateDTMFSequence } from './validator/validateDTMFSequence';
 
-export const createRTCMModule = (client: HttpClientModule): RTCMModule => ({
+export const createRTCMModule = (client: SipgateIOClient): RTCMModule => ({
 	getEstablishedCalls: async (): Promise<RTCMCall[]> => {
 		return client
 			.get<RTCMCallsResponse>('/calls')

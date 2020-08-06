@@ -6,12 +6,12 @@ import {
 	HistoryResponse,
 } from './history.types';
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
+import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
 import { handleCoreError } from '../core';
 import { validateExtension } from '../core/validator';
 
 export const createHistoryModule = (
-	client: HttpClientModule
+	client: SipgateIOClient
 ): HistoryModule => ({
 	async fetchAll(filter, pagination): Promise<HistoryEntry[]> {
 		validateFilteredExtension(filter);
