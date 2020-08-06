@@ -4,7 +4,7 @@ import {
 	ContactsModule,
 	ImportCSVRequestDTO,
 } from './contacts.types';
-import { ErrorMessage } from './errors/ErrorMessage';
+import { ContactsErrorMessage } from './errors/handleContactsError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createContactsModule } from './contacts';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
@@ -42,7 +42,9 @@ describe('Contacts Module', () => {
 				},
 				'PRIVATE'
 			)
-		).rejects.toThrowError(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
+		).rejects.toThrowError(
+			ContactsErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE
+		);
 	});
 
 	it.each`
@@ -123,13 +125,13 @@ describe('Contacts Module by CSV', () => {
 
 	it.each`
 		input                                          | expected
-		${'firstname,lastname\nm,turing\nd,foo,dummy'} | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'firstname,number\nm,turing\nd,foo,dummy'}   | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'\nfirstname,lastname,\nd,foo,dummy'}        | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'lastname,number\nm,turing\nd,foo,dummy'}    | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'foo,dummy,bar\nm,turing\nd,foo,dummy'}      | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'\nm,turing\nd,foo,dummy'}                   | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'\n\nd,foo,dummy'}                           | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'firstname,lastname\nm,turing\nd,foo,dummy'} | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'firstname,number\nm,turing\nd,foo,dummy'}   | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'\nfirstname,lastname,\nd,foo,dummy'}        | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'lastname,number\nm,turing\nd,foo,dummy'}    | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'foo,dummy,bar\nm,turing\nd,foo,dummy'}      | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'\nm,turing\nd,foo,dummy'}                   | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'\n\nd,foo,dummy'}                           | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
 	`(
 		'throws $expected when $input is given (some fields are missing)',
 		async ({ input, expected }) => {
@@ -141,9 +143,9 @@ describe('Contacts Module by CSV', () => {
 
 	it.each`
 		input                                                        | expected
-		${'firstname,lastname,number\nm,turing,000\na,000\na,b,000'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
-		${'firstname,lastname,number\nm,turing,000\na,000,200\na,b'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
-		${'firstname,lastname,number\nturing,000\na,000,c\na,b,000'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
+		${'firstname,lastname,number\nm,turing,000\na,000\na,b,000'} | ${ContactsErrorMessage.CONTACTS_MISSING_VALUES}
+		${'firstname,lastname,number\nm,turing,000\na,000,200\na,b'} | ${ContactsErrorMessage.CONTACTS_MISSING_VALUES}
+		${'firstname,lastname,number\nturing,000\na,000,c\na,b,000'} | ${ContactsErrorMessage.CONTACTS_MISSING_VALUES}
 	`(
 		'throws $expected when $input is given (some rows missing values)',
 		async ({ input, expected }) => {
@@ -155,7 +157,7 @@ describe('Contacts Module by CSV', () => {
 
 	it.each`
 		input | expected
-		${''} | ${ErrorMessage.CONTACTS_INVALID_CSV}
+		${''} | ${ContactsErrorMessage.CONTACTS_INVALID_CSV}
 	`('throws $expected when $input is given', async ({ input, expected }) => {
 		await expect(
 			contactsModule.importFromCsvString(input)
@@ -170,26 +172,26 @@ describe('Contacts Module by vCard', () => {
 
 	it('throws an Error if the vCard does not have a valid starting tag', () => {
 		expect(() => parseVCard('VERSION:4.0\r\nEND:VCARD\r\n')).toThrowError(
-			ErrorMessage.CONTACTS_VCARD_MISSING_BEGIN
+			ContactsErrorMessage.CONTACTS_VCARD_MISSING_BEGIN
 		);
 	});
 
 	it('throws an Error if the vCard does not have a valid ending tag', () => {
 		expect(() => parseVCard('BEGIN:VCARD\r\nVERSION:4.0\r\n\r\n')).toThrowError(
-			ErrorMessage.CONTACTS_VCARD_MISSING_END
+			ContactsErrorMessage.CONTACTS_VCARD_MISSING_END
 		);
 	});
 
 	it('throws an Error if the Names of the vCard Contact are not given', () => {
 		expect(() =>
 			parseVCard('BEGIN:VCARD\r\nVERSION:4.0\r\nEND:VCARD\r\n')
-		).toThrowError(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
+		).toThrowError(ContactsErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
 	});
 
 	it('throws an Error if the Version is not 4.0', () => {
 		expect(() =>
 			parseVCard(example.replace('VERSION:4.0', 'VERSION:2.1'))
-		).toThrowError(ErrorMessage.CONTACTS_INVALID_VCARD_VERSION);
+		).toThrowError(ContactsErrorMessage.CONTACTS_INVALID_VCARD_VERSION);
 	});
 
 	it('throws an Error if no phone number is given', () => {
@@ -197,7 +199,7 @@ describe('Contacts Module by vCard', () => {
 			parseVCard(
 				'BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;Mr.;\r\nEND:VCARD\r\n'
 			)
-		).toThrowError(ErrorMessage.CONTACTS_MISSING_TEL_ATTRIBUTE);
+		).toThrowError(ContactsErrorMessage.CONTACTS_MISSING_TEL_ATTRIBUTE);
 	});
 
 	it('throws an Error if multiple phone numbers are given', () => {
@@ -205,7 +207,9 @@ describe('Contacts Module by vCard', () => {
 			parseVCard(
 				'BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;Mr.;\r\nTEL;type=HOME:+1 202 555 1212\r\nTEL;type=WORK:+1 202 555 1212\r\nEND:VCARD\r\n'
 			)
-		).toThrowError(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_PHONE_NUMBERS);
+		).toThrowError(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_PHONE_NUMBERS
+		);
 	});
 
 	it('throws an Error if multiple email adresses are given', () => {
@@ -213,12 +217,12 @@ describe('Contacts Module by vCard', () => {
 			parseVCard(
 				'BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;Mr.;\r\nTEL;type=WORK:+1 202 555 1212\r\nEMAIL;type=INTERNET;type=WORK;type=pref:johnDoe@example.org\r\nEMAIL;type=INTERNET;type=WORK;type=pref:johnDoe@example.org\r\nEND:VCARD\r\n'
 			)
-		).toThrowError(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS);
+		).toThrowError(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS);
 	});
 
 	it('throws an Error if multiple addresses are given', () => {
 		expect(() => parseVCard(exampleWithTwoAdresses)).toThrowError(
-			ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESSES
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESSES
 		);
 	});
 

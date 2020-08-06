@@ -6,11 +6,13 @@ import {
 	ContactsModule,
 	ImportCSVRequestDTO,
 } from './contacts.types';
-import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpError, SipgateIOClient } from '../core/sipgateIOClient';
+import {
+	ContactsErrorMessage,
+	handleContactsError,
+} from './errors/handleContactsError';
 import { Parser } from 'json2csv';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
-import { handleCoreError } from '../core/errors/handleError';
 import btoa from 'btoa';
 
 export const createContactsModule = (
@@ -25,7 +27,7 @@ export const createContactsModule = (
 
 		await client
 			.post('/contacts/import/csv', contactsDTO)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
 	async import(contact, scope): Promise<void> {
@@ -39,7 +41,7 @@ export const createContactsModule = (
 		} = contact;
 
 		if (firstname === '' && lastname === '') {
-			throw new Error(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
+			throw new Error(ContactsErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
 		}
 		const contactsDTO: ContactsDTO = {
 			name: `${firstname} ${lastname}`,
@@ -54,7 +56,7 @@ export const createContactsModule = (
 		};
 		await client
 			.post('/contacts', contactsDTO)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
 	async importVCardString(vCardContent: string, scope): Promise<void> {
@@ -90,7 +92,7 @@ export const createContactsModule = (
 		};
 		await client
 			.post('/contacts', contactsDTO)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
 	async exportAsCsv(
@@ -197,7 +199,9 @@ export const createContactsModule = (
 const findColumnIndex = (array: string[], needle: string): number => {
 	const index = array.indexOf(needle);
 	if (index < 0) {
-		throw new Error(`${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}: ${needle}`);
+		throw new Error(
+			`${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}: ${needle}`
+		);
 	}
 	return index;
 };
@@ -208,7 +212,7 @@ const projectCsvString = (csvString: string): string => {
 		.filter((line) => line !== '');
 
 	if (csvLines.length < 1) {
-		throw new Error(ErrorMessage.CONTACTS_INVALID_CSV);
+		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_CSV);
 	}
 
 	if (csvLines.length < 2) {
@@ -230,7 +234,7 @@ const projectCsvString = (csvString: string): string => {
 		.map((lines) => lines.split(','))
 		.map((columns, index) => {
 			if (columns.length !== csvHeader.length) {
-				throw Error(ErrorMessage.CONTACTS_MISSING_VALUES);
+				throw Error(ContactsErrorMessage.CONTACTS_MISSING_VALUES);
 			}
 
 			const firstname = columns[columnIndices.firstname];
@@ -246,12 +250,4 @@ const projectCsvString = (csvString: string): string => {
 		});
 
 	return ['firstname,lastname,number', ...lines].join('\n');
-};
-
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 500) {
-		return Error(`${ErrorMessage.CONTACTS_INVALID_CSV}`);
-	}
-
-	return handleCoreError(error);
 };
