@@ -105,14 +105,14 @@ async function sendSmsByPhoneNumber(
 			value.phonenumber === ('from' in sms ? sms.from : sms.phoneNumber)
 	);
 	if (senderId === undefined) {
-		throw new Error(SmsErrorMessage.SMS_NUMBER_NOT_REGISTERED);
+		throw new Error(SmsErrorMessage.NUMBER_NOT_REGISTERED);
 	}
 	if (!senderId.verified) {
-		throw new Error(SmsErrorMessage.SMS_NUMBER_NOT_VERIFIED);
+		throw new Error(SmsErrorMessage.NUMBER_NOT_VERIFIED);
 	}
 	const defaultSmsId = senderIds.find((value) => value.defaultNumber);
 	if (defaultSmsId === undefined) {
-		throw new Error(SmsErrorMessage.SMS_NO_DEFAULT_SENDER_ID);
+		throw new Error(SmsErrorMessage.NO_DEFAULT_SENDER_ID);
 	}
 	smsDTO.smsId = smsExtension;
 	await setDefaultSenderId(client, webuserId, smsExtension, senderId);
@@ -148,7 +148,7 @@ async function sendSmsBySmsId(
 		throw new Error(phoneNumberValidationResult.cause);
 	}
 	if (sms.message === '') {
-		throw new Error(SmsErrorMessage.SMS_INVALID_MESSAGE);
+		throw new Error(SmsErrorMessage.INVALID_MESSAGE);
 	}
 	return await sendSms(client, smsDTO).catch((error) => {
 		throw handleSmsError(error);

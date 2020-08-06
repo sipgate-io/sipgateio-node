@@ -123,7 +123,7 @@ describe('SMS Module', () => {
 		};
 
 		await expect(smsModule.send(message)).rejects.toThrowError(
-			SmsErrorMessage.SMS_INVALID_EXTENSION
+			SmsErrorMessage.INVALID_EXTENSION
 		);
 	});
 
@@ -164,7 +164,7 @@ describe('SMS Module', () => {
 		};
 
 		await expect(smsModule.send(message)).rejects.toThrowError(
-			SmsErrorMessage.SMS_INVALID_MESSAGE
+			SmsErrorMessage.INVALID_MESSAGE
 		);
 	});
 });
@@ -218,7 +218,7 @@ describe('schedule sms', () => {
 		);
 
 		await expect(smsModule.send(message, date)).rejects.toThrowError(
-			SmsErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE
+			SmsErrorMessage.TIME_MUST_BE_IN_FUTURE
 		);
 	});
 
@@ -236,7 +236,7 @@ describe('schedule sms', () => {
 		);
 
 		await expect(smsModule.send(message, date)).rejects.toThrowError(
-			SmsErrorMessage.SMS_TIME_TOO_FAR_IN_FUTURE
+			SmsErrorMessage.TIME_TOO_FAR_IN_FUTURE
 		);
 	});
 
@@ -252,7 +252,7 @@ describe('schedule sms', () => {
 		const date: Date = new Date('08 bar 2015');
 
 		await expect(smsModule.send(message, date)).rejects.toThrowError(
-			SmsErrorMessage.SMS_TIME_INVALID
+			SmsErrorMessage.TIME_INVALID
 		);
 	});
 });
