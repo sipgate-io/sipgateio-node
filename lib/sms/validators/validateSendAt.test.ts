@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors/ErrorMessage';
+import { SmsErrorMessage } from '../errors/handleSmsError';
 import { validateSendAt } from './validateSendAt';
 
 describe('ValidateSendAt', () => {
@@ -9,8 +9,8 @@ describe('ValidateSendAt', () => {
 	test.each`
 		input              | expected
 		${inOneDay}        | ${{ isValid: true }}
-		${threeSecondsAgo} | ${{ isValid: false, cause: ErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE }}
-		${inFortyDays}     | ${{ isValid: false, cause: ErrorMessage.SMS_TIME_TOO_FAR_IN_FUTURE }}
+		${threeSecondsAgo} | ${{ isValid: false, cause: SmsErrorMessage.SMS_TIME_MUST_BE_IN_FUTURE }}
+		${inFortyDays}     | ${{ isValid: false, cause: SmsErrorMessage.SMS_TIME_TOO_FAR_IN_FUTURE }}
 	`(
 		'validator returns $expected when $input is validated',
 		({ input, expected }) => {

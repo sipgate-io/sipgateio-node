@@ -1,4 +1,6 @@
-export enum ErrorMessage {
+import { HttpError, handleCoreError } from '../../core';
+
+export enum SmsErrorMessage {
 	SMS_INVALID_MESSAGE = 'Invalid SMS message',
 	SMS_INVALID_EXTENSION = 'Invalid SMS extension',
 	SMS_TIME_MUST_BE_IN_FUTURE = 'Scheduled time must be in future',
@@ -9,3 +11,10 @@ export enum ErrorMessage {
 	SMS_NUMBER_NOT_VERIFIED = 'Number is not verified yet',
 	SMS_NUMBER_NOT_REGISTERED = 'Number is not registered as a sender ID in your account',
 }
+
+export const handleSmsError = (error: HttpError): Error => {
+	if (error.response && error.response.status === 403) {
+		return new Error(SmsErrorMessage.SMS_INVALID_EXTENSION);
+	}
+	return handleCoreError(error);
+};

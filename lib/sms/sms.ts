@@ -1,10 +1,8 @@
-import { ErrorMessage } from './errors/ErrorMessage';
 import {
 	ExtensionType,
 	validateExtension,
 	validatePhoneNumber,
 } from '../core/validator';
-import { HttpError, SipgateIOClient } from '../core/sipgateIOClient';
 import {
 	SMSModule,
 	ShortMessage,
@@ -13,8 +11,9 @@ import {
 	SmsExtensions,
 	SmsSenderId,
 } from './sms.types';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import { SmsErrorMessage, handleSmsError } from './errors/handleSmsError';
 import { getAuthenticatedWebuser } from '../core/helpers/authorizationInfo';
-import { handleCoreError } from '../core/errors/handleError';
 import { validateSendAt } from './validators/validateSendAt';
 
 export const createSMSModule = (client: SipgateIOClient): SMSModule => ({
@@ -43,7 +42,7 @@ export const sendSms = async (
 	smsDTO: ShortMessageDTO
 ): Promise<void> => {
 	await client.post('/sessions/sms', smsDTO).catch((error) => {
-		throw handleError(error);
+		throw handleSmsError(error);
 	});
 };
 
@@ -54,7 +53,7 @@ export const getUserSmsExtension = async (
 	return client
 		.get<SmsExtensions>(`${webuserId}/sms`)
 		.then((value) => value.items[0].id)
-		.catch((error) => Promise.reject(handleError(error)));
+		.catch((error) => Promise.reject(handleSmsError(error)));
 };
 
 export const getSmsCallerIds = async (
@@ -65,7 +64,7 @@ export const getSmsCallerIds = async (
 	return client
 		.get<SmsCallerIds>(`${webuserExtension}/sms/${smsExtension}/callerids`)
 		.then((value) => value.items)
-		.catch((error) => Promise.reject(handleError(error)));
+		.catch((error) => Promise.reject(handleSmsError(error)));
 };
 
 export const setDefaultSenderId = async (
@@ -79,7 +78,7 @@ export const setDefaultSenderId = async (
 			defaultNumber: 'true',
 		})
 		.catch((error) => {
-			throw handleError(error);
+			throw handleSmsError(error);
 		});
 };
 
@@ -91,13 +90,6 @@ export const containsPhoneNumber = (
 		(smsCallerId) => smsCallerId.phonenumber === phoneNumber
 	);
 	return foundCallerId ? foundCallerId.verified : false;
-};
-
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 403) {
-		return new Error(ErrorMessage.SMS_INVALID_EXTENSION);
-	}
-	return handleCoreError(error);
 };
 
 async function sendSmsByPhoneNumber(
@@ -113,14 +105,14 @@ async function sendSmsByPhoneNumber(
 			value.phonenumber === ('from' in sms ? sms.from : sms.phoneNumber)
 	);
 	if (senderId === undefined) {
-		throw new Error(ErrorMessage.SMS_NUMBER_NOT_REGISTERED);
+		throw new Error(SmsErrorMessage.SMS_NUMBER_NOT_REGISTERED);
 	}
 	if (!senderId.verified) {
-		throw new Error(ErrorMessage.SMS_NUMBER_NOT_VERIFIED);
+		throw new Error(SmsErrorMessage.SMS_NUMBER_NOT_VERIFIED);
 	}
 	const defaultSmsId = senderIds.find((value) => value.defaultNumber);
 	if (defaultSmsId === undefined) {
-		throw new Error(ErrorMessage.SMS_NO_DEFAULT_SENDER_ID);
+		throw new Error(SmsErrorMessage.SMS_NO_DEFAULT_SENDER_ID);
 	}
 	smsDTO.smsId = smsExtension;
 	await setDefaultSenderId(client, webuserId, smsExtension, senderId);
@@ -130,7 +122,7 @@ async function sendSmsByPhoneNumber(
 				await setDefaultSenderId(client, webuserId, smsExtension, defaultSmsId)
 		)
 		.catch((error) => {
-			return Promise.reject(handleError(error));
+			return Promise.reject(handleSmsError(error));
 		});
 }
 
@@ -156,9 +148,9 @@ async function sendSmsBySmsId(
 		throw new Error(phoneNumberValidationResult.cause);
 	}
 	if (sms.message === '') {
-		throw new Error(ErrorMessage.SMS_INVALID_MESSAGE);
+		throw new Error(SmsErrorMessage.SMS_INVALID_MESSAGE);
 	}
 	return await sendSms(client, smsDTO).catch((error) => {
-		throw handleError(error);
+		throw handleSmsError(error);
 	});
 }
