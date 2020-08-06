@@ -72,9 +72,10 @@ interface GenericCallEvent extends Event {
 
 export interface NewCallEvent extends GenericCallEvent {
 	event: EventType.NEW_CALL;
-	'user[]': string[];
-	'userId[]': string[];
-	'fullUserId[]': string[];
+	originalCallId: string;
+	users: string[];
+	userIds: string[];
+	fullUserIds: string[];
 }
 
 export interface AnswerEvent extends GenericCallEvent {

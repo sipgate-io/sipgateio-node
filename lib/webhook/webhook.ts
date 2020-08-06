@@ -103,6 +103,15 @@ const createWebhookServer = async (
 	});
 };
 
+const parseRequestBody = (body: string): CallEvent => {
+	body = body
+		.replace('user%5B%5D', 'users%5B%5D')
+		.replace('userId%5B%5D', 'userIds%5B%5D')
+		.replace('fullUserId%5B%5D', 'fullUserIds%5B%5D');
+
+	return parse(body) as CallEvent;
+};
+
 const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 	return new Promise<CallEvent>((resolve, reject) => {
 		if (
@@ -119,7 +128,7 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 			body += chunk.toString();
 		});
 		request.on('end', () => {
-			resolve(parse(body) as CallEvent);
+			resolve(parseRequestBody(body));
 		});
 	});
 };

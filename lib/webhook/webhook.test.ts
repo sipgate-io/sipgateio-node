@@ -148,11 +148,11 @@ describe('The webhook server', () => {
 		direction: 'in',
 		event: 'newCall',
 		from: '',
-		fullUserId: [],
+		'fullUserId[]': ['123456789'],
 		originalCallId: '',
 		to: '',
-		user: [],
-		userId: [],
+		'user[]': ['TestUser'],
+		'userId[]': ['123456789'],
 		xcid: '',
 	};
 
@@ -177,7 +177,20 @@ describe('The webhook server', () => {
 		webhookServer.stop();
 	});
 
-	it('should generate a valid XML response with no handlers set', async () => {
+	it('should parse the response and replace the array key with plural keys', async () => {
+		webhookServer.onNewCall((newCallEvent) => {
+			expect(newCallEvent.users).toEqual(newCallWebhook['user[]']);
+			expect(newCallEvent.userIds).toEqual(newCallWebhook['userId[]']);
+			expect(newCallEvent.fullUserIds).toEqual(newCallWebhook['fullUserId[]']);
+		});
+
+		await sendTestWebhook();
+	});
+
+	it('should generate a valid XML response with no handlers for answer or hangup event', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onNewCall(() => {});
+
 		const response = await sendTestWebhook();
 
 		expect(response.data).toEqual(
