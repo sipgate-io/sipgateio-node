@@ -41,7 +41,7 @@ export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
 			.get<HistoryFaxResponse>(`/history/${sessionId}`)
 			.then((data) => {
 				if (!data.type || data.type !== 'FAX') {
-					throw new Error(FaxErrorMessage.FAX_NOT_A_FAX);
+					throw new Error(FaxErrorMessage.NOT_A_FAX);
 				}
 
 				return data.faxStatusType;
