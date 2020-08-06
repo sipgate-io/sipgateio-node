@@ -1,14 +1,11 @@
-import { ExtensionType, validateExtension } from '../core/validator';
 import { SipgateIOClient } from '../core/sipgateIOClient';
-import {
-	WebhookSettingErrorMessage,
-	handleWebhookSettingsError,
-} from './errors/handleWebhookSettingError';
 import {
 	WebhookSettings,
 	WebhookSettingsModule,
 } from './webhookSettings.types';
+import { handleWebhookSettingsError } from './errors/handleWebhookSettingError';
 import { validateWebhookUrl } from './validators/validateWebhookUrl';
+import { validateWhitelistExtensions } from './validators/validateWhitelistExtensions';
 
 const SETTINGS_ENDPOINT = 'settings/sipgateio';
 
@@ -105,18 +102,4 @@ const modifyWebhookSettings = async (
 			return client.put(SETTINGS_ENDPOINT, settings);
 		})
 		.catch((error) => handleWebhookSettingsError(error));
-};
-
-const validateWhitelistExtensions = (extensions: string[]): void => {
-	extensions.forEach((extension) => {
-		const validationResult = validateExtension(extension, [
-			ExtensionType.PERSON,
-			ExtensionType.GROUP,
-		]);
-		if (!validationResult.isValid) {
-			throw new Error(
-				`${WebhookSettingErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS}\n${validationResult.cause}: ${extension}`
-			);
-		}
-	});
 };
