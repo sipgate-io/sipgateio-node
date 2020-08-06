@@ -1,5 +1,5 @@
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule, HttpError } from '../core/httpClient';
+import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
 import { RTCMCall, RTCMCallsResponse, RTCMModule } from './rtcm.types';
 import { handleCoreError } from '../core/errors/handleError';
 import { validateDTMFSequence } from './validator/validateDTMFSequence';

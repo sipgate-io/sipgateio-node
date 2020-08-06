@@ -5,7 +5,7 @@ import {
 	InitiateNewCallSessionResponse,
 } from './call.types';
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule, HttpError } from '../core/httpClient';
+import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
 import { handleCoreError } from '../core/errors/handleError';
 import { validateCallData } from './validators/validateCallData';
 

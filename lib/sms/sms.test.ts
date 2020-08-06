@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../core/errors';
-import { HttpClientModule } from '../core/httpClient';
+import { HttpClientModule } from '../core/sipgateIOClient';
 import { ShortMessage, SmsExtension, SmsSenderId } from './sms.types';
 import { ErrorMessage as SmsErrors } from './errors/ErrorMessage';
 import { UserInfo } from '../core/core.types';

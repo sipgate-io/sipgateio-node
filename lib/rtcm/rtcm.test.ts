@@ -1,5 +1,5 @@
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule } from '../core/httpClient';
+import { HttpClientModule } from '../core/sipgateIOClient';
 import { RTCMCall } from './rtcm.types';
 import { createRTCMModule } from './rtcm';
 

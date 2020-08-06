@@ -1,4 +1,4 @@
-import { HttpClientModule } from '../httpClient';
+import { HttpClientModule } from '../sipgateIOClient';
 import { UserInfo } from '../core.types';
 
 export const getAuthenticatedWebuser = async (

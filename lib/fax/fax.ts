@@ -7,7 +7,7 @@ import {
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
 } from './fax.types';
-import { HttpClientModule, HttpError } from '../core/httpClient';
+import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
 import { handleCoreError } from '../core/errors/handleError';
 import { validatePdfFileContent } from './validators/validatePdfFileContent';
 

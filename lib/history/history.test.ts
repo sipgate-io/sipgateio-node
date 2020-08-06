@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { ErrorMessage } from './errors/ErrorMessage';
 import { HistoryEntry } from './history.types';
-import { HttpClientModule } from '../core/httpClient';
+import { HttpClientModule } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
 
 describe('History Module', () => {

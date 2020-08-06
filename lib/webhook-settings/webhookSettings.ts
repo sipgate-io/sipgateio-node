@@ -1,6 +1,6 @@
 import { ErrorMessage } from './errors/ErrorMessage';
 import { ExtensionType, validateExtension } from '../core/validator';
-import { HttpClientModule, HttpError } from '../core/httpClient';
+import { HttpClientModule, HttpError } from '../core/sipgateIOClient';
 import {
 	WebhookSettings,
 	WebhookSettingsModule,

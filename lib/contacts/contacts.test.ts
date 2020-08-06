@@ -5,7 +5,7 @@ import {
 	ImportCSVRequestDTO,
 } from './contacts.types';
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule } from '../core/httpClient';
+import { HttpClientModule } from '../core/sipgateIOClient';
 import { createContactsModule } from './contacts';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
 import {

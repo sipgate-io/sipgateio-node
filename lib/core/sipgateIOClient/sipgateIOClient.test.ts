@@ -1,5 +1,5 @@
-import { createHttpClient } from './httpClient';
 import { detect as detectPlatform } from 'detect-browser';
+import { sipgateIO } from './sipgateIOClient';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 import btoa from 'btoa';
@@ -10,7 +10,7 @@ import packageJson from '../../../package.json';
 
 describe('Test header', () => {
 	const baseUrl = 'https://api.sipgate.com/v2';
-	const basicAuthHttpClient = createHttpClient({
+	const basicAuthHttpClient = sipgateIO({
 		username: 'testUsername@test.de',
 		password: 'testPassword',
 	});
@@ -18,7 +18,7 @@ describe('Test header', () => {
 	const validOAuthToken =
 		'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmM2U3ZzI0NC0yNDQ3LTQ1ODctOWZjYy05ZWY1MjQ3aDE3NHMiLCJleHAiOjE1NDY2NTQ4MjcsIm5iZiI6MCwiaWF0IjoxNTY1NDgzMjE4LCJpc3MiOiJodHRwczovL2xvZ2luLnNpcGdhdGUuY29tL2F1dGgvcmVhbG1zL3RoaXJkLXBhcnR5Iiwic3ViIjoiZjoyZTc0ODY1Ny1mNTV6LTg5Z3MtOWdmMi1ydDU4MjRoMjQ1MTg6ODQ1Mjg0NiIsInR5cCI6IkJlYXJlciIsImF6cCI6InNpcGdhdGUtc3dhZ2dlci11aSIsIm5vbmNlIjoiOTgyMTU3MSIsImF1dGhfdGltZSI6MTU2NTQyODU0OCwic2Vzc2lvbl9zdGF0ZSI6Ijg1ZzR6MXM3LTc4ZzItNDM4NS05ZTFnLXIxODdmMjc0ZWQ5ayIsImFjciI6IjAiLCJzY29wZSI6ImFsbCJ9.axEQX90FLk4W89y92C9eQnwMV3wfewk5zaPCszj46YA';
 
-	const oAuthHttpClient = createHttpClient({ token: validOAuthToken });
+	const oAuthHttpClient = sipgateIO({ token: validOAuthToken });
 
 	test('test authorization header', async () => {
 		const expectedData = 'test';
@@ -93,7 +93,7 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Get to Get Mapping', async () => {
-		const httpClient = createHttpClient({
+		const httpClient = sipgateIO({
 			username: 'testUsername@test.de',
 			password: 'testPassword',
 		});
@@ -107,7 +107,7 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Valid URL Concatenation for Get Requests', async () => {
-		const httpClient = createHttpClient({
+		const httpClient = sipgateIO({
 			username: 'testUsername@test.de',
 			password: 'testPassword',
 		});
@@ -121,7 +121,7 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Get Requests', async () => {
-		const httpClient = createHttpClient({
+		const httpClient = sipgateIO({
 			username: 'testUsername@test.de',
 			password: 'testPassword',
 		});
@@ -135,7 +135,7 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Post to Post Mapping', async () => {
-		const httpClient = createHttpClient({
+		const httpClient = sipgateIO({
 			username: 'testUsername@test.de',
 			password: 'testPassword',
 		});
@@ -149,7 +149,7 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Put to Put Mapping', async () => {
-		const httpClient = createHttpClient({
+		const httpClient = sipgateIO({
 			username: 'testUsername@test.de',
 			password: 'testPassword',
 		});
@@ -163,7 +163,7 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Delete to Delete Mapping', async () => {
-		const httpClient = createHttpClient({
+		const httpClient = sipgateIO({
 			username: 'testUsername@test.de',
 			password: 'testPassword',
 		});
@@ -176,7 +176,7 @@ describe('Test wrapper methods', () => {
 	});
 
 	test('Test Patch to Patch Mapping', async () => {
-		const httpClient = createHttpClient({
+		const httpClient = sipgateIO({
 			username: 'testUsername@test.de',
 			password: 'testPassword',
 		});
@@ -193,12 +193,12 @@ describe('Test wrapper methods', () => {
 describe('validation', () => {
 	test('email', async () => {
 		await expect(() =>
-			createHttpClient({ username: 'testUsername', password: 'testPassword' })
+			sipgateIO({ username: 'testUsername', password: 'testPassword' })
 		).toThrow('Invalid email');
 	});
 	test('password', async () => {
 		await expect(() =>
-			createHttpClient({ username: 'testUsername@test.d', password: '' })
+			sipgateIO({ username: 'testUsername@test.d', password: '' })
 		).toThrow('Invalid password');
 	});
 });

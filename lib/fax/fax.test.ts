@@ -1,6 +1,6 @@
 import { ErrorMessage } from './errors/ErrorMessage';
 import { FaxDTO } from './fax.types';
-import { HttpClientModule } from '../core/httpClient';
+import { HttpClientModule } from '../core/sipgateIOClient';
 import { createFaxModule } from './fax';
 import validPDFBuffer from './validators/validPDFBuffer';
 
