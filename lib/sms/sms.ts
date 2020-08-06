@@ -53,7 +53,7 @@ export const getUserSmsExtension = async (
 ): Promise<string> => {
 	return client
 		.get<SmsExtensions>(`${webuserId}/sms`)
-		.then((value) => value.data.items[0].id)
+		.then((value) => value.items[0].id)
 		.catch((error) => Promise.reject(handleError(error)));
 };
 
@@ -64,7 +64,7 @@ export const getSmsCallerIds = async (
 ): Promise<SmsSenderId[]> => {
 	return client
 		.get<SmsCallerIds>(`${webuserExtension}/sms/${smsExtension}/callerids`)
-		.then((value) => value.data.items)
+		.then((value) => value.items)
 		.catch((error) => Promise.reject(handleError(error)));
 };
 

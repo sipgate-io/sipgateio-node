@@ -109,7 +109,7 @@ export const createContactsModule = (
 			}
 		);
 
-		contactsResponse.data.items = contactsResponse.data.items.filter(
+		contactsResponse.items = contactsResponse.items.filter(
 			(contact) => contact.scope === scope
 		);
 
@@ -122,7 +122,7 @@ export const createContactsModule = (
 			'organizations',
 		];
 		const opts = { fields, delimiter };
-		const elements = contactsResponse.data.items.map((contact) => {
+		const elements = contactsResponse.items.map((contact) => {
 			return {
 				id: contact.id,
 				name: contact.name,
@@ -149,10 +149,10 @@ export const createContactsModule = (
 				},
 			}
 		);
-		contactsResponse.data.items = contactsResponse.data.items.filter(
+		contactsResponse.items = contactsResponse.items.filter(
 			(contact) => contact.scope === scope
 		);
-		return contactsResponse.data.items;
+		return contactsResponse.items;
 	},
 
 	async exportAsSingleVCard(scope, pagination, filter): Promise<string> {
@@ -170,27 +170,25 @@ export const createContactsModule = (
 			}
 		);
 
-		contactsResponse.data.items = contactsResponse.data.items.filter(
+		contactsResponse.items = contactsResponse.items.filter(
 			(contact) => contact.scope === scope
 		);
 
-		const contacts = contactsResponse.data.items.map<ContactImport>(
-			(contact) => {
-				return {
-					firstname: contact.name,
-					lastname: '',
-					organizations: contact.organization,
-					phoneNumbers: contact.numbers,
-					emails: contact.emails,
-					addresses: contact.addresses.map((address) => {
-						return {
-							...address,
-							type: ['home'],
-						};
-					}),
-				};
-			}
-		);
+		const contacts = contactsResponse.items.map<ContactImport>((contact) => {
+			return {
+				firstname: contact.name,
+				lastname: '',
+				organizations: contact.organization,
+				phoneNumbers: contact.numbers,
+				emails: contact.emails,
+				addresses: contact.addresses.map((address) => {
+					return {
+						...address,
+						type: ['home'],
+					};
+				}),
+			};
+		});
 
 		return createVCards(contacts);
 	},

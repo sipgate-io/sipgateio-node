@@ -16,13 +16,11 @@ describe('SendFax', () => {
 
 		mockClient.post = jest
 			.fn()
-			.mockImplementationOnce(() =>
-				Promise.resolve({ data: { sessionId: '123123' } })
-			);
+			.mockImplementationOnce(() => Promise.resolve({ sessionId: '123123' }));
 		mockClient.get = jest
 			.fn()
 			.mockImplementationOnce(() =>
-				Promise.resolve({ data: { type: 'FAX', faxStatusType: 'SENT' } })
+				Promise.resolve({ type: 'FAX', faxStatusType: 'SENT' })
 			);
 
 		const to = '+4912368712';
@@ -44,13 +42,13 @@ describe('SendFax', () => {
 			.fn()
 			.mockImplementationOnce((_, { filename }: FaxDTO) => {
 				expect(filename && /^Fax_2\d{7}_\d{4}$/.test(filename)).toBeTruthy();
-				return Promise.resolve({ data: { sessionId: 123456 } });
+				return Promise.resolve({ sessionId: 123456 });
 			});
 
 		mockClient.get = jest
 			.fn()
 			.mockImplementationOnce(() =>
-				Promise.resolve({ data: { type: 'FAX', faxStatusType: 'SENT' } })
+				Promise.resolve({ type: 'FAX', faxStatusType: 'SENT' })
 			);
 
 		const faxModule = createFaxModule(mockClient);

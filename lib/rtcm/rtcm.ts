@@ -8,7 +8,7 @@ export const createRTCMModule = (client: HttpClientModule): RTCMModule => ({
 	getEstablishedCalls: async (): Promise<RTCMCall[]> => {
 		return client
 			.get<RTCMCallsResponse>('/calls')
-			.then((response) => response.data.data)
+			.then((response) => response.data)
 			.catch((error) => Promise.reject(handleError(error)));
 	},
 	mute: async (call, status): Promise<void> => {

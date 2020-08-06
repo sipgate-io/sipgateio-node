@@ -23,42 +23,36 @@ describe('SMS Module', () => {
 		mockClient.get = jest.fn().mockImplementation((args) => {
 			if (args === 'authorization/userinfo') {
 				return Promise.resolve({
-					data: {
-						sub: 'w999',
-					},
+					sub: 'w999',
 				});
 			}
 			if (args === 'w999/sms') {
 				return Promise.resolve({
-					data: {
-						items: [
-							{
-								id: 's999',
-								alias: 'SMS von Douglas Engelbart',
-								callerId: '+4915739777777',
-							},
-						],
-					},
+					items: [
+						{
+							id: 's999',
+							alias: 'SMS von Douglas Engelbart',
+							callerId: '+4915739777777',
+						},
+					],
 				});
 			}
 			if (args === 'w999/sms/s999/callerids') {
 				return Promise.resolve({
-					data: {
-						items: [
-							{
-								id: 0,
-								phonenumber: 'sipgate',
-								verified: true,
-								defaultNumber: true,
-							},
-							{
-								id: 123456,
-								phonenumber: '+4915739777777',
-								verified: true,
-								defaultNumber: false,
-							},
-						],
-					},
+					items: [
+						{
+							id: 0,
+							phonenumber: 'sipgate',
+							verified: true,
+							defaultNumber: true,
+						},
+						{
+							id: 123456,
+							phonenumber: '+4915739777777',
+							verified: true,
+							defaultNumber: false,
+						},
+					],
 				});
 			}
 			return Promise.reject({
@@ -267,15 +261,13 @@ describe('SMS Extension List', () => {
 	test('should get SMS ID LIST', async () => {
 		const mockUserID = '0000000';
 		const mockData = {
-			data: {
-				items: [
-					{
-						alias: '"Alexander Bain\'s phone"',
-						callerId: '+491517777777',
-						id: 's0',
-					},
-				],
-			},
+			items: [
+				{
+					alias: '"Alexander Bain\'s phone"',
+					callerId: '+491517777777',
+					id: 's0',
+				},
+			],
 			status: 200,
 		};
 
@@ -294,22 +286,20 @@ describe('SMS Extension List', () => {
 describe('CallerIds for SMS Extension', () => {
 	test('should get callerIds for sms extension', async () => {
 		const mockData = {
-			data: {
-				items: [
-					{
-						defaultNumber: true,
-						id: 0,
-						phonenumber: '+4912345678',
-						verified: true,
-					},
-					{
-						defaultNumber: false,
-						id: 1,
-						phonenumber: '+4987654321',
-						verified: false,
-					},
-				],
-			},
+			items: [
+				{
+					defaultNumber: true,
+					id: 0,
+					phonenumber: '+4912345678',
+					verified: true,
+				},
+				{
+					defaultNumber: false,
+					id: 1,
+					phonenumber: '+4987654321',
+					verified: false,
+				},
+			],
 		};
 
 		const userInfo: UserInfo = {
@@ -336,7 +326,7 @@ describe('CallerIds for SMS Extension', () => {
 			userInfo.sub,
 			smsExtension.id
 		);
-		expect(callerIds).toEqual(mockData.data.items);
+		expect(callerIds).toEqual(mockData.items);
 	});
 });
 

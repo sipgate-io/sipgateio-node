@@ -23,13 +23,12 @@ export const createHistoryModule = (
 					...pagination,
 				},
 			})
-			.then((response) => response.data.items)
+			.then((response) => response.items)
 			.catch((error) => Promise.reject(handleError(error)));
 	},
 	async fetchById(entryId): Promise<HistoryEntry> {
 		return await client
 			.get<HistoryEntry>(`/history/${entryId}`)
-			.then((response) => response.data)
 			.catch((error) => Promise.reject(handleError(error)));
 	},
 	async deleteById(entryId): Promise<void> {
