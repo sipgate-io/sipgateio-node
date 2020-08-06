@@ -138,7 +138,7 @@ export enum CallStatusType {
 
 export interface SmsHistoryEntry extends BaseHistoryEntry {
 	type: HistoryEntryType.SMS;
-	content: string;
+	smsContent: string;
 	scheduled: string;
 }
 
