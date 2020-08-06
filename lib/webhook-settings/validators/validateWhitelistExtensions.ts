@@ -1,5 +1,5 @@
 import { ExtensionType, validateExtension } from '../../core/validator';
-import { WebhookSettingErrorMessage } from '../errors/handleWebhookSettingError';
+import { ValidatorMessages } from './ValidatorMessages';
 
 const validateWhitelistExtensions = (extensions: string[]): void => {
 	extensions.forEach((extension) => {
@@ -9,7 +9,7 @@ const validateWhitelistExtensions = (extensions: string[]): void => {
 		]);
 		if (!validationResult.isValid) {
 			throw new Error(
-				`${WebhookSettingErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS}\n${validationResult.cause}: ${extension}`
+				`${ValidatorMessages.INVALID_EXTENSION_FOR_WEBHOOKS}\n${validationResult.cause}: ${extension}`
 			);
 		}
 	});

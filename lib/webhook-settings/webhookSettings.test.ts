@@ -1,6 +1,6 @@
 import { ErrorMessage } from '../core/errors';
 import { SipgateIOClient } from '../core/sipgateIOClient';
-import { WebhookSettingErrorMessage } from './errors/handleWebhookSettingError';
+import { ValidatorMessages } from './validators/ValidatorMessages';
 import {
 	WebhookSettings,
 	WebhookSettingsModule,
@@ -76,7 +76,7 @@ describe('setIncomingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setIncomingUrl('newUrl')).rejects.toThrowError(
-			WebhookSettingErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
+			ValidatorMessages.INVALID_WEBHOOK_URL
 		);
 	});
 });
@@ -122,7 +122,7 @@ describe('setOutgoingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setOutgoingUrl('newUrl')).rejects.toThrowError(
-			WebhookSettingErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
+			ValidatorMessages.INVALID_WEBHOOK_URL
 		);
 	});
 });
@@ -151,9 +151,7 @@ describe('setWhitelist', () => {
 
 		await expect(
 			settingsModule.setWhitelist(INVALID_P_EXT_WHITELIST)
-		).rejects.toThrowError(
-			WebhookSettingErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS
-		);
+		).rejects.toThrowError(ValidatorMessages.INVALID_EXTENSION_FOR_WEBHOOKS);
 	});
 
 	it('should succeed when supplied with a valid array of extensions', async () => {
