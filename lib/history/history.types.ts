@@ -33,7 +33,7 @@ export interface HistoryEntryUpdateOptionsWithId
 export interface BaseHistoryFilter {
 	connectionIds?: string[];
 	types?: HistoryEntryType[];
-	directions?: Direction[];
+	directions?: HistoryDirection[];
 	archived?: boolean;
 	starred?: Starred;
 	from?: Date;
@@ -51,7 +51,7 @@ export enum HistoryEntryType {
 	FAX = 'FAX',
 }
 
-export enum Direction {
+export enum HistoryDirection {
 	INCOMING = 'INCOMING',
 	OUTGOING = 'OUTGOING',
 	MISSED_INCOMING = 'MISSED_INCOMING',
@@ -72,7 +72,7 @@ export interface BaseHistoryEntry {
 	type: HistoryEntryType;
 	created: Date;
 	lastModified: Date;
-	direction: Direction;
+	direction: HistoryDirection;
 	incoming: boolean;
 	status: string;
 	connectionIds: string[];

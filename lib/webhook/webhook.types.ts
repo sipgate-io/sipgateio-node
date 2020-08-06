@@ -42,7 +42,7 @@ export enum RejectReason {
 	REJECTED = 'rejected',
 }
 
-export enum Direction {
+export enum WebhookDirection {
 	IN = 'in',
 	OUT = 'out',
 }
@@ -64,7 +64,7 @@ interface Event {
 }
 
 interface GenericCallEvent extends Event {
-	direction: Direction;
+	direction: WebhookDirection;
 	from: string;
 	to: string;
 	xcid: string;
