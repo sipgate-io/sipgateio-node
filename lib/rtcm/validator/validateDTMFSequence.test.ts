@@ -1,15 +1,15 @@
-import { ErrorMessage } from '../errors/ErrorMessage';
+import { RtcmErrorMessage } from '../errors/handleRtcmError';
 import { validateDTMFSequence } from './validateDTMFSequence';
 
 describe('dtmf sequence validation', () => {
 	test.each`
 		input                     | expected
-		${{ sequence: '12 34' }}  | ${{ isValid: false, cause: ErrorMessage.DTMF_INVALID_SEQUENCE }}
-		${{ sequence: ' *' }}     | ${{ isValid: false, cause: ErrorMessage.DTMF_INVALID_SEQUENCE }}
+		${{ sequence: '12 34' }}  | ${{ isValid: false, cause: RtcmErrorMessage.DTMF_INVALID_SEQUENCE }}
+		${{ sequence: ' *' }}     | ${{ isValid: false, cause: RtcmErrorMessage.DTMF_INVALID_SEQUENCE }}
 		${{ sequence: '0291*' }}  | ${{ isValid: true }}
 		${{ sequence: '*100#' }}  | ${{ isValid: true }}
-		${{ sequence: '*AaBb#' }} | ${{ isValid: false, cause: ErrorMessage.DTMF_INVALID_SEQUENCE }}
-		${{ sequence: 'aa' }}     | ${{ isValid: false, cause: ErrorMessage.DTMF_INVALID_SEQUENCE }}
+		${{ sequence: '*AaBb#' }} | ${{ isValid: false, cause: RtcmErrorMessage.DTMF_INVALID_SEQUENCE }}
+		${{ sequence: 'aa' }}     | ${{ isValid: false, cause: RtcmErrorMessage.DTMF_INVALID_SEQUENCE }}
 		${{ sequence: 'A' }}      | ${{ isValid: true }}
 		${{ sequence: 'B' }}      | ${{ isValid: true }}
 		${{ sequence: 'C' }}      | ${{ isValid: true }}
@@ -23,7 +23,7 @@ describe('dtmf sequence validation', () => {
 		${{ sequence: '7' }}      | ${{ isValid: true }}
 		${{ sequence: '8' }}      | ${{ isValid: true }}
 		${{ sequence: '9' }}      | ${{ isValid: true }}
-		${{ sequence: '' }}       | ${{ isValid: false, cause: ErrorMessage.DTMF_INVALID_SEQUENCE }}
+		${{ sequence: '' }}       | ${{ isValid: false, cause: RtcmErrorMessage.DTMF_INVALID_SEQUENCE }}
 	`(
 		'validator returns $expected when $input is validated',
 		({ input, expected }) => {

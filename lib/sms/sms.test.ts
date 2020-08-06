@@ -1,6 +1,6 @@
 import { ErrorMessage } from '../core/errors';
-import { SipgateIOClient } from '../core/sipgateIOClient';
 import { ShortMessage, SmsExtension, SmsSenderId } from './sms.types';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { ErrorMessage as SmsErrors } from './errors/ErrorMessage';
 import { UserInfo } from '../core/core.types';
 import {

@@ -4,7 +4,7 @@ import {
 	validateExtension,
 	validatePhoneNumber,
 } from '../core/validator';
-import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
+import { HttpError, SipgateIOClient } from '../core/sipgateIOClient';
 import {
 	SMSModule,
 	ShortMessage,
