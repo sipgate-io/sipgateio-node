@@ -1,5 +1,5 @@
 import { ErrorMessage } from './ErrorMessage';
-import { HttpError } from '../httpClient';
+import { HttpError } from '../sipgateIOClient';
 
 export const handleCoreError = (error: HttpError): Error => {
 	if (error.response && error.response.status === 401) {

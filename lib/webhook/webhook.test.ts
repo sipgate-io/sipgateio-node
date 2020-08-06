@@ -1,4 +1,4 @@
-import { HttpResponse } from '../core/httpClient';
+import { HttpResponse } from '../core/sipgateIOClient';
 import { WebhookModule, WebhookServer } from './webhook.module';
 import { WebhookResponse, createWebhookModule } from './webhook';
 import axios from 'axios';

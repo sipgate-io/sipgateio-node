@@ -6,7 +6,7 @@ import {
 	ContactsRequest,
 } from './contacts.module';
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule, HttpError } from '../core/httpClient';
+import { HttpError, HttpClientModule } from '../core/sipgateIOClient';
 import { ImportCSVRequestDTO } from './models/contacts.model';
 import { Parser } from 'json2csv';
 import { createVCards, parseVCard } from './helpers/vCardHelper';

@@ -7,7 +7,7 @@ import {
 	SendFaxSessionResponse,
 } from './models/fax.model';
 import { FaxModule } from './fax.module';
-import { HttpClientModule, HttpError } from '../core/httpClient';
+import { HttpError, HttpClientModule } from '../core/sipgateIOClient';
 import { handleCoreError } from '../core/errors/handleError';
 import { validatePdfFileContent } from './validators/validatePdfFileContent';
 

@@ -5,7 +5,7 @@ import {
 } from './models/call.model';
 import { CallModule } from './call.module';
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule, HttpError } from '../core/httpClient';
+import { HttpError, HttpClientModule } from '../core/sipgateIOClient';
 import { handleCoreError } from '../core/errors/handleError';
 import { validateCallData } from './validators/validateCallData';
 

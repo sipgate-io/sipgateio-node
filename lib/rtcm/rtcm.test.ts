@@ -1,6 +1,6 @@
 import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpClientModule } from '../core/httpClient';
 import { RTCMCall } from './rtcm.types';
+import { HttpClientModule } from '../core/sipgateIOClient';
 import { createRTCMModule } from './rtcm';
 
 describe('RTCM Module', () => {

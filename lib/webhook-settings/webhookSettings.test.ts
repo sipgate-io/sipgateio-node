@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../core/errors';
-import { HttpClientModule } from '../core/httpClient';
+import { HttpClientModule } from '../core/sipgateIOClient';
 import { ErrorMessage as WebhookErrorMessage } from './errors/ErrorMessage';
 import { WebhookSettings } from './models/webhook-settings.model';
 import { WebhookSettingsModule } from './webhookSettings.module';

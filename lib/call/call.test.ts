@@ -2,7 +2,7 @@ import { CallData } from './models/call.model';
 import { ErrorMessage as CallErrorMessage } from './errors/ErrorMessage';
 import { CallModule } from './call.module';
 import { ErrorMessage } from '../core/errors';
-import { HttpClientModule } from '../core/httpClient';
+import { HttpClientModule } from '../core/sipgateIOClient';
 import { createCallModule } from './call';
 
 describe('Call Module', () => {

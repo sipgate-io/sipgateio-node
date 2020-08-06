@@ -1,4 +1,4 @@
-import { HttpClientModule } from '../httpClient';
+import { HttpClientModule } from '../sipgateIOClient';
 
 export interface AuthInfo {
 	sub: string;
