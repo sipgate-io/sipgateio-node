@@ -5,9 +5,8 @@ import {
 	HistoryModule,
 	HistoryResponse,
 } from './history.types';
-import { ErrorMessage } from './errors/ErrorMessage';
-import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
-import { handleCoreError } from '../core';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import { handleHistoryError } from './errors/handleHistoryError';
 import { validateExtension } from '../core/validator';
 
 export const createHistoryModule = (
@@ -24,17 +23,17 @@ export const createHistoryModule = (
 				},
 			})
 			.then((response) => response.items)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 	async fetchById(entryId): Promise<HistoryEntry> {
 		return await client
 			.get<HistoryEntry>(`/history/${entryId}`)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 	async deleteById(entryId): Promise<void> {
 		await client
 			.delete<string>(`/history/${entryId}`)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 	async deleteByListOfIds(entryIds): Promise<void> {
 		await client
@@ -43,7 +42,7 @@ export const createHistoryModule = (
 					id: entryIds,
 				},
 			})
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 	async batchUpdateEvents(events, callback): Promise<void> {
 		const mappedEvents = events.map((event) => {
@@ -76,7 +75,7 @@ export const createHistoryModule = (
 				})
 			),
 			client.put('history', eventsWithoutNote),
-		]).catch((error) => Promise.reject(handleError(error)));
+		]).catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 	async exportAsCsvString(filter, pagination): Promise<string> {
 		validateFilteredExtension(filter);
@@ -88,21 +87,9 @@ export const createHistoryModule = (
 				},
 			})
 			.then((response) => response.data)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 });
-
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 400) {
-		return new Error(ErrorMessage.HISTORY_BAD_REQUEST);
-	}
-
-	if (error.response && error.response.status === 404) {
-		return new Error(ErrorMessage.HISTORY_EVENT_NOT_FOUND);
-	}
-
-	return handleCoreError(error);
-};
 
 const validateFilteredExtension = (filter?: BaseHistoryFilter): void => {
 	if (filter && filter.connectionIds) {

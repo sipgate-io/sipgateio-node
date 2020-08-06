@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-import { ErrorMessage } from './errors/ErrorMessage';
 import { HistoryEntry } from './history.types';
+import { HistoryErrorMessage } from './errors/handleHistoryError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
 
@@ -33,7 +33,7 @@ describe('History Module', () => {
 
 		await expect(
 			historyModule.fetchById('someUnknownEntryId')
-		).rejects.toThrowError(ErrorMessage.HISTORY_EVENT_NOT_FOUND);
+		).rejects.toThrowError(HistoryErrorMessage.EVENT_NOT_FOUND);
 	});
 
 	it('throws an error when the API answers with 400 Bad Request', async () => {
@@ -49,7 +49,7 @@ describe('History Module', () => {
 
 		await expect(
 			historyModule.fetchAll({}, { limit: 100000 })
-		).rejects.toThrowError(ErrorMessage.HISTORY_BAD_REQUEST);
+		).rejects.toThrowError(HistoryErrorMessage.BAD_REQUEST);
 	});
 
 	it('batchUpdates historyUpdates which include no note', async () => {
