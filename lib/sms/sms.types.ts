@@ -6,33 +6,13 @@ export interface GenericShortMessage {
 	message: string;
 }
 
-export interface DefaultRecipient {
+export interface Recipient {
 	to: string;
 }
 
-export interface DefaultPhoneNumber {
+export interface PhoneNumber {
 	from: string;
 }
-
-/**
- * @deprecated
- * @since 1.0.1
- * use @interface Recipient instead
- */
-export interface DeprecatedRecipient {
-	recipient: string;
-}
-/**
- * @deprecated
- * @since 1.0.1
- * use @interface  instead
- */
-export interface DeprecatedPhoneNumber {
-	phoneNumber: string;
-}
-
-type Recipient = DefaultRecipient | DeprecatedRecipient;
-type PhoneNumber = DeprecatedPhoneNumber | DefaultPhoneNumber;
 
 interface DefaultWithPhoneNumber {
 	smsId?: undefined;

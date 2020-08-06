@@ -13,20 +13,7 @@ interface Recipient {
 	to: string;
 }
 
-/**
- * @deprecated
- * @since 1.0.1
- * use @interface Recipient instead
- */
-interface DeprecatedRecipient {
-	recipient: string;
-}
-
-type Recipients = Recipient | DeprecatedRecipient;
-
-export type Fax = FaxObject & Recipients;
-
-// DTOs
+export type Fax = FaxObject & Recipient;
 
 export interface SendFaxSessionResponse {
 	sessionId: string;

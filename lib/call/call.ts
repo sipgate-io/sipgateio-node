@@ -18,8 +18,8 @@ export const createCallModule = (httpClient: HttpClientModule): CallModule => ({
 			throw new Error(clickToDialValidation.cause);
 		}
 		const callDTO: CallDTO = {
-			callee: 'to' in clickToDial ? clickToDial.to : clickToDial.callee,
-			caller: 'from' in clickToDial ? clickToDial.from : clickToDial.caller,
+			callee: clickToDial.to,
+			caller: clickToDial.from,
 			callerId: clickToDial.callerId,
 			deviceId: clickToDial.deviceId,
 		};

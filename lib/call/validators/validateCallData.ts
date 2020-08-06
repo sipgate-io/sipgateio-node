@@ -14,25 +14,18 @@ export enum ValidationErrors {
 }
 
 const validateCallData = (callData: CallData): ValidationResult => {
-	const calleeValidationResult = validatePhoneNumber(
-		'to' in callData ? callData.to : callData.callee
-	);
+	const calleeValidationResult = validatePhoneNumber(callData.to);
 	if (!calleeValidationResult.isValid) {
 		return { isValid: false, cause: calleeValidationResult.cause };
 	}
 
-	const callerPhoneNumberValidationResult = validatePhoneNumber(
-		'from' in callData ? callData.from : callData.caller
-	);
-	const callerExtensionValidationResult = validateExtension(
-		'from' in callData ? callData.from : callData.caller,
-		[
-			ExtensionType.MOBILE,
-			ExtensionType.PERSON,
-			ExtensionType.EXTERNAL,
-			ExtensionType.REGISTER,
-		]
-	);
+	const callerPhoneNumberValidationResult = validatePhoneNumber(callData.from);
+	const callerExtensionValidationResult = validateExtension(callData.from, [
+		ExtensionType.MOBILE,
+		ExtensionType.PERSON,
+		ExtensionType.EXTERNAL,
+		ExtensionType.REGISTER,
+	]);
 	if (
 		!callerPhoneNumberValidationResult.isValid &&
 		!callerExtensionValidationResult.isValid

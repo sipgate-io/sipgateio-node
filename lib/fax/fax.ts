@@ -30,7 +30,7 @@ export const createFaxModule = (client: HttpClientModule): FaxModule => ({
 			base64Content: fax.fileContent.toString('base64'),
 			faxlineId: fax.faxlineId,
 			filename: fax.filename,
-			recipient: 'to' in fax ? fax.to : fax.recipient,
+			recipient: fax.to,
 		};
 
 		return await client

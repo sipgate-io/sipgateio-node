@@ -27,8 +27,8 @@ describe('Call Module', () => {
 		const validCallerId = '+4915122222222';
 
 		const callData: CallData = {
-			callee: validCalleeNumber,
-			caller: validExtension,
+			to: validCalleeNumber,
+			from: validExtension,
 			callerId: validCallerId,
 		};
 
@@ -44,8 +44,8 @@ describe('Call Module', () => {
 		const validCallerId = '+4915122222222';
 
 		const callData: CallData = {
-			callee: validCalleeNumber,
-			caller: invalidExtensionId,
+			to: validCalleeNumber,
+			from: invalidExtensionId,
 			callerId: validCallerId,
 		};
 
@@ -68,8 +68,8 @@ describe('Call Module', () => {
 		const validCallerId = '+4915122222222';
 
 		const callData: CallData = {
-			callee: validCalleeNumber,
-			caller: validExtension,
+			to: validCalleeNumber,
+			from: validExtension,
 			callerId: validCallerId,
 		};
 
@@ -84,8 +84,8 @@ describe('Call Module', () => {
 		const validCallerId = '+494567787889';
 
 		const callData: CallData = {
-			callee: invalidCalleeNumber,
-			caller: validExtensionId,
+			to: invalidCalleeNumber,
+			from: validExtensionId,
 			callerId: validCallerId,
 		};
 

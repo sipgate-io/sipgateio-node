@@ -3,34 +3,13 @@ interface BaseCallData {
 	callerId?: string;
 }
 
-interface BaseCallee {
+interface Callee {
 	to: string;
 }
 
-/**
- * @deprecated
- * @since 1.0.1
- * use @interface BaseCallee instead
- */
-interface DeprecatedCallee {
-	callee: string;
-}
-
-type Callee = BaseCallee | DeprecatedCallee;
-
-interface BaseCaller {
+interface Caller {
 	from: string;
 }
-
-/**
- * @deprecated
- * @since 1.0.1
- * use @interface BaseCaller instead
- */
-interface DeprecatedCaller {
-	caller: string;
-}
-type Caller = BaseCaller | DeprecatedCaller;
 
 export type CallData = BaseCallData & Callee & Caller;
 
