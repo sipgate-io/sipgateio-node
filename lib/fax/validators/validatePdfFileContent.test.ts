@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors/ErrorMessage';
+import { FaxErrorMessage } from '../errors/handleFaxError';
 import { validatePdfFileContent } from './validatePdfFileContent';
 import validPDFBuffer from './validPDFBuffer';
 
@@ -19,7 +19,7 @@ describe('PDF file validation', () => {
 		await expect(
 			validatePdfFileContent(invalidPdfFileContents)
 		).resolves.toEqual({
-			cause: ErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
+			cause: FaxErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
 			isValid: false,
 		});
 	});

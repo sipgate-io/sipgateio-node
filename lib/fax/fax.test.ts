@@ -1,5 +1,5 @@
-import { ErrorMessage } from './errors/ErrorMessage';
 import { FaxDTO } from './fax.types';
+import { FaxErrorMessage } from './errors/handleFaxError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createFaxModule } from './fax';
 import validPDFBuffer from './validators/validPDFBuffer';
@@ -80,7 +80,7 @@ describe('GetFaxStatus', () => {
 		const faxModule = createFaxModule(mockClient);
 
 		await expect(faxModule.getFaxStatus('12345')).rejects.toThrowError(
-			ErrorMessage.FAX_NOT_FOUND
+			FaxErrorMessage.FAX_NOT_FOUND
 		);
 	});
 });

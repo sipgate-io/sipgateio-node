@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors/ErrorMessage';
+import { FaxErrorMessage } from '../errors/handleFaxError';
 import { ValidationResult } from '../../core/validator';
 import fileType from 'file-type';
 
@@ -9,7 +9,7 @@ const validatePdfFileContent = async (
 
 	if (!fileTypeResult || fileTypeResult.mime !== 'application/pdf') {
 		return {
-			cause: ErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
+			cause: FaxErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
 			isValid: false,
 		};
 	}

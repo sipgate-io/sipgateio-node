@@ -1,4 +1,3 @@
-import { ErrorMessage } from './errors/ErrorMessage';
 import {
 	Fax,
 	FaxDTO,
@@ -7,8 +6,8 @@ import {
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
 } from './fax.types';
-import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
-import { handleCoreError } from '../core/errors/handleError';
+import { FaxErrorMessage, handleFaxError } from './errors/handleFaxError';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { validatePdfFileContent } from './validators/validatePdfFileContent';
 
 export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
@@ -35,19 +34,19 @@ export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
 
 		return await client
 			.post<SendFaxSessionResponse>('/sessions/fax', faxDTO)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleFaxError(error)));
 	},
 	async getFaxStatus(sessionId: string): Promise<FaxStatus> {
 		return client
 			.get<HistoryFaxResponse>(`/history/${sessionId}`)
 			.then((data) => {
 				if (!data.type || data.type !== 'FAX') {
-					throw new Error(ErrorMessage.FAX_NOT_A_FAX);
+					throw new Error(FaxErrorMessage.FAX_NOT_A_FAX);
 				}
 
 				return data.faxStatusType;
 			})
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleFaxError(error)));
 	},
 });
 
@@ -58,12 +57,4 @@ const generateFilename = (): string => {
 		.replace(/[.:-]/g, '')
 		.slice(0, -6);
 	return `Fax_${timestamp}`;
-};
-
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 404) {
-		return new Error(ErrorMessage.FAX_NOT_FOUND);
-	}
-
-	return handleCoreError(error);
 };
