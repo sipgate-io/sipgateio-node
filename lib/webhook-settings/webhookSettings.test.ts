@@ -1,6 +1,6 @@
 import { ErrorMessage } from '../core/errors';
 import { SipgateIOClient } from '../core/sipgateIOClient';
-import { ErrorMessage as WebhookErrorMessage } from './errors/ErrorMessage';
+import { WebhookSettingErrorMessage } from './errors/handleWebhookSettingError';
 import {
 	WebhookSettings,
 	WebhookSettingsModule,
@@ -76,7 +76,7 @@ describe('setIncomingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setIncomingUrl('newUrl')).rejects.toThrowError(
-			WebhookErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
+			WebhookSettingErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
 		);
 	});
 });
@@ -122,7 +122,7 @@ describe('setOutgoingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setOutgoingUrl('newUrl')).rejects.toThrowError(
-			WebhookErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
+			WebhookSettingErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
 		);
 	});
 });
@@ -152,7 +152,7 @@ describe('setWhitelist', () => {
 		await expect(
 			settingsModule.setWhitelist(INVALID_P_EXT_WHITELIST)
 		).rejects.toThrowError(
-			WebhookErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS
+			WebhookSettingErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS
 		);
 	});
 

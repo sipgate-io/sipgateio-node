@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors/ErrorMessage';
+import { WebhookSettingErrorMessage } from '../errors/handleWebhookSettingError';
 import { validateWebhookUrl } from './validateWebhookUrl';
 
 describe('ValidateWebhookUrl', () => {
@@ -7,11 +7,11 @@ describe('ValidateWebhookUrl', () => {
 		${'http://'}           | ${{ isValid: true }}
 		${'https://'}          | ${{ isValid: true }}
 		${'https://valid.com'} | ${{ isValid: true }}
-		${'httptest://'}       | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
-		${''}                  | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
-		${'httpsx'}            | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
-		${'://'}               | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
-		${'www.url.com'}       | ${{ isValid: false, cause: ErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
+		${'httptest://'}       | ${{ isValid: false, cause: WebhookSettingErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
+		${''}                  | ${{ isValid: false, cause: WebhookSettingErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
+		${'httpsx'}            | ${{ isValid: false, cause: WebhookSettingErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
+		${'://'}               | ${{ isValid: false, cause: WebhookSettingErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
+		${'www.url.com'}       | ${{ isValid: false, cause: WebhookSettingErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL }}
 	`(
 		'validator returns $expected when $input is validated',
 		({ input, expected }) => {

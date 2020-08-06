@@ -1,11 +1,13 @@
-import { ErrorMessage } from './errors/ErrorMessage';
 import { ExtensionType, validateExtension } from '../core/validator';
-import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import {
+	WebhookSettingErrorMessage,
+	handleWebhookSettingsError,
+} from './errors/handleWebhookSettingError';
 import {
 	WebhookSettings,
 	WebhookSettingsModule,
 } from './webhookSettings.types';
-import { handleCoreError } from '../core/errors';
 import { validateWebhookUrl } from './validators/validateWebhookUrl';
 
 const SETTINGS_ENDPOINT = 'settings/sipgateio';
@@ -90,7 +92,7 @@ const getWebhookSettingsFromClient = async (
 	return client
 		.get(SETTINGS_ENDPOINT)
 		.then((res) => res.data)
-		.catch((error) => handleError(error));
+		.catch((error) => handleWebhookSettingsError(error));
 };
 
 const modifyWebhookSettings = async (
@@ -102,7 +104,7 @@ const modifyWebhookSettings = async (
 			fn(settings);
 			return client.put(SETTINGS_ENDPOINT, settings);
 		})
-		.catch((error) => handleError(error));
+		.catch((error) => handleWebhookSettingsError(error));
 };
 
 const validateWhitelistExtensions = (extensions: string[]): void => {
@@ -113,15 +115,8 @@ const validateWhitelistExtensions = (extensions: string[]): void => {
 		]);
 		if (!validationResult.isValid) {
 			throw new Error(
-				`${ErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS}\n${validationResult.cause}: ${extension}`
+				`${WebhookSettingErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS}\n${validationResult.cause}: ${extension}`
 			);
 		}
 	});
-};
-
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 403) {
-		return new Error(ErrorMessage.WEBHOOK_SETTINGS_FEATURE_NOT_BOOKED);
-	}
-	return handleCoreError(error);
 };
