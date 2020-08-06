@@ -27,7 +27,7 @@ export interface ContactsModule {
 	) => Promise<ContactResponse[]>;
 }
 
-interface ContactImport {
+export interface ContactImport {
 	firstname: string;
 	lastname: string;
 	address?: Address;

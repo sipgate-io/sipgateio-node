@@ -30,7 +30,7 @@ export interface Participant {
 	owner: boolean;
 }
 
-interface GenericCall {
+export interface GenericCall {
 	callId: string;
 }
 
