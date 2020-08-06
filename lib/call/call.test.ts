@@ -1,5 +1,5 @@
 import { CallData, CallModule } from './call.types';
-import { ErrorMessage as CallErrorMessage } from './errors/ErrorMessage';
+import { CallErrorMessage } from './errors/handleCallError';
 import { ErrorMessage } from '../core';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { ValidationErrors } from './validators/validateCallData';

@@ -7,7 +7,7 @@ import {
 	ImportCSVRequestDTO,
 } from './contacts.types';
 import { ErrorMessage } from './errors/ErrorMessage';
-import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
+import { HttpError, SipgateIOClient } from '../core/sipgateIOClient';
 import { Parser } from 'json2csv';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
 import { handleCoreError } from '../core/errors/handleError';

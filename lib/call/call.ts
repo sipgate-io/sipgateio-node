@@ -4,9 +4,8 @@ import {
 	CallModule,
 	InitiateNewCallSessionResponse,
 } from './call.types';
-import { ErrorMessage } from './errors/ErrorMessage';
-import { SipgateIOClient, HttpError } from '../core/sipgateIOClient';
-import { handleCoreError } from '../core/errors/handleError';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import { handleCallError } from './errors/handleCallError';
 import { validateCallData } from './validators/validateCallData';
 
 export const createCallModule = (httpClient: SipgateIOClient): CallModule => ({
@@ -25,22 +24,6 @@ export const createCallModule = (httpClient: SipgateIOClient): CallModule => ({
 		};
 		return httpClient
 			.post<InitiateNewCallSessionResponse>('/sessions/calls', callDTO)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleCallError(error)));
 	},
 });
-
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 400) {
-		return new Error(ErrorMessage.CALL_BAD_REQUEST);
-	}
-
-	if (error.response && error.response.status === 402) {
-		return new Error(ErrorMessage.CALL_INSUFFICIENT_FUNDS);
-	}
-
-	if (error.response && error.response.status === 403) {
-		return new Error(ErrorMessage.CALL_INVALID_EXTENSION);
-	}
-
-	return handleCoreError(error);
-};
