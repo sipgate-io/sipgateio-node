@@ -1,7 +1,7 @@
 import { Pagination } from '../core';
 
 export interface ContactsModule {
-	import: (contact: ContactImport, scope: Scope) => Promise<void>;
+	create: (contact: ContactImport, scope: Scope) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
 	exportAsCsv: (
@@ -20,7 +20,7 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<string>;
-	exportAsObjects: (
+	get: (
 		scope: ExportScope,
 		pagination?: Pagination,
 		filter?: ContactsExportFilter

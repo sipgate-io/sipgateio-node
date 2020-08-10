@@ -35,7 +35,7 @@ describe('Contacts Module', () => {
 
 	it('throws $expected when $input is given (some fields are missing)', async () => {
 		await expect(
-			contactsModule.import(
+			contactsModule.create(
 				{
 					firstname: '',
 					lastname: '',
@@ -77,7 +77,7 @@ describe('Contacts Module', () => {
 }} | ${undefined}
 	`('does not throw when correct values are given', async ({ input }) => {
 		await expect(
-			contactsModule.import(input, 'PRIVATE')
+			contactsModule.create(input, 'PRIVATE')
 		).resolves.not.toThrow();
 	});
 });
@@ -418,7 +418,7 @@ describe('Export Contacts', () => {
 	});
 
 	it('transfers the given filter and pagination parameters when exporting as objects', () => {
-		contactsModule.exportAsObjects(
+		contactsModule.get(
 			'INTERNAL',
 			{
 				limit: 3,

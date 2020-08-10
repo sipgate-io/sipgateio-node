@@ -30,7 +30,7 @@ export const createContactsModule = (
 			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
-	async import(contact, scope): Promise<void> {
+	async create(contact, scope): Promise<void> {
 		const {
 			firstname,
 			lastname,
@@ -141,7 +141,7 @@ export const createContactsModule = (
 			throw Error(err);
 		}
 	},
-	async exportAsObjects(scope, pagination, filter): Promise<ContactResponse[]> {
+	async get(scope, pagination, filter): Promise<ContactResponse[]> {
 		const contactsResponse = await client.get<ContactsListResponse>(
 			`contacts`,
 			{
