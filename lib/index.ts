@@ -28,7 +28,7 @@ export {
 } from './webhook';
 export {
 	createHistoryModule,
-	HistoryDirection as Direction,
+	HistoryDirection,
 	HistoryEntryType,
 	HistoryFilter,
 	HistoryEntry,
