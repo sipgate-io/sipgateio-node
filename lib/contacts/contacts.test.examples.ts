@@ -59,6 +59,22 @@ export const exampleWithAllValues =
 	'EMAIL;TYPE=HOME,INTERNET:email@example.com\r\n' +
 	'END:VCARD';
 
+export const exampleWithTwoOrganizations =
+	'BEGIN:VCARD\r\n' +
+	'VERSION:4.0\r\n' +
+	'FN:Vorname Nachname\r\n' +
+	'N:Nachname;Vorname\r\n' +
+	'TITLE:Titel\r\n' +
+	'GENDER:U;\r\n' +
+	'BDAY:2000-02-13\r\n' +
+	'ORG:Firma\r\n' +
+	'ORG:Firma 2\r\n' +
+	'TITLE:Rolle\r\n' +
+	'ADR;TYPE=HOME:Postfach;Adresszusatz;Straße;ORT;Region;PLZ;Germany\r\n' +
+	'TEL;TYPE=HOME:+4915199999999\r\n' +
+	'EMAIL;TYPE=HOME,INTERNET:email@example.com\r\n' +
+	'END:VCARD';
+
 export const exampleWithoutEmail =
 	'BEGIN:VCARD\r\n' +
 	'VERSION:4.0\r\n' +

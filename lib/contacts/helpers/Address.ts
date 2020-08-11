@@ -6,7 +6,7 @@ export interface ContactVCard {
 	lastname: string;
 	phoneNumber: string;
 	email?: string;
-	organization: string[];
+	organization: string[][];
 	address?: Address;
 }
 

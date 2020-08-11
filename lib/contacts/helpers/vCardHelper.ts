@@ -59,15 +59,22 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 	validateAtLeastRequiredAddressLength(addressValues);
 	validateAmountOfEmails(emailAttribute);
 
+	const organization =
+		organizationAttribute instanceof Array
+			? organizationAttribute
+			: [organizationAttribute];
+
 	let result: ContactVCard = {
 		firstname,
 		lastname,
 		phoneNumber: phoneAttribute.valueOf().toString(),
 		email: emailAttribute ? emailAttribute.valueOf().toString() : undefined,
-		organization: organizationAttribute
-			.toString()
-			.replace(/(.*)ORG(.*):/, '')
-			.split(';'),
+		organization: organization.map((x) =>
+			x
+				.toString()
+				.replace(/(.*)ORG(.*):/, '')
+				.split(';')
+		),
 	};
 
 	if (addressAttribute) {

@@ -13,6 +13,7 @@ import {
 	exampleWithAllValues,
 	exampleWithTwoAdresses,
 	exampleWithoutEmail,
+	exampleWithTwoOrganizations,
 } from './contacts.test.examples';
 import atob from 'atob';
 
@@ -232,7 +233,7 @@ describe('Contacts Module by vCard', () => {
 			lastname: 'Doe',
 			phoneNumber: '+1 202 555 1212',
 			email: 'johnDoe@example.org',
-			organization: ['Example.com Inc.'],
+			organization: [['Example.com Inc.']],
 			address: {
 				poBox: '',
 				extendedAddress: '',
@@ -251,7 +252,26 @@ describe('Contacts Module by vCard', () => {
 			lastname: 'Nachname',
 			phoneNumber: '+4915199999999',
 			email: 'email@example.com',
-			organization: ['Firma'],
+			organization: [['Firma']],
+			address: {
+				poBox: 'Postfach',
+				extendedAddress: 'Adresszusatz',
+				country: 'Germany',
+				locality: 'ORT',
+				postalCode: 'PLZ',
+				region: 'Region',
+				streetAddress: 'Straße',
+			},
+		});
+	});
+
+	it('parses two organizations correctly', () => {
+		expect(parseVCard(exampleWithTwoOrganizations)).toEqual({
+			firstname: 'Vorname',
+			lastname: 'Nachname',
+			phoneNumber: '+4915199999999',
+			email: 'email@example.com',
+			organization: [['Firma'], ['Firma 2']],
 			address: {
 				poBox: 'Postfach',
 				extendedAddress: 'Adresszusatz',
@@ -270,7 +290,7 @@ describe('Contacts Module by vCard', () => {
 			lastname: 'Doe',
 			phoneNumber: '+1 202 555 1212',
 			email: undefined,
-			organization: ['Example.com Inc.'],
+			organization: [['Example.com Inc.']],
 			address: {
 				poBox: '',
 				extendedAddress: '',

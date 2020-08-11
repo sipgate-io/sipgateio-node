@@ -33,7 +33,7 @@ export interface ContactImport {
 	address?: Address;
 	phone?: PhoneNumber;
 	email?: Email;
-	organization?: string[];
+	organization?: string[][];
 }
 
 export interface Email {
