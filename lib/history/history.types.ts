@@ -36,6 +36,16 @@ export interface BaseHistoryFilter {
 	directions?: HistoryDirection[];
 	archived?: boolean;
 	starred?: Starred;
+	startDate?: Date;
+	endDate?: Date;
+}
+
+export interface HistoryFilterDTO {
+	connectionIds?: string[];
+	types?: HistoryEntryType[];
+	directions?: HistoryDirection[];
+	archived?: boolean;
+	starred?: Starred;
 	from?: Date;
 	to?: Date;
 }

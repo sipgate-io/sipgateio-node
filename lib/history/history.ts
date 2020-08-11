@@ -2,6 +2,7 @@ import {
 	BaseHistoryFilter,
 	HistoryEntry,
 	HistoryEntryUpdateOptionsWithId,
+	HistoryFilterDTO,
 	HistoryModule,
 	HistoryResponse,
 } from './history.types';
@@ -12,13 +13,23 @@ import { validateExtension } from '../core/validator';
 export const createHistoryModule = (
 	client: SipgateIOClient
 ): HistoryModule => ({
-	async fetchAll(filter, pagination): Promise<HistoryEntry[]> {
+	async fetchAll(filter = {}, pagination): Promise<HistoryEntry[]> {
 		validateFilteredExtension(filter);
+
+		const historyFilterDTO: HistoryFilterDTO = {
+			archived: filter.archived,
+			connectionIds: filter.connectionIds,
+			directions: filter.directions,
+			from: filter.startDate,
+			starred: filter.starred,
+			to: filter.endDate,
+			types: filter.types,
+		};
 
 		return await client
 			.get<HistoryResponse>('/history', {
 				params: {
-					...filter,
+					...historyFilterDTO,
 					...pagination,
 				},
 			})
@@ -77,12 +88,23 @@ export const createHistoryModule = (
 			client.put('history', eventsWithoutNote),
 		]).catch((error) => Promise.reject(handleHistoryError(error)));
 	},
-	async exportAsCsvString(filter, pagination): Promise<string> {
+	async exportAsCsvString(filter = {}, pagination): Promise<string> {
 		validateFilteredExtension(filter);
+
+		const historyFilterDTO: HistoryFilterDTO = {
+			archived: filter.archived,
+			connectionIds: filter.connectionIds,
+			directions: filter.directions,
+			from: filter.startDate,
+			starred: filter.starred,
+			to: filter.endDate,
+			types: filter.types,
+		};
+
 		return await client
 			.get('/history/export', {
 				params: {
-					...filter,
+					...historyFilterDTO,
 					...pagination,
 				},
 			})
