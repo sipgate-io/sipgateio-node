@@ -41,12 +41,21 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 		.replace(/(.*)N(.*):/, '')
 		.split(';');
 
-	validateAmountOfNames(names);
+	if (isAmountOfNamesInvalid(names)) {
+		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_NAMES);
+	}
 
 	const [lastname, firstname] = names;
 
-	validateAmountOfPhoneNumbers(phoneAttribute);
-	validateAmountOfAddresses(addressAttribute);
+	if (isAmountOfPhoneNumbersInvalid(phoneAttribute)) {
+		throw new Error(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_PHONE_NUMBERS
+		);
+	}
+
+	if (isAmountOfAddressesInvalid(addressAttribute)) {
+		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESSES);
+	}
 
 	let addressValues;
 	if (addressAttribute) {
@@ -56,8 +65,14 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 			.split(';');
 	}
 
-	validateAtLeastRequiredAddressLength(addressValues);
-	validateAmountOfEmails(emailAttribute);
+	if (addressValues && isAddressLengthInvalid(addressValues)) {
+		throw new Error(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESS_VALUES
+		);
+	}
+	if (isAmountOfEmailsInvalid(emailAttribute)) {
+		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS);
+	}
 
 	const organization =
 		organizationAttribute instanceof Array
@@ -138,39 +153,28 @@ export const createVCards = (contacts: ContactImport[]): string[] => {
 	return cards;
 };
 
-const validateAtLeastRequiredAddressLength = (
-	addressValues: string[] | undefined
-): void => {
-	if (addressValues && addressValues.length < 7)
-		throw new Error(
-			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESS_VALUES
-		);
+const isAddressLengthInvalid = (addressValues: string[]): boolean => {
+	return addressValues.length < 7;
 };
 
-const validateAmountOfAddresses = (
+const isAmountOfAddressesInvalid = (
 	addressAttribute: vCard.Property | vCard.Property[]
-): void => {
-	if (addressAttribute && typeof addressAttribute.valueOf() === 'object')
-		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESSES);
+): boolean => {
+	return addressAttribute && typeof addressAttribute.valueOf() === 'object';
 };
 
-const validateAmountOfEmails = (
+const isAmountOfEmailsInvalid = (
 	emailAttribute: vCard.Property | vCard.Property[]
-): void => {
-	if (emailAttribute && typeof emailAttribute.valueOf() === 'object')
-		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS);
+): boolean => {
+	return emailAttribute && typeof emailAttribute.valueOf() === 'object';
 };
 
-const validateAmountOfPhoneNumbers = (
+const isAmountOfPhoneNumbersInvalid = (
 	phoneAttribute: vCard.Property | vCard.Property[]
-): void => {
-	if (typeof phoneAttribute.valueOf() === 'object')
-		throw new Error(
-			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_PHONE_NUMBERS
-		);
+): boolean => {
+	return typeof phoneAttribute.valueOf() === 'object';
 };
 
-const validateAmountOfNames = (names: string[]): void => {
-	if (names.length < 2)
-		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_NAMES);
+const isAmountOfNamesInvalid = (names: string[]): boolean => {
+	return names.length < 2;
 };

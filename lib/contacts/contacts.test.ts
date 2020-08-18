@@ -11,9 +11,12 @@ import { createVCards, parseVCard } from './helpers/vCardHelper';
 import {
 	example,
 	exampleWithAllValues,
+	exampleWithNotEnoughNames,
+	exampleWithNotEnoughValues,
+	exampleWithTooManyEmails,
 	exampleWithTwoAdresses,
-	exampleWithoutEmail,
 	exampleWithTwoOrganizations,
+	exampleWithoutEmail,
 } from './contacts.test.examples';
 import atob from 'atob';
 
@@ -282,6 +285,24 @@ describe('Contacts Module by vCard', () => {
 				streetAddress: 'Straße',
 			},
 		});
+	});
+
+	it('should throw an error when invalid address length is given', () => {
+		expect(() => parseVCard(exampleWithNotEnoughValues)).toThrowError(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESS_VALUES
+		);
+	});
+
+	it('should throw an error when invalid amount of names is given', () => {
+		expect(() => parseVCard(exampleWithNotEnoughNames)).toThrowError(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_NAMES
+		);
+	});
+
+	it('should throw an error when invalid amount of emails is given', () => {
+		expect(() => parseVCard(exampleWithTooManyEmails)).toThrowError(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS
+		);
 	});
 
 	it('returns the correct parsed json without email', () => {
