@@ -9,18 +9,16 @@ import { handleCallError } from './errors/handleCallError';
 import { validateCallData } from './validators/validateCallData';
 
 export const createCallModule = (httpClient: SipgateIOClient): CallModule => ({
-	async initiate(
-		clickToDial: CallData
-	): Promise<InitiateNewCallSessionResponse> {
-		const clickToDialValidation = validateCallData(clickToDial);
-		if (!clickToDialValidation.isValid) {
-			throw new Error(clickToDialValidation.cause);
+	async initiate(callData: CallData): Promise<InitiateNewCallSessionResponse> {
+		const callDataValidation = validateCallData(callData);
+		if (!callDataValidation.isValid) {
+			throw new Error(callDataValidation.cause);
 		}
 		const callDTO: CallDTO = {
-			callee: clickToDial.to,
-			caller: clickToDial.from,
-			callerId: clickToDial.callerId,
-			deviceId: clickToDial.deviceId,
+			callee: callData.to,
+			caller: callData.from,
+			callerId: callData.callerId,
+			deviceId: callData.deviceId,
 		};
 		return httpClient
 			.post<InitiateNewCallSessionResponse>('/sessions/calls', callDTO)
