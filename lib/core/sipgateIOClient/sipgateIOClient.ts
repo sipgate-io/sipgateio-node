@@ -1,7 +1,7 @@
 import {
 	AuthCredentials,
-	SipgateIOClient,
 	HttpRequestConfig,
+	SipgateIOClient,
 } from './sipgateIOClient.types';
 
 import { detect as detectPlatform } from 'detect-browser';
