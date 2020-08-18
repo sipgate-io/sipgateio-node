@@ -197,7 +197,7 @@ describe('The webhook server', () => {
 		);
 	});
 
-	it('should generate a valid XML response with onAnswer URL', async () => {
+	it.only('should generate a valid XML response with onAnswer URL', async () => {
 		webhookServer.onAnswer(() => null);
 
 		const response = await sendTestWebhook();

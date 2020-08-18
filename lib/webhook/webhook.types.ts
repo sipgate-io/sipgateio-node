@@ -1,12 +1,33 @@
 import { Server } from 'http';
 
-export type HandlerCallback<T, U> = (event: T) => U;
+export enum EventType {
+	NEW_CALL = 'newCall',
+	ANSWER = 'answer',
+	HANGUP = 'hangup',
+	DATA = 'dtmf',
+}
 
+export type HandlerCallback<T extends GenericEvent, U> = (event: T) => U;
+
+export type NewCallCallback = HandlerCallback<
+	NewCallEvent,
+	ResponseObject | void
+>;
+export type AnswerCallback = HandlerCallback<AnswerEvent, void>;
+export type HangUpCallback = HandlerCallback<HangUpEvent, void>;
+export type DataCallback = HandlerCallback<DataEvent, ResponseObject | void>;
+
+export interface WebhookHandlers {
+	[EventType.NEW_CALL]?: NewCallCallback;
+	[EventType.ANSWER]?: AnswerCallback;
+	[EventType.HANGUP]?: HangUpCallback;
+	[EventType.DATA]?: DataCallback;
+}
 export interface WebhookServer {
-	onNewCall: (fn: HandlerCallback<NewCallEvent, ResponseObject | void>) => void;
-	onAnswer: (fn: HandlerCallback<AnswerEvent, void>) => void;
-	onHangUp: (fn: HandlerCallback<HangUpEvent, void>) => void;
-	onData: (fn: HandlerCallback<DataEvent, ResponseObject | void>) => void;
+	onNewCall: (fn: NewCallCallback) => void;
+	onAnswer: (fn: AnswerCallback) => void;
+	onHangUp: (fn: HangUpCallback) => void;
+	onData: (fn: DataCallback) => void;
 	stop: () => void;
 	getHttpServer: () => Server;
 }
@@ -19,13 +40,6 @@ export interface ServerOptions {
 
 export interface WebhookModule {
 	createServer: (serverOptions: ServerOptions) => Promise<WebhookServer>;
-}
-
-export enum EventType {
-	NEW_CALL = 'newCall',
-	ANSWER = 'answer',
-	HANGUP = 'hangup',
-	DATA = 'dtmf',
 }
 
 export interface WebhookResponseInterface {
@@ -57,13 +71,13 @@ export enum HangUpCause {
 	FORWARDED = 'forwarded',
 }
 
-interface Event {
+export interface GenericEvent {
 	event: EventType;
 	callId: string;
 	originalCallId: string;
 }
 
-interface GenericCallEvent extends Event {
+interface GenericCallEvent extends GenericEvent {
 	direction: WebhookDirection;
 	from: string;
 	to: string;
@@ -87,7 +101,7 @@ export interface AnswerEvent extends GenericCallEvent {
 	diversion?: string;
 }
 
-export interface DataEvent extends Event {
+export interface DataEvent extends GenericEvent {
 	event: EventType.DATA;
 	dtmf: string; // Can begin with zero, so it has to be a string
 }

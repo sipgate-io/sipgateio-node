@@ -3,6 +3,8 @@ import {
 	EventType,
 	GatherObject,
 	GatherOptions,
+	GenericEvent,
+	HandlerCallback,
 	HangUpObject,
 	PlayObject,
 	PlayOptions,
@@ -13,6 +15,7 @@ import {
 	ResponseObject,
 	ServerOptions,
 	VoicemailObject,
+	WebhookHandlers,
 	WebhookModule,
 	WebhookResponseInterface,
 	WebhookServer,
@@ -28,10 +31,11 @@ export const createWebhookModule = (): WebhookModule => ({
 const createWebhookServer = async (
 	serverOptions: ServerOptions
 ): Promise<WebhookServer> => {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const handlers = new Map<EventType, (event: any) => any>();
-
-	handlers.set(EventType.NEW_CALL, () => null);
+	const handlers: WebhookHandlers = {
+		[EventType.NEW_CALL]: () => {
+			return;
+		},
+	};
 
 	return new Promise((resolve, reject) => {
 		const requestHandler = async (
@@ -41,7 +45,11 @@ const createWebhookServer = async (
 			res.setHeader('Content-Type', 'application/xml');
 
 			const requestBody = await collectRequestData(req);
-			const requestCallback = handlers.get(requestBody.event);
+			const requestCallback = handlers[requestBody.event] as HandlerCallback<
+				GenericEvent,
+				ResponseObject | void
+			>;
+
 			if (requestCallback === undefined) {
 				res.end(
 					`<?xml version="1.0" encoding="UTF-8"?><Error message="No handler for ${requestBody.event} event" />`
@@ -49,19 +57,19 @@ const createWebhookServer = async (
 				return;
 			}
 
-			const callbackResult = requestCallback(requestBody);
+			const callbackResult = requestCallback(requestBody) || undefined;
 
 			const responseObject = createResponseObject(
 				callbackResult,
 				serverOptions.serverAddress
 			);
 
-			if (handlers.has(EventType.ANSWER)) {
+			if (handlers[EventType.ANSWER]) {
 				responseObject.Response['_attributes'].onAnswer =
 					serverOptions.serverAddress;
 			}
 
-			if (handlers.has(EventType.HANGUP)) {
+			if (handlers[EventType.HANGUP]) {
 				responseObject.Response['_attributes'].onHangup =
 					serverOptions.serverAddress;
 			}
@@ -80,16 +88,16 @@ const createWebhookServer = async (
 			() => {
 				resolve({
 					onNewCall: (handler) => {
-						handlers.set(EventType.NEW_CALL, handler);
+						handlers[EventType.NEW_CALL] = handler;
 					},
 					onAnswer: (handler) => {
-						handlers.set(EventType.ANSWER, handler);
+						handlers[EventType.ANSWER] = handler;
 					},
 					onHangUp: (handler) => {
-						handlers.set(EventType.HANGUP, handler);
+						handlers[EventType.HANGUP] = handler;
 					},
 					onData: (handler) => {
-						handlers.set(EventType.DATA, handler);
+						handlers[EventType.DATA] = handler;
 					},
 					stop: () => {
 						if (server) {
@@ -144,7 +152,7 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 };
 
 const createResponseObject = (
-	responseObject: ResponseObject,
+	responseObject: ResponseObject | undefined,
 	serverAddress: string
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Record<string, any> => {
