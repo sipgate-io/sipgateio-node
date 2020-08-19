@@ -33,41 +33,40 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 	});
 
 	return {
-		async delete<T = any>(url: string, config?: HttpRequestConfig): Promise<T> {
-			const response = await client.delete<T>(url, config);
-			return response.data;
+		delete<T = any>(url: string, config?: HttpRequestConfig): Promise<T> {
+			return client.delete<T>(url, config).then((response) => response.data);
 		},
 
-		async get<T = any>(url: string, config?: HttpRequestConfig): Promise<T> {
-			const response = await client.get<T>(url, config);
-			return response.data;
+		get<T = any>(url: string, config?: HttpRequestConfig): Promise<T> {
+			return client.get<T>(url, config).then((response) => response.data);
 		},
 
-		async patch<T = any>(
+		patch<T = any>(
 			url: string,
 			data?: any,
 			config?: HttpRequestConfig
 		): Promise<T> {
-			const response = await client.patch<T>(url, data, config);
-			return response.data;
+			return client
+				.patch<T>(url, data, config)
+				.then((response) => response.data);
 		},
 
-		async post<T = any>(
+		post<T = any>(
 			url: string,
 			data?: any,
 			config?: HttpRequestConfig
 		): Promise<T> {
-			const response = await client.post<T>(url, data, config);
-			return response.data;
+			return client
+				.post<T>(url, data, config)
+				.then((response) => response.data);
 		},
 
-		async put<T = any>(
+		put<T = any>(
 			url: string,
 			data?: any,
 			config?: HttpRequestConfig
 		): Promise<T> {
-			const response = await client.put<T>(url, data, config);
-			return response.data;
+			return client.put<T>(url, data, config).then((response) => response.data);
 		},
 	};
 };

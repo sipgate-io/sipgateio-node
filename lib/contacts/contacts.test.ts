@@ -12,8 +12,8 @@ import {
 	example,
 	exampleWithAllValues,
 	exampleWithTwoAdresses,
-	exampleWithoutEmail,
 	exampleWithTwoOrganizations,
+	exampleWithoutEmail,
 } from './contacts.test.examples';
 import atob from 'atob';
 
