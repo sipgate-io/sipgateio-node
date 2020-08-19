@@ -97,7 +97,8 @@ export const exampleWithTooManyEmails =
 	'ORG:Firma\r\n' +
 	'TITLE:Rolle\r\n' +
 	'TEL;TYPE=HOME:+4915199999999\r\n' +
-	'EMAIL;TYPE=HOME,INTERNET:email@example.com;TYPE=HOME:test@example.com\r\n' +
+	'EMAIL;TYPE=HOME,INTERNET:email@example.com\r\n' +
+	'EMAIL;TYPE=HOME,INTERNET:email2@example.com\r\n' +
 	'END:VCARD';
 
 export const exampleWithTwoOrganizations =
