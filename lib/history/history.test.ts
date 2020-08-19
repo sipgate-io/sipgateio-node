@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import { HistoryEntry } from './history.types';
 import { HistoryErrorMessage } from './errors/handleHistoryError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
@@ -21,7 +19,7 @@ describe('History Module', () => {
 	});
 
 	it('throws an error when the API answers with 404 Not Found', async () => {
-		mockClient.get = jest.fn().mockImplementationOnce((_) => {
+		mockClient.get = jest.fn().mockImplementationOnce(() => {
 			return Promise.reject({
 				response: {
 					status: 404,
@@ -37,7 +35,7 @@ describe('History Module', () => {
 	});
 
 	it('throws an error when the API answers with 400 Bad Request', async () => {
-		mockClient.get = jest.fn().mockImplementationOnce((_) => {
+		mockClient.get = jest.fn().mockImplementationOnce(() => {
 			return Promise.reject({
 				response: {
 					status: 400,
@@ -53,7 +51,7 @@ describe('History Module', () => {
 	});
 
 	it('batchUpdates historyUpdates which include no note', async () => {
-		mockClient.put = jest.fn().mockImplementation((path, args) => {
+		mockClient.put = jest.fn().mockImplementation(() => {
 			return Promise.resolve({
 				status: 200,
 			});
