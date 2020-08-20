@@ -23,6 +23,7 @@ import {
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
+import { WebhookErrorMessage } from './webhook.errors';
 
 export const createWebhookModule = (): WebhookModule => ({
 	createServer: createWebhookServer,
@@ -91,12 +92,15 @@ const createWebhookServer = async (
 						handlers[EventType.NEW_CALL] = handler;
 					},
 					onAnswer: (handler) => {
+						if (!serverOptions.serverAddress) throw new Error(WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS);
 						handlers[EventType.ANSWER] = handler;
 					},
 					onHangUp: (handler) => {
+						if (!serverOptions.serverAddress) throw new Error(WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS);
 						handlers[EventType.HANGUP] = handler;
 					},
 					onData: (handler) => {
+						if (!serverOptions.serverAddress) throw new Error(WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS);
 						handlers[EventType.DATA] = handler;
 					},
 					stop: () => {
