@@ -78,17 +78,16 @@ export const createSettingsModule = (
 		);
 	},
 
-	async getWebhookSettings(): Promise<WebhookSettings> {
+	getWebhookSettings(): Promise<WebhookSettings> {
 		return getWebhookSettingsFromClient(client);
 	},
 });
 
-const getWebhookSettingsFromClient = async (
+const getWebhookSettingsFromClient = (
 	client: SipgateIOClient
 ): Promise<WebhookSettings> => {
 	return client
 		.get(SETTINGS_ENDPOINT)
-		.then((res) => res.data)
 		.catch((error) => handleWebhookSettingsError(error));
 };
 

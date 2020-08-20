@@ -31,9 +31,9 @@ export const createSMSModule = (client: SipgateIOClient): SMSModule => ({
 			smsDTO.sendAt = sendAt.getTime() / 1000;
 		}
 		if (('from' in sms ? sms.from : sms.phoneNumber) !== undefined) {
-			return await sendSmsByPhoneNumber(client, sms, smsDTO);
+			return sendSmsByPhoneNumber(client, sms, smsDTO);
 		}
-		return await sendSmsBySmsId(sms, smsDTO, client);
+		return sendSmsBySmsId(sms, smsDTO, client);
 	},
 });
 
@@ -46,7 +46,7 @@ export const sendSms = async (
 	});
 };
 
-export const getUserSmsExtension = async (
+export const getUserSmsExtension = (
 	client: SipgateIOClient,
 	webuserId: string
 ): Promise<string> => {
@@ -56,7 +56,7 @@ export const getUserSmsExtension = async (
 		.catch((error) => Promise.reject(handleSmsError(error)));
 };
 
-export const getSmsCallerIds = async (
+export const getSmsCallerIds = (
 	client: SipgateIOClient,
 	webuserExtension: string,
 	smsExtension: string
@@ -150,7 +150,7 @@ async function sendSmsBySmsId(
 	if (sms.message === '') {
 		throw new Error(SmsErrorMessage.INVALID_MESSAGE);
 	}
-	return await sendSms(client, smsDTO).catch((error) => {
+	await sendSms(client, smsDTO).catch((error) => {
 		throw handleSmsError(error);
 	});
 }

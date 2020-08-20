@@ -32,11 +32,11 @@ export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
 			recipient: fax.to,
 		};
 
-		return await client
+		return client
 			.post<SendFaxSessionResponse>('/sessions/fax', faxDTO)
 			.catch((error) => Promise.reject(handleFaxError(error)));
 	},
-	async getFaxStatus(sessionId: string): Promise<FaxStatus> {
+	getFaxStatus(sessionId: string): Promise<FaxStatus> {
 		return client
 			.get<HistoryFaxResponse>(`/history/${sessionId}`)
 			.then((data) => {

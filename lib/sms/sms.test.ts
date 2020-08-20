@@ -65,7 +65,7 @@ describe('SMS Module', () => {
 
 		mockClient.post = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		mockClient.put = jest.fn().mockImplementation((args) => {
 			if (
@@ -96,7 +96,7 @@ describe('SMS Module', () => {
 
 		mockClient.post = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
@@ -189,10 +189,7 @@ describe('schedule sms', () => {
 		);
 
 		mockClient.post = jest.fn().mockImplementationOnce(() => {
-			return Promise.resolve({
-				data: {},
-				status: 200,
-			});
+			return Promise.resolve({});
 		});
 		await smsModule.send(message, date);
 

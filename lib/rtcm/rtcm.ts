@@ -4,7 +4,7 @@ import { handleRtcmError } from './errors/handleRtcmError';
 import { validateDTMFSequence } from './validator/validateDTMFSequence';
 
 export const createRTCMModule = (client: SipgateIOClient): RTCMModule => ({
-	getEstablishedCalls: async (): Promise<RTCMCall[]> => {
+	getEstablishedCalls: (): Promise<RTCMCall[]> => {
 		return client
 			.get<RTCMCallsResponse>('/calls')
 			.then((response) => response.data)

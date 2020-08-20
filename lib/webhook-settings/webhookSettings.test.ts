@@ -19,13 +19,10 @@ describe('get settings', () => {
 	it('should use the endpoint "settings/sipgateio"', async () => {
 		mockClient.get = jest.fn().mockImplementationOnce(() => {
 			return Promise.resolve({
-				data: {
-					incomingUrl: 'string',
-					outgoingUrl: 'string',
-					log: true,
-					whitelist: [],
-				},
-				status: 200,
+				incomingUrl: 'string',
+				outgoingUrl: 'string',
+				log: true,
+				whitelist: [],
 			});
 		});
 
@@ -59,13 +56,11 @@ describe('setIncomingUrl', () => {
 
 		mockClient.get = jest
 			.fn()
-			.mockImplementationOnce(() =>
-				Promise.resolve({ status: 200, data: settings })
-			);
+			.mockImplementationOnce(() => Promise.resolve(settings));
 
 		mockClient.put = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ status: 200, data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		await settingsModule.setIncomingUrl(TEST_INCOMING_URL);
 
@@ -105,13 +100,11 @@ describe('setOutgoingUrl', () => {
 
 		mockClient.get = jest
 			.fn()
-			.mockImplementationOnce(() =>
-				Promise.resolve({ status: 200, data: settings })
-			);
+			.mockImplementationOnce(() => Promise.resolve(settings));
 
 		mockClient.put = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ status: 200, data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		await settingsModule.setOutgoingUrl(TEST_OUTGOING_URL);
 
@@ -169,13 +162,11 @@ describe('setWhitelist', () => {
 
 		mockClient.get = jest
 			.fn()
-			.mockImplementationOnce(() =>
-				Promise.resolve({ status: 200, data: settings })
-			);
+			.mockImplementationOnce(() => Promise.resolve(settings));
 
 		mockClient.put = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ status: 200, data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		await settingsModule.setWhitelist(VALID_WHITELIST);
 

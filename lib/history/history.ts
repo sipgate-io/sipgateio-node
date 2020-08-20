@@ -26,7 +26,7 @@ export const createHistoryModule = (
 			types: filter.types,
 		};
 
-		return await client
+		return client
 			.get<HistoryResponse>('/history', {
 				params: {
 					...historyFilterDTO,
@@ -36,8 +36,8 @@ export const createHistoryModule = (
 			.then((response) => response.items)
 			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
-	async fetchById(entryId): Promise<HistoryEntry> {
-		return await client
+	fetchById(entryId): Promise<HistoryEntry> {
+		return client
 			.get<HistoryEntry>(`/history/${entryId}`)
 			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
@@ -101,7 +101,7 @@ export const createHistoryModule = (
 			types: filter.types,
 		};
 
-		return await client
+		return client
 			.get('/history/export', {
 				params: {
 					...historyFilterDTO,

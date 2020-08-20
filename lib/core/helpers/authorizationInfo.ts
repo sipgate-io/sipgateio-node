@@ -1,9 +1,10 @@
 import { SipgateIOClient } from '../sipgateIOClient';
 import { UserInfo } from '../core.types';
 
-export const getAuthenticatedWebuser = async (
+export const getAuthenticatedWebuser = (
 	httpClient: SipgateIOClient
 ): Promise<string> => {
-	const requestData = await httpClient.get<UserInfo>('authorization/userinfo');
-	return requestData.sub;
+	return httpClient
+		.get<UserInfo>('authorization/userinfo')
+		.then((response) => response.sub);
 };
