@@ -47,13 +47,13 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 
 	const [lastname, firstname] = names;
 
-	if (isAmountOfPhoneNumbersInvalid(phoneAttribute)) {
+	if (isMultipleOf(phoneAttribute)) {
 		throw new Error(
 			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_PHONE_NUMBERS
 		);
 	}
 
-	if (isAmountOfAddressesInvalid(addressAttribute)) {
+	if (isMultipleOf(addressAttribute)) {
 		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESSES);
 	}
 
@@ -65,12 +65,12 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 			.split(';');
 	}
 
-	if (addressValues && isAddressLengthInvalid(addressValues)) {
+	if (addressValues && isAddressAttributeAmountInvalid(addressValues)) {
 		throw new Error(
 			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESS_VALUES
 		);
 	}
-	if (isAmountOfEmailsInvalid(emailAttribute)) {
+	if (isMultipleOf(emailAttribute)) {
 		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS);
 	}
 
@@ -153,28 +153,15 @@ export const createVCards = (contacts: ContactImport[]): string[] => {
 	return cards;
 };
 
-const isAddressLengthInvalid = (addressValues: string[]): boolean => {
+const isAddressAttributeAmountInvalid = (addressValues: string[]): boolean => {
 	return addressValues.length < 7;
 };
 
-const isAmountOfAddressesInvalid = (
-	addressAttribute: vCard.Property | vCard.Property[]
+const isMultipleOf = (
+	vCardProperty: vCard.Property | vCard.Property[]
 ): boolean => {
-	return addressAttribute && typeof addressAttribute.valueOf() === 'object';
+	return vCardProperty && typeof vCardProperty.valueOf() === 'object';
 };
-
-const isAmountOfEmailsInvalid = (
-	emailAttribute: vCard.Property | vCard.Property[]
-): boolean => {
-	return emailAttribute && typeof emailAttribute.valueOf() === 'object';
-};
-
-const isAmountOfPhoneNumbersInvalid = (
-	phoneAttribute: vCard.Property | vCard.Property[]
-): boolean => {
-	return typeof phoneAttribute.valueOf() === 'object';
-};
-
 const isAmountOfNamesInvalid = (names: string[]): boolean => {
 	return names.length < 2;
 };
