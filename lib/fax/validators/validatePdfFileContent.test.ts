@@ -2,7 +2,7 @@ import {
 	FaxValidationMessage,
 	validatePdfFileContent,
 } from './validatePdfFileContent';
-import validPDFBuffer from './validPDFBuffer';
+import validPDFBuffer from '../testfiles/validPDFBuffer';
 
 describe('PDF file validation', () => {
 	test('should return valid ValidationResult if pdf file content is valid', async () => {

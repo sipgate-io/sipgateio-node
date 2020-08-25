@@ -2,7 +2,7 @@ import { FaxDTO } from './fax.types';
 import { FaxErrorMessage } from './errors/handleFaxError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createFaxModule } from './fax';
-import validPDFBuffer from './validators/validPDFBuffer';
+import validPDFBuffer from './testfiles/validPDFBuffer';
 
 describe('SendFax', () => {
 	let mockClient: SipgateIOClient;
