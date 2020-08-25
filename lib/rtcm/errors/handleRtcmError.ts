@@ -5,7 +5,7 @@ export enum RtcmErrorMessage {
 	DTMF_INVALID_SEQUENCE = 'The provided DTMF sequence is invalid',
 }
 
-export const handleRtcmError = (error: HttpError): Error => {
+export const handleRtcmError = (error: HttpError<unknown>): Error => {
 	if (error.response && error.response.status === 404) {
 		return new Error(RtcmErrorMessage.CALL_NOT_FOUND);
 	}

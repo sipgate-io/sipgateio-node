@@ -6,7 +6,7 @@ export enum CallErrorMessage {
 	CALL_BAD_REQUEST = 'Invalid Call object',
 }
 
-export const handleCallError = (error: HttpError): Error => {
+export const handleCallError = (error: HttpError<unknown>): Error => {
 	if (error.response && error.response.status === 400) {
 		return new Error(CallErrorMessage.CALL_BAD_REQUEST);
 	}

@@ -12,26 +12,26 @@ export interface OAuthCredentials {
 export type AuthCredentials = BasicAuthCredentials | OAuthCredentials;
 
 export type HttpRequestConfig = AxiosRequestConfig;
-export type HttpResponse<T = any> = AxiosResponse<T>;
+export type HttpResponse<T> = AxiosResponse<T>;
 
-export type HttpError<T = any> = AxiosError<T>;
+export type HttpError<T> = AxiosError<T>;
 
 export interface SipgateIOClient {
-	get: <T = any>(url: string, config?: HttpRequestConfig) => Promise<T>;
-	post: <T = any>(
+	get: <T>(url: string, config?: HttpRequestConfig) => Promise<T>;
+	post: <T>(
 		url: string,
-		data?: any,
+		data?: unknown,
 		config?: HttpRequestConfig
 	) => Promise<T>;
-	put: <T = any>(
+	put: <T>(
 		url: string,
-		data?: any,
+		data?: unknown,
 		config?: HttpRequestConfig
 	) => Promise<T>;
-	delete: <T = any>(url: string, config?: HttpRequestConfig) => Promise<T>;
-	patch: <T = any>(
+	delete: <T>(url: string, config?: HttpRequestConfig) => Promise<T>;
+	patch: <T>(
 		url: string,
-		data?: any,
+		data?: unknown,
 		config?: HttpRequestConfig
 	) => Promise<T>;
 }

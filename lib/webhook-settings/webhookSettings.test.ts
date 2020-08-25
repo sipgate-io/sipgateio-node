@@ -17,18 +17,27 @@ describe('get settings', () => {
 	});
 
 	it('should use the endpoint "settings/sipgateio"', async () => {
+		const settings = {
+			incomingUrl: 'string',
+			outgoingUrl: 'string',
+			log: true,
+			whitelist: [],
+		};
+
 		mockClient.get = jest.fn().mockImplementationOnce(() => {
-			return Promise.resolve({
-				incomingUrl: 'string',
-				outgoingUrl: 'string',
-				log: true,
-				whitelist: [],
-			});
+			return Promise.resolve(settings);
+		});
+		mockClient.put = jest.fn().mockImplementationOnce(() => {
+			return Promise.resolve({});
 		});
 
 		await mockedSettingsModule.setIncomingUrl('https://test.de');
 
 		expect(mockClient.get).toBeCalledWith('settings/sipgateio');
+		expect(mockClient.put).toBeCalledWith('settings/sipgateio', {
+			...settings,
+			incomingUrl: 'https://test.de',
+		});
 	});
 });
 

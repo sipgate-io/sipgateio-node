@@ -1,7 +1,7 @@
 import { ErrorMessage } from './ErrorMessage';
 import { HttpError } from '../sipgateIOClient';
 
-export const handleCoreError = (error: HttpError): Error => {
+export const handleCoreError = (error: HttpError<unknown>): Error => {
 	if (error.response && error.response.status === 401) {
 		return new Error(ErrorMessage.HTTP_401);
 	}

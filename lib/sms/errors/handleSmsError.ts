@@ -12,7 +12,7 @@ export enum SmsErrorMessage {
 	NUMBER_NOT_REGISTERED = 'Number is not registered as a sender ID in your account',
 }
 
-export const handleSmsError = (error: HttpError): Error => {
+export const handleSmsError = (error: HttpError<unknown>): Error => {
 	if (error.response && error.response.status === 403) {
 		return new Error(SmsErrorMessage.INVALID_EXTENSION);
 	}

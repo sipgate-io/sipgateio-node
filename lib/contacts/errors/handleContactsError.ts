@@ -16,7 +16,7 @@ export enum ContactsErrorMessage {
 	CONTACTS_INVALID_AMOUNT_OF_EMAILS = 'Only one email is allowed',
 }
 
-export const handleContactsError = (error: HttpError): Error => {
+export const handleContactsError = (error: HttpError<unknown>): Error => {
 	if (error.response && error.response.status === 500) {
 		return Error(`${ContactsErrorMessage.CONTACTS_INVALID_CSV}`);
 	}

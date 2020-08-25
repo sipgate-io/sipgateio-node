@@ -102,13 +102,12 @@ export const createHistoryModule = (
 		};
 
 		return client
-			.get('/history/export', {
+			.get<string>('/history/export', {
 				params: {
 					...historyFilterDTO,
 					...pagination,
 				},
 			})
-			.then((response) => response.data)
 			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 });

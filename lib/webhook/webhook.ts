@@ -21,9 +21,21 @@ import {
 	WebhookServer,
 } from './webhook.types';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
+import { WebhookErrorMessage } from './webhook.errors';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
-import { WebhookErrorMessage } from './webhook.errors';
+
+interface WebhookApiResponse {
+	_declaration: {
+		_attributes: {
+			version: string;
+			encoding: string;
+		};
+	};
+	Response:
+		| ({ _attributes: Record<string, string> } & ResponseObject)
+		| { _attributes: Record<string, string> };
+}
 
 export const createWebhookModule = (): WebhookModule => ({
 	createServer: createWebhookServer,
@@ -92,15 +104,24 @@ const createWebhookServer = async (
 						handlers[EventType.NEW_CALL] = handler;
 					},
 					onAnswer: (handler) => {
-						if (!serverOptions.serverAddress) throw new Error(WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS);
+						if (!serverOptions.serverAddress)
+							throw new Error(
+								WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS
+							);
 						handlers[EventType.ANSWER] = handler;
 					},
 					onHangUp: (handler) => {
-						if (!serverOptions.serverAddress) throw new Error(WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS);
+						if (!serverOptions.serverAddress)
+							throw new Error(
+								WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS
+							);
 						handlers[EventType.HANGUP] = handler;
 					},
 					onData: (handler) => {
-						if (!serverOptions.serverAddress) throw new Error(WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS);
+						if (!serverOptions.serverAddress)
+							throw new Error(
+								WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS
+							);
 						handlers[EventType.DATA] = handler;
 					},
 					stop: () => {
@@ -158,8 +179,7 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 const createResponseObject = (
 	responseObject: ResponseObject | undefined,
 	serverAddress: string
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Record<string, any> => {
+): WebhookApiResponse => {
 	if (responseObject && isGatherObject(responseObject)) {
 		responseObject.Gather._attributes['onData'] = serverAddress;
 	}
@@ -172,8 +192,7 @@ const createResponseObject = (
 	};
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createXmlResponse = (responseObject: Record<string, any>): string => {
+const createXmlResponse = (responseObject: WebhookApiResponse): string => {
 	const options = {
 		compact: true,
 		ignoreComment: true,

@@ -33,17 +33,17 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 	});
 
 	return {
-		delete<T = any>(url: string, config?: HttpRequestConfig): Promise<T> {
+		delete<T>(url: string, config?: HttpRequestConfig): Promise<T> {
 			return client.delete<T>(url, config).then((response) => response.data);
 		},
 
-		get<T = any>(url: string, config?: HttpRequestConfig): Promise<T> {
+		get<T>(url: string, config?: HttpRequestConfig): Promise<T> {
 			return client.get<T>(url, config).then((response) => response.data);
 		},
 
-		patch<T = any>(
+		patch<T>(
 			url: string,
-			data?: any,
+			data?: unknown,
 			config?: HttpRequestConfig
 		): Promise<T> {
 			return client
@@ -51,9 +51,9 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 				.then((response) => response.data);
 		},
 
-		post<T = any>(
+		post<T>(
 			url: string,
-			data?: any,
+			data?: unknown,
 			config?: HttpRequestConfig
 		): Promise<T> {
 			return client
@@ -61,9 +61,9 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 				.then((response) => response.data);
 		},
 
-		put<T = any>(
+		put<T>(
 			url: string,
-			data?: any,
+			data?: unknown,
 			config?: HttpRequestConfig
 		): Promise<T> {
 			return client.put<T>(url, data, config).then((response) => response.data);

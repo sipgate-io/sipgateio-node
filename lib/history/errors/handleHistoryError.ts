@@ -5,7 +5,7 @@ export enum HistoryErrorMessage {
 	EVENT_NOT_FOUND = 'The requested history event could not be found',
 }
 
-export const handleHistoryError = (error: HttpError): Error => {
+export const handleHistoryError = (error: HttpError<unknown>): Error => {
 	if (error.response && error.response.status === 400) {
 		return new Error(HistoryErrorMessage.BAD_REQUEST);
 	}

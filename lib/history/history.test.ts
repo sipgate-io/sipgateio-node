@@ -1,4 +1,4 @@
-import { HistoryEntry } from './history.types';
+import { HistoryEntry, HistoryEntryType } from './history.types';
 import { HistoryErrorMessage } from './errors/handleHistoryError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
@@ -100,5 +100,29 @@ describe('History Module', () => {
 		await expect(
 			historyModule.exportAsCsvString({ connectionIds: ['s0', 'sokx5', 'e0'] })
 		).rejects.toThrowError('Invalid extension: sokx5');
+	});
+
+	it('passes the filter to the history export endpoint', async () => {
+		const historyModule = createHistoryModule(mockClient);
+		mockClient.get = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve('example response'));
+
+		await historyModule.exportAsCsvString(
+			{
+				archived: true,
+				types: [HistoryEntryType.SMS],
+			},
+			{ offset: 10, limit: 20 }
+		);
+
+		expect(mockClient.get).toBeCalledWith('/history/export', {
+			params: {
+				archived: true,
+				types: [HistoryEntryType.SMS],
+				offset: 10,
+				limit: 20,
+			},
+		});
 	});
 });

@@ -87,8 +87,8 @@ const getWebhookSettingsFromClient = (
 	client: SipgateIOClient
 ): Promise<WebhookSettings> => {
 	return client
-		.get(SETTINGS_ENDPOINT)
-		.catch((error) => handleWebhookSettingsError(error));
+		.get<WebhookSettings>(SETTINGS_ENDPOINT)
+		.catch((error) => Promise.reject(handleWebhookSettingsError(error)));
 };
 
 const modifyWebhookSettings = async (
@@ -100,5 +100,5 @@ const modifyWebhookSettings = async (
 			fn(settings);
 			return client.put(SETTINGS_ENDPOINT, settings);
 		})
-		.catch((error) => handleWebhookSettingsError(error));
+		.catch((error) => Promise.reject(handleWebhookSettingsError(error)));
 };
