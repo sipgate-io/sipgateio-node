@@ -13,9 +13,7 @@ import { validatePdfFileContent } from './validators/validatePdfFileContent';
 export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
 	async send(faxObject: Fax): Promise<SendFaxSessionResponse> {
 		const fax = faxObject;
-		const fileContentValidationResult = await validatePdfFileContent(
-			fax.fileContent
-		);
+		const fileContentValidationResult = validatePdfFileContent(fax.fileContent);
 
 		if (!fileContentValidationResult.isValid) {
 			throw new Error(fileContentValidationResult.cause);
