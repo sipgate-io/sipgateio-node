@@ -4,12 +4,13 @@ export enum FaxValidationMessage {
 	INVALID_PDF_MIME_TYPE = 'Invalid PDF file',
 }
 
-const validatePdfFileContent = (content: Buffer): ValidationResult => {
-	// see https://github.com/MaraniMatias/isPDF/blob/946ffba1ccbca4d7b88bda39e2dda426bd5b0977/index.js#L5
-	const isPdf =
-		content.lastIndexOf('%PDF-') === 0 &&
-		content.lastIndexOf('%%EOF') > -1;
+// see https://github.com/MaraniMatias/isPDF/blob/946ffba1ccbca4d7b88bda39e2dda426bd5b0977/index.js#L5
+const isValidPDF = (buffer: Buffer): boolean => {
+	return buffer.lastIndexOf('%PDF-') === 0 && buffer.lastIndexOf('%%EOF') > -1;
+};
 
+const validatePdfFileContent = (content: Buffer): ValidationResult => {
+	const isPdf = isValidPDF(content);
 	if (!isPdf) {
 		return {
 			cause: FaxValidationMessage.INVALID_PDF_MIME_TYPE,
