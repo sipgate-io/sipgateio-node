@@ -12,9 +12,9 @@ import {
 } from '../validator';
 import { version } from '../../version.json';
 import axios from 'axios';
-import btoa from 'btoa';
 
 import qs from 'qs';
+import { toBase64 } from '../../utils';
 
 export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 	const authorizationHeader = getAuthHeader(credentials);
@@ -93,5 +93,5 @@ const getAuthHeader = (credentials: AuthCredentials): string => {
 		throw new Error(passwordValidationResult.cause);
 	}
 
-	return `Basic ${btoa(`${credentials.username}:${credentials.password}`)}`;
+	return `Basic ${toBase64(`${credentials.username}:${credentials.password}`)}`;
 };

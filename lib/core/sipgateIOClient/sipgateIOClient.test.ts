@@ -1,8 +1,8 @@
 import { detect as detectPlatform } from 'detect-browser';
 import { sipgateIO } from './sipgateIOClient';
+import { toBase64 } from '../../utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
-import btoa from 'btoa';
 import nock from 'nock';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -22,7 +22,7 @@ describe('Test header', () => {
 
 	test('test authorization header', async () => {
 		const expectedData = 'test';
-		const expectedAuthHeader = `Basic ${btoa(
+		const expectedAuthHeader = `Basic ${toBase64(
 			'testUsername@test.de:testPassword'
 		)}`;
 

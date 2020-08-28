@@ -18,7 +18,7 @@ import {
 	exampleWithTwoOrganizations,
 	exampleWithoutEmail,
 } from './contacts.test.examples';
-import atob from 'atob';
+import { fromBase64 } from '../utils';
 
 describe('Contacts Module', () => {
 	let contactsModule: ContactsModule;
@@ -98,7 +98,7 @@ describe('Contacts Module by CSV', () => {
 		mockClient.post = jest
 			.fn()
 			.mockImplementation((_, contactsDTO: ImportCSVRequestDTO) => {
-				csvContent = atob(contactsDTO.base64Content);
+				csvContent = fromBase64(contactsDTO.base64Content);
 				return Promise.resolve({
 					status: 204,
 				});

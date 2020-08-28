@@ -13,14 +13,14 @@ import {
 import { Parser } from 'json2csv';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
-import btoa from 'btoa';
+import { toBase64 } from '../utils';
 
 export const createContactsModule = (
 	client: SipgateIOClient
 ): ContactsModule => ({
 	async importFromCsvString(csvContent: string): Promise<void> {
 		const projectedCsv = projectCsvString(csvContent);
-		const base64EncodedCsv = btoa(projectedCsv);
+		const base64EncodedCsv = toBase64(projectedCsv);
 		const contactsDTO: ImportCSVRequestDTO = {
 			base64Content: base64EncodedCsv,
 		};
