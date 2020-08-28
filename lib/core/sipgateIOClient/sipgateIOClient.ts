@@ -5,6 +5,7 @@ import {
 } from './sipgateIOClient.types';
 
 import { detect as detectPlatform } from 'detect-browser';
+import { toBase64 } from '../../utils';
 import {
 	validateEmail,
 	validateOAuthToken,
@@ -12,9 +13,7 @@ import {
 } from '../validator';
 import { version } from '../../version.json';
 import axios from 'axios';
-
 import qs from 'qs';
-import { toBase64 } from '../../utils';
 
 export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 	const authorizationHeader = getAuthHeader(credentials);

@@ -3,16 +3,19 @@ import { sipgateIO } from './sipgateIOClient';
 import { toBase64 } from '../../utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
-import nock from 'nock';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import packageJson from '../../../package.json';
 
 describe('Test header', () => {
-	const baseUrl = 'https://api.sipgate.com/v2';
+	const axiosMock = new MockAdapter(axios);
 	const basicAuthHttpClient = sipgateIO({
 		username: 'testUsername@test.de',
 		password: 'testPassword',
+	});
+
+	afterEach(() => {
+		axiosMock.resetHandlers();
 	});
 
 	const validOAuthToken =
@@ -26,10 +29,11 @@ describe('Test header', () => {
 			'testUsername@test.de:testPassword'
 		)}`;
 
-		nock(baseUrl)
-			.matchHeader('Authorization', expectedAuthHeader)
-			.get('/test')
-			.reply(201, expectedData);
+		axiosMock.onGet('/test').reply((config) => {
+			expect(config.headers.Authorization).toEqual(expectedAuthHeader);
+
+			return [201, expectedData];
+		});
 
 		const response = await basicAuthHttpClient.get('/test');
 
@@ -40,10 +44,11 @@ describe('Test header', () => {
 		const expectedData = 'test';
 		const expectedAuthHeader = `Bearer ${validOAuthToken}`;
 
-		nock(baseUrl)
-			.matchHeader('Authorization', expectedAuthHeader)
-			.get('/test')
-			.reply(201, expectedData);
+		axiosMock.onGet('/test').reply((config) => {
+			expect(config.headers.Authorization).toEqual(expectedAuthHeader);
+
+			return [201, expectedData];
+		});
 
 		const response = await oAuthHttpClient.get('/test');
 
@@ -55,10 +60,11 @@ describe('Test header', () => {
 		const expectedXHeaderKey = 'X-Sipgate-Client';
 		const expectedXHeaderValue = JSON.stringify(detectPlatform());
 
-		nock(baseUrl)
-			.matchHeader(expectedXHeaderKey, expectedXHeaderValue)
-			.get('/test')
-			.reply(201, expectedData);
+		axiosMock.onGet('/test').reply((config) => {
+			expect(config.headers[expectedXHeaderKey]).toEqual(expectedXHeaderValue);
+
+			return [201, expectedData];
+		});
 
 		const response = await basicAuthHttpClient.get('/test');
 		expect(response).toEqual(expectedData);
@@ -69,10 +75,13 @@ describe('Test header', () => {
 		const expectedXVersionHeaderKey = 'X-Sipgate-Version';
 		const expectedXVersionHeaderValue = packageJson.version;
 
-		nock(baseUrl)
-			.matchHeader(expectedXVersionHeaderKey, expectedXVersionHeaderValue)
-			.get('/test')
-			.reply(201, expectedData);
+		axiosMock.onGet('/test').reply((config) => {
+			expect(config.headers[expectedXVersionHeaderKey]).toEqual(
+				expectedXVersionHeaderValue
+			);
+
+			return [201, expectedData];
+		});
 
 		const response = await basicAuthHttpClient.get('/test');
 
