@@ -3,6 +3,7 @@
 	"version": "1.9.4",
 	"description": "The official Node.js library for sipgate.io",
 	"main": "./dist/index.js",
+	"browser": "./dist/bundle.js",
 	"scripts": {
 		"lint": "eslint --fix ./lib/**/*.ts",
 		"format": "prettier --write **/**.ts",
