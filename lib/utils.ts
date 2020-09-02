@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer';
+
 export const toBase64 = (input: string): string => {
 	if (typeof btoa !== 'undefined') {
 		return btoa(input);

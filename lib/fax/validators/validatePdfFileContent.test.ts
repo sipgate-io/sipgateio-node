@@ -4,6 +4,8 @@ import {
 } from './validatePdfFileContent';
 import validPDFBuffer from '../testfiles/validPDFBuffer';
 
+import { Buffer } from 'buffer';
+
 describe('PDF file validation', () => {
 	test('should return valid ValidationResult if pdf file content is valid', async () => {
 		const validPdfFileContents = validPDFBuffer;
