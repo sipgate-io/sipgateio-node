@@ -1,4 +1,4 @@
-export { sipgateIO, Pagination } from './core';
+export { sipgateIO, Pagination, SipgateIOClient } from './core';
 export {
 	createCallModule,
 	CallData,
@@ -32,6 +32,10 @@ export {
 	HistoryEntryType,
 	HistoryFilter,
 	HistoryEntry,
+	CallHistoryEntry,
+	FaxHistoryEntry,
+	SmsHistoryEntry,
+	VoicemailHistoryEntry,
 	HistoryEntryUpdateOptions,
 	BaseHistoryFilter,
 } from './history';
