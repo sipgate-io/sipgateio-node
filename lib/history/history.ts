@@ -1,10 +1,12 @@
 import {
 	BaseHistoryFilter,
 	HistoryEntry,
+	HistoryEntryType,
 	HistoryEntryUpdateOptionsWithId,
 	HistoryFilterDTO,
 	HistoryModule,
 	HistoryResponse,
+	HistoryResponseItem,
 } from './history.types';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { handleHistoryError } from './errors/handleHistoryError';
@@ -33,7 +35,7 @@ export const createHistoryModule = (
 					...pagination,
 				},
 			})
-			.then((response) => response.items)
+			.then((response) => response.items.map(transformHistoryEntry))
 			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 	fetchById(entryId): Promise<HistoryEntry> {
@@ -121,4 +123,13 @@ const validateFilteredExtension = (filter?: BaseHistoryFilter): void => {
 			throw new Error(result.cause);
 		}
 	}
+};
+
+const transformHistoryEntry = (entry: HistoryResponseItem): HistoryEntry => {
+	if (entry.type === HistoryEntryType.FAX) {
+		const { faxStatusType, ...rest } = entry;
+		return { ...rest, faxStatus: faxStatusType };
+	}
+
+	return entry;
 };

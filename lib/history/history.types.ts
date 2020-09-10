@@ -114,6 +114,10 @@ export interface FaxHistoryEntry extends BaseHistoryEntry {
 	pageCount: number;
 }
 
+type HistoryResponseFaxItem = Omit<FaxHistoryEntry, 'faxStatus'> & {
+	faxStatusType: FaxStatusType;
+};
+
 export enum FaxStatusType {
 	PENDING = 'PENDING',
 	SENDING = 'SENDING',
@@ -165,7 +169,11 @@ export type HistoryEntry =
 	| SmsHistoryEntry
 	| VoicemailHistoryEntry;
 
+export type HistoryResponseItem =
+	| Exclude<HistoryEntry, FaxHistoryEntry>
+	| HistoryResponseFaxItem;
+
 export interface HistoryResponse {
-	items: HistoryEntry[];
+	items: HistoryResponseItem[];
 	totalCount: number;
 }
