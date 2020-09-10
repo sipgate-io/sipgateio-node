@@ -254,15 +254,15 @@ describe('schedule sms', () => {
 	});
 });
 
-describe('SMS Extension List', () => {
-	test('should get SMS ID LIST', async () => {
-		const mockUserID = '0000000';
+describe('The SMS module', () => {
+	test("should correctly identify a webuser's smsExtension", async () => {
+		const expectedId = 's0';
 		const mockData = {
 			items: [
 				{
 					alias: '"Alexander Bain\'s phone"',
 					callerId: '+491517777777',
-					id: 's0',
+					id: expectedId,
 				},
 			],
 			status: 200,
@@ -274,9 +274,9 @@ describe('SMS Extension List', () => {
 			.fn()
 			.mockImplementation(() => Promise.resolve(mockData));
 
-		await expect(
-			getUserSmsExtension(mockedClient, mockUserID)
-		).resolves.not.toThrow();
+		expect(
+			getUserSmsExtension(mockedClient, 'some webuserId')
+		).resolves.toEqual(expectedId);
 	});
 });
 
