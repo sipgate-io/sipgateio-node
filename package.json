@@ -3,7 +3,7 @@
 	"version": "1.9.4",
 	"description": "The official Node.js library for sipgate.io",
 	"main": "./dist/index.js",
-	"browser": "./dist/bundle.js",
+	"browser": "./dist/browser.js",
 	"scripts": {
 		"lint": "eslint --fix ./lib/**/*.ts",
 		"format": "prettier --write **/**.ts",
@@ -12,7 +12,7 @@
 		"test:unit": "jest --selectProjects node dom",
 		"test:unit:coverage": "jest --selectProjects node dom --coverage",
 		"test:integration": "npm run bundle && jest --selectProjects bundle",
-		"bundle": "browserify -r ./lib/bundle.ts:sipgate-io -p tsify -g uglifyify  > ./bundle/sipgate-io.js && terser --compress --mangle -o ./bundle/sipgate-io.min.js -- ./bundle/sipgate-io.js",
+		"bundle": "browserify -r ./lib/browser.ts:sipgate-io -p tsify -g uglifyify  > ./bundle/sipgate-io.js && terser --compress --mangle -o ./bundle/sipgate-io.min.js -- ./bundle/sipgate-io.js",
 		"prepare": "tsc"
 	},
 	"repository": {
