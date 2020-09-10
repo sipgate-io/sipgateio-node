@@ -17,7 +17,7 @@ describe('SMS Module', () => {
 		mockClient = {} as SipgateIOClient;
 	});
 
-	it('sends  a sms by using a validated phone number', async () => {
+	it('sends a sms by using a validated phone number', async () => {
 		const smsModule = createSMSModule(mockClient);
 
 		mockClient.get = jest.fn().mockImplementation((args) => {
