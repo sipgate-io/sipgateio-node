@@ -2,15 +2,15 @@ export interface SMSModule {
 	send: (sms: ShortMessage, sendAt?: Date) => Promise<void>;
 }
 
-export interface GenericShortMessage {
+interface GenericShortMessage {
 	message: string;
 }
 
-export interface Recipient {
+interface Recipient {
 	to: string;
 }
 
-export interface PhoneNumber {
+interface PhoneNumber {
 	from: string;
 }
 

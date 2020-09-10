@@ -37,7 +37,7 @@ export const createSMSModule = (client: SipgateIOClient): SMSModule => ({
 	},
 });
 
-export const sendSms = async (
+const sendSms = async (
 	client: SipgateIOClient,
 	smsDTO: ShortMessageDTO
 ): Promise<void> => {
@@ -67,7 +67,7 @@ export const getSmsCallerIds = (
 		.catch((error) => Promise.reject(handleSmsError(error)));
 };
 
-export const setDefaultSenderId = async (
+const setDefaultSenderId = async (
 	client: SipgateIOClient,
 	webuserExtension: string,
 	smsId: string,
