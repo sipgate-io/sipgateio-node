@@ -112,6 +112,11 @@ describe('sipgate-io client', () => {
 		expect(typeof contacts.importFromCsvString).toEqual('function');
 	});
 
+	it('should contain the exported enums', () => {
+		expect(bundle.HistoryEntryType).toBeDefined();
+		expect(bundle.HistoryEntryType.FAX).toEqual('FAX');
+	});
+
 	it('should not contain a webhook module', () => {
 		expect(bundle.createWebhookModule).toBeUndefined();
 	});
