@@ -303,7 +303,7 @@ describe('The sipgateIOClient', () => {
 		const response = {
 			items: [
 				{
-					date1: '2020-09-11T08:53:27Z',
+					date1: '2020-09-10T08:53:27Z',
 				},
 				{
 					date2: '2020-04-20T08:53:27Z',
@@ -316,7 +316,7 @@ describe('The sipgateIOClient', () => {
 		const expected = {
 			items: [
 				{
-					date1: new Date('2020-09-11T08:53:27Z'),
+					date1: new Date('2020-09-10T08:53:27Z'),
 				},
 				{
 					date2: new Date('2020-04-20T08:53:27Z'),
