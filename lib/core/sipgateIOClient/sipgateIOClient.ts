@@ -15,6 +15,50 @@ import { version } from '../../version.json';
 import axios from 'axios';
 import qs from 'qs';
 
+interface RawDeserialized {
+	[key: string]: RawDeserializedValue;
+}
+
+type RawDeserializedValue = RawDeserialized | string | number | boolean;
+
+interface DeserializedWithDate {
+	[key: string]: DeserializedWithDateValue;
+}
+
+type DeserializedWithDateValue =
+	| string
+	| number
+	| boolean
+	| Date
+	| DeserializedWithDate;
+
+const parseRawDeserializedValue = (
+	value: RawDeserializedValue
+): DeserializedWithDateValue => {
+	return typeof value === 'object'
+		? parseDatesInObject(value)
+		: typeof value === 'string'
+		? parseIfDate(value)
+		: value;
+};
+
+const parseDatesInObject = (data: RawDeserialized): DeserializedWithDate => {
+	const newData: DeserializedWithDate = {};
+	Object.keys(data).forEach((key) => {
+		const value = data[key];
+		newData[key] = parseRawDeserializedValue(value);
+	});
+	return newData;
+};
+
+const parseIfDate = (maybeDate: string): Date | string => {
+	const regexISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.?\d*))(?:Z|([+-])([\d|:]*))?$/;
+	if (maybeDate.match(regexISO)) {
+		return new Date(maybeDate);
+	}
+	return maybeDate;
+};
+
 export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 	const authorizationHeader = getAuthHeader(credentials);
 
@@ -27,10 +71,14 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 			'Content-Type': 'application/json',
 			'X-Sipgate-Client': JSON.stringify(platformInfo),
 			'X-Sipgate-Version': version,
-			'Content-Type': 'application/json',
 		},
 		paramsSerializer: (params) =>
 			qs.stringify(params, { arrayFormat: 'repeat' }),
+	});
+
+	client.interceptors.response.use((response) => {
+		response.data = parseRawDeserializedValue(response.data);
+		return response;
 	});
 
 	return {
