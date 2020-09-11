@@ -211,3 +211,86 @@ describe('validation', () => {
 		).toThrow('Invalid password');
 	});
 });
+
+describe('The sipgateIOClient', () => {
+	let mock: MockAdapter;
+
+	beforeEach(() => {
+		mock = new MockAdapter(axios);
+	});
+
+	afterEach(() => {
+		mock.reset();
+	});
+
+	test('should correctly deserialize dates in a flat response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			date: '2020-09-11T08:53:27Z',
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			date: new Date(response.date),
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
+
+	test('should not fail to deserialize a flat response body without a date', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			someString: 'not a date',
+			someNumber: 42,
+			someBoolean: false,
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = { ...response };
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
+
+	test('should correctly deserialize dates in a nested response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			innerObject1: {
+				date1: '2020-09-11T08:53:27Z',
+			},
+			innerObject2: {
+				innerInnerObject21: {
+					date2: '2020-04-20T08:53:27Z',
+				},
+			},
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			innerObject1: {
+				date1: new Date('2020-09-11T08:53:27Z'),
+			},
+			innerObject2: {
+				innerInnerObject21: {
+					date2: new Date('2020-04-20T08:53:27Z'),
+				},
+			},
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
+});
