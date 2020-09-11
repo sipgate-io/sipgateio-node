@@ -326,4 +326,35 @@ describe('The sipgateIOClient', () => {
 
 		await expect(client.get('/some-path')).resolves.toEqual(expected);
 	});
+
+	test('should correctly deserialize dates inside primitive arrays in a response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			items: [
+				false,
+				'2020-09-10T08:53:27Z',
+				'not a date',
+				'2020-04-20T08:53:27Z',
+				1,
+			],
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			items: [
+				false,
+				new Date('2020-09-10T08:53:27Z'),
+				'not a date',
+				new Date('2020-04-20T08:53:27Z'),
+				1,
+			],
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
 });
