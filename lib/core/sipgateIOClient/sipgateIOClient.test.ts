@@ -230,7 +230,7 @@ describe('The sipgateIOClient', () => {
 		});
 
 		const response = {
-			date: '2020-09-11T08:53:27Z',
+			date: '2020-09-10T08:53:27Z',
 		};
 
 		mock.onGet().reply(200, response);
@@ -269,7 +269,7 @@ describe('The sipgateIOClient', () => {
 
 		const response = {
 			innerObject1: {
-				date1: '2020-09-11T08:53:27Z',
+				date1: '2020-09-10T08:53:27Z',
 			},
 			innerObject2: {
 				innerInnerObject21: {
@@ -282,7 +282,7 @@ describe('The sipgateIOClient', () => {
 
 		const expected = {
 			innerObject1: {
-				date1: new Date('2020-09-11T08:53:27Z'),
+				date1: new Date('2020-09-10T08:53:27Z'),
 			},
 			innerObject2: {
 				innerInnerObject21: {
