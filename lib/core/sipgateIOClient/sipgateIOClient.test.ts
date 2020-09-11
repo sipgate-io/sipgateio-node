@@ -293,4 +293,37 @@ describe('The sipgateIOClient', () => {
 
 		await expect(client.get('/some-path')).resolves.toEqual(expected);
 	});
+
+	test('should correctly deserialize dates inside object arrays in a response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			items: [
+				{
+					date1: '2020-09-11T08:53:27Z',
+				},
+				{
+					date2: '2020-04-20T08:53:27Z',
+				},
+			],
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			items: [
+				{
+					date1: new Date('2020-09-11T08:53:27Z'),
+				},
+				{
+					date2: new Date('2020-04-20T08:53:27Z'),
+				},
+			],
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
 });
