@@ -19,7 +19,12 @@ interface RawDeserialized {
 	[key: string]: RawDeserializedValue;
 }
 
-type RawDeserializedValue = RawDeserialized | string | number | boolean;
+type RawDeserializedValue =
+	| string
+	| number
+	| boolean
+	| RawDeserialized
+	| RawDeserializedValue[];
 
 interface DeserializedWithDate {
 	[key: string]: DeserializedWithDateValue;
@@ -30,12 +35,15 @@ type DeserializedWithDateValue =
 	| number
 	| boolean
 	| Date
-	| DeserializedWithDate;
+	| DeserializedWithDate
+	| DeserializedWithDateValue[];
 
 const parseRawDeserializedValue = (
 	value: RawDeserializedValue
 ): DeserializedWithDateValue => {
-	return typeof value === 'object'
+	return value instanceof Array
+		? value.map(parseRawDeserializedValue)
+		: typeof value === 'object'
 		? parseDatesInObject(value)
 		: typeof value === 'string'
 		? parseIfDate(value)
