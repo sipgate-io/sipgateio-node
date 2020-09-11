@@ -23,6 +23,8 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 		baseURL: 'https://api.sipgate.com/v2',
 		headers: {
 			Authorization: authorizationHeader,
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
 			'X-Sipgate-Client': JSON.stringify(platformInfo),
 			'X-Sipgate-Version': version,
 			'Content-Type': 'application/json',
