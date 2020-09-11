@@ -52,7 +52,7 @@ const parseDatesInObject = (data: RawDeserialized): DeserializedWithDate => {
 };
 
 const parseIfDate = (maybeDate: string): Date | string => {
-	const regexISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.?\d*))(?:Z|([+-])([\d|:]*))?$/;
+	const regexISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d+)?)(?:Z|([+-])([\d|:]*))?$/;
 	if (maybeDate.match(regexISO)) {
 		return new Date(maybeDate);
 	}
