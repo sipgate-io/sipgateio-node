@@ -357,4 +357,243 @@ describe('The sipgateIOClient', () => {
 
 		await expect(client.get('/some-path')).resolves.toEqual(expected);
 	});
+
+	test('should correctly deserialize a HistoryResponse', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			items: [
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: '2020-09-14T10:03:20Z',
+					lastModified: '2020-09-14T10:03:21Z',
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: '2020-09-14T10:03:20Z',
+					lastModified: '2020-09-14T10:03:21Z',
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: '2020-09-14T10:03:20Z',
+					lastModified: '2020-09-14T10:03:21Z',
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+			],
+			totalCount: 3,
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			items: [
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: new Date('2020-09-14T10:03:20Z'),
+					lastModified: new Date('2020-09-14T10:03:21Z'),
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: new Date('2020-09-14T10:03:20Z'),
+					lastModified: new Date('2020-09-14T10:03:21Z'),
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: new Date('2020-09-14T10:03:20Z'),
+					lastModified: new Date('2020-09-14T10:03:21Z'),
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+			],
+			totalCount: 3,
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
 });
