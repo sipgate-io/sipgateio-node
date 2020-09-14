@@ -596,4 +596,25 @@ describe('The sipgateIOClient', () => {
 
 		await expect(client.get('/some-path')).resolves.toEqual(expected);
 	});
+
+	test('should correctly deserialize null inside in a response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			value: null,
+			array: [null, false, 'string'],
+			object: {
+				key: null,
+			},
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = { ...response };
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
 });
