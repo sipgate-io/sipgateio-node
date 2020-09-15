@@ -94,10 +94,10 @@ export interface NewCallEvent extends GenericCallEvent {
 
 export interface AnswerEvent extends GenericCallEvent {
 	event: EventType.ANSWER;
-	user: string;
-	userId: string;
-	fullUserId: string;
 	answeringNumber: string;
+	user?: string;
+	userId?: string;
+	fullUserId?: string;
 	diversion?: string;
 }
 
