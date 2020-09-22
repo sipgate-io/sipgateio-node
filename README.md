@@ -24,6 +24,7 @@ A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 	- [History](#history-1)
 	- [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm-1)
 - [Examples](#examples)
+- [Changelog](#changelog)
 - [Privacy Note](#privacy-note)
 <!-- prettier-ignore -->
 
@@ -854,6 +855,10 @@ For some examples on how to use the library, please refer to this repository: [s
 ```
 npx ts-node some_example.ts
 ```
+
+## Changelog
+
+You can find the changelog [here](./CHANGELOG.md).
 
 ## Privacy Note
 
