@@ -324,7 +324,21 @@ For generating that response our library provides a convenient [response builder
 
 #### Usage
 
-To begin, instantiate the webhook module by calling `createWebhookModule`. The resulting object provides only one method, `createServer` which takes a configuration object of type `ServerOptions` containing a port number, server address, and an optional hostname (default: `localhost`). It returns a `Promise<WebhookServer>` which, when started, provides the following methods:
+To begin, instantiate the webhook module by calling `createWebhookModule`. The resulting object provides only one method, `createServer` which takes a configuration object of type `ServerOptions`.
+
+```typescript
+export interface ServerOptions {
+	// the local port to listen on
+	port: number;
+	// the publicly accessible server address
+	// (including the port, if not standard)
+	serverAddress: string;
+	// an optional hostname (default: localhost)
+	hostname?: string;
+}
+```
+
+It returns a `Promise<WebhookServer>` which, when resolved, provides the following methods:
 
 ```typescript
 interface WebhookServer {
