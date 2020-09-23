@@ -10,6 +10,7 @@
 		"test:dev": "jest --selectProjects node dom --watch",
 		"test:dev:coverage": "jest --selectProjects node dom --watch --coverage",
 		"test:unit": "jest --selectProjects node dom",
+		"test:unit:noDom": "jest --selectProjects node",
 		"test:unit:coverage": "jest --selectProjects node dom --coverage",
 		"test:integration": "npm run bundle && jest --selectProjects bundle",
 		"bundle": "browserify -r ./lib/browser.ts:sipgate-io -p tsify -g uglifyify  > ./bundle/sipgate-io.js && terser --compress --mangle -o ./bundle/sipgate-io.min.js -- ./bundle/sipgate-io.js",
@@ -49,7 +50,7 @@
 	],
 	"husky": {
 		"hooks": {
-			"pre-commit": "./update_version.sh && npm run test:unit && lint-staged"
+			"pre-commit": "./update_version.sh && ./run_unit_tests.sh && lint-staged"
 		}
 	},
 	"lint-staged": {
