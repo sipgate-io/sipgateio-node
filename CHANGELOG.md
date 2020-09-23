@@ -9,6 +9,8 @@
 
 ## Breaking Changes
 
+From now on, Node 8 is not supported anymore. It has reached End Of Life in December 2019 and you should upgrade to newer versions.
+
 - rename `from` and `to` to `startDate` and `endDate` in order to avoid confusion ([8bb8d41](https://github.com/sipgate-io/sipgateio-node/commit/8bb8d410f6d1a5810a6d74631ef0a99e61e9a97d))
 - rename `import` to `create` and `exportAsObject` to `get` in contacts module ([6beadaa](https://github.com/sipgate-io/sipgateio-node/commit/6beadaaccf33df100564d9f78366191d5d675848))
 - the fields `user[]`, `userId[]` und `fullUserId[]` are now called `users`, `userIds` and `originalUserFull` ([a9572d](https://github.com/sipgate-io/sipgateio-node/commit/a9572df5359a81a491f9c2dfcfbbb1c7c5037766))
