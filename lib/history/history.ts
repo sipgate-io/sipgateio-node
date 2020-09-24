@@ -1,41 +1,52 @@
 import {
 	BaseHistoryFilter,
 	HistoryEntry,
+	HistoryEntryType,
 	HistoryEntryUpdateOptionsWithId,
+	HistoryFilterDTO,
 	HistoryModule,
 	HistoryResponse,
+	HistoryResponseItem,
 } from './history.types';
-import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpError, HttpClientModule } from '../core/sipgateIOClient';
-import { handleCoreError } from '../core';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import { handleHistoryError } from './errors/handleHistoryError';
 import { validateExtension } from '../core/validator';
 
 export const createHistoryModule = (
-	client: HttpClientModule
+	client: SipgateIOClient
 ): HistoryModule => ({
-	async fetchAll(filter, pagination): Promise<HistoryEntry[]> {
+	async fetchAll(filter = {}, pagination): Promise<HistoryEntry[]> {
 		validateFilteredExtension(filter);
 
-		return await client
+		const historyFilterDTO: HistoryFilterDTO = {
+			archived: filter.archived,
+			connectionIds: filter.connectionIds,
+			directions: filter.directions,
+			from: filter.startDate,
+			starred: filter.starred,
+			to: filter.endDate,
+			types: filter.types,
+		};
+
+		return client
 			.get<HistoryResponse>('/history', {
 				params: {
-					...filter,
+					...historyFilterDTO,
 					...pagination,
 				},
 			})
-			.then((response) => response.data.items)
-			.catch((error) => Promise.reject(handleError(error)));
+			.then((response) => response.items.map(transformHistoryEntry))
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
-	async fetchById(entryId): Promise<HistoryEntry> {
-		return await client
+	fetchById(entryId): Promise<HistoryEntry> {
+		return client
 			.get<HistoryEntry>(`/history/${entryId}`)
-			.then((response) => response.data)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 	async deleteById(entryId): Promise<void> {
 		await client
 			.delete<string>(`/history/${entryId}`)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 	async deleteByListOfIds(entryIds): Promise<void> {
 		await client
@@ -44,7 +55,7 @@ export const createHistoryModule = (
 					id: entryIds,
 				},
 			})
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 	async batchUpdateEvents(events, callback): Promise<void> {
 		const mappedEvents = events.map((event) => {
@@ -77,33 +88,31 @@ export const createHistoryModule = (
 				})
 			),
 			client.put('history', eventsWithoutNote),
-		]).catch((error) => Promise.reject(handleError(error)));
+		]).catch((error) => Promise.reject(handleHistoryError(error)));
 	},
-	async exportAsCsvString(filter, pagination): Promise<string> {
+	async exportAsCsvString(filter = {}, pagination): Promise<string> {
 		validateFilteredExtension(filter);
-		return await client
-			.get('/history/export', {
+
+		const historyFilterDTO: HistoryFilterDTO = {
+			archived: filter.archived,
+			connectionIds: filter.connectionIds,
+			directions: filter.directions,
+			from: filter.startDate,
+			starred: filter.starred,
+			to: filter.endDate,
+			types: filter.types,
+		};
+
+		return client
+			.get<string>('/history/export', {
 				params: {
-					...filter,
+					...historyFilterDTO,
 					...pagination,
 				},
 			})
-			.then((response) => response.data)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleHistoryError(error)));
 	},
 });
-
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 400) {
-		return new Error(ErrorMessage.HISTORY_BAD_REQUEST);
-	}
-
-	if (error.response && error.response.status === 404) {
-		return new Error(ErrorMessage.HISTORY_EVENT_NOT_FOUND);
-	}
-
-	return handleCoreError(error);
-};
 
 const validateFilteredExtension = (filter?: BaseHistoryFilter): void => {
 	if (filter && filter.connectionIds) {
@@ -114,4 +123,13 @@ const validateFilteredExtension = (filter?: BaseHistoryFilter): void => {
 			throw new Error(result.cause);
 		}
 	}
+};
+
+const transformHistoryEntry = (entry: HistoryResponseItem): HistoryEntry => {
+	if (entry.type === HistoryEntryType.FAX) {
+		const { faxStatusType, ...rest } = entry;
+		return { ...rest, faxStatus: faxStatusType };
+	}
+
+	return entry;
 };

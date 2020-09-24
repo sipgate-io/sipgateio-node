@@ -1,24 +1,31 @@
 /* eslint-disable no-unused-vars */
-import { ContactsDTO, ContactsModule } from './contacts.module';
-import { ErrorMessage } from './errors/ErrorMessage';
-import { ImportCSVRequestDTO } from './models/contacts.model';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import {
+	ContactsDTO,
+	ContactsModule,
+	ImportCSVRequestDTO,
+} from './contacts.types';
+import { ContactsErrorMessage } from './errors/handleContactsError';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createContactsModule } from './contacts';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
 import {
 	example,
 	exampleWithAllValues,
+	exampleWithNotEnoughNames,
+	exampleWithNotEnoughValues,
+	exampleWithTooManyEmails,
 	exampleWithTwoAdresses,
+	exampleWithTwoOrganizations,
 	exampleWithoutEmail,
 } from './contacts.test.examples';
-import atob from 'atob';
+import { fromBase64 } from '../utils';
 
 describe('Contacts Module', () => {
 	let contactsModule: ContactsModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		mockClient.post = jest
 			.fn()
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -32,14 +39,16 @@ describe('Contacts Module', () => {
 
 	it('throws $expected when $input is given (some fields are missing)', async () => {
 		await expect(
-			contactsModule.import(
+			contactsModule.create(
 				{
 					firstname: '',
 					lastname: '',
 				},
 				'PRIVATE'
 			)
-		).rejects.toThrowError(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
+		).rejects.toThrowError(
+			ContactsErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE
+		);
 	});
 
 	it.each`
@@ -72,24 +81,24 @@ describe('Contacts Module', () => {
 }} | ${undefined}
 	`('does not throw when correct values are given', async ({ input }) => {
 		await expect(
-			contactsModule.import(input, 'PRIVATE')
+			contactsModule.create(input, 'PRIVATE')
 		).resolves.not.toThrow();
 	});
 });
 
 describe('Contacts Module by CSV', () => {
 	let contactsModule: ContactsModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	let csvContent: string;
 
 	beforeEach(() => {
 		csvContent = '';
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		mockClient.post = jest
 			.fn()
 			.mockImplementation((_, contactsDTO: ImportCSVRequestDTO) => {
-				csvContent = atob(contactsDTO.base64Content);
+				csvContent = fromBase64(contactsDTO.base64Content);
 				return Promise.resolve({
 					status: 204,
 				});
@@ -120,13 +129,13 @@ describe('Contacts Module by CSV', () => {
 
 	it.each`
 		input                                          | expected
-		${'firstname,lastname\nm,turing\nd,foo,dummy'} | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'firstname,number\nm,turing\nd,foo,dummy'}   | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'\nfirstname,lastname,\nd,foo,dummy'}        | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'lastname,number\nm,turing\nd,foo,dummy'}    | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'foo,dummy,bar\nm,turing\nd,foo,dummy'}      | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'\nm,turing\nd,foo,dummy'}                   | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
-		${'\n\nd,foo,dummy'}                           | ${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'firstname,lastname\nm,turing\nd,foo,dummy'} | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'firstname,number\nm,turing\nd,foo,dummy'}   | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'\nfirstname,lastname,\nd,foo,dummy'}        | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'lastname,number\nm,turing\nd,foo,dummy'}    | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'foo,dummy,bar\nm,turing\nd,foo,dummy'}      | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'\nm,turing\nd,foo,dummy'}                   | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
+		${'\n\nd,foo,dummy'}                           | ${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}
 	`(
 		'throws $expected when $input is given (some fields are missing)',
 		async ({ input, expected }) => {
@@ -138,9 +147,9 @@ describe('Contacts Module by CSV', () => {
 
 	it.each`
 		input                                                        | expected
-		${'firstname,lastname,number\nm,turing,000\na,000\na,b,000'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
-		${'firstname,lastname,number\nm,turing,000\na,000,200\na,b'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
-		${'firstname,lastname,number\nturing,000\na,000,c\na,b,000'} | ${ErrorMessage.CONTACTS_MISSING_VALUES}
+		${'firstname,lastname,number\nm,turing,000\na,000\na,b,000'} | ${ContactsErrorMessage.CONTACTS_MISSING_VALUES}
+		${'firstname,lastname,number\nm,turing,000\na,000,200\na,b'} | ${ContactsErrorMessage.CONTACTS_MISSING_VALUES}
+		${'firstname,lastname,number\nturing,000\na,000,c\na,b,000'} | ${ContactsErrorMessage.CONTACTS_MISSING_VALUES}
 	`(
 		'throws $expected when $input is given (some rows missing values)',
 		async ({ input, expected }) => {
@@ -152,7 +161,7 @@ describe('Contacts Module by CSV', () => {
 
 	it.each`
 		input | expected
-		${''} | ${ErrorMessage.CONTACTS_INVALID_CSV}
+		${''} | ${ContactsErrorMessage.CONTACTS_INVALID_CSV}
 	`('throws $expected when $input is given', async ({ input, expected }) => {
 		await expect(
 			contactsModule.importFromCsvString(input)
@@ -167,26 +176,26 @@ describe('Contacts Module by vCard', () => {
 
 	it('throws an Error if the vCard does not have a valid starting tag', () => {
 		expect(() => parseVCard('VERSION:4.0\r\nEND:VCARD\r\n')).toThrowError(
-			ErrorMessage.CONTACTS_VCARD_MISSING_BEGIN
+			ContactsErrorMessage.CONTACTS_VCARD_MISSING_BEGIN
 		);
 	});
 
 	it('throws an Error if the vCard does not have a valid ending tag', () => {
 		expect(() => parseVCard('BEGIN:VCARD\r\nVERSION:4.0\r\n\r\n')).toThrowError(
-			ErrorMessage.CONTACTS_VCARD_MISSING_END
+			ContactsErrorMessage.CONTACTS_VCARD_MISSING_END
 		);
 	});
 
 	it('throws an Error if the Names of the vCard Contact are not given', () => {
 		expect(() =>
 			parseVCard('BEGIN:VCARD\r\nVERSION:4.0\r\nEND:VCARD\r\n')
-		).toThrowError(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
+		).toThrowError(ContactsErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
 	});
 
 	it('throws an Error if the Version is not 4.0', () => {
 		expect(() =>
 			parseVCard(example.replace('VERSION:4.0', 'VERSION:2.1'))
-		).toThrowError(ErrorMessage.CONTACTS_INVALID_VCARD_VERSION);
+		).toThrowError(ContactsErrorMessage.CONTACTS_INVALID_VCARD_VERSION);
 	});
 
 	it('throws an Error if no phone number is given', () => {
@@ -194,7 +203,7 @@ describe('Contacts Module by vCard', () => {
 			parseVCard(
 				'BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;Mr.;\r\nEND:VCARD\r\n'
 			)
-		).toThrowError(ErrorMessage.CONTACTS_MISSING_TEL_ATTRIBUTE);
+		).toThrowError(ContactsErrorMessage.CONTACTS_MISSING_TEL_ATTRIBUTE);
 	});
 
 	it('throws an Error if multiple phone numbers are given', () => {
@@ -202,7 +211,9 @@ describe('Contacts Module by vCard', () => {
 			parseVCard(
 				'BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;Mr.;\r\nTEL;type=HOME:+1 202 555 1212\r\nTEL;type=WORK:+1 202 555 1212\r\nEND:VCARD\r\n'
 			)
-		).toThrowError(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_PHONE_NUMBERS);
+		).toThrowError(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_PHONE_NUMBERS
+		);
 	});
 
 	it('throws an Error if multiple email adresses are given', () => {
@@ -210,12 +221,12 @@ describe('Contacts Module by vCard', () => {
 			parseVCard(
 				'BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;Mr.;\r\nTEL;type=WORK:+1 202 555 1212\r\nEMAIL;type=INTERNET;type=WORK;type=pref:johnDoe@example.org\r\nEMAIL;type=INTERNET;type=WORK;type=pref:johnDoe@example.org\r\nEND:VCARD\r\n'
 			)
-		).toThrowError(ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS);
+		).toThrowError(ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS);
 	});
 
 	it('throws an Error if multiple addresses are given', () => {
 		expect(() => parseVCard(exampleWithTwoAdresses)).toThrowError(
-			ErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESSES
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESSES
 		);
 	});
 
@@ -225,7 +236,7 @@ describe('Contacts Module by vCard', () => {
 			lastname: 'Doe',
 			phoneNumber: '+1 202 555 1212',
 			email: 'johnDoe@example.org',
-			organization: ['Example.com Inc.'],
+			organization: [['Example.com Inc.']],
 			address: {
 				poBox: '',
 				extendedAddress: '',
@@ -244,7 +255,7 @@ describe('Contacts Module by vCard', () => {
 			lastname: 'Nachname',
 			phoneNumber: '+4915199999999',
 			email: 'email@example.com',
-			organization: ['Firma'],
+			organization: [['Firma']],
 			address: {
 				poBox: 'Postfach',
 				extendedAddress: 'Adresszusatz',
@@ -257,13 +268,50 @@ describe('Contacts Module by vCard', () => {
 		});
 	});
 
+	it('parses two organizations correctly', () => {
+		expect(parseVCard(exampleWithTwoOrganizations)).toEqual({
+			firstname: 'Vorname',
+			lastname: 'Nachname',
+			phoneNumber: '+4915199999999',
+			email: 'email@example.com',
+			organization: [['Firma'], ['Firma 2']],
+			address: {
+				poBox: 'Postfach',
+				extendedAddress: 'Adresszusatz',
+				country: 'Germany',
+				locality: 'ORT',
+				postalCode: 'PLZ',
+				region: 'Region',
+				streetAddress: 'Straße',
+			},
+		});
+	});
+
+	it('should throw an error when invalid address length is given', () => {
+		expect(() => parseVCard(exampleWithNotEnoughValues)).toThrowError(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_ADDRESS_VALUES
+		);
+	});
+
+	it('should throw an error when invalid amount of names is given', () => {
+		expect(() => parseVCard(exampleWithNotEnoughNames)).toThrowError(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_NAMES
+		);
+	});
+
+	it('should throw an error when invalid amount of emails is given', () => {
+		expect(() => parseVCard(exampleWithTooManyEmails)).toThrowError(
+			ContactsErrorMessage.CONTACTS_INVALID_AMOUNT_OF_EMAILS
+		);
+	});
+
 	it('returns the correct parsed json without email', () => {
 		expect(parseVCard(exampleWithoutEmail)).toEqual({
 			firstname: 'John',
 			lastname: 'Doe',
 			phoneNumber: '+1 202 555 1212',
 			email: undefined,
-			organization: ['Example.com Inc.'],
+			organization: [['Example.com Inc.']],
 			address: {
 				poBox: '',
 				extendedAddress: '',
@@ -316,16 +364,14 @@ describe('Contacts Module by vCard', () => {
 
 describe('Export Contacts', () => {
 	let contactsModule: ContactsModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		mockClient.get = jest.fn().mockImplementationOnce((_) => {
 			return Promise.resolve({
-				data: {
-					items: [],
-				},
+				items: [],
 				status: 200,
 			});
 		});
@@ -413,7 +459,7 @@ describe('Export Contacts', () => {
 	});
 
 	it('transfers the given filter and pagination parameters when exporting as objects', () => {
-		contactsModule.exportAsObjects(
+		contactsModule.get(
 			'INTERNAL',
 			{
 				limit: 3,

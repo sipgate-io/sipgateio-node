@@ -1,11 +1,11 @@
 import {
 	AuthCredentials,
 	HttpRequestConfig,
-	HttpResponse,
-	HttpClientModule,
-} from './sipgateIOClient.module';
+	SipgateIOClient,
+} from './sipgateIOClient.types';
 
 import { detect as detectPlatform } from 'detect-browser';
+import { toBase64 } from '../../utils';
 import {
 	validateEmail,
 	validateOAuthToken,
@@ -13,11 +13,65 @@ import {
 } from '../validator';
 import { version } from '../../version.json';
 import axios from 'axios';
-import btoa from 'btoa';
-
 import qs from 'qs';
 
-export const sipgateIO = (credentials: AuthCredentials): HttpClientModule => {
+interface RawDeserialized {
+	[key: string]: RawDeserializedValue;
+}
+
+type RawDeserializedValue =
+	| null
+	| string
+	| number
+	| boolean
+	| RawDeserialized
+	| RawDeserializedValue[];
+
+interface DeserializedWithDate {
+	[key: string]: DeserializedWithDateValue;
+}
+
+type DeserializedWithDateValue =
+	| null
+	| string
+	| number
+	| boolean
+	| Date
+	| DeserializedWithDate
+	| DeserializedWithDateValue[];
+
+const parseRawDeserializedValue = (
+	value: RawDeserializedValue
+): DeserializedWithDateValue => {
+	return value === null
+		? null
+		: value instanceof Array
+		? value.map(parseRawDeserializedValue)
+		: typeof value === 'object'
+		? parseDatesInObject(value)
+		: typeof value === 'string'
+		? parseIfDate(value)
+		: value;
+};
+
+const parseDatesInObject = (data: RawDeserialized): DeserializedWithDate => {
+	const newData: DeserializedWithDate = {};
+	Object.keys(data).forEach((key) => {
+		const value = data[key];
+		newData[key] = parseRawDeserializedValue(value);
+	});
+	return newData;
+};
+
+const parseIfDate = (maybeDate: string): Date | string => {
+	const regexISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d+)?)(?:Z|([+-])([\d|:]*))?$/;
+	if (maybeDate.match(regexISO)) {
+		return new Date(maybeDate);
+	}
+	return maybeDate;
+};
+
+export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 	const authorizationHeader = getAuthHeader(credentials);
 
 	const platformInfo = detectPlatform();
@@ -25,51 +79,55 @@ export const sipgateIO = (credentials: AuthCredentials): HttpClientModule => {
 		baseURL: 'https://api.sipgate.com/v2',
 		headers: {
 			Authorization: authorizationHeader,
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
 			'X-Sipgate-Client': JSON.stringify(platformInfo),
 			'X-Sipgate-Version': version,
-			'Content-Type': 'application/json',
 		},
 		paramsSerializer: (params) =>
 			qs.stringify(params, { arrayFormat: 'repeat' }),
 	});
 
+	client.interceptors.response.use((response) => {
+		response.data = parseRawDeserializedValue(response.data);
+		return response;
+	});
+
 	return {
-		delete<T = any, R = HttpResponse<T>>(
-			url: string,
-			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.delete(url, config);
+		delete<T>(url: string, config?: HttpRequestConfig): Promise<T> {
+			return client.delete<T>(url, config).then((response) => response.data);
 		},
 
-		get<T = any, R = HttpResponse<T>>(
-			url: string,
-			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.get(url, config);
+		get<T>(url: string, config?: HttpRequestConfig): Promise<T> {
+			return client.get<T>(url, config).then((response) => response.data);
 		},
 
-		patch<T = any, R = HttpResponse<T>>(
+		patch<T>(
 			url: string,
-			data?: any,
+			data?: unknown,
 			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.patch(url, data, config);
+		): Promise<T> {
+			return client
+				.patch<T>(url, data, config)
+				.then((response) => response.data);
 		},
 
-		post<T = any, R = HttpResponse<T>>(
+		post<T>(
 			url: string,
-			data?: any,
+			data?: unknown,
 			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.post(url, data, config);
+		): Promise<T> {
+			return client
+				.post<T>(url, data, config)
+				.then((response) => response.data);
 		},
 
-		put<T = any, R = HttpResponse<T>>(
+		put<T>(
 			url: string,
-			data?: any,
+			data?: unknown,
 			config?: HttpRequestConfig
-		): Promise<R> {
-			return client.put(url, data, config);
+		): Promise<T> {
+			return client.put<T>(url, data, config).then((response) => response.data);
 		},
 	};
 };
@@ -96,5 +154,5 @@ const getAuthHeader = (credentials: AuthCredentials): string => {
 		throw new Error(passwordValidationResult.cause);
 	}
 
-	return `Basic ${btoa(`${credentials.username}:${credentials.password}`)}`;
+	return `Basic ${toBase64(`${credentials.username}:${credentials.password}`)}`;
 };

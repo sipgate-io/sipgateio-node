@@ -1,15 +1,16 @@
-import { ErrorMessage } from './errors/ErrorMessage';
-import { ExtensionType, validateExtension } from '../core/validator';
-import { HttpError, HttpClientModule } from '../core/sipgateIOClient';
-import { WebhookSettings } from './models/webhook-settings.model';
-import { WebhookSettingsModule } from './webhookSettings.module';
-import { handleCoreError } from '../core/errors';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import {
+	WebhookSettings,
+	WebhookSettingsModule,
+} from './webhookSettings.types';
+import { handleWebhookSettingsError } from './errors/handleWebhookSettingError';
 import { validateWebhookUrl } from './validators/validateWebhookUrl';
+import { validateWhitelistExtensions } from './validators/validateWhitelistExtensions';
 
 const SETTINGS_ENDPOINT = 'settings/sipgateio';
 
 export const createSettingsModule = (
-	client: HttpClientModule
+	client: SipgateIOClient
 ): WebhookSettingsModule => ({
 	async setIncomingUrl(url): Promise<void> {
 		const validationResult = validateWebhookUrl(url);
@@ -77,22 +78,21 @@ export const createSettingsModule = (
 		);
 	},
 
-	async getWebhookSettings(): Promise<WebhookSettings> {
+	getWebhookSettings(): Promise<WebhookSettings> {
 		return getWebhookSettingsFromClient(client);
 	},
 });
 
-const getWebhookSettingsFromClient = async (
-	client: HttpClientModule
+const getWebhookSettingsFromClient = (
+	client: SipgateIOClient
 ): Promise<WebhookSettings> => {
 	return client
-		.get(SETTINGS_ENDPOINT)
-		.then((res) => res.data)
-		.catch((error) => handleError(error));
+		.get<WebhookSettings>(SETTINGS_ENDPOINT)
+		.catch((error) => Promise.reject(handleWebhookSettingsError(error)));
 };
 
 const modifyWebhookSettings = async (
-	client: HttpClientModule,
+	client: SipgateIOClient,
 	fn: (s: WebhookSettings) => void
 ): Promise<void> => {
 	await getWebhookSettingsFromClient(client)
@@ -100,26 +100,5 @@ const modifyWebhookSettings = async (
 			fn(settings);
 			return client.put(SETTINGS_ENDPOINT, settings);
 		})
-		.catch((error) => handleError(error));
-};
-
-const validateWhitelistExtensions = (extensions: string[]): void => {
-	extensions.forEach((extension) => {
-		const validationResult = validateExtension(extension, [
-			ExtensionType.PERSON,
-			ExtensionType.GROUP,
-		]);
-		if (!validationResult.isValid) {
-			throw new Error(
-				`${ErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS}\n${validationResult.cause}: ${extension}`
-			);
-		}
-	});
-};
-
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 403) {
-		return new Error(ErrorMessage.WEBHOOK_SETTINGS_FEATURE_NOT_BOOKED);
-	}
-	return handleCoreError(error);
+		.catch((error) => Promise.reject(handleWebhookSettingsError(error)));
 };

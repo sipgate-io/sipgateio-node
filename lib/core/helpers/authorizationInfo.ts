@@ -1,12 +1,10 @@
-import { HttpClientModule } from '../sipgateIOClient';
+import { SipgateIOClient } from '../sipgateIOClient';
+import { UserInfo } from '../core.types';
 
-export interface AuthInfo {
-	sub: string;
-}
-
-export const getAuthenticatedWebuser = async (
-	httpClient: HttpClientModule
+export const getAuthenticatedWebuser = (
+	httpClient: SipgateIOClient
 ): Promise<string> => {
-	const requestData = await httpClient.get<AuthInfo>('authorization/userinfo');
-	return requestData.data.sub;
+	return httpClient
+		.get<UserInfo>('authorization/userinfo')
+		.then((response) => response.sub);
 };

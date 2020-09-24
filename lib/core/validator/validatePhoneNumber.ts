@@ -1,6 +1,6 @@
 import { ErrorMessage } from '../errors';
 import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
-import { ValidationResult } from './validationResult';
+import { ValidationResult } from './validator.types';
 
 const validatePhoneNumber = (phoneNumber: string): ValidationResult => {
 	const phoneNumberUtil = PhoneNumberUtil.getInstance();

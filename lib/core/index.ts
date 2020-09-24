@@ -1,4 +1,3 @@
 export * from './errors';
-export * from './models';
+export * from './core.types';
 export * from './sipgateIOClient';
-export * from '../fax/validators';

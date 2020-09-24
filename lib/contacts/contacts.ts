@@ -1,34 +1,36 @@
 import { ContactImport } from './helpers/Address';
 import {
-	ContactRequest,
+	ContactResponse,
 	ContactsDTO,
+	ContactsListResponse,
 	ContactsModule,
-	ContactsRequest,
-} from './contacts.module';
-import { ErrorMessage } from './errors/ErrorMessage';
-import { HttpError, HttpClientModule } from '../core/sipgateIOClient';
-import { ImportCSVRequestDTO } from './models/contacts.model';
+	ImportCSVRequestDTO,
+} from './contacts.types';
+import {
+	ContactsErrorMessage,
+	handleContactsError,
+} from './errors/handleContactsError';
 import { Parser } from 'json2csv';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
-import { handleCoreError } from '../core/errors/handleError';
-import btoa from 'btoa';
+import { toBase64 } from '../utils';
 
 export const createContactsModule = (
-	client: HttpClientModule
+	client: SipgateIOClient
 ): ContactsModule => ({
 	async importFromCsvString(csvContent: string): Promise<void> {
 		const projectedCsv = projectCsvString(csvContent);
-		const base64EncodedCsv = btoa(projectedCsv);
+		const base64EncodedCsv = toBase64(projectedCsv);
 		const contactsDTO: ImportCSVRequestDTO = {
 			base64Content: base64EncodedCsv,
 		};
 
 		await client
 			.post('/contacts/import/csv', contactsDTO)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
-	async import(contact, scope): Promise<void> {
+	async create(contact, scope): Promise<void> {
 		const {
 			firstname,
 			lastname,
@@ -39,13 +41,13 @@ export const createContactsModule = (
 		} = contact;
 
 		if (firstname === '' && lastname === '') {
-			throw new Error(ErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
+			throw new Error(ContactsErrorMessage.CONTACTS_MISSING_NAME_ATTRIBUTE);
 		}
 		const contactsDTO: ContactsDTO = {
 			name: `${firstname} ${lastname}`,
 			family: lastname,
 			given: firstname,
-			organization: organization ? [organization] : [],
+			organization: organization ? organization : [],
 			picture: null,
 			scope,
 			addresses: address ? [address] : [],
@@ -54,7 +56,7 @@ export const createContactsModule = (
 		};
 		await client
 			.post('/contacts', contactsDTO)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
 	async importVCardString(vCardContent: string, scope): Promise<void> {
@@ -76,7 +78,7 @@ export const createContactsModule = (
 			name: `${parsedVCard.firstname} ${parsedVCard.lastname}`,
 			family: parsedVCard.lastname,
 			given: parsedVCard.firstname,
-			organization: [parsedVCard.organization],
+			organization: parsedVCard.organization,
 			picture: null,
 			scope,
 			addresses,
@@ -90,7 +92,7 @@ export const createContactsModule = (
 		};
 		await client
 			.post('/contacts', contactsDTO)
-			.catch((error) => Promise.reject(handleError(error)));
+			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
 	async exportAsCsv(
@@ -99,14 +101,17 @@ export const createContactsModule = (
 		pagination,
 		filter
 	): Promise<string> {
-		const contactsRequest = await client.get<ContactsRequest>(`contacts`, {
-			params: {
-				...pagination,
-				...filter,
-			},
-		});
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
 
-		contactsRequest.data.items = contactsRequest.data.items.filter(
+		contactsResponse.items = contactsResponse.items.filter(
 			(contact) => contact.scope === scope
 		);
 
@@ -119,7 +124,7 @@ export const createContactsModule = (
 			'organizations',
 		];
 		const opts = { fields, delimiter };
-		const elements = contactsRequest.data.items.map((contact) => {
+		const elements = contactsResponse.items.map((contact) => {
 			return {
 				id: contact.id,
 				name: contact.name,
@@ -136,17 +141,20 @@ export const createContactsModule = (
 			throw Error(err);
 		}
 	},
-	async exportAsObjects(scope, pagination, filter): Promise<ContactRequest[]> {
-		const contactsRequest = await client.get<ContactsRequest>(`contacts`, {
-			params: {
-				...pagination,
-				...filter,
-			},
-		});
-		contactsRequest.data.items = contactsRequest.data.items.filter(
+	async get(scope, pagination, filter): Promise<ContactResponse[]> {
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
+		contactsResponse.items = contactsResponse.items.filter(
 			(contact) => contact.scope === scope
 		);
-		return contactsRequest.data.items;
+		return contactsResponse.items;
 	},
 
 	async exportAsSingleVCard(scope, pagination, filter): Promise<string> {
@@ -154,34 +162,35 @@ export const createContactsModule = (
 		return vCards.join('\r\n');
 	},
 	async exportAsVCards(scope, pagination, filter): Promise<string[]> {
-		const contactsRequest = await client.get<ContactsRequest>(`contacts`, {
-			params: {
-				...pagination,
-				...filter,
-			},
-		});
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
 
-		contactsRequest.data.items = contactsRequest.data.items.filter(
+		contactsResponse.items = contactsResponse.items.filter(
 			(contact) => contact.scope === scope
 		);
 
-		const contacts = contactsRequest.data.items.map<ContactImport>(
-			(contact) => {
-				return {
-					firstname: contact.name,
-					lastname: '',
-					organizations: contact.organization,
-					phoneNumbers: contact.numbers,
-					emails: contact.emails,
-					addresses: contact.addresses.map((address) => {
-						return {
-							...address,
-							type: ['home'],
-						};
-					}),
-				};
-			}
-		);
+		const contacts = contactsResponse.items.map<ContactImport>((contact) => {
+			return {
+				firstname: contact.name,
+				lastname: '',
+				organizations: contact.organization,
+				phoneNumbers: contact.numbers,
+				emails: contact.emails,
+				addresses: contact.addresses.map((address) => {
+					return {
+						...address,
+						type: ['home'],
+					};
+				}),
+			};
+		});
 
 		return createVCards(contacts);
 	},
@@ -190,7 +199,9 @@ export const createContactsModule = (
 const findColumnIndex = (array: string[], needle: string): number => {
 	const index = array.indexOf(needle);
 	if (index < 0) {
-		throw new Error(`${ErrorMessage.CONTACTS_MISSING_HEADER_FIELD}: ${needle}`);
+		throw new Error(
+			`${ContactsErrorMessage.CONTACTS_MISSING_HEADER_FIELD}: ${needle}`
+		);
 	}
 	return index;
 };
@@ -201,7 +212,7 @@ const projectCsvString = (csvString: string): string => {
 		.filter((line) => line !== '');
 
 	if (csvLines.length < 1) {
-		throw new Error(ErrorMessage.CONTACTS_INVALID_CSV);
+		throw new Error(ContactsErrorMessage.CONTACTS_INVALID_CSV);
 	}
 
 	if (csvLines.length < 2) {
@@ -223,7 +234,7 @@ const projectCsvString = (csvString: string): string => {
 		.map((lines) => lines.split(','))
 		.map((columns, index) => {
 			if (columns.length !== csvHeader.length) {
-				throw Error(ErrorMessage.CONTACTS_MISSING_VALUES);
+				throw Error(ContactsErrorMessage.CONTACTS_MISSING_VALUES);
 			}
 
 			const firstname = columns[columnIndices.firstname];
@@ -239,12 +250,4 @@ const projectCsvString = (csvString: string): string => {
 		});
 
 	return ['firstname,lastname,number', ...lines].join('\n');
-};
-
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 500) {
-		return Error(`${ErrorMessage.CONTACTS_INVALID_CSV}`);
-	}
-
-	return handleCoreError(error);
 };

@@ -1,15 +1,19 @@
-import { ErrorMessage } from '../errors/ErrorMessage';
 import { ValidationResult } from '../../core/validator';
-import fileType from 'file-type';
 
-const validatePdfFileContent = async (
-	content: Buffer
-): Promise<ValidationResult> => {
-	const fileTypeResult = await fileType.fromBuffer(content);
+export enum FaxValidationMessage {
+	INVALID_PDF_MIME_TYPE = 'Invalid PDF file',
+}
 
-	if (!fileTypeResult || fileTypeResult.mime !== 'application/pdf') {
+// taken from https://github.com/MaraniMatias/isPDF
+const isValidPDF = (buffer: Buffer): boolean => {
+	return buffer.lastIndexOf('%PDF-') === 0 && buffer.lastIndexOf('%%EOF') > -1;
+};
+
+const validatePdfFileContent = (content: Buffer): ValidationResult => {
+	const isPdf = isValidPDF(content);
+	if (!isPdf) {
 		return {
-			cause: ErrorMessage.VALIDATOR_INVALID_PDF_MIME_TYPE,
+			cause: FaxValidationMessage.INVALID_PDF_MIME_TYPE,
 			isValid: false,
 		};
 	}

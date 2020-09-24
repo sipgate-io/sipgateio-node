@@ -1,4 +1,4 @@
-import { Pagination } from '../core/models';
+import { Pagination } from '../core';
 
 export interface HistoryModule {
 	fetchAll: (
@@ -33,7 +33,17 @@ export interface HistoryEntryUpdateOptionsWithId
 export interface BaseHistoryFilter {
 	connectionIds?: string[];
 	types?: HistoryEntryType[];
-	directions?: Direction[];
+	directions?: HistoryDirection[];
+	archived?: boolean;
+	starred?: Starred;
+	startDate?: Date;
+	endDate?: Date;
+}
+
+export interface HistoryFilterDTO {
+	connectionIds?: string[];
+	types?: HistoryEntryType[];
+	directions?: HistoryDirection[];
 	archived?: boolean;
 	starred?: Starred;
 	from?: Date;
@@ -51,7 +61,7 @@ export enum HistoryEntryType {
 	FAX = 'FAX',
 }
 
-export enum Direction {
+export enum HistoryDirection {
 	INCOMING = 'INCOMING',
 	OUTGOING = 'OUTGOING',
 	MISSED_INCOMING = 'MISSED_INCOMING',
@@ -72,7 +82,7 @@ export interface BaseHistoryEntry {
 	type: HistoryEntryType;
 	created: Date;
 	lastModified: Date;
-	direction: Direction;
+	direction: HistoryDirection;
 	incoming: boolean;
 	status: string;
 	connectionIds: string[];
@@ -103,6 +113,10 @@ export interface FaxHistoryEntry extends BaseHistoryEntry {
 	previewUrl: string;
 	pageCount: number;
 }
+
+type HistoryResponseFaxItem = Omit<FaxHistoryEntry, 'faxStatus'> & {
+	faxStatusType: FaxStatusType;
+};
 
 export enum FaxStatusType {
 	PENDING = 'PENDING',
@@ -155,7 +169,11 @@ export type HistoryEntry =
 	| SmsHistoryEntry
 	| VoicemailHistoryEntry;
 
+export type HistoryResponseItem =
+	| Exclude<HistoryEntry, FaxHistoryEntry>
+	| HistoryResponseFaxItem;
+
 export interface HistoryResponse {
-	items: HistoryEntry[];
+	items: HistoryResponseItem[];
 	totalCount: number;
 }

@@ -3,15 +3,17 @@
 	"version": "1.9.4",
 	"description": "The official Node.js library for sipgate.io",
 	"main": "./dist/index.js",
+	"browser": "./dist/browser.js",
 	"scripts": {
 		"lint": "eslint --fix ./lib/**/*.ts",
 		"format": "prettier --write **/**.ts",
-		"test:dev": "jest ./lib --env=node --watch",
-		"test:dev:coverage": "jest ./lib --env=node --watch --coverage",
-		"test:unit": "jest ./lib --env=node",
-		"test:unit:coverage": "jest ./lib --env=node --coverage",
-		"test:integration": "npm run bundle && jest ./bundle --env=jsdom",
-		"bundle": "browserify -r ./lib/bundle.ts:sipgate-io -p tsify -g uglifyify  > ./bundle/sipgate-io.js && terser --compress --mangle -o ./bundle/sipgate-io.min.js -- ./bundle/sipgate-io.js",
+		"test:dev": "jest --selectProjects node dom --watch",
+		"test:dev:coverage": "jest --selectProjects node dom --watch --coverage",
+		"test:unit": "jest --selectProjects node dom",
+		"test:unit:noDom": "jest --selectProjects node",
+		"test:unit:coverage": "jest --selectProjects node dom --coverage",
+		"test:integration": "npm run bundle && jest --selectProjects bundle",
+		"bundle": "browserify -r ./lib/browser.ts:sipgate-io -p tsify -g uglifyify  > ./bundle/sipgate-io.js && terser --compress --mangle -o ./bundle/sipgate-io.min.js -- ./bundle/sipgate-io.js",
 		"prepare": "tsc"
 	},
 	"repository": {
@@ -48,7 +50,7 @@
 	],
 	"husky": {
 		"hooks": {
-			"pre-commit": "./update_version.sh && npm run test:unit && lint-staged"
+			"pre-commit": "./update_version.sh && ./run_unit_tests.sh && lint-staged"
 		}
 	},
 	"lint-staged": {
@@ -63,10 +65,12 @@
 		]
 	},
 	"devDependencies": {
-		"@types/atob": "^2.1.2",
-		"@types/btoa": "^1.2.3",
 		"@types/jest": "^25.1.4",
 		"@types/qs": "^6.9.1",
+		"@types/google-libphonenumber": "^7.4.17",
+		"@types/jsdom": "^16.1.1",
+		"@types/json2csv": "^4.5.1",
+		"@types/vcf": "^2.0.1",
 		"@typescript-eslint/eslint-plugin": "^2.25.0",
 		"@typescript-eslint/parser": "^2.25.0",
 		"axios-mock-adapter": "^1.18.1",
@@ -82,29 +86,22 @@
 		"eslint-plugin-sort-imports-es6-autofix": "^0.5.0",
 		"eslint-plugin-standard": "^4.0.1",
 		"husky": "^4.2.3",
-		"jest": "^25.2.1",
+		"jest": "^26.4.2",
+		"jsdom": "15.2.1",
 		"lint-staged": "^10.0.9",
-		"nock": "^12.0.3",
 		"prettier": "^2.0.2",
 		"terser": "^4.6.7",
-		"ts-jest": "^25.2.1",
+		"ts-jest": "^26.3.0",
 		"tsify": "^4.0.1",
 		"typescript": "^3.8.3",
 		"uglify-js": "^3.8.0",
 		"uglifyify": "^5.0.2"
 	},
 	"dependencies": {
-		"@types/google-libphonenumber": "^7.4.17",
-		"@types/jsdom": "^16.1.1",
-		"@types/json2csv": "^4.5.1",
-		"@types/vcf": "^2.0.1",
-		"atob": "^2.1.2",
 		"axios": "^0.19.2",
-		"btoa": "^1.2.1",
+		"buffer": "^5.6.0",
 		"detect-browser": "^5.0.0",
-		"file-type": "^14.1.4",
 		"google-libphonenumber": "^3.2.8",
-		"jsdom": "15.2.1",
 		"json2csv": "^5.0.0",
 		"qs": "^6.9.3",
 		"vcf": "^2.0.6",

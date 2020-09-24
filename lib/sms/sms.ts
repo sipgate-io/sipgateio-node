@@ -1,28 +1,27 @@
-import { ErrorMessage } from './errors/ErrorMessage';
 import {
 	ExtensionType,
 	validateExtension,
 	validatePhoneNumber,
 } from '../core/validator';
-import { HttpError, HttpClientModule } from '../core/sipgateIOClient';
-import { SMSModule } from './sms.module';
 import {
+	SMSModule,
 	ShortMessage,
 	ShortMessageDTO,
 	SmsCallerIds,
 	SmsExtensions,
 	SmsSenderId,
-} from './models/sms.model';
+} from './sms.types';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import { SmsErrorMessage, handleSmsError } from './errors/handleSmsError';
 import { getAuthenticatedWebuser } from '../core/helpers/authorizationInfo';
-import { handleCoreError } from '../core/errors/handleError';
 import { validateSendAt } from './validators/validateSendAt';
 
-export const createSMSModule = (client: HttpClientModule): SMSModule => ({
+export const createSMSModule = (client: SipgateIOClient): SMSModule => ({
 	async send(sms: ShortMessage, sendAt?: Date): Promise<void> {
 		const smsDTO: ShortMessageDTO = {
 			smsId: '',
 			message: sms.message,
-			recipient: 'to' in sms ? sms.to : sms.recipient,
+			recipient: sms.to,
 		};
 		if (sendAt) {
 			const sendAtValidationResult = validateSendAt(sendAt);
@@ -32,44 +31,44 @@ export const createSMSModule = (client: HttpClientModule): SMSModule => ({
 			smsDTO.sendAt = sendAt.getTime() / 1000;
 		}
 		if (('from' in sms ? sms.from : sms.phoneNumber) !== undefined) {
-			return await sendSmsByPhoneNumber(client, sms, smsDTO);
+			return sendSmsByPhoneNumber(client, sms, smsDTO);
 		}
-		return await sendSmsBySmsId(sms, smsDTO, client);
+		return sendSmsBySmsId(sms, smsDTO, client);
 	},
 });
 
-export const sendSms = async (
-	client: HttpClientModule,
+const sendSms = async (
+	client: SipgateIOClient,
 	smsDTO: ShortMessageDTO
 ): Promise<void> => {
 	await client.post('/sessions/sms', smsDTO).catch((error) => {
-		throw handleError(error);
+		throw handleSmsError(error);
 	});
 };
 
-export const getUserSmsExtension = async (
-	client: HttpClientModule,
+export const getUserSmsExtension = (
+	client: SipgateIOClient,
 	webuserId: string
 ): Promise<string> => {
 	return client
 		.get<SmsExtensions>(`${webuserId}/sms`)
-		.then((value) => value.data.items[0].id)
-		.catch((error) => Promise.reject(handleError(error)));
+		.then((value) => value.items[0].id)
+		.catch((error) => Promise.reject(handleSmsError(error)));
 };
 
-export const getSmsCallerIds = async (
-	client: HttpClientModule,
+export const getSmsCallerIds = (
+	client: SipgateIOClient,
 	webuserExtension: string,
 	smsExtension: string
 ): Promise<SmsSenderId[]> => {
 	return client
 		.get<SmsCallerIds>(`${webuserExtension}/sms/${smsExtension}/callerids`)
-		.then((value) => value.data.items)
-		.catch((error) => Promise.reject(handleError(error)));
+		.then((value) => value.items)
+		.catch((error) => Promise.reject(handleSmsError(error)));
 };
 
-export const setDefaultSenderId = async (
-	client: HttpClientModule,
+const setDefaultSenderId = async (
+	client: SipgateIOClient,
 	webuserExtension: string,
 	smsId: string,
 	senderId: SmsSenderId
@@ -79,7 +78,7 @@ export const setDefaultSenderId = async (
 			defaultNumber: 'true',
 		})
 		.catch((error) => {
-			throw handleError(error);
+			throw handleSmsError(error);
 		});
 };
 
@@ -93,15 +92,8 @@ export const containsPhoneNumber = (
 	return foundCallerId ? foundCallerId.verified : false;
 };
 
-const handleError = (error: HttpError): Error => {
-	if (error.response && error.response.status === 403) {
-		return new Error(ErrorMessage.SMS_INVALID_EXTENSION);
-	}
-	return handleCoreError(error);
-};
-
 async function sendSmsByPhoneNumber(
-	client: HttpClientModule,
+	client: SipgateIOClient,
 	sms: ShortMessage,
 	smsDTO: ShortMessageDTO
 ): Promise<void> {
@@ -113,14 +105,14 @@ async function sendSmsByPhoneNumber(
 			value.phonenumber === ('from' in sms ? sms.from : sms.phoneNumber)
 	);
 	if (senderId === undefined) {
-		throw new Error(ErrorMessage.SMS_NUMBER_NOT_REGISTERED);
+		throw new Error(SmsErrorMessage.NUMBER_NOT_REGISTERED);
 	}
 	if (!senderId.verified) {
-		throw new Error(ErrorMessage.SMS_NUMBER_NOT_VERIFIED);
+		throw new Error(SmsErrorMessage.NUMBER_NOT_VERIFIED);
 	}
 	const defaultSmsId = senderIds.find((value) => value.defaultNumber);
 	if (defaultSmsId === undefined) {
-		throw new Error(ErrorMessage.SMS_NO_DEFAULT_SENDER_ID);
+		throw new Error(SmsErrorMessage.NO_DEFAULT_SENDER_ID);
 	}
 	smsDTO.smsId = smsExtension;
 	await setDefaultSenderId(client, webuserId, smsExtension, senderId);
@@ -130,14 +122,14 @@ async function sendSmsByPhoneNumber(
 				await setDefaultSenderId(client, webuserId, smsExtension, defaultSmsId)
 		)
 		.catch((error) => {
-			return Promise.reject(handleError(error));
+			return Promise.reject(handleSmsError(error));
 		});
 }
 
 async function sendSmsBySmsId(
 	sms: ShortMessage,
 	smsDTO: ShortMessageDTO,
-	client: HttpClientModule
+	client: SipgateIOClient
 ): Promise<void> {
 	if (sms.smsId === undefined) {
 		throw new Error('smsId is undefined');
@@ -150,17 +142,15 @@ async function sendSmsBySmsId(
 	}
 	smsDTO.smsId = sms.smsId;
 
-	const phoneNumberValidationResult = validatePhoneNumber(
-		'to' in sms ? sms.to : sms.recipient
-	);
+	const phoneNumberValidationResult = validatePhoneNumber(sms.to);
 
 	if (!phoneNumberValidationResult.isValid) {
 		throw new Error(phoneNumberValidationResult.cause);
 	}
 	if (sms.message === '') {
-		throw new Error(ErrorMessage.SMS_INVALID_MESSAGE);
+		throw new Error(SmsErrorMessage.INVALID_MESSAGE);
 	}
-	return await sendSms(client, smsDTO).catch((error) => {
-		throw handleError(error);
+	await sendSms(client, smsDTO).catch((error) => {
+		throw handleSmsError(error);
 	});
 }

@@ -1,18 +1,21 @@
 import { detect as detectPlatform } from 'detect-browser';
 import { sipgateIO } from './sipgateIOClient';
+import { toBase64 } from '../../utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
-import btoa from 'btoa';
-import nock from 'nock';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import packageJson from '../../../package.json';
 
 describe('Test header', () => {
-	const baseUrl = 'https://api.sipgate.com/v2';
+	const axiosMock = new MockAdapter(axios);
 	const basicAuthHttpClient = sipgateIO({
 		username: 'testUsername@test.de',
 		password: 'testPassword',
+	});
+
+	afterEach(() => {
+		axiosMock.resetHandlers();
 	});
 
 	const validOAuthToken =
@@ -22,34 +25,34 @@ describe('Test header', () => {
 
 	test('test authorization header', async () => {
 		const expectedData = 'test';
-		const expectedAuthHeader = `Basic ${btoa(
+		const expectedAuthHeader = `Basic ${toBase64(
 			'testUsername@test.de:testPassword'
 		)}`;
 
-		nock(baseUrl)
-			.matchHeader('Authorization', expectedAuthHeader)
-			.get('/test')
-			.reply(201, expectedData);
+		axiosMock.onGet('/test').reply((config) => {
+			expect(config.headers.Authorization).toEqual(expectedAuthHeader);
+
+			return [201, expectedData];
+		});
 
 		const response = await basicAuthHttpClient.get('/test');
-		const { data } = response;
 
-		expect(data).toEqual(expectedData);
+		expect(response).toEqual(expectedData);
 	});
 
 	test('test oAuth authorization header', async () => {
 		const expectedData = 'test';
 		const expectedAuthHeader = `Bearer ${validOAuthToken}`;
 
-		nock(baseUrl)
-			.matchHeader('Authorization', expectedAuthHeader)
-			.get('/test')
-			.reply(201, expectedData);
+		axiosMock.onGet('/test').reply((config) => {
+			expect(config.headers.Authorization).toEqual(expectedAuthHeader);
+
+			return [201, expectedData];
+		});
 
 		const response = await oAuthHttpClient.get('/test');
-		const { data } = response;
 
-		expect(data).toEqual(expectedData);
+		expect(response).toEqual(expectedData);
 	});
 
 	test('x-header', async () => {
@@ -57,15 +60,14 @@ describe('Test header', () => {
 		const expectedXHeaderKey = 'X-Sipgate-Client';
 		const expectedXHeaderValue = JSON.stringify(detectPlatform());
 
-		nock(baseUrl)
-			.matchHeader(expectedXHeaderKey, expectedXHeaderValue)
-			.get('/test')
-			.reply(201, expectedData);
+		axiosMock.onGet('/test').reply((config) => {
+			expect(config.headers[expectedXHeaderKey]).toEqual(expectedXHeaderValue);
+
+			return [201, expectedData];
+		});
 
 		const response = await basicAuthHttpClient.get('/test');
-		const { data } = response;
-
-		expect(data).toEqual(expectedData);
+		expect(response).toEqual(expectedData);
 	});
 
 	test('test x-sipgate-client header', async () => {
@@ -73,15 +75,17 @@ describe('Test header', () => {
 		const expectedXVersionHeaderKey = 'X-Sipgate-Version';
 		const expectedXVersionHeaderValue = packageJson.version;
 
-		nock(baseUrl)
-			.matchHeader(expectedXVersionHeaderKey, expectedXVersionHeaderValue)
-			.get('/test')
-			.reply(201, expectedData);
+		axiosMock.onGet('/test').reply((config) => {
+			expect(config.headers[expectedXVersionHeaderKey]).toEqual(
+				expectedXVersionHeaderValue
+			);
+
+			return [201, expectedData];
+		});
 
 		const response = await basicAuthHttpClient.get('/test');
-		const { data } = response;
 
-		expect(data).toEqual(expectedData);
+		expect(response).toEqual(expectedData);
 	});
 });
 
@@ -108,7 +112,7 @@ describe('Test wrapper methods', () => {
 		mock.onGet('').reply(200, expectedData);
 
 		const response = await httpClient.get('');
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Valid URL Concatenation for Get Requests', async () => {
@@ -122,7 +126,7 @@ describe('Test wrapper methods', () => {
 		mock.onGet(`${baseUrl}/sessions`).reply(200, expectedData);
 
 		const response = await httpClient.get('/sessions');
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Get Requests', async () => {
@@ -136,7 +140,7 @@ describe('Test wrapper methods', () => {
 		mock.onGet(`${baseUrl}/sessions`).reply(204, expectedData);
 
 		const response = await httpClient.get('/sessions');
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Post to Post Mapping', async () => {
@@ -150,7 +154,7 @@ describe('Test wrapper methods', () => {
 		mock.onPost('', testData).reply(200, expectedData);
 
 		const response = await httpClient.post('', testData);
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Put to Put Mapping', async () => {
@@ -164,7 +168,7 @@ describe('Test wrapper methods', () => {
 		mock.onPut('', testData).reply(200, expectedData);
 
 		const response = await httpClient.put('', testData);
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Delete to Delete Mapping', async () => {
@@ -177,7 +181,7 @@ describe('Test wrapper methods', () => {
 		mock.onDelete('').reply(200, expectedData);
 
 		const response = await httpClient.delete('');
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 
 	test('Test Patch to Patch Mapping', async () => {
@@ -191,7 +195,7 @@ describe('Test wrapper methods', () => {
 		mock.onPatch('', testData).reply(200, expectedData);
 
 		const response = await httpClient.patch('', testData);
-		expect(response.data).toBe(expectedData);
+		expect(response).toBe(expectedData);
 	});
 });
 
@@ -205,5 +209,412 @@ describe('validation', () => {
 		await expect(() =>
 			sipgateIO({ username: 'testUsername@test.d', password: '' })
 		).toThrow('Invalid password');
+	});
+});
+
+describe('The sipgateIOClient', () => {
+	let mock: MockAdapter;
+
+	beforeEach(() => {
+		mock = new MockAdapter(axios);
+	});
+
+	afterEach(() => {
+		mock.reset();
+	});
+
+	test('should correctly deserialize dates in a flat response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			date: '2020-09-10T08:53:27Z',
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			date: new Date(response.date),
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
+
+	test('should not fail to deserialize a flat response body without a date', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			someString: 'not a date',
+			someNumber: 42,
+			someBoolean: false,
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = { ...response };
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
+
+	test('should correctly deserialize dates in a nested response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			innerObject1: {
+				date1: '2020-09-10T08:53:27Z',
+			},
+			innerObject2: {
+				innerInnerObject21: {
+					date2: '2020-04-20T08:53:27Z',
+				},
+			},
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			innerObject1: {
+				date1: new Date('2020-09-10T08:53:27Z'),
+			},
+			innerObject2: {
+				innerInnerObject21: {
+					date2: new Date('2020-04-20T08:53:27Z'),
+				},
+			},
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
+
+	test('should correctly deserialize dates inside object arrays in a response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			items: [
+				{
+					date1: '2020-09-10T08:53:27Z',
+				},
+				{
+					date2: '2020-04-20T08:53:27Z',
+				},
+			],
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			items: [
+				{
+					date1: new Date('2020-09-10T08:53:27Z'),
+				},
+				{
+					date2: new Date('2020-04-20T08:53:27Z'),
+				},
+			],
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
+
+	test('should correctly deserialize dates inside primitive arrays in a response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			items: [
+				false,
+				'2020-09-10T08:53:27Z',
+				'not a date',
+				'2020-04-20T08:53:27Z',
+				1,
+			],
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			items: [
+				false,
+				new Date('2020-09-10T08:53:27Z'),
+				'not a date',
+				new Date('2020-04-20T08:53:27Z'),
+				1,
+			],
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
+
+	test('should correctly deserialize a HistoryResponse', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			items: [
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: '2020-09-14T10:03:20Z',
+					lastModified: '2020-09-14T10:03:21Z',
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: '2020-09-14T10:03:20Z',
+					lastModified: '2020-09-14T10:03:21Z',
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: '2020-09-14T10:03:20Z',
+					lastModified: '2020-09-14T10:03:21Z',
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+			],
+			totalCount: 3,
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = {
+			items: [
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: new Date('2020-09-14T10:03:20Z'),
+					lastModified: new Date('2020-09-14T10:03:21Z'),
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: new Date('2020-09-14T10:03:20Z'),
+					lastModified: new Date('2020-09-14T10:03:21Z'),
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+				{
+					id: '0000000000',
+					source: '+49123456789',
+					target: '+49123456789',
+					sourceAlias: 'John Doe',
+					targetAlias: 'John Doe',
+					type: 'FAX',
+					created: new Date('2020-09-14T10:03:20Z'),
+					lastModified: new Date('2020-09-14T10:03:21Z'),
+					direction: 'OUTGOING',
+					incoming: false,
+					status: 'PICKUP',
+					connectionIds: ['f0'],
+					read: true,
+					archived: false,
+					note: '',
+					endpoints: [
+						{
+							type: 'ROUTED',
+							endpoint: {
+								extension: 'f0',
+								type: 'FAX',
+							},
+						},
+					],
+					starred: false,
+					labels: [],
+					faxStatusType: 'SENT',
+					documentUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/fax-20200914120320.pdf',
+					reportUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/report.pdf',
+					previewUrl:
+						'https://secure.live.sipgate.de/download/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/preview_small_1.jpg',
+					pageCount: 1,
+				},
+			],
+			totalCount: 3,
+		};
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
+	});
+
+	test('should correctly deserialize null inside in a response body', async () => {
+		const client = sipgateIO({
+			username: 'testUsername@test.de',
+			password: 'testPassword',
+		});
+
+		const response = {
+			value: null,
+			array: [null, false, 'string'],
+			object: {
+				key: null,
+			},
+		};
+
+		mock.onGet().reply(200, response);
+
+		const expected = { ...response };
+
+		await expect(client.get('/some-path')).resolves.toEqual(expected);
 	});
 });

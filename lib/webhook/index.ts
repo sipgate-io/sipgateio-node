@@ -1,3 +1,2 @@
 export * from './webhook';
-export * from './webhook.module';
-export * from './models/webhook.model';
+export * from './webhook.types';

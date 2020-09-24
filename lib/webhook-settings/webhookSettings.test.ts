@@ -1,45 +1,53 @@
 import { ErrorMessage } from '../core/errors';
-import { HttpClientModule } from '../core/sipgateIOClient';
-import { ErrorMessage as WebhookErrorMessage } from './errors/ErrorMessage';
-import { WebhookSettings } from './models/webhook-settings.model';
-import { WebhookSettingsModule } from './webhookSettings.module';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import { ValidatorMessages } from './validators/ValidatorMessages';
+import {
+	WebhookSettings,
+	WebhookSettingsModule,
+} from './webhookSettings.types';
 import { createSettingsModule } from './webhookSettings';
 
 describe('get settings', () => {
 	let mockedSettingsModule: WebhookSettingsModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		mockedSettingsModule = createSettingsModule(mockClient);
 	});
 
 	it('should use the endpoint "settings/sipgateio"', async () => {
+		const settings = {
+			incomingUrl: 'string',
+			outgoingUrl: 'string',
+			log: true,
+			whitelist: [],
+		};
+
 		mockClient.get = jest.fn().mockImplementationOnce(() => {
-			return Promise.resolve({
-				data: {
-					incomingUrl: 'string',
-					outgoingUrl: 'string',
-					log: true,
-					whitelist: [],
-				},
-				status: 200,
-			});
+			return Promise.resolve(settings);
+		});
+		mockClient.put = jest.fn().mockImplementationOnce(() => {
+			return Promise.resolve({});
 		});
 
 		await mockedSettingsModule.setIncomingUrl('https://test.de');
 
 		expect(mockClient.get).toBeCalledWith('settings/sipgateio');
+		expect(mockClient.put).toBeCalledWith('settings/sipgateio', {
+			...settings,
+			incomingUrl: 'https://test.de',
+		});
 	});
 });
 
 describe('setIncomingUrl', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	const TEST_INCOMING_URL = 'http://newIncoming.url';
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('should set supplied incomingUrl in fetched settings object', async () => {
@@ -57,13 +65,11 @@ describe('setIncomingUrl', () => {
 
 		mockClient.get = jest
 			.fn()
-			.mockImplementationOnce(() =>
-				Promise.resolve({ status: 200, data: settings })
-			);
+			.mockImplementationOnce(() => Promise.resolve(settings));
 
 		mockClient.put = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ status: 200, data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		await settingsModule.setIncomingUrl(TEST_INCOMING_URL);
 
@@ -74,18 +80,18 @@ describe('setIncomingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setIncomingUrl('newUrl')).rejects.toThrowError(
-			WebhookErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
+			ValidatorMessages.INVALID_WEBHOOK_URL
 		);
 	});
 });
 
 describe('setOutgoingUrl', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	const TEST_OUTGOING_URL = 'http://newOutgoing.url';
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('should set supplied incomingUrl in fetched settings object', async () => {
@@ -103,13 +109,11 @@ describe('setOutgoingUrl', () => {
 
 		mockClient.get = jest
 			.fn()
-			.mockImplementationOnce(() =>
-				Promise.resolve({ status: 200, data: settings })
-			);
+			.mockImplementationOnce(() => Promise.resolve(settings));
 
 		mockClient.put = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ status: 200, data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		await settingsModule.setOutgoingUrl(TEST_OUTGOING_URL);
 
@@ -120,20 +124,20 @@ describe('setOutgoingUrl', () => {
 		const settingsModule = createSettingsModule(mockClient);
 
 		await expect(settingsModule.setOutgoingUrl('newUrl')).rejects.toThrowError(
-			WebhookErrorMessage.VALIDATOR_INVALID_WEBHOOK_URL
+			ValidatorMessages.INVALID_WEBHOOK_URL
 		);
 	});
 });
 
 describe('setWhitelist', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	const INVALID_WHITELIST = ['g0', 'greatAgain'];
 	const INVALID_P_EXT_WHITELIST = ['f19'];
 	const VALID_WHITELIST = ['g0', 'p19'];
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('should throw an error when supplied with an invalid array of extensions', async () => {
@@ -149,9 +153,7 @@ describe('setWhitelist', () => {
 
 		await expect(
 			settingsModule.setWhitelist(INVALID_P_EXT_WHITELIST)
-		).rejects.toThrowError(
-			WebhookErrorMessage.VALIDATOR_INVALID_EXTENSION_FOR_WEBHOOKS
-		);
+		).rejects.toThrowError(ValidatorMessages.INVALID_EXTENSION_FOR_WEBHOOKS);
 	});
 
 	it('should succeed when supplied with a valid array of extensions', async () => {
@@ -169,13 +171,11 @@ describe('setWhitelist', () => {
 
 		mockClient.get = jest
 			.fn()
-			.mockImplementationOnce(() =>
-				Promise.resolve({ status: 200, data: settings })
-			);
+			.mockImplementationOnce(() => Promise.resolve(settings));
 
 		mockClient.put = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ status: 200, data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		await settingsModule.setWhitelist(VALID_WHITELIST);
 

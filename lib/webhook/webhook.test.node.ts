@@ -1,7 +1,6 @@
-import { HttpResponse } from '../core/sipgateIOClient';
-import { WebhookModule, WebhookServer } from './webhook.module';
+import { WebhookModule, WebhookServer } from './webhook.types';
 import { WebhookResponse, createWebhookModule } from './webhook';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import qs from 'qs';
 
 describe('create webhook module', () => {
@@ -148,15 +147,15 @@ describe('The webhook server', () => {
 		direction: 'in',
 		event: 'newCall',
 		from: '',
-		fullUserId: [],
+		'fullUserId[]': ['123456789'],
 		originalCallId: '',
 		to: '',
-		user: [],
-		userId: [],
+		'user[]': ['TestUser'],
+		'userId[]': ['123456789'],
 		xcid: '',
 	};
 
-	const sendTestWebhook = async (): Promise<HttpResponse<string>> => {
+	const sendTestWebhook = async (): Promise<AxiosResponse<string>> => {
 		return await axios.post(
 			`http://${serverAddress}`,
 			qs.stringify(newCallWebhook),
@@ -177,7 +176,20 @@ describe('The webhook server', () => {
 		webhookServer.stop();
 	});
 
-	it('should generate a valid XML response with no handlers set', async () => {
+	it('should parse the response and replace the array key with plural keys', async () => {
+		webhookServer.onNewCall((newCallEvent) => {
+			expect(newCallEvent.users).toEqual(newCallWebhook['user[]']);
+			expect(newCallEvent.userIds).toEqual(newCallWebhook['userId[]']);
+			expect(newCallEvent.fullUserIds).toEqual(newCallWebhook['fullUserId[]']);
+		});
+
+		await sendTestWebhook();
+	});
+
+	it('should generate a valid XML response with no handlers for answer or hangup event', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onNewCall(() => {});
+
 		const response = await sendTestWebhook();
 
 		expect(response.data).toEqual(

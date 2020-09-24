@@ -1,2 +1,2 @@
-export * from './call.module';
+export * from './call.types';
 export * from './call';

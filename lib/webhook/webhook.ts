@@ -1,7 +1,10 @@
 import {
 	CallEvent,
+	EventType,
 	GatherObject,
 	GatherOptions,
+	GenericEvent,
+	HandlerCallback,
 	HangUpObject,
 	PlayObject,
 	PlayOptions,
@@ -10,18 +13,29 @@ import {
 	RejectObject,
 	RejectOptions,
 	ResponseObject,
-	VoicemailObject,
-} from './models/webhook.model';
-import {
-	EventType,
 	ServerOptions,
+	VoicemailObject,
+	WebhookHandlers,
 	WebhookModule,
 	WebhookResponseInterface,
 	WebhookServer,
-} from './webhook.module';
+} from './webhook.types';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
+import { WebhookErrorMessage } from './webhook.errors';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
+
+interface WebhookApiResponse {
+	_declaration: {
+		_attributes: {
+			version: string;
+			encoding: string;
+		};
+	};
+	Response:
+		| ({ _attributes: Record<string, string> } & ResponseObject)
+		| { _attributes: Record<string, string> };
+}
 
 export const createWebhookModule = (): WebhookModule => ({
 	createServer: createWebhookServer,
@@ -30,10 +44,11 @@ export const createWebhookModule = (): WebhookModule => ({
 const createWebhookServer = async (
 	serverOptions: ServerOptions
 ): Promise<WebhookServer> => {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const handlers = new Map<EventType, (event: any) => any>();
-
-	handlers.set(EventType.NEW_CALL, () => null);
+	const handlers: WebhookHandlers = {
+		[EventType.NEW_CALL]: () => {
+			return;
+		},
+	};
 
 	return new Promise((resolve, reject) => {
 		const requestHandler = async (
@@ -43,7 +58,11 @@ const createWebhookServer = async (
 			res.setHeader('Content-Type', 'application/xml');
 
 			const requestBody = await collectRequestData(req);
-			const requestCallback = handlers.get(requestBody.event);
+			const requestCallback = handlers[requestBody.event] as HandlerCallback<
+				GenericEvent,
+				ResponseObject | void
+			>;
+
 			if (requestCallback === undefined) {
 				res.end(
 					`<?xml version="1.0" encoding="UTF-8"?><Error message="No handler for ${requestBody.event} event" />`
@@ -51,19 +70,19 @@ const createWebhookServer = async (
 				return;
 			}
 
-			const callbackResult = requestCallback(requestBody);
+			const callbackResult = requestCallback(requestBody) || undefined;
 
 			const responseObject = createResponseObject(
 				callbackResult,
 				serverOptions.serverAddress
 			);
 
-			if (handlers.has(EventType.ANSWER)) {
+			if (handlers[EventType.ANSWER]) {
 				responseObject.Response['_attributes'].onAnswer =
 					serverOptions.serverAddress;
 			}
 
-			if (handlers.has(EventType.HANGUP)) {
+			if (handlers[EventType.HANGUP]) {
 				responseObject.Response['_attributes'].onHangup =
 					serverOptions.serverAddress;
 			}
@@ -82,16 +101,28 @@ const createWebhookServer = async (
 			() => {
 				resolve({
 					onNewCall: (handler) => {
-						handlers.set(EventType.NEW_CALL, handler);
+						handlers[EventType.NEW_CALL] = handler;
 					},
 					onAnswer: (handler) => {
-						handlers.set(EventType.ANSWER, handler);
+						if (!serverOptions.serverAddress)
+							throw new Error(
+								WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS
+							);
+						handlers[EventType.ANSWER] = handler;
 					},
 					onHangUp: (handler) => {
-						handlers.set(EventType.HANGUP, handler);
+						if (!serverOptions.serverAddress)
+							throw new Error(
+								WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS
+							);
+						handlers[EventType.HANGUP] = handler;
 					},
 					onData: (handler) => {
-						handlers.set(EventType.DATA, handler);
+						if (!serverOptions.serverAddress)
+							throw new Error(
+								WebhookErrorMessage.SERVERADDRESS_MISSING_FOR_FOLLOWUPS
+							);
+						handlers[EventType.DATA] = handler;
 					},
 					stop: () => {
 						if (server) {
@@ -103,6 +134,25 @@ const createWebhookServer = async (
 			}
 		);
 	});
+};
+
+const parseRequestBody = (body: string): CallEvent => {
+	body = body
+		.replace('user%5B%5D', 'users%5B%5D')
+		.replace('userId%5B%5D', 'userIds%5B%5D')
+		.replace('fullUserId%5B%5D', 'fullUserIds%5B%5D');
+	const parsedBody = parse(body) as unknown as CallEvent;
+	if ('from' in parsedBody && parsedBody.from !== 'anonymous') {
+		parsedBody.from = `+${parsedBody.from}`;
+	}
+	if ('to' in parsedBody && parsedBody.to !== 'anonymous') {
+		parsedBody.to = `+${parsedBody.to}`;
+	}
+	if ('diversion' in parsedBody && parsedBody.diversion !== 'anonymous') {
+		parsedBody.diversion = `+${parsedBody.diversion}`;
+	}
+
+	return parsedBody;
 };
 
 const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
@@ -121,16 +171,15 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 			body += chunk.toString();
 		});
 		request.on('end', () => {
-			resolve(parse(body) as CallEvent);
+			resolve(parseRequestBody(body));
 		});
 	});
 };
 
 const createResponseObject = (
-	responseObject: ResponseObject,
+	responseObject: ResponseObject | undefined,
 	serverAddress: string
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Record<string, any> => {
+): WebhookApiResponse => {
 	if (responseObject && isGatherObject(responseObject)) {
 		responseObject.Gather._attributes['onData'] = serverAddress;
 	}
@@ -143,8 +192,7 @@ const createResponseObject = (
 	};
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createXmlResponse = (responseObject: Record<string, any>): string => {
+const createXmlResponse = (responseObject: WebhookApiResponse): string => {
 	const options = {
 		compact: true,
 		ignoreComment: true,

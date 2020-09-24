@@ -1,8 +1,8 @@
 import { ErrorMessage } from '../core/errors';
-import { ShortMessage, SmsExtension, SmsSenderId } from './models/sms.model';
-import { HttpClientModule } from '../core/sipgateIOClient';
-import { ErrorMessage as SmsErrors } from './errors/ErrorMessage';
-import { UserInfo } from '../core/models';
+import { ShortMessage, SmsExtension, SmsSenderId } from './sms.types';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import { SmsErrorMessage } from './errors/handleSmsError';
+import { UserInfo } from '../core/core.types';
 import {
 	containsPhoneNumber,
 	createSMSModule,
@@ -11,54 +11,48 @@ import {
 } from './sms';
 
 describe('SMS Module', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
-	it('sends  a sms by using a validated phone number', async () => {
+	it('sends a sms by using a validated phone number', async () => {
 		const smsModule = createSMSModule(mockClient);
 
 		mockClient.get = jest.fn().mockImplementation((args) => {
 			if (args === 'authorization/userinfo') {
 				return Promise.resolve({
-					data: {
-						sub: 'w999',
-					},
+					sub: 'w999',
 				});
 			}
 			if (args === 'w999/sms') {
 				return Promise.resolve({
-					data: {
-						items: [
-							{
-								id: 's999',
-								alias: 'SMS von Douglas Engelbart',
-								callerId: '+4915739777777',
-							},
-						],
-					},
+					items: [
+						{
+							id: 's999',
+							alias: 'SMS von Douglas Engelbart',
+							callerId: '+4915739777777',
+						},
+					],
 				});
 			}
 			if (args === 'w999/sms/s999/callerids') {
 				return Promise.resolve({
-					data: {
-						items: [
-							{
-								id: 0,
-								phonenumber: 'sipgate',
-								verified: true,
-								defaultNumber: true,
-							},
-							{
-								id: 123456,
-								phonenumber: '+4915739777777',
-								verified: true,
-								defaultNumber: false,
-							},
-						],
-					},
+					items: [
+						{
+							id: 0,
+							phonenumber: 'sipgate',
+							verified: true,
+							defaultNumber: true,
+						},
+						{
+							id: 123456,
+							phonenumber: '+4915739777777',
+							verified: true,
+							defaultNumber: false,
+						},
+					],
 				});
 			}
 			return Promise.reject({
@@ -71,7 +65,7 @@ describe('SMS Module', () => {
 
 		mockClient.post = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		mockClient.put = jest.fn().mockImplementation((args) => {
 			if (
@@ -102,7 +96,7 @@ describe('SMS Module', () => {
 
 		mockClient.post = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ data: {} }));
+			.mockImplementationOnce(() => Promise.resolve({}));
 
 		const message: ShortMessage = {
 			message: 'ValidMessage',
@@ -129,7 +123,7 @@ describe('SMS Module', () => {
 		};
 
 		await expect(smsModule.send(message)).rejects.toThrowError(
-			SmsErrors.SMS_INVALID_EXTENSION
+			SmsErrorMessage.INVALID_EXTENSION
 		);
 	});
 
@@ -170,15 +164,15 @@ describe('SMS Module', () => {
 		};
 
 		await expect(smsModule.send(message)).rejects.toThrowError(
-			SmsErrors.SMS_INVALID_MESSAGE
+			SmsErrorMessage.INVALID_MESSAGE
 		);
 	});
 });
 
 describe('schedule sms', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	test('should use sendAt', async () => {
@@ -195,10 +189,7 @@ describe('schedule sms', () => {
 		);
 
 		mockClient.post = jest.fn().mockImplementationOnce(() => {
-			return Promise.resolve({
-				data: {},
-				status: 200,
-			});
+			return Promise.resolve({});
 		});
 		await smsModule.send(message, date);
 
@@ -224,7 +215,7 @@ describe('schedule sms', () => {
 		);
 
 		await expect(smsModule.send(message, date)).rejects.toThrowError(
-			SmsErrors.SMS_TIME_MUST_BE_IN_FUTURE
+			SmsErrorMessage.TIME_MUST_BE_IN_FUTURE
 		);
 	});
 
@@ -242,7 +233,7 @@ describe('schedule sms', () => {
 		);
 
 		await expect(smsModule.send(message, date)).rejects.toThrowError(
-			SmsErrors.SMS_TIME_TOO_FAR_IN_FUTURE
+			SmsErrorMessage.TIME_TOO_FAR_IN_FUTURE
 		);
 	});
 
@@ -258,58 +249,54 @@ describe('schedule sms', () => {
 		const date: Date = new Date('08 bar 2015');
 
 		await expect(smsModule.send(message, date)).rejects.toThrowError(
-			SmsErrors.SMS_TIME_INVALID
+			SmsErrorMessage.TIME_INVALID
 		);
 	});
 });
 
-describe('SMS Extension List', () => {
-	test('should get SMS ID LIST', async () => {
-		const mockUserID = '0000000';
+describe('The SMS module', () => {
+	test("should correctly identify a webuser's smsExtension", async () => {
+		const expectedId = 's0';
 		const mockData = {
-			data: {
-				items: [
-					{
-						alias: '"Alexander Bain\'s phone"',
-						callerId: '+491517777777',
-						id: 's0',
-					},
-				],
-			},
+			items: [
+				{
+					alias: '"Alexander Bain\'s phone"',
+					callerId: '+491517777777',
+					id: expectedId,
+				},
+			],
 			status: 200,
 		};
 
-		const mockedClient = {} as HttpClientModule;
+		const mockedClient = {} as SipgateIOClient;
 
 		mockedClient.get = jest
 			.fn()
 			.mockImplementation(() => Promise.resolve(mockData));
 
-		await expect(
-			getUserSmsExtension(mockedClient, mockUserID)
-		).resolves.not.toThrow();
+		expect(
+			getUserSmsExtension(mockedClient, 'some webuserId')
+		).resolves.toEqual(expectedId);
 	});
 });
 
 describe('CallerIds for SMS Extension', () => {
 	test('should get callerIds for sms extension', async () => {
 		const mockData = {
-			data: {
-				items: [
-					{
-						defaultNumber: true,
-						id: 0,
-						phonenumber: '+4912345678',
-						verified: true,
-					},
-					{
-						defaultNumber: false,
-						id: 1,
-						phonenumber: '+4987654321',
-						verified: false,
-					},
-				],
-			},
+			items: [
+				{
+					defaultNumber: true,
+					id: 0,
+					phonenumber: '+4912345678',
+					verified: true,
+				},
+				{
+					defaultNumber: false,
+					id: 1,
+					phonenumber: '+4987654321',
+					verified: false,
+				},
+			],
 		};
 
 		const userInfo: UserInfo = {
@@ -325,7 +312,7 @@ describe('CallerIds for SMS Extension', () => {
 			id: 's0',
 		};
 
-		const mockedClient = {} as HttpClientModule;
+		const mockedClient = {} as SipgateIOClient;
 
 		mockedClient.get = jest
 			.fn()
@@ -336,7 +323,7 @@ describe('CallerIds for SMS Extension', () => {
 			userInfo.sub,
 			smsExtension.id
 		);
-		expect(callerIds).toEqual(mockData.data.items);
+		expect(callerIds).toEqual(mockData.items);
 	});
 });
 

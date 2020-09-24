@@ -1,4 +1,6 @@
-export enum ErrorMessage {
+import { HttpError, handleCoreError } from '../../core';
+
+export enum ContactsErrorMessage {
 	CONTACTS_INVALID_CSV = 'Invalid CSV string',
 	CONTACTS_MISSING_HEADER_FIELD = 'Missing header field in CSV',
 	CONTACTS_MISSING_VALUES = 'Missing values in CSV',
@@ -13,3 +15,11 @@ export enum ErrorMessage {
 	CONTACTS_INVALID_AMOUNT_OF_ADDRESS_VALUES = 'Address Fields are invalid',
 	CONTACTS_INVALID_AMOUNT_OF_EMAILS = 'Only one email is allowed',
 }
+
+export const handleContactsError = (error: HttpError<unknown>): Error => {
+	if (error.response && error.response.status === 500) {
+		return Error(`${ContactsErrorMessage.CONTACTS_INVALID_CSV}`);
+	}
+
+	return handleCoreError(error);
+};

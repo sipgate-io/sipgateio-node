@@ -1,2 +1,2 @@
 export * from './fax';
-export * from './fax.module';
+export * from './fax.types';

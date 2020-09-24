@@ -1,6 +1,6 @@
 import { ErrorMessage } from '../errors';
-import { ValidationResult } from './validationResult';
-import atob from 'atob';
+import { ValidationResult } from './validator.types';
+import { fromBase64 } from '../../utils';
 
 export const validateOAuthToken = (token: string): ValidationResult => {
 	if (!isValidToken(token)) {
@@ -20,7 +20,7 @@ const isValidToken = (token: string): boolean => {
 			.replace('-', '+')
 			.replace('_', '/');
 
-		JSON.parse(atob(base64EncodedPayload));
+		JSON.parse(fromBase64(base64EncodedPayload));
 
 		return true;
 	} catch (error) {

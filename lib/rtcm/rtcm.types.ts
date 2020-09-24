@@ -22,10 +22,6 @@ export interface RecordOptions {
 	value: boolean;
 }
 
-/**
- * Call Type def
- */
-
 export interface Participant {
 	participantId: string;
 	phoneNumber: string;
@@ -34,7 +30,7 @@ export interface Participant {
 	owner: boolean;
 }
 
-interface GenericCall {
+export interface GenericCall {
 	callId: string;
 }
 

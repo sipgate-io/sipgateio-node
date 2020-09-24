@@ -1,13 +1,13 @@
-import { ErrorMessage } from './errors/ErrorMessage';
 import { RTCMCall } from './rtcm.types';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { RtcmErrorMessage } from './errors/handleRtcmError';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createRTCMModule } from './rtcm';
 
 describe('RTCM Module', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('validates the DTMF sequence correctly and throws an error if invalid', async () => {
@@ -15,7 +15,7 @@ describe('RTCM Module', () => {
 
 		await expect(
 			rtcmModule.sendDTMF({} as RTCMCall, ' A')
-		).rejects.toThrowError(ErrorMessage.DTMF_INVALID_SEQUENCE);
+		).rejects.toThrowError(RtcmErrorMessage.DTMF_INVALID_SEQUENCE);
 	});
 
 	it('uppercases the DTMF sequence and validates it correctly', async () => {
@@ -46,7 +46,7 @@ describe('RTCM Module', () => {
 		const rtcmModule = createRTCMModule(mockClient);
 
 		await expect(rtcmModule.mute({} as RTCMCall, false)).rejects.toThrowError(
-			ErrorMessage.RTCM_CALL_NOT_FOUND
+			RtcmErrorMessage.CALL_NOT_FOUND
 		);
 	});
 
@@ -63,7 +63,7 @@ describe('RTCM Module', () => {
 
 		await expect(
 			rtcmModule.record({} as RTCMCall, { announcement: true, value: true })
-		).rejects.toThrowError(ErrorMessage.RTCM_CALL_NOT_FOUND);
+		).rejects.toThrowError(RtcmErrorMessage.CALL_NOT_FOUND);
 	});
 
 	it('returns the correct error message if a call could not be found', async () => {
@@ -82,7 +82,7 @@ describe('RTCM Module', () => {
 				{} as RTCMCall,
 				'https://static.sipgate.com/examples/wav/example.wav'
 			)
-		).rejects.toThrowError(ErrorMessage.RTCM_CALL_NOT_FOUND);
+		).rejects.toThrowError(RtcmErrorMessage.CALL_NOT_FOUND);
 	});
 	it('returns the correct error message if a call could not be found', async () => {
 		mockClient.post = jest.fn().mockImplementationOnce(() => {
@@ -100,7 +100,7 @@ describe('RTCM Module', () => {
 				attended: true,
 				phoneNumber: '+49123456789test',
 			})
-		).rejects.toThrowError(ErrorMessage.RTCM_CALL_NOT_FOUND);
+		).rejects.toThrowError(RtcmErrorMessage.CALL_NOT_FOUND);
 	});
 	it('returns the correct error message if a call could not be found', async () => {
 		mockClient.post = jest.fn().mockImplementationOnce(() => {
@@ -115,7 +115,7 @@ describe('RTCM Module', () => {
 
 		await expect(
 			rtcmModule.sendDTMF({} as RTCMCall, 'abc')
-		).rejects.toThrowError(ErrorMessage.RTCM_CALL_NOT_FOUND);
+		).rejects.toThrowError(RtcmErrorMessage.CALL_NOT_FOUND);
 	});
 
 	it('returns the correct error message if a call could not be found', async () => {
@@ -130,7 +130,7 @@ describe('RTCM Module', () => {
 		const rtcmModule = createRTCMModule(mockClient);
 
 		await expect(rtcmModule.hold({} as RTCMCall, false)).rejects.toThrowError(
-			ErrorMessage.RTCM_CALL_NOT_FOUND
+			RtcmErrorMessage.CALL_NOT_FOUND
 		);
 	});
 
@@ -146,7 +146,7 @@ describe('RTCM Module', () => {
 		const rtcmModule = createRTCMModule(mockClient);
 
 		await expect(rtcmModule.hangUp({} as RTCMCall)).rejects.toThrowError(
-			ErrorMessage.RTCM_CALL_NOT_FOUND
+			RtcmErrorMessage.CALL_NOT_FOUND
 		);
 	});
 });

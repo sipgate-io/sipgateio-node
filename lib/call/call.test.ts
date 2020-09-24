@@ -1,16 +1,16 @@
-import { CallData } from './models/call.model';
-import { ErrorMessage as CallErrorMessage } from './errors/ErrorMessage';
-import { CallModule } from './call.module';
-import { ErrorMessage } from '../core/errors';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { CallData, CallModule } from './call.types';
+import { CallErrorMessage } from './errors/handleCallError';
+import { ErrorMessage } from '../core';
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import { ValidationErrors } from './validators/validateCallData';
 import { createCallModule } from './call';
 
 describe('Call Module', () => {
 	let callModule: CallModule;
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 		callModule = createCallModule(mockClient);
 	});
 
@@ -18,9 +18,7 @@ describe('Call Module', () => {
 		const expectedSessionId = '123456';
 		mockClient.post = jest.fn().mockImplementation(() => {
 			return Promise.resolve({
-				data: {
-					sessionId: expectedSessionId,
-				},
+				sessionId: expectedSessionId,
 				status: 200,
 			});
 		});
@@ -29,8 +27,8 @@ describe('Call Module', () => {
 		const validCallerId = '+4915122222222';
 
 		const callData: CallData = {
-			callee: validCalleeNumber,
-			caller: validExtension,
+			to: validCalleeNumber,
+			from: validExtension,
 			callerId: validCallerId,
 		};
 
@@ -46,13 +44,13 @@ describe('Call Module', () => {
 		const validCallerId = '+4915122222222';
 
 		const callData: CallData = {
-			callee: validCalleeNumber,
-			caller: invalidExtensionId,
+			to: validCalleeNumber,
+			from: invalidExtensionId,
 			callerId: validCallerId,
 		};
 
 		await expect(callModule.initiate(callData)).rejects.toThrowError(
-			ErrorMessage.VALIDATOR_INVALID_CALLER
+			ValidationErrors.INVALID_CALLER
 		);
 	});
 
@@ -70,8 +68,8 @@ describe('Call Module', () => {
 		const validCallerId = '+4915122222222';
 
 		const callData: CallData = {
-			callee: validCalleeNumber,
-			caller: validExtension,
+			to: validCalleeNumber,
+			from: validExtension,
 			callerId: validCallerId,
 		};
 
@@ -86,8 +84,8 @@ describe('Call Module', () => {
 		const validCallerId = '+494567787889';
 
 		const callData: CallData = {
-			callee: invalidCalleeNumber,
-			caller: validExtensionId,
+			to: invalidCalleeNumber,
+			from: validExtensionId,
 			callerId: validCallerId,
 		};
 

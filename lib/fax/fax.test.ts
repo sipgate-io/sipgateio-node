@@ -1,14 +1,14 @@
-import { ErrorMessage } from './errors/ErrorMessage';
-import { FaxDTO } from './models/fax.model';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { FaxDTO } from './fax.types';
+import { FaxErrorMessage } from './errors/handleFaxError';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createFaxModule } from './fax';
-import validPDFBuffer from './validators/validPDFBuffer';
+import validPDFBuffer from './testfiles/validPDFBuffer';
 
 describe('SendFax', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	test('fax is sent', async () => {
@@ -16,13 +16,11 @@ describe('SendFax', () => {
 
 		mockClient.post = jest
 			.fn()
-			.mockImplementationOnce(() =>
-				Promise.resolve({ data: { sessionId: '123123' } })
-			);
+			.mockImplementationOnce(() => Promise.resolve({ sessionId: '123123' }));
 		mockClient.get = jest
 			.fn()
 			.mockImplementationOnce(() =>
-				Promise.resolve({ data: { type: 'FAX', faxStatusType: 'SENT' } })
+				Promise.resolve({ type: 'FAX', faxStatusType: 'SENT' })
 			);
 
 		const to = '+4912368712';
@@ -44,13 +42,13 @@ describe('SendFax', () => {
 			.fn()
 			.mockImplementationOnce((_, { filename }: FaxDTO) => {
 				expect(filename && /^Fax_2\d{7}_\d{4}$/.test(filename)).toBeTruthy();
-				return Promise.resolve({ data: { sessionId: 123456 } });
+				return Promise.resolve({ sessionId: 123456 });
 			});
 
 		mockClient.get = jest
 			.fn()
 			.mockImplementationOnce(() =>
-				Promise.resolve({ data: { type: 'FAX', faxStatusType: 'SENT' } })
+				Promise.resolve({ type: 'FAX', faxStatusType: 'SENT' })
 			);
 
 		const faxModule = createFaxModule(mockClient);
@@ -64,10 +62,10 @@ describe('SendFax', () => {
 });
 
 describe('GetFaxStatus', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeAll(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	test('throws exception when fax status could not be fetched', async () => {
@@ -82,7 +80,7 @@ describe('GetFaxStatus', () => {
 		const faxModule = createFaxModule(mockClient);
 
 		await expect(faxModule.getFaxStatus('12345')).rejects.toThrowError(
-			ErrorMessage.FAX_NOT_FOUND
+			FaxErrorMessage.FAX_NOT_FOUND
 		);
 	});
 });

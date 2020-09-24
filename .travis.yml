@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-  - "8"
   - "10"
   - "12"
 os:
@@ -10,7 +9,7 @@ install:
   - npm install
 script:
   - npm run bundle
-  - npm run test:unit
+  - ./run_unit_tests.sh
   - npm run test:integration
 notifications:
   slack:

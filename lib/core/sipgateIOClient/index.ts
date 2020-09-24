@@ -1,2 +1,2 @@
 export * from './sipgateIOClient';
-export * from './sipgateIOClient.module';
+export * from './sipgateIOClient.types';

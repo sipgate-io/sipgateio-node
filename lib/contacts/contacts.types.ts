@@ -1,7 +1,7 @@
-import { Pagination } from '../core/models';
+import { Pagination } from '../core';
 
 export interface ContactsModule {
-	import: (contact: ContactImport, scope: Scope) => Promise<void>;
+	create: (contact: ContactImport, scope: Scope) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
 	exportAsCsv: (
@@ -20,33 +20,33 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<string>;
-	exportAsObjects: (
+	get: (
 		scope: ExportScope,
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
-	) => Promise<ContactRequest[]>;
+	) => Promise<ContactResponse[]>;
 }
 
-interface ContactImport {
+export interface ContactImport {
 	firstname: string;
 	lastname: string;
 	address?: Address;
 	phone?: PhoneNumber;
 	email?: Email;
-	organization?: string[];
+	organization?: string[][];
 }
 
-interface Email {
+export interface Email {
 	email: string;
 	type: string[];
 }
 
-interface PhoneNumber {
+export interface PhoneNumber {
 	number: string;
 	type: string[];
 }
 
-interface Address {
+export interface Address {
 	poBox: string;
 	extendedAddress: string;
 	streetAddress: string;
@@ -72,22 +72,26 @@ type Scope = 'PRIVATE' | 'SHARED';
 
 type ExportScope = Scope | 'INTERNAL';
 
-export interface ContactRequest {
+export interface ContactResponse {
 	id: string;
 	name: string;
 	picture: string;
-	emails: { email: string; type: string[] }[];
-	numbers: { number: string; type: string[] }[];
+	emails: Email[];
+	numbers: PhoneNumber[];
 	addresses: Address[];
 	organization: string[][];
 	scope: Scope;
 }
 
-export interface ContactsRequest {
-	items: ContactRequest[];
+export interface ContactsListResponse {
+	items: ContactResponse[];
 	totalCount: number;
 }
 
 export interface ContactsExportFilter {
 	phonenumbers: string[];
+}
+
+export interface ImportCSVRequestDTO {
+	base64Content: string;
 }

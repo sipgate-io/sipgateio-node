@@ -1,4 +1,4 @@
-import { ErrorMessage } from '../errors/ErrorMessage';
+import { RtcmErrorMessage } from '../errors/handleRtcmError';
 import { ValidationResult } from '../../core/validator';
 
 export const validateDTMFSequence = (sequence: string): ValidationResult => {
@@ -6,5 +6,5 @@ export const validateDTMFSequence = (sequence: string): ValidationResult => {
 		return { isValid: true };
 	}
 
-	return { isValid: false, cause: ErrorMessage.DTMF_INVALID_SEQUENCE };
+	return { isValid: false, cause: RtcmErrorMessage.DTMF_INVALID_SEQUENCE };
 };

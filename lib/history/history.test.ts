@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
-import { ErrorMessage } from './errors/ErrorMessage';
-import { HistoryEntry } from './history.types';
-import { HttpClientModule } from '../core/sipgateIOClient';
+import { HistoryEntry, HistoryEntryType } from './history.types';
+import { HistoryErrorMessage } from './errors/handleHistoryError';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
 
 describe('History Module', () => {
-	let mockClient: HttpClientModule;
+	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as HttpClientModule;
+		mockClient = {} as SipgateIOClient;
 	});
 
 	it('validates the Extensions and throws an error including the message from the extension-validator', async () => {
@@ -21,7 +19,7 @@ describe('History Module', () => {
 	});
 
 	it('throws an error when the API answers with 404 Not Found', async () => {
-		mockClient.get = jest.fn().mockImplementationOnce((_) => {
+		mockClient.get = jest.fn().mockImplementationOnce(() => {
 			return Promise.reject({
 				response: {
 					status: 404,
@@ -33,11 +31,11 @@ describe('History Module', () => {
 
 		await expect(
 			historyModule.fetchById('someUnknownEntryId')
-		).rejects.toThrowError(ErrorMessage.HISTORY_EVENT_NOT_FOUND);
+		).rejects.toThrowError(HistoryErrorMessage.EVENT_NOT_FOUND);
 	});
 
 	it('throws an error when the API answers with 400 Bad Request', async () => {
-		mockClient.get = jest.fn().mockImplementationOnce((_) => {
+		mockClient.get = jest.fn().mockImplementationOnce(() => {
 			return Promise.reject({
 				response: {
 					status: 400,
@@ -49,11 +47,11 @@ describe('History Module', () => {
 
 		await expect(
 			historyModule.fetchAll({}, { limit: 100000 })
-		).rejects.toThrowError(ErrorMessage.HISTORY_BAD_REQUEST);
+		).rejects.toThrowError(HistoryErrorMessage.BAD_REQUEST);
 	});
 
 	it('batchUpdates historyUpdates which include no note', async () => {
-		mockClient.put = jest.fn().mockImplementation((path, args) => {
+		mockClient.put = jest.fn().mockImplementation(() => {
 			return Promise.resolve({
 				status: 200,
 			});
@@ -102,5 +100,29 @@ describe('History Module', () => {
 		await expect(
 			historyModule.exportAsCsvString({ connectionIds: ['s0', 'sokx5', 'e0'] })
 		).rejects.toThrowError('Invalid extension: sokx5');
+	});
+
+	it('passes the filter to the history export endpoint', async () => {
+		const historyModule = createHistoryModule(mockClient);
+		mockClient.get = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve('example response'));
+
+		await historyModule.exportAsCsvString(
+			{
+				archived: true,
+				types: [HistoryEntryType.SMS],
+			},
+			{ offset: 10, limit: 20 }
+		);
+
+		expect(mockClient.get).toBeCalledWith('/history/export', {
+			params: {
+				archived: true,
+				types: [HistoryEntryType.SMS],
+				offset: 10,
+				limit: 20,
+			},
+		});
 	});
 });
