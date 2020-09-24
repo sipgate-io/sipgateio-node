@@ -10,6 +10,7 @@
 ## Breaking Changes
 
 From now on, Node 8 is not supported anymore. It has reached End Of Life in December 2019 and you should upgrade to newer versions.
+We have switched from using `master` as the default branch name to `main`. Unless you directly depended on that branch name there is nothing you should need to be doing.
 
 - rename `from` and `to` to `startDate` and `endDate` in order to avoid confusion ([8bb8d41](https://github.com/sipgate-io/sipgateio-node/commit/8bb8d410f6d1a5810a6d74631ef0a99e61e9a97d))
 - rename `import` to `create` and `exportAsObject` to `get` in contacts module ([6beadaa](https://github.com/sipgate-io/sipgateio-node/commit/6beadaaccf33df100564d9f78366191d5d675848))
