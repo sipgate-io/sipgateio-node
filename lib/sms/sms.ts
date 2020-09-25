@@ -13,7 +13,6 @@ import {
 } from './sms.types';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { SmsErrorMessage, handleSmsError } from './errors/handleSmsError';
-import { getAuthenticatedWebuser } from '../core/helpers/authorizationInfo';
 import { validateSendAt } from './validators/validateSendAt';
 
 export const createSMSModule = (client: SipgateIOClient): SMSModule => ({
@@ -97,7 +96,7 @@ async function sendSmsByPhoneNumber(
 	sms: ShortMessage,
 	smsDTO: ShortMessageDTO
 ): Promise<void> {
-	const webuserId = await getAuthenticatedWebuser(client);
+	const webuserId = await client.getAuthenticatedWebuserId();
 	const smsExtension = await getUserSmsExtension(client, webuserId);
 	const senderIds = await getSmsCallerIds(client, webuserId, smsExtension);
 	const senderId = senderIds.find(

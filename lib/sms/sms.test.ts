@@ -14,7 +14,11 @@ describe('SMS Module', () => {
 	let mockClient: SipgateIOClient;
 
 	beforeEach(() => {
-		mockClient = {} as SipgateIOClient;
+		mockClient = {
+			async getAuthenticatedWebuserId(): Promise<string> {
+				return 'w999';
+			},
+		} as SipgateIOClient;
 	});
 
 	it('sends a sms by using a validated phone number', async () => {

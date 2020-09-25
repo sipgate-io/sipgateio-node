@@ -4,6 +4,7 @@ import {
 	SipgateIOClient,
 } from './sipgateIOClient.types';
 
+import { UserInfo } from '../core.types';
 import { detect as detectPlatform } from 'detect-browser';
 import { toBase64 } from '../../utils';
 import {
@@ -128,6 +129,11 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 			config?: HttpRequestConfig
 		): Promise<T> {
 			return client.put<T>(url, data, config).then((response) => response.data);
+		},
+		getAuthenticatedWebuserId(): Promise<string> {
+			return client
+				.get<UserInfo>('authorization/userinfo')
+				.then((response) => response.data.sub);
 		},
 	};
 };

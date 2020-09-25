@@ -117,6 +117,8 @@ interface OAuthCredentials {
 The `sipgateIO` method accepts your valid sipgate credentials as defined in the `AuthCredentials` type and returns a sipgate.io Client.
 The client contains as members the supported modules (`sms`, `fax`, `call`, etc.).
 
+**Note** that creating the sipgate.io Client will not validate your credentials, you might want to call the method `client.getAuthenticatedWebuserId()` to check that your credentials are correct.
+
 ### SMS
 
 The SMS module provides the following functions:

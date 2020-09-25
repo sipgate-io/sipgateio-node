@@ -34,4 +34,5 @@ export interface SipgateIOClient {
 		data?: unknown,
 		config?: HttpRequestConfig
 	) => Promise<T>;
+	getAuthenticatedWebuserId: () => Promise<string>;
 }
