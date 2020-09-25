@@ -7,6 +7,7 @@
 - feat: throw error when serverAddress is missing for Follow-up events ([b57db1c](https://github.com/sipgate-io/sipgateio-node/commit/b57db1c))
 - feat: allow string as port in `ServerOptions` ([d10688b](https://github.com/sipgate-io/sipgateio-node/commit/d10688be98da96c0963558836b03e3678f9da9be))
 - feat: add method to retrieve the webuser id of the authenticated webuser ([a16e5de](https://github.com/sipgate-io/a16e5de316cdad17d91ecaae72a8764c4c8ea15d))
+- feat: add `getFaxlines` function to fax module ([a16e5de](https://github.com/sipgate-io/5d4c0cdbbee007e7e3718407595735901ee8e1f7))
 
 ## Breaking Changes
 
