@@ -15,6 +15,7 @@ import {
 import { version } from '../../version.json';
 import axios from 'axios';
 import qs from 'qs';
+import { handleCoreError } from '../errors';
 
 interface RawDeserialized {
 	[key: string]: RawDeserializedValue;
@@ -133,7 +134,8 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 		getAuthenticatedWebuserId(): Promise<string> {
 			return client
 				.get<UserInfo>('authorization/userinfo')
-				.then((response) => response.data.sub);
+				.then((response) => response.data.sub)
+				.catch((error) => Promise.reject(handleCoreError(error)));
 		},
 	};
 };
