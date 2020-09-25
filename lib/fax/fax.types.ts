@@ -1,6 +1,19 @@
 export interface FaxModule {
 	send: (fax: Fax) => Promise<SendFaxSessionResponse>;
 	getFaxStatus: (sessionId: string) => Promise<FaxStatus>;
+	getFaxlines(): Promise<Faxline[]>;
+}
+
+export interface FaxlinesResponse {
+	items: Faxline[];
+}
+
+export interface Faxline {
+	id: string;
+	alias: string;
+	tagline: string;
+	canSend: boolean;
+	canReceive: boolean;
 }
 
 interface FaxObject {

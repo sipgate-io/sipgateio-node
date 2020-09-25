@@ -84,3 +84,33 @@ describe('GetFaxStatus', () => {
 		);
 	});
 });
+
+describe('getFaxlines', () => {
+	const mockClient: SipgateIOClient = {} as SipgateIOClient;
+
+	test('extracts the `items` from the API response', async () => {
+		const testFaxlines = [
+			{
+				id: 'f0',
+				alias: "Alexander Bain's fax",
+				tagline: 'Example Ltd.',
+				canSend: false,
+				canReceive: true,
+			},
+		];
+
+		mockClient.get = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve({ items: testFaxlines }));
+		mockClient.getAuthenticatedWebuserId = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve('w0'));
+
+		const faxModule = createFaxModule(mockClient);
+
+		const faxlines = await faxModule.getFaxlines();
+		expect(faxlines).toEqual(testFaxlines);
+
+		expect(mockClient.get).toHaveBeenCalledWith('w0/faxlines');
+	});
+});

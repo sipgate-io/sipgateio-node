@@ -159,6 +159,7 @@ The fax module provides the following functions:
 ```typescript
 async function send(fax: Fax): Promise<SendFaxSessionResponse>;
 async function getFaxStatus(sessionId: string): Promise<FaxStatus>;
+async function getFaxlines(): Promise<Faxline[]>;
 ```
 
 The `send` function allows you to send a fax by passing an object with the following fields:
@@ -189,6 +190,19 @@ enum FaxStatus {
 	FAILED = 'FAILED',
 	SENDING = 'SENDING',
 	SCHEDULED = 'SCHEDULED',
+}
+```
+
+With the `getFaxlines` function you can get a list of faxlines that belong to the currently authenticated user.
+It returns an array of the following type:
+
+```typescript
+export interface Faxline {
+	id: string;
+	alias: string;
+	tagline: string;
+	canSend: boolean;
+	canReceive: boolean;
 }
 ```
 

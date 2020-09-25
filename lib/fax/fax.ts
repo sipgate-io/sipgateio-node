@@ -1,6 +1,8 @@
 import {
 	Fax,
 	FaxDTO,
+	Faxline,
+	FaxlinesResponse,
 	FaxModule,
 	FaxStatus,
 	HistoryFaxResponse,
@@ -11,7 +13,7 @@ import { SipgateIOClient } from '../core/sipgateIOClient';
 import { validatePdfFileContent } from './validators/validatePdfFileContent';
 
 export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
-	async send(faxObject: Fax): Promise<SendFaxSessionResponse> {
+	send(faxObject: Fax): Promise<SendFaxSessionResponse> {
 		const fax = faxObject;
 		const fileContentValidationResult = validatePdfFileContent(fax.fileContent);
 
@@ -45,6 +47,12 @@ export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
 				return data.faxStatusType;
 			})
 			.catch((error) => Promise.reject(handleFaxError(error)));
+	},
+	async getFaxlines(): Promise<Faxline[]> {
+		const webuserId = await client.getAuthenticatedWebuserId();
+		return await client
+			.get<FaxlinesResponse>(`${webuserId}/faxlines`)
+			.then((response) => response.items);
 	},
 });
 

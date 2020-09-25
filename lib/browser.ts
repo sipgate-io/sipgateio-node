@@ -20,7 +20,13 @@ export {
 	Email,
 	PhoneNumber,
 } from './contacts';
-export { createFaxModule, Fax, SendFaxSessionResponse, FaxStatus } from './fax';
+export {
+	createFaxModule,
+	Fax,
+	SendFaxSessionResponse,
+	FaxStatus,
+	Faxline,
+} from './fax';
 export {
 	createHistoryModule,
 	HistoryDirection,
