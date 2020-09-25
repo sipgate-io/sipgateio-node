@@ -6,10 +6,12 @@
 - feat: specify ./dist/module.js as "browser" in package.json ([eac8175](https://github.com/sipgate-io/sipgateio-node/commit/eac8175))
 - feat: throw error when serverAddress is missing for Follow-up events ([b57db1c](https://github.com/sipgate-io/sipgateio-node/commit/b57db1c))
 - feat: allow string as port in `ServerOptions` ([d10688b](https://github.com/sipgate-io/sipgateio-node/commit/d10688be98da96c0963558836b03e3678f9da9be))
+- feat: add method to retrieve the webuser id of the authenticated webuser ([a16e5de](https://github.com/sipgate-io/a16e5de316cdad17d91ecaae72a8764c4c8ea15d))
 
 ## Breaking Changes
 
 From now on, Node 8 is not supported anymore. It has reached End Of Life in December 2019 and you should upgrade to newer versions.
+
 We have switched from using `master` as the default branch name to `main`. Unless you directly depended on that branch name there is nothing you should need to be doing.
 
 - rename `from` and `to` to `startDate` and `endDate` in order to avoid confusion ([8bb8d41](https://github.com/sipgate-io/sipgateio-node/commit/8bb8d410f6d1a5810a6d74631ef0a99e61e9a97d))
