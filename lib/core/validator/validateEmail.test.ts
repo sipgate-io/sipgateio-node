@@ -21,4 +21,13 @@ describe('ValidateEmail', () => {
 			}
 		}
 	);
+
+	it('uses <empty> to display an empty email', () => {
+		const output = validateEmail('');
+
+		expect(output.isValid === false);
+		if (output.isValid !== false) return;
+
+		expect(output.cause).toContain('<empty>');
+	});
 });

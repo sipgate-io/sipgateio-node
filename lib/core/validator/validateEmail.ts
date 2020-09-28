@@ -8,7 +8,7 @@ const validateEmail = (email: string): ValidationResult => {
 
 	if (!emailRegex.test(email)) {
 		return {
-			cause: `${ErrorMessage.VALIDATOR_INVALID_EMAIL}: ${email}`,
+			cause: `${ErrorMessage.VALIDATOR_INVALID_EMAIL}: ${email || '<empty>'}`,
 			isValid: false,
 		};
 	}
