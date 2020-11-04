@@ -12,6 +12,7 @@ A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 	- [Webhook Settings](#webhook-settings)
 	- [Contacts](#contacts)
 	- [History](#history)
+	- [Numbers](#numbers)
 	- [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm)
 - [Usage](#usage)
 	- [Creating a Client](#creating-a-client)
@@ -22,6 +23,7 @@ A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 	- [Webhook Settings](#webhook-settings-1)
 	- [Contacts](#contacts-1)
 	- [History](#history-1)
+	- [Numbers](#numbers-1)
 	- [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm-1)
 - [Examples](#examples)
 - [Changelog](#changelog)
@@ -72,7 +74,11 @@ Import contacts in CSV format into your sipgate account.
 
 ### History
 
-Fetch multiple or a specific event from your history
+Fetch multiple or a specific event from your history.
+
+### Numbers
+
+Receive all numbers assigned to your account.
 
 ### Real Time Call Manipulation (RTCM)
 
@@ -802,6 +808,54 @@ interface Pagination {
 }
 ```
 
+### Numbers
+
+The numbers module provides the following function:
+
+```typescript
+interface NumbersModule {
+	getAllNumbers: (pagination?: Pagination) => Promise<NumberResponse>;
+}
+```
+
+#### The `getAllNumbers` method:
+
+It returns a `NumberResponse` object, that contains `NumberResponseItem`s in a list called `items`. Such a `NumberResponseItem` has the following structure:
+
+```typescript
+interface NumberResponseItem {
+	id: string;
+	number: string;
+	localized: string;
+	type: NumberResponseItemType;
+	endpointId: string;
+	endpointAlias: string;
+	endpointUrl: string;
+	mnpState?: NumberMnpState;
+	portId?: number;
+}
+```
+
+Where `NumberResponseItemType` is one value out of the following enum:
+
+```typescript
+enum NumberResponseItemType {
+	MOBILE = 'MOBILE',
+	LANDLINE = 'LANDLINE',
+	QUICKDIAL = 'QUICKDIAL',
+	INTERNATIONAL = 'INTERNATIONAL',
+}
+```
+
+The `mnpState` of type `NumberMnpState` only appears in a mobile number entry and looks like this:
+
+```typescript
+interface NumberMnpState {
+	isReleased: boolean;
+	releasedUntil: Date;
+}
+```
+
 ### Real Time Call Manipulation (RTCM)
 
 The real time call manipulation module provides the following functions:
@@ -819,7 +873,7 @@ interface RTCMModule {
 }
 ```
 
-The structure of a present call is provide by a `RTCMCall` and containts the following attributes:
+The structure of a present call is provided by a `RTCMCall` and containts the following attributes:
 
 ```typescript
 interface RTCMCall {
