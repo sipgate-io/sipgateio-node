@@ -45,6 +45,7 @@ export {
 	FaxStatusType,
 	Recording,
 } from './history';
+export { createNumbersModule } from './numbers';
 export {
 	createRTCMModule,
 	RTCMCall,
