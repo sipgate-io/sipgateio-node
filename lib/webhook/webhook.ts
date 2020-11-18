@@ -140,8 +140,9 @@ const parseRequestBody = (body: string): CallEvent => {
 	body = body
 		.replace('user%5B%5D', 'users%5B%5D')
 		.replace('userId%5B%5D', 'userIds%5B%5D')
-		.replace('fullUserId%5B%5D', 'fullUserIds%5B%5D');
-	const parsedBody = parse(body) as unknown as CallEvent;
+		.replace('fullUserId%5B%5D', 'fullUserIds%5B%5D')
+		.replace('origCallId', 'originalCallId');
+	const parsedBody = (parse(body) as unknown) as CallEvent;
 	if ('from' in parsedBody && parsedBody.from !== 'anonymous') {
 		parsedBody.from = `+${parsedBody.from}`;
 	}
