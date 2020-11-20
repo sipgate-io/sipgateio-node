@@ -138,10 +138,11 @@ const createWebhookServer = async (
 
 const parseRequestBody = (body: string): CallEvent => {
 	body = body
-		.replace('user%5B%5D', 'users%5B%5D')
-		.replace('userId%5B%5D', 'userIds%5B%5D')
-		.replace('fullUserId%5B%5D', 'fullUserIds%5B%5D')
-		.replace('origCallId', 'originalCallId');
+		.replace(/user%5B%5D/g, 'users%5B%5D')
+		.replace(/userId%5B%5D/g, 'userIds%5B%5D')
+		.replace(/fullUserId%5B%5D/g, 'fullUserIds%5B%5D')
+		.replace(/origCallId/g, 'originalCallId');
+
 	const parsedBody = (parse(body) as unknown) as CallEvent;
 	if ('from' in parsedBody && parsedBody.from !== 'anonymous') {
 		parsedBody.from = `+${parsedBody.from}`;
