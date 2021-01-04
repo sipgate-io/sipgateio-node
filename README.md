@@ -343,7 +343,7 @@ For any of those events, a callback function can be registered to be called upon
 
 Additionally, for the types `NEW_CALL` and `DATA` a response may be returned containing commands to trigger actions like hanging up or redirecting calls.
 
-For generating that response our library provides a convenient [response builder](#webhookresponse-builder).
+For generating that response our library provides a convenient [response interface](#sending-a-response).
 
 #### Usage
 
@@ -463,7 +463,7 @@ the `DataEvent` type offers the following fields:
 
 ##### Sending a response
 
-For composing an XML response from withing a callback function our library offers a convenient response builder:
+For composing an XML response from withing a callback function our library offers a convenient response interface:
 
 ```typescript
 interface WebhookResponseInterface {
@@ -600,13 +600,30 @@ interface ContactImport {
 }
 
 interface ContactsModule {
-	import: (contact: ContactImport, scope: Scope) => Promise<void>;
+	create: (contact: ContactImport, scope: Scope) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
-	exportAsCsv: (scope: ExportScope, delimiter?: string) => Promise<string>;
-	exportAsVCards: (scope: ExportScope) => Promise<string[]>;
-	exportAsSingleVCard: (scope: ExportScope) => Promise<string>;
-	exportAsObjects: (scope: ExportScope) => Promise<ContactRequest[]>;
+	exportAsCsv: (
+		scope: ExportScope,
+		delimiter?: string,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<string>;
+	exportAsVCards: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<string[]>;
+	exportAsSingleVCard: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<string>;
+	get: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<ContactResponse[]>;
 }
 ```
 
@@ -792,14 +809,14 @@ The `exportAsCsvString` method allows you to export your history entries as a cs
 Optionally you can filter and paginate the response by using the following parameters:
 
 ```typescript
-interface BaseHistoryFilter {
+export interface BaseHistoryFilter {
 	connectionIds?: string[];
 	types?: HistoryEntryType[];
-	directions?: Direction[];
+	directions?: HistoryDirection[];
 	archived?: boolean;
 	starred?: Starred;
-	from?: Date;
-	to?: Date;
+	startDate?: Date;
+	endDate?: Date;
 }
 
 interface Pagination {
