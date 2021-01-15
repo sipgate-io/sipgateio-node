@@ -7,6 +7,8 @@ export {
 	NewCallEvent,
 	AnswerEvent,
 	HangUpEvent,
+	HangUpCause,
+	WebhookDirection,
 	DataEvent,
 	ResponseObject,
 	HandlerCallback,
