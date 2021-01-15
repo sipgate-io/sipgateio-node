@@ -153,6 +153,12 @@ const parseRequestBody = (body: string): CallEvent => {
 	if ('diversion' in parsedBody && parsedBody.diversion !== 'anonymous') {
 		parsedBody.diversion = `+${parsedBody.diversion}`;
 	}
+	if (
+		'answeringNumber' in parsedBody &&
+		parsedBody.answeringNumber !== 'anonymous'
+	) {
+		parsedBody.answeringNumber = `+${parsedBody.answeringNumber}`;
+	}
 
 	return parsedBody;
 };

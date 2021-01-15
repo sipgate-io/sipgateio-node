@@ -146,19 +146,34 @@ describe('The webhook server', () => {
 		callId: '',
 		direction: 'in',
 		event: 'newCall',
-		from: '',
+		from: '4912354678',
 		'fullUserId[]': ['123456789'],
 		originalCallId: '',
-		to: '',
+		to: '49999999',
 		'user[]': ['TestUser'],
 		'userId[]': ['123456789'],
 		xcid: '',
 	};
 
-	const sendTestWebhook = async (): Promise<AxiosResponse<string>> => {
+	const anonymousNewCallEvent = {
+		callId: '',
+		direction: 'in',
+		event: 'newCall',
+		from: 'anonymous',
+		'fullUserId[]': ['123456789'],
+		originalCallId: '',
+		to: 'anonymous',
+		'user[]': ['TestUser'],
+		'userId[]': ['123456789'],
+		xcid: '',
+	};
+
+	const sendTestWebhook = async (
+		newCallEvent = newCallWebhook
+	): Promise<AxiosResponse<string>> => {
 		return await axios.post(
 			`http://${serverAddress}`,
-			qs.stringify(newCallWebhook),
+			qs.stringify(newCallEvent),
 			{
 				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 			}
@@ -174,6 +189,24 @@ describe('The webhook server', () => {
 
 	afterEach(() => {
 		webhookServer.stop();
+	});
+
+	it('should prepend a "+" to the from and to fields', async () => {
+		webhookServer.onNewCall((newCallEvent) => {
+			expect(newCallEvent.to).toEqual(`+${newCallWebhook.to}`);
+			expect(newCallEvent.from).toEqual(`+${newCallWebhook.from}`);
+		});
+
+		await sendTestWebhook();
+	});
+
+	it('should not prepend a "+" to the from and to fields if they are anonymous', async () => {
+		webhookServer.onNewCall((newCallEvent) => {
+			expect(newCallEvent.to).toEqual(anonymousNewCallEvent.to);
+			expect(newCallEvent.from).toEqual(anonymousNewCallEvent.from);
+		});
+
+		await sendTestWebhook(anonymousNewCallEvent);
 	});
 
 	it('should parse the response and replace the array key with plural keys', async () => {
