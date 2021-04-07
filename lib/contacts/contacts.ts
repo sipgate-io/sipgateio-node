@@ -1,6 +1,7 @@
 import { ContactImport } from './helpers/Address';
 import {
 	ContactResponse,
+	ContactUpdate,
 	ContactsDTO,
 	ContactsListResponse,
 	ContactsModule,
@@ -56,6 +57,12 @@ export const createContactsModule = (
 		};
 		await client
 			.post('/contacts', contactsDTO)
+			.catch((error) => Promise.reject(handleContactsError(error)));
+	},
+
+	async update(contact: ContactUpdate): Promise<void> {
+		await client
+			.put(`/contacts/${contact.id}`, contact)
 			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 

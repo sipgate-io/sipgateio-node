@@ -599,8 +599,22 @@ interface ContactImport {
 	organization?: string[];
 }
 
+type ContactUpdate = ContactResponse;
+
+interface ContactResponse {
+	id: string;
+	name: string;
+	picture: string;
+	emails: Email[];
+	numbers: PhoneNumber[];
+	addresses: Address[];
+	organization: string[][];
+	scope: Scope;
+}
+
 interface ContactsModule {
 	create: (contact: ContactImport, scope: Scope) => Promise<void>;
+	update: (contact: ContactUpdate) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
 	exportAsCsv: (
@@ -626,6 +640,14 @@ interface ContactsModule {
 	) => Promise<ContactResponse[]>;
 }
 ```
+
+#### The `create` method:
+
+Given a `ContactImport` and `Scope`, creates a contact.
+
+#### The `update` method:
+
+Takes a `ContactResponse`, the output of `ContactsModule.get`, and updates the corresponding contact.
 
 #### The `import` method:
 
