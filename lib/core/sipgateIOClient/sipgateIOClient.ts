@@ -6,16 +6,17 @@ import {
 
 import { UserInfo } from '../core.types';
 import { detect as detectPlatform } from 'detect-browser';
+import { handleCoreError } from '../errors';
 import { toBase64 } from '../../utils';
 import {
 	validateEmail,
 	validateOAuthToken,
 	validatePassword,
+	validateTokenID,
 } from '../validator';
 import { version } from '../../version.json';
 import axios from 'axios';
 import qs from 'qs';
-import { handleCoreError } from '../errors';
 
 interface RawDeserialized {
 	[key: string]: RawDeserializedValue;
@@ -151,9 +152,12 @@ const getAuthHeader = (credentials: AuthCredentials): string => {
 	}
 
 	const emailValidationResult = validateEmail(credentials.username);
+	const tokenIDValidationResult = validateTokenID(credentials.username);
 
-	if (!emailValidationResult.isValid) {
-		throw new Error(emailValidationResult.cause);
+	if (!emailValidationResult.isValid && !tokenIDValidationResult.isValid) {
+		throw new Error(
+			`${emailValidationResult.cause} or ${tokenIDValidationResult.cause}`
+		);
 	}
 
 	const passwordValidationResult = validatePassword(credentials.password);

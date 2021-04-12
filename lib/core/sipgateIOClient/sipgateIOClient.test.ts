@@ -200,15 +200,56 @@ describe('Test wrapper methods', () => {
 });
 
 describe('validation', () => {
-	test('email', async () => {
-		await expect(() =>
-			sipgateIO({ username: 'testUsername', password: 'testPassword' })
-		).toThrow('Invalid email');
+	test('invalid email', async () => {
+		try {
+			sipgateIO({ username: 'testUsername', password: 'testPassword' });
+			expect(true).toBe(false);
+		} catch (error) {
+			expect(error.message).toBe(
+				'Invalid email: testUsername or Invalid token id: testUsername'
+			);
+		}
 	});
-	test('password', async () => {
-		await expect(() =>
-			sipgateIO({ username: 'testUsername@test.d', password: '' })
-		).toThrow('Invalid password');
+
+	test('valid email', async () => {
+		expect(() =>
+			sipgateIO({ username: 'testUsername@test.d', password: 'testPassword' })
+		).not.toThrow();
+	});
+
+	test('invalid tokenId', async () => {
+		try {
+			sipgateIO({ username: 'token-1234567', password: 'testPassword' });
+			expect(true).toBe(false);
+		} catch (error) {
+			expect(error.message).toBe(
+				'Invalid email: token-1234567 or Invalid token id: token-1234567'
+			);
+		}
+	});
+
+	test('valid tokenId', async () => {
+		expect(() =>
+			sipgateIO({ username: 'token-123456', password: 'testPassword' })
+		).not.toThrow();
+	});
+
+	test('invalid password', async () => {
+		try {
+			sipgateIO({ username: 'testUsername@test.d', password: '' });
+			expect(true).toBe(false);
+		} catch (error) {
+			expect(error.message).toBe('Invalid password');
+		}
+	});
+
+	test('valid password', async () => {
+		expect(() =>
+			sipgateIO({
+				username: 'testUsername@test.d',
+				password: 'testPassword',
+			})
+		).not.toThrow();
 	});
 });
 
