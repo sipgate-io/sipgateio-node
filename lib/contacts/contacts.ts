@@ -39,6 +39,7 @@ export const createContactsModule = (
 			address,
 			email,
 			phone,
+			picture,
 		} = contact;
 
 		if (firstname === '' && lastname === '') {
@@ -49,7 +50,7 @@ export const createContactsModule = (
 			family: lastname,
 			given: firstname,
 			organization: organization ? organization : [],
-			picture: null,
+			picture: picture ? picture : null,
 			scope,
 			addresses: address ? [address] : [],
 			emails: email ? [email] : [],

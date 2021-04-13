@@ -34,6 +34,7 @@ export interface ContactImport {
 	address?: Address;
 	phone?: PhoneNumber;
 	email?: Email;
+	picture?: string;
 	organization?: string[][];
 }
 
@@ -61,7 +62,7 @@ export interface ContactsDTO {
 	name: string;
 	family: string;
 	given: string;
-	picture: null;
+	picture: string | null;
 	emails: Email[];
 	numbers: PhoneNumber[];
 	addresses: Address[];
@@ -69,7 +70,7 @@ export interface ContactsDTO {
 	scope: Scope;
 }
 
-type Scope = 'PRIVATE' | 'SHARED';
+export type Scope = 'PRIVATE' | 'SHARED';
 
 type ExportScope = Scope | 'INTERNAL';
 
