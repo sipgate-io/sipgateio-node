@@ -88,7 +88,7 @@ Manipulate present calls that containts playing announcements with own audio-fil
 
 ### Creating a Client
 
-You can connect the client by passing a valid OAuth token (You have to implement the OAuth flow yourself):
+You can connect the client by passing a valid OAuth token (You have to implement the OAuth flow yourself). You can find more information on our [API documentation](https://www.sipgate.io/rest-api/authentication#oauth2).:
 
 ```typescript
 const client = sipgateIO({
@@ -96,26 +96,26 @@ const client = sipgateIO({
 });
 ```
 
-As alternative you can also pass your credentials to the API-Client which will use Basic Auth. (Remember: This way is **not** recommended)
+As alternative you can use personal access tokens to authenticate. You can find more information on our [API documentation](https://www.sipgate.io/rest-api/authentication#personalAccessToken).
 
 ```typescript
 const client = sipgateIO({
-	username: '<your username>',
-	password: '<your password>',
+	tokenId: '<your tokenId>',
+	token: '<your personal access token>',
 });
 ```
 
 Possible authentication objects:
 
 ```typescript
-interface BasicAuthCredentials {
-	username: string;
-	password: string;
+interface OAuthCredentials {
+	token: string;
 }
 ```
 
 ```typescript
-interface OAuthCredentials {
+interface PersonalAccessTokenCredentials {
+	tokenId: string;
 	token: string;
 }
 ```
