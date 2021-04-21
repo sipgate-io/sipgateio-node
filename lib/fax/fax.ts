@@ -1,10 +1,10 @@
 import {
 	Fax,
 	FaxDTO,
-	Faxline,
-	FaxlinesResponse,
 	FaxModule,
 	FaxStatus,
+	Faxline,
+	FaxlinesResponse,
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
 } from './fax.types';

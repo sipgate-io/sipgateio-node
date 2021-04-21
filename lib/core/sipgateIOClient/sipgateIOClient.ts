@@ -17,6 +17,7 @@ import {
 import { version } from '../../version.json';
 import axios from 'axios';
 import qs from 'qs';
+import { validatePersonalAccessToken } from '../validator/validatePersonalAccessToken';
 
 interface RawDeserialized {
 	[key: string]: RawDeserializedValue;
@@ -142,6 +143,24 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 };
 
 const getAuthHeader = (credentials: AuthCredentials): string => {
+	if ('tokenId' in credentials) {
+		
+		const tokenIDValidationResult = validateTokenID(credentials.tokenId);
+		if (!tokenIDValidationResult.isValid) {
+			throw new Error(
+				tokenIDValidationResult.cause
+			);
+		}
+	
+		const tokenValidationResult = validatePersonalAccessToken(credentials.token);
+	
+		if (!tokenValidationResult.isValid) {
+			throw new Error(tokenValidationResult.cause);
+		}
+	
+		return `Basic ${toBase64(`${credentials.tokenId}:${credentials.token}`)}`;
+	}
+
 	if ('token' in credentials) {
 		const tokenValidationResult = validateOAuthToken(credentials.token);
 
@@ -152,11 +171,10 @@ const getAuthHeader = (credentials: AuthCredentials): string => {
 	}
 
 	const emailValidationResult = validateEmail(credentials.username);
-	const tokenIDValidationResult = validateTokenID(credentials.username);
 
-	if (!emailValidationResult.isValid && !tokenIDValidationResult.isValid) {
+	if (!emailValidationResult.isValid) {
 		throw new Error(
-			`${emailValidationResult.cause} or ${tokenIDValidationResult.cause}`
+			emailValidationResult.cause
 		);
 	}
 

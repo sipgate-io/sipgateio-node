@@ -1,5 +1,9 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
+/**
+*	@deprecated
+*	@since 2.2.0
+*/
 export interface BasicAuthCredentials {
 	username: string;
 	password: string;
@@ -9,7 +13,12 @@ export interface OAuthCredentials {
 	token: string;
 }
 
-export type AuthCredentials = BasicAuthCredentials | OAuthCredentials;
+export interface PersonalAccessTokenCredentials {
+	tokenId: string;
+	token: string;
+}
+
+export type AuthCredentials = BasicAuthCredentials | OAuthCredentials | PersonalAccessTokenCredentials;
 
 export type HttpRequestConfig = AxiosRequestConfig;
 export type HttpResponse<T> = AxiosResponse<T>;

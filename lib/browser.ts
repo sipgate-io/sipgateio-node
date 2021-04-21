@@ -4,6 +4,7 @@ export {
 	AuthCredentials,
 	BasicAuthCredentials,
 	OAuthCredentials,
+	PersonalAccessTokenCredentials,
 	Pagination,
 } from './core';
 export {
