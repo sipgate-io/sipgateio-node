@@ -3,6 +3,8 @@ import { Pagination } from '../core';
 export interface ContactsModule {
 	create: (contact: ContactImport, scope: Scope) => Promise<void>;
 	update: (contact: ContactUpdate) => Promise<void>;
+	deleteAllPrivate: () => Promise<void>;
+	delete: (id: string ) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
 	exportAsCsv: (

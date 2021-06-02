@@ -67,6 +67,20 @@ export const createContactsModule = (
 			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
+	async delete(id: string): Promise<void> {
+		const res = await client
+			.delete(`/contacts/${id}`)
+			.catch((error) => Promise.reject(handleContactsError(error)));
+		console.log(res);
+	},
+
+	async deleteAllPrivate(): Promise<void> {
+		const res = await client
+			.delete('/contacts')
+			.catch((error) => Promise.reject(handleContactsError(error)));
+		console.log(res);
+	},
+
 	async importVCardString(vCardContent: string, scope): Promise<void> {
 		const parsedVCard = parseVCard(vCardContent);
 
