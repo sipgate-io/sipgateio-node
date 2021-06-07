@@ -615,6 +615,9 @@ interface ContactResponse {
 interface ContactsModule {
 	create: (contact: ContactImport, scope: Scope) => Promise<void>;
 	update: (contact: ContactUpdate) => Promise<void>;
+	delete: (id: string) => Promise<void>;
+	deleteAllPrivate: () => Promise<void>;
+	deleteAllShared: () => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
 	exportAsCsv: (
@@ -648,6 +651,18 @@ Given a `ContactImport` and `Scope`, creates a contact.
 #### The `update` method:
 
 Takes a `ContactResponse`, the output of `ContactsModule.get`, and updates the corresponding contact.
+
+#### The `delete` method:
+
+Deletes a contact by a given id.
+
+#### The `deleteAllPrivate` method:
+
+Deletes all private contacts.
+
+#### The `deleteAllShared` method:
+
+Deletes all shared contacts.
 
 #### The `import` method:
 
