@@ -68,19 +68,30 @@ export const createContactsModule = (
 	},
 
 	async delete(id: string): Promise<void> {
-		const res = await client
+		await client
 			.delete(`/contacts/${id}`)
 			.catch((error) => Promise.reject(handleContactsError(error)));
-		console.log(res);
 	},
 
 	async deleteAllPrivate(): Promise<void> {
-		const res = await client
+		await client
 			.delete('/contacts')
 			.catch((error) => Promise.reject(handleContactsError(error)));
-		console.log(res);
 	},
+	async deleteAllShared(): Promise<void> {
+		const contactsResponse = await client.get<ContactsListResponse>(`contacts`);
+		contactsResponse.items = contactsResponse.items.filter(
+			(contact) => contact.scope === 'SHARED'
+		);
 
+		Promise.all(
+			contactsResponse.items.map(async (contact) => {
+				await client
+					.delete(`/contacts/${contact.id}`)
+					.catch((error) => Promise.reject(handleContactsError(error)));
+			})
+		);
+	},
 	async importVCardString(vCardContent: string, scope): Promise<void> {
 		const parsedVCard = parseVCard(vCardContent);
 
