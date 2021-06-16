@@ -358,8 +358,13 @@ export interface ServerOptions {
 	serverAddress: string;
 	// an optional hostname (default: localhost)
 	hostname?: string;
+	// you can optionally skip the signature verification
+	skipSignatureVerification?: boolean;
 }
 ```
+
+Webhooks are verified to ensure that they are sent by sipgate.\
+You can optionally disable this via the `skipSignatureVerification` flag.
 
 It returns a `Promise<WebhookServer>` which, when resolved, provides the following methods:
 
