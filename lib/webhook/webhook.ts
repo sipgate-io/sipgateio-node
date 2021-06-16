@@ -57,18 +57,29 @@ const createWebhookServer = async (
 			res: OutgoingMessage
 		): Promise<void> => {
 			const requestBody = await collectRequestData(req);
+			//console.log(requestBody)
 			if (!serverOptions.skipSignatureVerification) {
-				if (!verifySignature(req.headers['x-sipgate-signature'] as string, requestBody)) {
-					throw new Error(WebhookErrorMessage.SIPGATE_SIGNATURE_VERIFICATION_FAILED)
+				if (
+					!verifySignature(
+						req.headers['x-sipgate-signature'] as string,
+						requestBody
+					)
+				) {
+					console.error(
+						WebhookErrorMessage.SIPGATE_SIGNATURE_VERIFICATION_FAILED
+					);
+					res.end(
+						`<?xml version="1.0" encoding="UTF-8"?><Error message="${WebhookErrorMessage.SIPGATE_SIGNATURE_VERIFICATION_FAILED}" />`
+					);
+					return;
 				}
 			}
 			res.setHeader('Content-Type', 'application/xml');
 
 			const requestBodyJSON = parseRequestBodyJSON(requestBody);
-			const requestCallback = handlers[requestBodyJSON.event] as HandlerCallback<
-				GenericEvent,
-				ResponseObject | void
-			>;
+			const requestCallback = handlers[
+				requestBodyJSON.event
+			] as HandlerCallback<GenericEvent, ResponseObject | void>;
 
 			if (requestCallback === undefined) {
 				res.end(

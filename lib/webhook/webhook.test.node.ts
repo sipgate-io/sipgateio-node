@@ -135,6 +135,79 @@ describe('create webhook-"Response" module', () => {
 	});
 });
 
+describe('Signed webhook server', () => {
+	const webhookModule = createWebhookModule();
+	let webhookServer: WebhookServer;
+
+	const port = 9999;
+	const serverAddress = `localhost:9999`;
+
+	const newCallWebhook = {
+		callId: '',
+		direction: 'in',
+		event: 'newCall',
+		from: '4912354678',
+		'fullUserId[]': ['123456789'],
+		originalCallId: '',
+		to: '49999999',
+		'user[]': ['TestUser'],
+		'userId[]': ['123456789'],
+		xcid: '',
+	};
+
+	const signature =
+		'hlY7r9Vad0NP/7xJxf+vcDqjWaGWHOcIrj+rcP5aqQQcHtbSLsElp2kRNRPBL5unWbq6bExVPZB49HHM+Y/fWSVL19q7KSJhYPHfikcME0r0mCYB4S/VnJwnIvpiqz6s7Dpnk3wDCy65B3WQLwBVWA9oh6ojNM/g+87YnoMTKRx1KoFqosKNfBp1c1I8XjXusGOW/VlGnMb6wHhUVdwi9K7FfUgxj2pnV+M1Xv9rYs6RAi4V1OcUPqdT5geHsxWa09sk+AEHSUm1EFnAvx7PhIkugpNwST7yPKHf0+iyei4qUQCBZtfQVOI4mLZTRfQuyVo3YuJfvHaNPYY34/1ZCZGCKeu+HS6WHs1vGUyKxSi8v4JJqog2VOlWruf8pMGg+syuAFwuxiCnWsSXgaaUfe9JrBAFjBxUmNP9DzR1bbkwxkJnthacu7jALXjGsubjSSSl955QgenV/ZpODHgWDPg0fe6qGILtk+kXLjyfSsoR/qgzE5W5OAyZq8W64h01KAt9Q283N7/2nogy6keiIWL3qjPolWnrchSP7iJUatM2YiTcpkNKnJ70UE05cdw3swuNe7zqD51MdOX3rAioEOFgOIFMSrxMVX+V4XK7sa5o43smN8lHoa+0AogQMuIrC7k2axdRbulSSNfyqVAZIT4qS0cItiv3aPXsdDKkkA0=';
+
+	const sendTestWebhook = async (
+		signature = '',
+		newCallEvent = newCallWebhook
+	): Promise<AxiosResponse<string>> => {
+		return await axios.post(
+			`http://${serverAddress}`,
+			qs.stringify(newCallEvent),
+			{
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'x-sipgate-signature': signature,
+				},
+			}
+		);
+	};
+
+	beforeEach(async () => {
+		webhookServer = await webhookModule.createServer({
+			port,
+			serverAddress,
+		});
+	});
+
+	afterEach(() => {
+		webhookServer.stop();
+	});
+
+	it('should successfully verify header signature for webhook body', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onNewCall(() => {});
+
+		const response = await sendTestWebhook(signature);
+
+		expect(response.data).toEqual(
+			`<?xml version="1.0" encoding="utf-8"?>\n<Response/>`
+		);
+	});
+
+	it('should return error if header signature is not valid', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onNewCall(() => {});
+
+		const response = await sendTestWebhook('fakeSignature');
+
+		expect(response.data).toEqual(
+			`<?xml version="1.0" encoding="UTF-8"?><Error message="Signature verification failed." />`
+		);
+	});
+});
+
 describe('The webhook server', () => {
 	const webhookModule = createWebhookModule();
 	let webhookServer: WebhookServer;
@@ -168,8 +241,6 @@ describe('The webhook server', () => {
 		xcid: '',
 	};
 
-	const signature = 'hlY7r9Vad0NP/7xJxf+vcDqjWaGWHOcIrj+rcP5aqQQcHtbSLsElp2kRNRPBL5unWbq6bExVPZB49HHM+Y/fWSVL19q7KSJhYPHfikcME0r0mCYB4S/VnJwnIvpiqz6s7Dpnk3wDCy65B3WQLwBVWA9oh6ojNM/g+87YnoMTKRx1KoFqosKNfBp1c1I8XjXusGOW/VlGnMb6wHhUVdwi9K7FfUgxj2pnV+M1Xv9rYs6RAi4V1OcUPqdT5geHsxWa09sk+AEHSUm1EFnAvx7PhIkugpNwST7yPKHf0+iyei4qUQCBZtfQVOI4mLZTRfQuyVo3YuJfvHaNPYY34/1ZCZGCKeu+HS6WHs1vGUyKxSi8v4JJqog2VOlWruf8pMGg+syuAFwuxiCnWsSXgaaUfe9JrBAFjBxUmNP9DzR1bbkwxkJnthacu7jALXjGsubjSSSl955QgenV/ZpODHgWDPg0fe6qGILtk+kXLjyfSsoR/qgzE5W5OAyZq8W64h01KAt9Q283N7/2nogy6keiIWL3qjPolWnrchSP7iJUatM2YiTcpkNKnJ70UE05cdw3swuNe7zqD51MdOX3rAioEOFgOIFMSrxMVX+V4XK7sa5o43smN8lHoa+0AogQMuIrC7k2axdRbulSSNfyqVAZIT4qS0cItiv3aPXsdDKkkA0=';
-
 	const sendTestWebhook = async (
 		newCallEvent = newCallWebhook
 	): Promise<AxiosResponse<string>> => {
@@ -177,8 +248,9 @@ describe('The webhook server', () => {
 			`http://${serverAddress}`,
 			qs.stringify(newCallEvent),
 			{
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded',
-				'x-sipgate-signature': signature},
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
 			}
 		);
 	};
@@ -187,6 +259,7 @@ describe('The webhook server', () => {
 		webhookServer = await webhookModule.createServer({
 			port,
 			serverAddress,
+			skipSignatureVerification: true,
 		});
 	});
 
