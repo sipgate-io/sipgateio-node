@@ -24,6 +24,7 @@ import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { WebhookErrorMessage } from './webhook.errors';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
+import { verifySignature } from './signatureVerifier';
 
 interface WebhookApiResponse {
 	_declaration: {
@@ -55,22 +56,28 @@ const createWebhookServer = async (
 			req: IncomingMessage,
 			res: OutgoingMessage
 		): Promise<void> => {
+			const requestBody = await collectRequestData(req);
+			if (!serverOptions.skipSignatureVerification) {
+				if (!verifySignature(req.headers['x-sipgate-signature'] as string, requestBody)) {
+					throw new Error(WebhookErrorMessage.SIPGATE_SIGNATURE_VERIFICATION_FAILED)
+				}
+			}
 			res.setHeader('Content-Type', 'application/xml');
 
-			const requestBody = await collectRequestData(req);
-			const requestCallback = handlers[requestBody.event] as HandlerCallback<
+			const requestBodyJSON = parseRequestBodyJSON(requestBody);
+			const requestCallback = handlers[requestBodyJSON.event] as HandlerCallback<
 				GenericEvent,
 				ResponseObject | void
 			>;
 
 			if (requestCallback === undefined) {
 				res.end(
-					`<?xml version="1.0" encoding="UTF-8"?><Error message="No handler for ${requestBody.event} event" />`
+					`<?xml version="1.0" encoding="UTF-8"?><Error message="No handler for ${requestBodyJSON.event} event" />`
 				);
 				return;
 			}
 
-			const callbackResult = requestCallback(requestBody) || undefined;
+			const callbackResult = requestCallback(requestBodyJSON) || undefined;
 
 			const responseObject = createResponseObject(
 				callbackResult,
@@ -136,7 +143,7 @@ const createWebhookServer = async (
 	});
 };
 
-const parseRequestBody = (body: string): CallEvent => {
+const parseRequestBodyJSON = (body: string): CallEvent => {
 	body = body
 		.replace(/user%5B%5D/g, 'users%5B%5D')
 		.replace(/userId%5B%5D/g, 'userIds%5B%5D')
@@ -163,8 +170,8 @@ const parseRequestBody = (body: string): CallEvent => {
 	return parsedBody;
 };
 
-const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
-	return new Promise<CallEvent>((resolve, reject) => {
+const collectRequestData = (request: IncomingMessage): Promise<string> => {
+	return new Promise<string>((resolve, reject) => {
 		if (
 			request.headers['content-type'] &&
 			!request.headers['content-type'].includes(
@@ -179,7 +186,7 @@ const collectRequestData = (request: IncomingMessage): Promise<CallEvent> => {
 			body += chunk.toString();
 		});
 		request.on('end', () => {
-			resolve(parseRequestBody(body));
+			resolve(body);
 		});
 	});
 };

@@ -36,6 +36,7 @@ export interface ServerOptions {
 	port: number | string;
 	serverAddress: string;
 	hostname?: string;
+	skipSignatureVerification?: boolean;
 }
 
 export interface WebhookModule {
