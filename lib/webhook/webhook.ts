@@ -24,6 +24,7 @@ import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { WebhookErrorMessage } from './webhook.errors';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
+import { validateAudio } from './audioUtils';
 
 interface WebhookApiResponse {
 	_declaration: {
@@ -236,6 +237,17 @@ export const WebhookResponse: WebhookResponseInterface = {
 		return { Hangup: {} };
 	},
 	playAudio: (playOptions: PlayOptions): PlayObject => {
+		validateAudio(playOptions.announcement, {
+			container: 'WAVE',
+			codec: 'PCM',
+			bitsPerSample: 16,
+			sampleRate: 8000,
+			numberOfChannels: 1,
+		}).then((isValidAudio) => {
+			if (!isValidAudio) {
+				throw new Error('Invalid file format.');
+			}
+		});
 		return { Play: { Url: playOptions.announcement } };
 	},
 
