@@ -243,9 +243,13 @@ export const WebhookResponse: WebhookResponseInterface = {
 			bitsPerSample: 16,
 			sampleRate: 8000,
 			numberOfChannels: 1,
-		}).then((isValidAudio) => {
-			if (!isValidAudio) {
-				throw new Error('Invalid file format.');
+		}).then(({ isValid, metadata }) => {
+			if (!isValid) {
+				throw new Error(
+					`\n\n${
+						WebhookErrorMessage.AUDIO_FORMAT_ERROR
+					}\nYour format was: ${JSON.stringify(metadata)}\n`
+				);
 			}
 		});
 		return { Play: { Url: playOptions.announcement } };
