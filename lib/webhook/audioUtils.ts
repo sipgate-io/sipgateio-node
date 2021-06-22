@@ -1,4 +1,4 @@
-import { IAudioMetadata, IFormat, parseStream } from 'music-metadata';
+import { IAudioMetadata, parseStream } from 'music-metadata';
 import axios from 'axios';
 
 export interface ValidateOptions {
@@ -16,23 +16,24 @@ export interface ValidateResult {
 
 export const getAudioMetadata = async (
 	url: string
-): Promise<IAudioMetadata> => {
+): Promise<ValidateOptions> => {
 	const response = await axios({
 		method: 'get',
 		url: url,
 		responseType: 'stream',
 	});
-	return await parseStream(response.data);
+	const metadata = await parseStream(response.data);
+	return metadata.format as ValidateOptions;
 };
 
 export const validateAudio = (
-	metadata: IAudioMetadata,
+	metadata: ValidateOptions,
 	validateOptions: ValidateOptions
 ): boolean => {
 	for (const key in validateOptions) {
 		if (
 			validateOptions[key as keyof ValidateOptions] !==
-			metadata.format[key as keyof IFormat]
+			metadata[key as keyof ValidateOptions]
 		) {
 			return false;
 		}

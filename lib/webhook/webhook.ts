@@ -22,9 +22,9 @@ import {
 } from './webhook.types';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { WebhookErrorMessage } from './webhook.errors';
+import { getAudioMetadata, validateAudio } from './audioUtils';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
-import { getAudioMetadata, validateAudio } from './audioUtils';
 
 interface WebhookApiResponse {
 	_declaration: {
