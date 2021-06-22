@@ -14,23 +14,28 @@ export interface ValidateResult {
 	metadata: IAudioMetadata;
 }
 
-export const validateAudio = async (
-	url: string,
-	validateOptions: ValidateOptions
-): Promise<ValidateResult> => {
+export const getAudioMetadata = async (
+	url: string
+): Promise<IAudioMetadata> => {
 	const response = await axios({
 		method: 'get',
 		url: url,
 		responseType: 'stream',
 	});
-	const metadata = await parseStream(response.data);
+	return await parseStream(response.data);
+};
+
+export const validateAudio = (
+	metadata: IAudioMetadata,
+	validateOptions: ValidateOptions
+): boolean => {
 	for (const key in validateOptions) {
 		if (
 			validateOptions[key as keyof ValidateOptions] !==
 			metadata.format[key as keyof IFormat]
 		) {
-			return { isValid: false, metadata: metadata };
+			return false;
 		}
 	}
-	return { isValid: true, metadata: metadata };
+	return true;
 };

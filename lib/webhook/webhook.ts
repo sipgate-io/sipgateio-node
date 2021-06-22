@@ -24,7 +24,7 @@ import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { WebhookErrorMessage } from './webhook.errors';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
-import { validateAudio } from './audioUtils';
+import { getAudioMetadata, validateAudio } from './audioUtils';
 
 interface WebhookApiResponse {
 	_declaration: {
@@ -237,13 +237,17 @@ export const WebhookResponse: WebhookResponseInterface = {
 		return { Hangup: {} };
 	},
 	playAudio: (playOptions: PlayOptions): PlayObject => {
-		validateAudio(playOptions.announcement, {
+		const validateOptions = {
 			container: 'WAVE',
 			codec: 'PCM',
 			bitsPerSample: 16,
 			sampleRate: 8000,
 			numberOfChannels: 1,
-		}).then(({ isValid, metadata }) => {
+		};
+
+		getAudioMetadata(playOptions.announcement).then((metadata) => {
+			const isValid = validateAudio(metadata, validateOptions);
+
 			if (!isValid) {
 				throw new Error(
 					`\n\n${
