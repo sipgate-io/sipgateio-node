@@ -1,4 +1,4 @@
-import { IAudioMetadata, parseStream } from 'music-metadata';
+import { parseStream } from 'music-metadata';
 import axios from 'axios';
 
 export interface ValidateOptions {
@@ -9,9 +9,9 @@ export interface ValidateOptions {
 	numberOfChannels?: number;
 }
 
-export interface ValidateResult {
+interface ValidateResult {
 	isValid: boolean;
-	metadata: IAudioMetadata;
+	metadata: ValidateOptions;
 }
 
 export const getAudioMetadata = async (
@@ -23,10 +23,11 @@ export const getAudioMetadata = async (
 		responseType: 'stream',
 	});
 	const metadata = await parseStream(response.data);
+
 	return metadata.format as ValidateOptions;
 };
 
-export const validateAudio = (
+const validateAudio = (
 	metadata: ValidateOptions,
 	validateOptions: ValidateOptions
 ): boolean => {
@@ -39,4 +40,23 @@ export const validateAudio = (
 		}
 	}
 	return true;
+};
+
+export const validateAnnouncementAudio = async (
+	urlToAnnouncement: string
+): Promise<ValidateResult> => {
+	const validateOptions = {
+		container: 'WAVE',
+		codec: 'PCM',
+		bitsPerSample: 16,
+		sampleRate: 8000,
+		numberOfChannels: 1,
+	};
+
+	const metadata = await getAudioMetadata(urlToAnnouncement);
+
+	return {
+		isValid: validateAudio(metadata, validateOptions),
+		metadata,
+	};
 };

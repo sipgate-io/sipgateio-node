@@ -11,7 +11,7 @@ export type HandlerCallback<T extends GenericEvent, U> = (event: T) => U;
 
 export type NewCallCallback = HandlerCallback<
 	NewCallEvent,
-	ResponseObject | void
+	ResponseObject | Promise<ResponseObject> | void
 >;
 export type AnswerCallback = HandlerCallback<AnswerEvent, void>;
 export type HangUpCallback = HandlerCallback<HangUpEvent, void>;
@@ -44,8 +44,8 @@ export interface WebhookModule {
 
 export interface WebhookResponseInterface {
 	redirectCall: (redirectOptions: RedirectOptions) => RedirectObject;
-	gatherDTMF: (gatherOptions: GatherOptions) => GatherObject;
-	playAudio: (playOptions: PlayOptions) => PlayObject;
+	gatherDTMF: (gatherOptions: GatherOptions) => Promise<GatherObject>;
+	playAudio: (playOptions: PlayOptions) => Promise<PlayObject>;
 	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
 	hangUpCall: () => HangUpObject;
 	sendToVoicemail: () => VoicemailObject;

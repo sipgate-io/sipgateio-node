@@ -22,9 +22,9 @@ import {
 } from './webhook.types';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { WebhookErrorMessage } from './webhook.errors';
-import { getAudioMetadata, validateAudio } from './audioUtils';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
+import { validateAnnouncementAudio } from './audioUtils';
 
 interface WebhookApiResponse {
 	_declaration: {
@@ -74,7 +74,9 @@ const createWebhookServer = async (
 			const callbackResult = requestCallback(requestBody) || undefined;
 
 			const responseObject = createResponseObject(
-				callbackResult,
+				callbackResult instanceof Promise
+					? await callbackResult
+					: callbackResult,
 				serverOptions.serverAddress
 			);
 
@@ -217,7 +219,7 @@ const isGatherObject = (
 };
 
 export const WebhookResponse: WebhookResponseInterface = {
-	gatherDTMF: (gatherOptions: GatherOptions): GatherObject => {
+	gatherDTMF: async (gatherOptions: GatherOptions): Promise<GatherObject> => {
 		const gatherObject: GatherObject = {
 			Gather: {
 				_attributes: {
@@ -227,6 +229,18 @@ export const WebhookResponse: WebhookResponseInterface = {
 			},
 		};
 		if (gatherOptions.announcement) {
+			const validationResult = await validateAnnouncementAudio(
+				gatherOptions.announcement
+			);
+
+			if (!validationResult.isValid) {
+				throw new Error(
+					`\n\n${
+						WebhookErrorMessage.AUDIO_FORMAT_ERROR
+					}\nYour format was: ${JSON.stringify(validationResult.metadata)}\n`
+				);
+			}
+
 			gatherObject.Gather['Play'] = {
 				Url: gatherOptions.announcement,
 			};
@@ -236,26 +250,19 @@ export const WebhookResponse: WebhookResponseInterface = {
 	hangUpCall: (): HangUpObject => {
 		return { Hangup: {} };
 	},
-	playAudio: (playOptions: PlayOptions): PlayObject => {
-		const validateOptions = {
-			container: 'WAVE',
-			codec: 'PCM',
-			bitsPerSample: 16,
-			sampleRate: 8000,
-			numberOfChannels: 1,
-		};
+	playAudio: async (playOptions: PlayOptions): Promise<PlayObject> => {
+		const validationResult = await validateAnnouncementAudio(
+			playOptions.announcement
+		);
 
-		getAudioMetadata(playOptions.announcement).then((metadata) => {
-			const isValid = validateAudio(metadata, validateOptions);
+		if (!validationResult.isValid) {
+			throw new Error(
+				`\n\n${
+					WebhookErrorMessage.AUDIO_FORMAT_ERROR
+				}\nYour format was: ${JSON.stringify(validationResult.metadata)}\n`
+			);
+		}
 
-			if (!isValid) {
-				throw new Error(
-					`\n\n${
-						WebhookErrorMessage.AUDIO_FORMAT_ERROR
-					}\nYour format was: ${JSON.stringify(metadata)}\n`
-				);
-			}
-		});
 		return { Play: { Url: playOptions.announcement } };
 	},
 
