@@ -3,6 +3,10 @@ import { WebhookResponse, createWebhookModule } from './webhook';
 import axios, { AxiosResponse } from 'axios';
 import qs from 'qs';
 
+import * as audioUtils from './audioUtils';
+
+const mockedGetAudioMetadata = jest.spyOn(audioUtils, 'getAudioMetadata');
+
 describe('create webhook module', () => {
 	let webhookModule: WebhookModule;
 	const SERVER_PORT = 1234;
@@ -108,17 +112,29 @@ describe('create webhook module', () => {
 });
 
 describe('create webhook-"Response" module', () => {
-	it('should return a gather object without play tag', () => {
+	it('should return a gather object without play tag', async () => {
 		const gatherOptions = { maxDigits: 1, timeout: 2000 };
 		const gatherObject = {
 			Gather: { _attributes: { maxDigits: '1', timeout: '2000' } },
 		};
-		const result = WebhookResponse.gatherDTMF(gatherOptions);
+		const result = await WebhookResponse.gatherDTMF(gatherOptions);
 		expect(result).toEqual(gatherObject);
 	});
 
-	it('should return a gather object with play tag', () => {
-		const testUrl = 'www.testurl.de';
+	it('should return a gather object with play tag and a valid audio file', async () => {
+		mockedGetAudioMetadata.mockReturnValue(
+			new Promise((resolve) =>
+				resolve({
+					container: 'WAVE',
+					codec: 'PCM',
+					bitsPerSample: 16,
+					sampleRate: 8000,
+					numberOfChannels: 1,
+				})
+			)
+		);
+
+		const testUrl = 'www.testurl.com';
 		const gatherOptions = {
 			announcement: testUrl,
 			maxDigits: 1,
@@ -130,8 +146,84 @@ describe('create webhook-"Response" module', () => {
 				Play: { Url: testUrl },
 			},
 		};
-		const result = WebhookResponse.gatherDTMF(gatherOptions);
+		const result = await WebhookResponse.gatherDTMF(gatherOptions);
 		expect(result).toEqual(gatherObject);
+	});
+
+	it('should throw an exception for an invalid audio file in gather dtmf', async () => {
+		mockedGetAudioMetadata.mockReturnValue(
+			new Promise((resolve) =>
+				resolve({
+					container: 'WAVE',
+					codec: 'PCM',
+					bitsPerSample: 16,
+					sampleRate: 44100,
+					numberOfChannels: 1,
+				})
+			)
+		);
+
+		const testUrl = 'www.testurl.com';
+		const gatherOptions = {
+			announcement: testUrl,
+			maxDigits: 1,
+			timeout: 2000,
+		};
+
+		try {
+			await WebhookResponse.gatherDTMF(gatherOptions);
+			fail('It should throw "Invalid audio format"');
+		} catch (e) {
+			expect(e.message).toContain('Invalid audio format');
+		}
+	});
+
+	it('should return a play audio object for a valid audio file', async () => {
+		mockedGetAudioMetadata.mockReturnValue(
+			new Promise((resolve) =>
+				resolve({
+					container: 'WAVE',
+					codec: 'PCM',
+					bitsPerSample: 16,
+					sampleRate: 8000,
+					numberOfChannels: 1,
+				})
+			)
+		);
+		const testUrl = 'www.testurl.com';
+
+		const playOptions = {
+			announcement: testUrl,
+		};
+		const result = await WebhookResponse.playAudio(playOptions);
+		const playObject = { Play: { Url: 'www.testurl.com' } };
+		expect(result).toEqual(playObject);
+	});
+
+	it('should throw an exception for an invalid audio file in play audio', async () => {
+		mockedGetAudioMetadata.mockReturnValue(
+			new Promise((resolve) =>
+				resolve({
+					container: 'WAVE',
+					codec: 'PCM',
+					bitsPerSample: 16,
+					sampleRate: 44100,
+					numberOfChannels: 1,
+				})
+			)
+		);
+		const testUrl = 'www.testurl.com';
+
+		const playOptions = {
+			announcement: testUrl,
+		};
+
+		try {
+			await WebhookResponse.playAudio(playOptions);
+			fail('It should throw "Invalid audio format"');
+		} catch (e) {
+			expect(e.message).toContain('Invalid audio format');
+		}
 	});
 });
 

@@ -24,6 +24,7 @@ import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { WebhookErrorMessage } from './webhook.errors';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
+import { validateAnnouncementAudio } from './audioUtils';
 import { verifySignature } from './signatureVerifier';
 
 interface WebhookApiResponse {
@@ -91,7 +92,9 @@ const createWebhookServer = async (
 			const callbackResult = requestCallback(requestBodyJSON) || undefined;
 
 			const responseObject = createResponseObject(
-				callbackResult,
+				callbackResult instanceof Promise
+					? await callbackResult
+					: callbackResult,
 				serverOptions.serverAddress
 			);
 
@@ -234,7 +237,7 @@ const isGatherObject = (
 };
 
 export const WebhookResponse: WebhookResponseInterface = {
-	gatherDTMF: (gatherOptions: GatherOptions): GatherObject => {
+	gatherDTMF: async (gatherOptions: GatherOptions): Promise<GatherObject> => {
 		const gatherObject: GatherObject = {
 			Gather: {
 				_attributes: {
@@ -244,6 +247,18 @@ export const WebhookResponse: WebhookResponseInterface = {
 			},
 		};
 		if (gatherOptions.announcement) {
+			const validationResult = await validateAnnouncementAudio(
+				gatherOptions.announcement
+			);
+
+			if (!validationResult.isValid) {
+				throw new Error(
+					`\n\n${
+						WebhookErrorMessage.AUDIO_FORMAT_ERROR
+					}\nYour format was: ${JSON.stringify(validationResult.metadata)}\n`
+				);
+			}
+
 			gatherObject.Gather['Play'] = {
 				Url: gatherOptions.announcement,
 			};
@@ -253,7 +268,19 @@ export const WebhookResponse: WebhookResponseInterface = {
 	hangUpCall: (): HangUpObject => {
 		return { Hangup: {} };
 	},
-	playAudio: (playOptions: PlayOptions): PlayObject => {
+	playAudio: async (playOptions: PlayOptions): Promise<PlayObject> => {
+		const validationResult = await validateAnnouncementAudio(
+			playOptions.announcement
+		);
+
+		if (!validationResult.isValid) {
+			throw new Error(
+				`\n\n${
+					WebhookErrorMessage.AUDIO_FORMAT_ERROR
+				}\nYour format was: ${JSON.stringify(validationResult.metadata)}\n`
+			);
+		}
+
 		return { Play: { Url: playOptions.announcement } };
 	},
 
