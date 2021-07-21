@@ -82,7 +82,7 @@ export type ContactUpdate = ContactResponse;
 export interface ContactResponse {
 	id: string;
 	name: string;
-	picture: string;
+	picture: string | null;
 	emails: Email[];
 	numbers: PhoneNumber[];
 	addresses: Address[];
