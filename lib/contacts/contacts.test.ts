@@ -34,6 +34,19 @@ describe('Contacts Module', () => {
 					status: 204,
 				});
 			});
+		mockClient.get = jest
+			.fn()
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			.mockImplementation((_, _contactsDTO: ContactsDTO) => {
+				return Promise.resolve({
+					items: [
+						{ name: 'User1 Name1', scope: 'PRIVATE' },
+						{ name: 'User2 Name2', scope: 'INTERNAL' },
+						{ name: 'User3 Name3', scope: 'SHARED' },
+					],
+					totalCount: 3,
+				});
+			});
 		contactsModule = createContactsModule(mockClient);
 	});
 
@@ -83,6 +96,22 @@ describe('Contacts Module', () => {
 		await expect(
 			contactsModule.create(input, 'PRIVATE')
 		).resolves.not.toThrow();
+	});
+
+	it('get All Contacts', async () => {
+		const contacts = await contactsModule.get('ALL');
+		expect(contacts).toHaveLength(3);
+	});
+
+	it.each`
+		scope
+		${'INTERNAL'}
+		${'PRIVATE'}
+		${'SHARED'}
+	`('', async ({ scope }) => {
+		const contacts = await contactsModule.get(scope);
+		expect(contacts).toHaveLength(1);
+		expect(contacts[0].scope).toBe(scope);
 	});
 });
 

@@ -75,7 +75,7 @@ export interface ContactsDTO {
 
 export type Scope = 'PRIVATE' | 'SHARED';
 
-type ExportScope = Scope | 'INTERNAL';
+type ExportScope = Scope | 'INTERNAL' | 'ALL';
 
 export type ContactUpdate = ContactResponse;
 

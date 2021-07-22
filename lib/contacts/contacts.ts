@@ -185,7 +185,7 @@ export const createContactsModule = (
 			}
 		);
 		contactsResponse.items = contactsResponse.items.filter(
-			(contact) => contact.scope === scope
+			(contact) => contact.scope === scope || scope === 'ALL'
 		);
 		return contactsResponse.items;
 	},
