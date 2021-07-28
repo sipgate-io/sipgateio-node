@@ -22,10 +22,10 @@ import {
 } from './webhook.types';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
 import { WebhookErrorMessage } from './webhook.errors';
+import { isSipgateSignature } from './signatureVerifier';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
 import { validateAnnouncementAudio } from './audioUtils';
-import { verifySignature } from './signatureVerifier';
 
 interface WebhookApiResponse {
 	_declaration: {
@@ -43,6 +43,8 @@ export const createWebhookModule = (): WebhookModule => ({
 	createServer: createWebhookServer,
 });
 
+const SIPGATE_IP_ADRESS = '217.116.118.259';
+
 const createWebhookServer = async (
 	serverOptions: ServerOptions
 ): Promise<WebhookServer> => {
@@ -58,10 +60,16 @@ const createWebhookServer = async (
 			res: OutgoingMessage
 		): Promise<void> => {
 			const requestBody = await collectRequestData(req);
-			//console.log(requestBody)
 			if (!serverOptions.skipSignatureVerification) {
+				if (!req.headers['x-forwarded-for']?.includes(SIPGATE_IP_ADRESS)) {
+					console.error(WebhookErrorMessage.INVALID_ORIGIN);
+					res.end(
+						`<?xml version="1.0" encoding="UTF-8"?><Error message="${WebhookErrorMessage.INVALID_ORIGIN}" />`
+					);
+					return;
+				}
 				if (
-					!verifySignature(
+					!isSipgateSignature(
 						req.headers['x-sipgate-signature'] as string,
 						requestBody
 					)
