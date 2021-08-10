@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import qs from 'qs';
 
 import * as audioUtils from './audioUtils';
+import { WebhookErrorMessage } from './webhook.errors';
 
 const mockedGetAudioMetadata = jest.spyOn(audioUtils, 'getAudioMetadata');
 
@@ -249,9 +250,11 @@ describe('Signed webhook server', () => {
 
 	const signature =
 		'hlY7r9Vad0NP/7xJxf+vcDqjWaGWHOcIrj+rcP5aqQQcHtbSLsElp2kRNRPBL5unWbq6bExVPZB49HHM+Y/fWSVL19q7KSJhYPHfikcME0r0mCYB4S/VnJwnIvpiqz6s7Dpnk3wDCy65B3WQLwBVWA9oh6ojNM/g+87YnoMTKRx1KoFqosKNfBp1c1I8XjXusGOW/VlGnMb6wHhUVdwi9K7FfUgxj2pnV+M1Xv9rYs6RAi4V1OcUPqdT5geHsxWa09sk+AEHSUm1EFnAvx7PhIkugpNwST7yPKHf0+iyei4qUQCBZtfQVOI4mLZTRfQuyVo3YuJfvHaNPYY34/1ZCZGCKeu+HS6WHs1vGUyKxSi8v4JJqog2VOlWruf8pMGg+syuAFwuxiCnWsSXgaaUfe9JrBAFjBxUmNP9DzR1bbkwxkJnthacu7jALXjGsubjSSSl955QgenV/ZpODHgWDPg0fe6qGILtk+kXLjyfSsoR/qgzE5W5OAyZq8W64h01KAt9Q283N7/2nogy6keiIWL3qjPolWnrchSP7iJUatM2YiTcpkNKnJ70UE05cdw3swuNe7zqD51MdOX3rAioEOFgOIFMSrxMVX+V4XK7sa5o43smN8lHoa+0AogQMuIrC7k2axdRbulSSNfyqVAZIT4qS0cItiv3aPXsdDKkkA0=';
+	const SIPGATE_IP_ADRESS = '217.116.118.259';
 
 	const sendTestWebhook = async (
 		signature = '',
+		verificationIpAddress = SIPGATE_IP_ADRESS,
 		newCallEvent = newCallWebhook
 	): Promise<AxiosResponse<string>> => {
 		return await axios.post(
@@ -261,6 +264,7 @@ describe('Signed webhook server', () => {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'x-sipgate-signature': signature,
+					'x-forwarded-for': verificationIpAddress,
 				},
 			}
 		);
@@ -277,7 +281,7 @@ describe('Signed webhook server', () => {
 		webhookServer.stop();
 	});
 
-	it('should successfully verify header signature for webhook body', async () => {
+	it('should successfully verify header signature and sipgate ip address for webhook body', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		webhookServer.onNewCall(() => {});
 
@@ -296,6 +300,17 @@ describe('Signed webhook server', () => {
 
 		expect(response.data).toEqual(
 			`<?xml version="1.0" encoding="UTF-8"?><Error message="Signature verification failed." />`
+		);
+	});
+
+	it('should return error if header ip address is not from sipgate', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onNewCall(() => {});
+
+		const response = await sendTestWebhook(signature, '127.0.0.1');
+
+		expect(response.data).toEqual(
+			`<?xml version="1.0" encoding="UTF-8"?><Error message="${WebhookErrorMessage.INVALID_ORIGIN}" />`
 		);
 	});
 });
