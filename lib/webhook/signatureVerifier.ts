@@ -15,7 +15,10 @@ dXVrZDeBJYibvD1jRx4ES0KlfhwzNXBYUoM/Movg9zMM2PzyHHKS//xIjwUC/FJ6
 M+TfPtOUumI/NHMTvsRW9+ECAwEAAQ==
 -----END PUBLIC KEY-----`;
 
-export const isSipgateSignature = (signature: string, body: string): boolean => {
+export const isSipgateSignature = (
+	signature: string,
+	body: string
+): boolean => {
 	const verifier = crypto.createVerify('RSA-SHA256');
 	const signatureBuffer = Buffer.from(signature, 'base64');
 	verifier.update(body);
