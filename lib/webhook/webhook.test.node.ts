@@ -285,7 +285,7 @@ describe('Signed webhook server', () => {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		webhookServer.onNewCall(() => {});
 
-		const response = await sendTestWebhook(signature);
+		const response = await sendTestWebhook(signature, '217.116.118.254');
 
 		expect(response.data).toEqual(
 			`<?xml version="1.0" encoding="utf-8"?>\n<Response/>`
@@ -296,7 +296,7 @@ describe('Signed webhook server', () => {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		webhookServer.onNewCall(() => {});
 
-		const response = await sendTestWebhook('fakeSignature');
+		const response = await sendTestWebhook('fakeSignature', '217.116.118.254');
 
 		expect(response.data).toEqual(
 			`<?xml version="1.0" encoding="UTF-8"?><Error message="Signature verification failed." />`

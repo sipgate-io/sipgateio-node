@@ -43,7 +43,7 @@ export const createWebhookModule = (): WebhookModule => ({
 	createServer: createWebhookServer,
 });
 
-const SIPGATE_IP_ADRESS = '217.116.118.259';
+const SIPGATE_IP_ADRESS = '217.116.118.254';
 
 const createWebhookServer = async (
 	serverOptions: ServerOptions
