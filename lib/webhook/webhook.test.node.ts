@@ -248,6 +248,19 @@ describe('Signed webhook server', () => {
 		xcid: '',
 	};
 
+	const newCallWebhookModified = {
+		callId: '',
+		direction: 'in',
+		event: 'newCall',
+		from: '4912354678',
+		'fullUserId[]': ['123456779'],
+		originalCallId: '',
+		to: '49999999',
+		'user[]': ['TestUser'],
+		'userId[]': ['123456789'],
+		xcid: '',
+	};
+
 	const signature =
 		'hlY7r9Vad0NP/7xJxf+vcDqjWaGWHOcIrj+rcP5aqQQcHtbSLsElp2kRNRPBL5unWbq6bExVPZB49HHM+Y/fWSVL19q7KSJhYPHfikcME0r0mCYB4S/VnJwnIvpiqz6s7Dpnk3wDCy65B3WQLwBVWA9oh6ojNM/g+87YnoMTKRx1KoFqosKNfBp1c1I8XjXusGOW/VlGnMb6wHhUVdwi9K7FfUgxj2pnV+M1Xv9rYs6RAi4V1OcUPqdT5geHsxWa09sk+AEHSUm1EFnAvx7PhIkugpNwST7yPKHf0+iyei4qUQCBZtfQVOI4mLZTRfQuyVo3YuJfvHaNPYY34/1ZCZGCKeu+HS6WHs1vGUyKxSi8v4JJqog2VOlWruf8pMGg+syuAFwuxiCnWsSXgaaUfe9JrBAFjBxUmNP9DzR1bbkwxkJnthacu7jALXjGsubjSSSl955QgenV/ZpODHgWDPg0fe6qGILtk+kXLjyfSsoR/qgzE5W5OAyZq8W64h01KAt9Q283N7/2nogy6keiIWL3qjPolWnrchSP7iJUatM2YiTcpkNKnJ70UE05cdw3swuNe7zqD51MdOX3rAioEOFgOIFMSrxMVX+V4XK7sa5o43smN8lHoa+0AogQMuIrC7k2axdRbulSSNfyqVAZIT4qS0cItiv3aPXsdDKkkA0=';
 	const SIPGATE_IP_ADRESS = '217.116.118.259';
@@ -297,6 +310,21 @@ describe('Signed webhook server', () => {
 		webhookServer.onNewCall(() => {});
 
 		const response = await sendTestWebhook('fakeSignature', '217.116.118.254');
+
+		expect(response.data).toEqual(
+			`<?xml version="1.0" encoding="UTF-8"?><Error message="Signature verification failed." />`
+		);
+	});
+
+	it('should return error if body is not valid for signature', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		webhookServer.onNewCall(() => {});
+
+		const response = await sendTestWebhook(
+			signature,
+			'217.116.118.254',
+			newCallWebhookModified
+		);
 
 		expect(response.data).toEqual(
 			`<?xml version="1.0" encoding="UTF-8"?><Error message="Signature verification failed." />`
