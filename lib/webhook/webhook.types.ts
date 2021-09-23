@@ -15,7 +15,10 @@ export type NewCallCallback = HandlerCallback<
 >;
 export type AnswerCallback = HandlerCallback<AnswerEvent, void>;
 export type HangUpCallback = HandlerCallback<HangUpEvent, void>;
-export type DataCallback = HandlerCallback<DataEvent, ResponseObject | void>;
+export type DataCallback = HandlerCallback<
+	DataEvent,
+	ResponseObject | Promise<ResponseObject> | void
+>;
 
 export interface WebhookHandlers {
 	[EventType.NEW_CALL]?: NewCallCallback;
