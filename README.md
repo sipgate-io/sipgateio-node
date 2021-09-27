@@ -363,9 +363,6 @@ export interface ServerOptions {
 }
 ```
 
-Webhooks are verified to ensure that they are sent by sipgate.\
-You can optionally disable this via the `skipSignatureVerification` flag.
-
 It returns a `Promise<WebhookServer>` which, when resolved, provides the following methods:
 
 ```typescript
@@ -379,6 +376,13 @@ interface WebhookServer {
 ```
 
 The `stop` method simply kills the server, the other methods each take a callback function for handling the respective types of events suggested by their name.
+
+#### Security
+
+Webhooks are verified to ensure that they are sent by sipgate.\
+You can optionally disable this via the `skipSignatureVerification` flag.
+
+Additionaly you can check that webhooks are originated from push-api.sipgate.net (217.116.118.254).
 
 #### Registering event callbacks
 
