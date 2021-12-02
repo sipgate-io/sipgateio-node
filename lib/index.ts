@@ -1,5 +1,7 @@
 export * from './browser';
 
+export * from './fluent';
+
 export {
 	createWebhookModule,
 	WebhookResponse,

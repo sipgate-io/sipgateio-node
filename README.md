@@ -10,6 +10,7 @@ A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 	- [Call](#call)
 	- [Webhook (node.js only)](#webhook-nodejs-only)
 	- [Webhook Settings](#webhook-settings)
+	- [Fluent interface](#fluent-interface)
 	- [Contacts](#contacts)
 	- [History](#history)
 	- [Numbers](#numbers)
@@ -21,6 +22,7 @@ A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 	- [Call](#call-1)
 	- [Webhooks](#webhooks)
 	- [Webhook Settings](#webhook-settings-1)
+	- [Fluent interface](#fluent-interface-1)
 	- [Contacts](#contacts-1)
 	- [History](#history-1)
 	- [Numbers](#numbers-1)
@@ -67,6 +69,10 @@ Set up a webserver to process real-time call data from sipgate.io.
 ### Webhook Settings
 
 Configure the webhook functionality of sipgate.io. Currently, you can set URLs and whitelist extensions for triggering webhooks as well as toggle the debug log.
+
+### Fluent interface
+
+The fluent interface module is a wrapper for the webhook module to simplify its usage.
 
 ### Contacts
 
@@ -593,6 +599,39 @@ async function getWebhookSettings(): Promise<WebhookSettings>;
 ```
 
 The `getWebhookSettings` function returns you the current settings of sipgate.io including the incoming/outgoing URL, whether logging is enabled or if a specific whitelist of devices is set for your incoming & outgoing URL.
+
+### Fluent interface
+
+The fluent interface module currently provides a wrapper for the following functions of the webhook module:
+
+- port
+- serverAddress
+- AnswerCallback
+- DataCallback
+- HangUpCallback
+- NewCallCallback
+- startServer
+
+Example:
+
+```typescript
+new FluentWebhookServer()
+	.setServerPort(port)
+	.setServerAddress(serverAddress)
+	.setOnNewCallListener((newCallEvent) => {
+		console.log(`New call from ${newCallEvent.from} 	to ${newCallEvent.to}`);
+	})
+	.setOnAnswerListener((answerEvent) => {
+		console.log(`Answer from: ${answerEvent.from}`);
+	})
+	.setOnHangupListener((hangupEvent) => {
+		console.log(`Hangup with cause: ${hangupEvent.cause}`);
+	})
+	.setOnDataListener((dataEvent) => {
+		console.log(`Data from Call: ${dataEvent.originalCallId}`);
+	})
+	.startServer();
+```
 
 ### Contacts
 
