@@ -60,6 +60,9 @@ const createWebhookServer = async (
 			res: OutgoingMessage
 		): Promise<void> => {
 			const requestBody = await collectRequestData(req);
+			if (!serverAddressesMatch(req, serverOptions)) {
+				console.error(WebhookErrorMessage.SERVERADDRESS_DOES_NOT_MATCH)
+			}
 			if (!serverOptions.skipSignatureVerification) {
 				if (!req.headers['x-forwarded-for']?.includes(SIPGATE_IP_ADRESS)) {
 					console.error(WebhookErrorMessage.INVALID_ORIGIN);
@@ -243,6 +246,27 @@ const isGatherObject = (
 ): gatherCandidate is GatherObject => {
 	return (gatherCandidate as GatherObject)?.Gather !== undefined;
 };
+
+export const serverAddressesMatch = ({ headers: { host }, url }: { headers: { host?: string }, url?: string }, { serverAddress }: { serverAddress: string }): boolean => {
+	const actual = new URL("http://" + host + url);
+	const expected = new URL(serverAddress);
+
+	function paramsToObject(entries: IterableIterator<[string, string]>) {
+		type KeyValueSet = { [shot: string]: string };
+		const result: KeyValueSet = {};
+
+		for (const [key, value] of entries) {
+			result[key] = value;
+		}
+		return result;
+	}
+
+	return [
+		actual.hostname == expected.hostname,
+		actual.pathname == expected.pathname,
+		JSON.stringify(paramsToObject(actual.searchParams.entries())) == JSON.stringify(paramsToObject(expected.searchParams.entries()))
+	].every(filter => filter === true)
+}
 
 export const WebhookResponse: WebhookResponseInterface = {
 	gatherDTMF: async (gatherOptions: GatherOptions): Promise<GatherObject> => {

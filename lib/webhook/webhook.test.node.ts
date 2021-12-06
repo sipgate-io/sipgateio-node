@@ -1,5 +1,5 @@
 import { WebhookModule, WebhookServer } from './webhook.types';
-import { WebhookResponse, createWebhookModule } from './webhook';
+import { WebhookResponse, createWebhookModule, serverAddressesMatch } from './webhook';
 import axios, { AxiosResponse } from 'axios';
 import qs from 'qs';
 
@@ -233,7 +233,7 @@ describe('Signed webhook server', () => {
 	let webhookServer: WebhookServer;
 
 	const port = 9999;
-	const serverAddress = `localhost:9999`;
+	const serverAddress = `http://localhost:9999`;
 
 	const newCallWebhook = {
 		callId: '',
@@ -271,13 +271,14 @@ describe('Signed webhook server', () => {
 		newCallEvent = newCallWebhook
 	): Promise<AxiosResponse<string>> => {
 		return await axios.post(
-			`http://${serverAddress}`,
+			serverAddress,
 			qs.stringify(newCallEvent),
 			{
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'x-sipgate-signature': signature,
 					'x-forwarded-for': verificationIpAddress,
+					'host': 'localhost'
 				},
 			}
 		);
@@ -348,7 +349,7 @@ describe('The webhook server', () => {
 	let webhookServer: WebhookServer;
 
 	const port = 9999;
-	const serverAddress = `localhost:9999`;
+	const serverAddress = `http://localhost:9999`;
 
 	const newCallWebhook = {
 		callId: '',
@@ -380,11 +381,12 @@ describe('The webhook server', () => {
 		newCallEvent = newCallWebhook
 	): Promise<AxiosResponse<string>> => {
 		return await axios.post(
-			`http://${serverAddress}`,
+			serverAddress,
 			qs.stringify(newCallEvent),
 			{
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
+					'host': 'localhost'
 				},
 			}
 		);
@@ -470,5 +472,58 @@ describe('The webhook server', () => {
 		expect(response.data).toEqual(
 			`<?xml version="1.0" encoding="utf-8"?>\n<Response onAnswer="${serverAddress}" onHangup="${serverAddress}"/>`
 		);
+	});
+});
+
+describe('serverAddressesMatch', () => {
+	it('should pass if hosts are equal but protocol is given', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/" }, { serverAddress: "https://sipgate.dev/" })).toBeTruthy();
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/foo/" }, { serverAddress: "https://sipgate.dev/foo/" })).toBeTruthy();
+	});
+
+	it('should pass if hosts are equal but no trailing / is given', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/" }, { serverAddress: "https://sipgate.dev" })).toBeTruthy();
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/foo" }, { serverAddress: "https://sipgate.dev/foo" })).toBeTruthy();
+	});
+
+	it('should fail if hosts are not equal', () => {
+		expect(serverAddressesMatch({ headers: { host: "not-sipgate.dev" }, url: "/" }, { serverAddress: "https://sipgate.dev" })).toBeFalsy();
+	});
+
+	it('should fail if same path is given', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/one" }, { serverAddress: "https://sipgate.dev/one" })).toBeTruthy();
+	});
+
+	it('should fail if different path is given', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/one" }, { serverAddress: "https://sipgate.dev/two" })).toBeFalsy();
+	});
+
+	it('should pass if serverAddress is not encrypted', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/" }, { serverAddress: "http://sipgate.dev/" })).toBeTruthy();
+	});
+
+	it('should pass if other port HTTP is used', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/" }, { serverAddress: "http://sipgate.dev:8080/" })).toBeTruthy();
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/foo/" }, { serverAddress: "http://sipgate.dev:8080/foo/" })).toBeTruthy();
+	});
+
+	it('should pass with the same query parameters', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123&action=foo" }, { serverAddress: "http://sipgate.dev:8080/?customer=123&action=foo" })).toBeTruthy();
+	});
+
+	it('should fail with different query parameters', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123&action=bar" }, { serverAddress: "http://sipgate.dev:8080/?customer=123&action=foo" })).toBeFalsy();
+	});
+
+	it('should fail with query parameters in different order', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123&action=bar" }, { serverAddress: "http://sipgate.dev:8080/?action=bar&customer=123" })).toBeFalsy();
+	});
+
+	it('should fail with missing query parameters', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123" }, { serverAddress: "http://sipgate.dev:8080/?customer=123&action=foo" })).toBeFalsy();
+	});
+
+	it('should fail with too many query parameters', () => {
+		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123&action=foo" }, { serverAddress: "http://sipgate.dev:8080/?customer=123" })).toBeFalsy();
 	});
 });
