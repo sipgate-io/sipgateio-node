@@ -151,6 +151,32 @@ describe('create webhook-"Response" module', () => {
 		expect(result).toEqual(gatherObject);
 	});
 
+	it('should throw an exception for invalid max digits in gather dtmf', async () => {
+		const gatherOptions = {
+			maxDigits : 0,
+			timeout : 2000,
+		};
+		try {
+			await WebhookResponse.gatherDTMF(gatherOptions);
+			fail('It should throw "Invalid DTMF maxDigits"');
+		} catch (e) {
+			expect(e.message).toContain('Invalid DTMF maxDigits');
+		}
+	});
+
+	it('should throw an exception for invalid timeout in gather dtmf', async () => {
+		const gatherOptions = {
+			maxDigits : 6,
+			timeout : -1,
+		};
+		try {
+			await WebhookResponse.gatherDTMF(gatherOptions);
+			fail('It should throw "Invalid DTMF timeout"');
+		} catch (e) {
+			expect(e.message).toContain('Invalid DTMF timeout');
+		}
+	});
+
 	it('should throw an exception for an invalid audio file in gather dtmf', async () => {
 		mockedGetAudioMetadata.mockReturnValue(
 			new Promise((resolve) =>
