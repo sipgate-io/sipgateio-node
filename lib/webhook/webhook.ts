@@ -270,6 +270,20 @@ export const serverAddressesMatch = ({ headers: { host }, url }: { headers: { ho
 
 export const WebhookResponse: WebhookResponseInterface = {
 	gatherDTMF: async (gatherOptions: GatherOptions): Promise<GatherObject> => {
+		if (gatherOptions.maxDigits < 1){
+			throw new Error(
+				`\n\n${
+					WebhookErrorMessage.INVALID_DTMF_MAX_DIGITS
+				}\nYour maxDigits was: ${gatherOptions.maxDigits}\n`
+			);
+		}
+		if (gatherOptions.timeout < 0){
+			throw new Error(
+				`\n\n${
+					WebhookErrorMessage.INVALID_DTMF_TIMEOUT
+				}\nYour timeout was: ${gatherOptions.timeout}\n`
+			);
+		}
 		const gatherObject: GatherObject = {
 			Gather: {
 				_attributes: {
