@@ -530,6 +530,8 @@ Linux users might want to use mpg123 to convert the file:
 mpg123 --rate 8000 --mono -w output.wav input.mp3
 ```
 
+**Note:** If you want to hang up your call immediately after playing the audio file, you have to use the `gatherDTMF` function with `timeout:0`.
+
 ##### Gather DTMF tones
 
 The `gatherDTMF` method accepts an options object of type `GatherOptions` with the following fields:
@@ -542,7 +544,7 @@ type GatherOptions = {
 };
 ```
 
-`maxDigits` specifies to maximum number of DTMF tones to be gathered, the `timeout` is the period in milliseconds to wait for DTMF input from a caller before processing. Please note that the establishment of the call is delayed until this period has elapsed.
+`maxDigits` (> = 1) specifies to maximum number of DTMF tones to be gathered , the `timeout` (> = 0) is the period in milliseconds to wait for DTMF input from a caller before processing. Please note that the establishment of the call is delayed until this period has elapsed.
 By specifying a URL to a sound file as `announcement` an audio message can be played to inform callers what DTMF tones they should send.
 
 **Note:** Please consider the above restrictions concerning the format of the announcement file.
