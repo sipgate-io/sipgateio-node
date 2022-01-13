@@ -143,10 +143,12 @@ export const createContactsModule = (
 				},
 			}
 		);
-
+		
+		
 		contactsResponse.items = contactsResponse.items.filter(
-			(contact) => contact.scope === scope
+			(contact) => contact.scope === scope || scope === 'ALL'
 		);
+		
 
 		const fields = [
 			'id',
@@ -156,6 +158,7 @@ export const createContactsModule = (
 			'addresses',
 			'organizations',
 		];
+		
 		const opts = { fields, delimiter };
 		const elements = contactsResponse.items.map((contact) => {
 			return {
