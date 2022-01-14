@@ -753,6 +753,12 @@ You can also add a specific delimiter for the csv format.
 
 **Note:** using a filter will ignore pagination
 
+#### The `exportAsJSON` method:
+
+It returns JSON objects containing all contacts for the given scope.
+
+**Note:** using a filter will ignore pagination
+
 #### The `exportAsVCards` method:
 
 It returns mulitple vCard-strings containing all contacts for the given scope

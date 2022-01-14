@@ -14,6 +14,11 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<string>;
+	exportAsJSON: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<string>;
 	exportAsVCards: (
 		scope: ExportScope,
 		pagination?: Pagination,
