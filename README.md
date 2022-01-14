@@ -530,7 +530,7 @@ Linux users might want to use mpg123 to convert the file:
 mpg123 --rate 8000 --mono -w output.wav input.mp3
 ```
 
-**Note:** If you want to hang up your call immediately after playing the audio file, you have to use the `gatherDTMF` function with `timeout:0`.
+**Note:** If you want to hang up your call immediately after playing the audio file, you have to use the `gatherDTMF` function with `timeout:0` and `maxDigits:1`.
 
 ##### Gather DTMF tones
 
