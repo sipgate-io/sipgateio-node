@@ -1,4 +1,4 @@
-import { Pagination } from '../core';
+import { Pagination, PagedResponse } from '../core';
 
 export interface ContactsModule {
 	create: (contact: ContactImport, scope: Scope) => Promise<void>;
@@ -8,6 +8,12 @@ export interface ContactsModule {
 	delete: (id: string) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
+	exportAsCsvV2: (
+		scope: ExportScope,
+		delimiter?: string,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<PagedResponse<string>>
 	exportAsCsv: (
 		scope: ExportScope,
 		delimiter?: string,

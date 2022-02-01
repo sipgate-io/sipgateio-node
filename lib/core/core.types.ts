@@ -3,6 +3,11 @@ export interface Pagination {
 	limit?: number;
 }
 
+export interface PagedResponse<T> {
+	response: T,
+	hasMore: boolean
+}
+
 export interface UserInfo {
 	sub: string;
 	domain: string;

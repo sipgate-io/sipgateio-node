@@ -15,6 +15,7 @@ import { Parser } from 'json2csv';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
 import { toBase64 } from '../utils';
+import { PagedResponse } from '../core';
 
 export const createContactsModule = (
 	client: SipgateIOClient
@@ -128,6 +129,63 @@ export const createContactsModule = (
 			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
+	async exportAsCsvV2(
+		scope,
+		delimiter = ',',
+		pagination,
+		filter
+	): Promise<PagedResponse<string>> {
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
+		
+		const limit = pagination?.limit ?? 5000;
+		const offset = pagination?.offset ?? 0;
+		const hasMore = contactsResponse.totalCount > limit + offset;
+
+		contactsResponse.items = contactsResponse.items.filter(
+			(contact) => contact.scope === scope || scope === 'ALL'
+		);
+		
+
+		const fields = [
+			'id',
+			'name',
+			'emails',
+			'numbers',
+			'addresses',
+			'organizations',
+		];
+		
+		const opts = { fields, delimiter };
+		const elements = contactsResponse.items.map((contact) => {
+			return {
+				id: contact.id,
+				name: contact.name,
+				emails: contact.emails.map((email) => email.email),
+				numbers: contact.numbers.map((number) => number.number),
+				addresses: contact.addresses,
+				organizations: contact.organization,
+			};
+		});
+		try {
+			const parser = new Parser(opts);
+			
+			return {
+				response: parser.parse(elements),
+				hasMore
+			};
+		} catch (err) {
+			throw Error(`${err}`);
+		}
+	},
+
 	async exportAsCsv(
 		scope,
 		delimiter = ',',
@@ -174,7 +232,7 @@ export const createContactsModule = (
 			const parser = new Parser(opts);
 			return parser.parse(elements);
 		} catch (err) {
-			throw Error(err);
+			throw Error(`${err}`);
 		}
 	},
 	async get(scope, pagination, filter): Promise<ContactResponse[]> {
