@@ -129,7 +129,10 @@ export const createContactsModule = (
 			.catch((error) => Promise.reject(handleContactsError(error)));
 	},
 
-	async exportAsCsvV2(
+	// The api indicates that there is more data to be fetched with the
+	// `hasMore` flag. If this flag is observed, you can make a paginated
+	// request with an offset.
+	async paginatedExportAsCsv(
 		scope,
 		delimiter = ',',
 		pagination,
@@ -176,16 +179,19 @@ export const createContactsModule = (
 		});
 		try {
 			const parser = new Parser(opts);
-			
+
 			return {
 				response: parser.parse(elements),
-				hasMore
+				hasMore,
 			};
 		} catch (err) {
 			throw Error(`${err}`);
 		}
 	},
 
+	// DEPRECATED! Please use `paginatedExportAsCsv` whenever possible. This
+	// api might behave buggy when using pagination/many contacts and client-
+	// side scope filtering.
 	async exportAsCsv(
 		scope,
 		delimiter = ',',
@@ -201,12 +207,10 @@ export const createContactsModule = (
 				},
 			}
 		);
-		
-		
+
 		contactsResponse.items = contactsResponse.items.filter(
 			(contact) => contact.scope === scope || scope === 'ALL'
 		);
-		
 
 		const fields = [
 			'id',
@@ -216,7 +220,7 @@ export const createContactsModule = (
 			'addresses',
 			'organizations',
 		];
-		
+
 		const opts = { fields, delimiter };
 		const elements = contactsResponse.items.map((contact) => {
 			return {

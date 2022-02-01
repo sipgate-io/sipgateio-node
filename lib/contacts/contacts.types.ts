@@ -8,12 +8,15 @@ export interface ContactsModule {
 	delete: (id: string) => Promise<void>;
 	importFromCsvString: (csvContent: string) => Promise<void>;
 	importVCardString: (vcardContent: string, scope: Scope) => Promise<void>;
-	exportAsCsvV2: (
+	paginatedExportAsCsv: (
 		scope: ExportScope,
 		delimiter?: string,
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<PagedResponse<string>>
+	// DEPRECATED! Please use `paginatedExportAsCsv` whenever possible. This
+	// api might behave buggy when using pagination/many contacts and client-
+	// side scope filtering.
 	exportAsCsv: (
 		scope: ExportScope,
 		delimiter?: string,

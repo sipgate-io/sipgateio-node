@@ -447,6 +447,55 @@ describe('Export Contacts', () => {
 		expect(mockClient.get).toHaveBeenCalledTimes(1);
 	});
 
+	it('returns a csv with pagination information', async () => {
+		let mockClient = {} as SipgateIOClient;
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		mockClient.get = jest.fn().mockImplementationOnce((_) => {
+			return Promise.resolve({
+				items: [
+					{
+						id: 'foo',
+						name: 'User1',
+						scope: 'PRIVATE',
+						emails: [],
+						numbers: [],
+					},
+					{
+						id: 'bar',
+						name: 'User2',
+						scope: 'INTERNAL',
+						emails: [],
+						numbers: [],
+					},
+					{
+						id: 'baz',
+						name: 'User3',
+						scope: 'SHARED',
+						emails: [],
+						numbers: [],
+					},
+				],
+				totalCount: 5,
+			});
+		});
+		let contactsModule = createContactsModule(mockClient);
+
+		// We ask for 3 items which the mock server responds with. However, due
+		// to clientside scope filtering, only one item is returned.
+		// The api indicates that there is more data to be fetched with the
+		// `hasMore` flag. If this flag is observed, you can make a paginated
+		// request with an offset.
+		await expect(
+			contactsModule
+				.paginatedExportAsCsv('PRIVATE', ',', { limit: 3, offset: 0 })
+				.catch((err) => console.error(err))
+		).resolves.toEqual({
+			response: `"id","name","emails","numbers","addresses","organizations"
+"foo","User1","[]","[]",,`,
+			hasMore: true,
+		});
+	});
+
 	it('transfers the given filter and pagination parameters when exporting as vCards', () => {
 		contactsModule.exportAsVCards(
 			'INTERNAL',
