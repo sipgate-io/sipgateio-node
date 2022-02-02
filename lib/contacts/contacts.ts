@@ -303,7 +303,7 @@ export const createContactsModule = (
 		};
 	},
 
-	// DEPRECATED! Please use `paginatedExportAsCsv` whenever possible. This
+	// DEPRECATED! Please use `paginatedExportAsVCards` whenever possible. This
 	// api might behave buggy when using pagination/many contacts and client-
 	// side scope filtering.
 	async exportAsVCards(scope, pagination, filter): Promise<string[]> {
