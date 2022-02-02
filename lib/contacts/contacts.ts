@@ -238,6 +238,37 @@ export const createContactsModule = (
 			throw Error(`${err}`);
 		}
 	},
+	async paginatedGet(
+		scope,
+		pagination,
+		filter
+	): Promise<PagedResponse<ContactResponse[]>> {
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
+
+		const limit = pagination?.limit ?? 5000;
+		const offset = pagination?.offset ?? 0;
+		const hasMore = contactsResponse.totalCount > limit + offset;
+
+		contactsResponse.items = contactsResponse.items.filter(
+			(contact) => contact.scope === scope || scope === 'ALL'
+		);
+		return {
+			response: contactsResponse.items,
+			hasMore,
+		};
+	},
+
+	// DEPRECATED! Please use `paginatedGet` whenever possible. This
+	// api might behave buggy when using pagination/many contacts and client-
+	// side scope filtering.
 	async get(scope, pagination, filter): Promise<ContactResponse[]> {
 		const contactsResponse = await client.get<ContactsListResponse>(
 			`contacts`,
@@ -254,12 +285,20 @@ export const createContactsModule = (
 		return contactsResponse.items;
 	},
 
-	async paginatedExportAsSingleVCard(scope, pagination, filter): Promise<PagedResponse<string>> {
-		const vCards = await this.paginatedExportAsVCards(scope, pagination, filter);
+	async paginatedExportAsSingleVCard(
+		scope,
+		pagination,
+		filter
+	): Promise<PagedResponse<string>> {
+		const vCards = await this.paginatedExportAsVCards(
+			scope,
+			pagination,
+			filter
+		);
 		return {
 			response: vCards.response.join('\r\n'),
-			hasMore: vCards.hasMore
-		}
+			hasMore: vCards.hasMore,
+		};
 	},
 
 	// DEPRECATED! Please use `paginatedExportAsSingleVCard` whenever possible. This
