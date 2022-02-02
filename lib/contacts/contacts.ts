@@ -254,6 +254,17 @@ export const createContactsModule = (
 		return contactsResponse.items;
 	},
 
+	async paginatedExportAsSingleVCard(scope, pagination, filter): Promise<PagedResponse<string>> {
+		const vCards = await this.paginatedExportAsVCards(scope, pagination, filter);
+		return {
+			response: vCards.response.join('\r\n'),
+			hasMore: vCards.hasMore
+		}
+	},
+
+	// DEPRECATED! Please use `paginatedExportAsSingleVCard` whenever possible. This
+	// api might behave buggy when using pagination/many contacts and client-
+	// side scope filtering.
 	async exportAsSingleVCard(scope, pagination, filter): Promise<string> {
 		const vCards = await this.exportAsVCards(scope, pagination, filter);
 		return vCards.join('\r\n');

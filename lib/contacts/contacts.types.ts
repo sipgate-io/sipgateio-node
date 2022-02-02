@@ -36,6 +36,14 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<string[]>;
+	paginatedExportAsSingleVCard: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<PagedResponse<string>>;
+	// DEPRECATED! Please use `paginatedExportAsSingleVCard` whenever possible. This
+	// api might behave buggy when using pagination/many contacts and client-
+	// side scope filtering.
 	exportAsSingleVCard: (
 		scope: ExportScope,
 		pagination?: Pagination,
