@@ -147,7 +147,7 @@ export const createContactsModule = (
 				},
 			}
 		);
-		
+
 		const limit = pagination?.limit ?? 5000;
 		const offset = pagination?.offset ?? 0;
 		const hasMore = contactsResponse.totalCount > limit + offset;
@@ -155,7 +155,6 @@ export const createContactsModule = (
 		contactsResponse.items = contactsResponse.items.filter(
 			(contact) => contact.scope === scope || scope === 'ALL'
 		);
-		
 
 		const fields = [
 			'id',
@@ -165,7 +164,7 @@ export const createContactsModule = (
 			'addresses',
 			'organizations',
 		];
-		
+
 		const opts = { fields, delimiter };
 		const elements = contactsResponse.items.map((contact) => {
 			return {
@@ -259,6 +258,54 @@ export const createContactsModule = (
 		const vCards = await this.exportAsVCards(scope, pagination, filter);
 		return vCards.join('\r\n');
 	},
+
+	async paginatedExportAsVCards(
+		scope,
+		pagination,
+		filter
+	): Promise<PagedResponse<string[]>> {
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
+
+		const limit = pagination?.limit ?? 5000;
+		const offset = pagination?.offset ?? 0;
+		const hasMore = contactsResponse.totalCount > limit + offset;
+
+		contactsResponse.items = contactsResponse.items.filter(
+			(contact) => contact.scope === scope || scope === 'ALL'
+		);
+
+		const contacts = contactsResponse.items.map<ContactImport>((contact) => {
+			return {
+				firstname: contact.name,
+				lastname: '',
+				organizations: contact.organization,
+				phoneNumbers: contact.numbers,
+				emails: contact.emails,
+				addresses: contact.addresses.map((address) => {
+					return {
+						...address,
+						type: ['home'],
+					};
+				}),
+			};
+		});
+		return {
+			response: createVCards(contacts),
+			hasMore,
+		};
+	},
+
+	// DEPRECATED! Please use `paginatedExportAsCsv` whenever possible. This
+	// api might behave buggy when using pagination/many contacts and client-
+	// side scope filtering.
 	async exportAsVCards(scope, pagination, filter): Promise<string[]> {
 		const contactsResponse = await client.get<ContactsListResponse>(
 			`contacts`,
@@ -271,7 +318,7 @@ export const createContactsModule = (
 		);
 
 		contactsResponse.items = contactsResponse.items.filter(
-			(contact) => contact.scope === scope
+			(contact) => contact.scope === scope || scope === 'ALL'
 		);
 
 		const contacts = contactsResponse.items.map<ContactImport>((contact) => {
