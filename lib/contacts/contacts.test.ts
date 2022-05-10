@@ -1,24 +1,24 @@
 /* eslint-disable no-unused-vars */
+import { SipgateIOClient } from '../core/sipgateIOClient';
+import { fromBase64 } from '../utils';
+import { createContactsModule } from './contacts';
+import {
+	example,
+	exampleWithAllValues,
+	exampleWithNotEnoughNames,
+	exampleWithNotEnoughValues,
+	exampleWithoutEmail,
+	exampleWithTooManyEmails,
+	exampleWithTwoAdresses,
+	exampleWithTwoOrganizations,
+} from './contacts.test.examples';
 import {
 	ContactsDTO,
 	ContactsModule,
 	ImportCSVRequestDTO,
 } from './contacts.types';
 import { ContactsErrorMessage } from './errors/handleContactsError';
-import { SipgateIOClient } from '../core/sipgateIOClient';
-import { createContactsModule } from './contacts';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
-import {
-	example,
-	exampleWithAllValues,
-	exampleWithNotEnoughNames,
-	exampleWithNotEnoughValues,
-	exampleWithTooManyEmails,
-	exampleWithTwoAdresses,
-	exampleWithTwoOrganizations,
-	exampleWithoutEmail,
-} from './contacts.test.examples';
-import { fromBase64 } from '../utils';
 
 describe('Contacts Module', () => {
 	let contactsModule: ContactsModule;
@@ -414,6 +414,7 @@ describe('Export Contacts', () => {
 			});
 		contactsModule = createContactsModule(mockClient);
 	});
+
 	it('returns a csv by using scope', async () => {
 		await expect(contactsModule.exportAsCsv('PRIVATE')).resolves.not.toThrow();
 	});
@@ -430,6 +431,30 @@ describe('Export Contacts', () => {
 		contactsModule.exportAsCsv(
 			'INTERNAL',
 			',',
+			{
+				limit: 3,
+				offset: 10,
+			},
+			{ phonenumbers: ['+490123456789'] }
+		);
+
+		expect(mockClient.get).toHaveBeenCalledWith('contacts', {
+			params: {
+				limit: 3,
+				offset: 10,
+				phonenumbers: ['+490123456789'],
+			},
+		});
+		expect(mockClient.get).toHaveBeenCalledTimes(1);
+	});
+
+	it('returns a json by using scope', async () => {
+		await expect(contactsModule.exportAsJSON('PRIVATE')).resolves.not.toThrow();
+	});
+
+	it('transfers the given filter and pagination parameters when exporting as json', () => {
+		contactsModule.exportAsJSON(
+			'INTERNAL',
 			{
 				limit: 3,
 				offset: 10,
