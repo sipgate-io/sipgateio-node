@@ -486,6 +486,12 @@ interface WebhookResponseInterface {
 	sendToVoicemail: () => VoicemailObject;
 	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
 	playAudio: (playOptions: PlayOptions) => PlayObject;
+	playAudioAndHangUp: (
+		playOptions: PlayOptions,
+		client: SipgateIOClient,
+		callId: string,
+		timeout?: number
+	) => Promise<PlayObject>;
 	gatherDTMF: (gatherOptions: GatherOptions) => GatherObject;
 	hangUpCall: () => HangUpObject;
 }
@@ -530,7 +536,14 @@ Linux users might want to use mpg123 to convert the file:
 mpg123 --rate 8000 --mono -w output.wav input.mp3
 ```
 
-**Note:** If you want to hang up your call immediately after playing the audio file, you have to use the `gatherDTMF` function with `timeout:0` and `maxDigits:1`.
+##### Play audio and hang up
+
+The `playAudioAndHangUp` method accepts an options object of type `PlayOptions` with a single field, the URL to a sound file to be played.
+In addition, this also requires a `sipgateIOClient`, a unique `callId` from an current active call and a `timeout` which is optional.
+
+After the audio file has been played and the additional timeout has expired, the call is terminated based on the `callId`.
+
+**Note:** For any information about the audio file please look at [play audio](#play-audio).
 
 ##### Gather DTMF tones
 

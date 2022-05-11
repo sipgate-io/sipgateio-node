@@ -7,6 +7,7 @@ export interface ValidateOptions {
 	bitsPerSample?: number;
 	sampleRate?: number;
 	numberOfChannels?: number;
+	duration?:number;
 }
 
 interface ValidateResult {

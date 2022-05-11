@@ -26,6 +26,7 @@ import { isSipgateSignature } from './signatureVerifier';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
 import { validateAnnouncementAudio } from './audioUtils';
+import { createRTCMModule, SipgateIOClient } from '..';
 
 interface WebhookApiResponse {
 	_declaration: {
@@ -326,6 +327,43 @@ export const WebhookResponse: WebhookResponseInterface = {
 				}\nYour format was: ${JSON.stringify(validationResult.metadata)}\n`
 			);
 		}
+
+		return { Play: { Url: playOptions.announcement } };
+	},
+
+	playAudioAndHangUp: async (
+		playOptions: PlayOptions,
+		client: SipgateIOClient,
+		callId: string,
+		timeout?: number
+	): Promise<PlayObject> => {
+		const validationResult = await validateAnnouncementAudio(
+			playOptions.announcement
+		);
+
+		if (!validationResult.isValid) {
+			throw new Error(
+				`\n\n${
+					WebhookErrorMessage.AUDIO_FORMAT_ERROR
+				}\nYour format was: ${JSON.stringify(validationResult.metadata)}\n`
+			);
+		}
+
+		let duration = validationResult.metadata.duration
+			? validationResult.metadata.duration * 1000
+			: 0;
+
+		duration += timeout ? timeout : 0;
+
+		setTimeout(() => {
+			const rtcm = createRTCMModule(client);
+			try {
+				rtcm.hangUp({ callId });
+			} catch (error) {
+				console.log(error)
+				return;
+			}
+		}, duration);
 
 		return { Play: { Url: playOptions.announcement } };
 	},

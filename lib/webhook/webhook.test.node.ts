@@ -5,6 +5,7 @@ import qs from 'qs';
 
 import * as audioUtils from './audioUtils';
 import { WebhookErrorMessage } from './webhook.errors';
+import { SipgateIOClient } from '../core/sipgateIOClient';
 
 const mockedGetAudioMetadata = jest.spyOn(audioUtils, 'getAudioMetadata');
 
@@ -113,6 +114,15 @@ describe('create webhook module', () => {
 });
 
 describe('create webhook-"Response" module', () => {
+
+	let mockClient: SipgateIOClient;
+	jest.spyOn(global, 'setTimeout');
+
+	beforeEach(() => {
+		mockClient = {} as SipgateIOClient;
+		jest.useFakeTimers();
+	});
+
 	it('should return a gather object without play tag', async () => {
 		const gatherOptions = { maxDigits: 1, timeout: 2000 };
 		const gatherObject = {
@@ -225,6 +235,84 @@ describe('create webhook-"Response" module', () => {
 		const result = await WebhookResponse.playAudio(playOptions);
 		const playObject = { Play: { Url: 'www.testurl.com' } };
 		expect(result).toEqual(playObject);
+	});
+
+	it('should return a play audio object for a valid audio file with hangUp and timeOut', async () => {
+
+		const duration = 7140;
+		const timeout = 1000;
+
+		mockedGetAudioMetadata.mockReturnValue(
+			new Promise((resolve) =>
+				resolve({
+					container: 'WAVE',
+					codec: 'PCM',
+					bitsPerSample: 16,
+					sampleRate: 8000,
+					numberOfChannels: 1,
+					duration: duration/1000
+				})
+			)
+		);
+
+		mockClient.delete = jest
+			.fn()
+			.mockImplementation(() => Promise.resolve());
+
+		const testUrl = 'www.testurl.com';
+		const callId = '1234567890';
+
+		const playOptions = {
+			announcement: testUrl,
+		};
+		const result = await WebhookResponse.playAudioAndHangUp(playOptions, mockClient, callId, timeout);
+		const playObject = { Play: { Url: testUrl } };
+
+		expect(result).toEqual(playObject);
+		expect(setTimeout).toHaveBeenCalledTimes(1);
+		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), duration+timeout);
+		jest.runAllTimers();
+		expect(mockClient.delete).toHaveBeenCalledTimes(1);
+		expect(mockClient.delete).toHaveBeenCalledWith(`/calls/${callId}`);
+	});
+
+	it('should return a play audio object for a valid audio file with hangUp and without timeOut', async () => {
+
+		const duration = 7140;
+		const timeout = 0;
+
+		mockedGetAudioMetadata.mockReturnValue(
+			new Promise((resolve) =>
+				resolve({
+					container: 'WAVE',
+					codec: 'PCM',
+					bitsPerSample: 16,
+					sampleRate: 8000,
+					numberOfChannels: 1,
+					duration: duration/1000
+				})
+			)
+		);
+
+		mockClient.delete = jest
+			.fn()
+			.mockImplementation(() => Promise.resolve());
+
+		const testUrl = 'www.testurl.com';
+		const callId = '1234567890';
+
+		const playOptions = {
+			announcement: testUrl,
+		};
+		const result = await WebhookResponse.playAudioAndHangUp(playOptions, mockClient, callId);
+		const playObject = { Play: { Url: testUrl } };
+
+		expect(result).toEqual(playObject);
+		expect(setTimeout).toHaveBeenCalledTimes(1);
+		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), duration+timeout);
+		jest.runAllTimers();
+		expect(mockClient.delete).toHaveBeenCalledTimes(1);
+		expect(mockClient.delete).toHaveBeenCalledWith(`/calls/${callId}`);
 	});
 
 	it('should throw an exception for an invalid audio file in play audio', async () => {
