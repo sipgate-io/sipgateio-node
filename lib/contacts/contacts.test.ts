@@ -472,6 +472,62 @@ describe('Export Contacts', () => {
 		expect(mockClient.get).toHaveBeenCalledTimes(1);
 	});
 
+	it('conversion from object to JSON-string is correct', async () => {
+		mockClient.get = jest.fn().mockImplementationOnce((url, config) => {
+			if (url !== 'contacts') {
+				return Promise.resolve({
+					items: [],
+					status: 200,
+				});
+			}
+			return Promise.resolve({
+				items: [{
+					id: '001',
+					name: 'Peter Ustinov',
+					picture: null,
+					emails: [{ email: 'test@sipgate.de', type: [] }],
+					numbers: [{ number: '+4912121212', type: [] }],
+					organization: [['Example.com Inc.']],
+					addresses: [{
+						poBox: '',
+						extendedAddress: '',
+						country: 'USA',
+						locality: 'Worktown',
+						postalCode: '01111',
+						region: 'NY',
+						streetAddress: '2 Enterprise Avenue',
+					}],
+					scope: 'PRIVATE'
+				},
+				{
+					id: '007',
+					name: 'James Bond',
+					picture: null,
+					emails: [{ email: 'bond@sipgate.de', type: [] }],
+					numbers: [{ number: '+4912121007', type: [] }],
+					organization: [['Scotland Yard']],
+					addresses: [{
+						poBox: '',
+						extendedAddress: '',
+						country: 'Great Britain',
+						locality: 'London',
+						postalCode: 'SW1A 2JL',
+						region: 'LO',
+						streetAddress: 'Victoria Embankment 007',
+					}],
+					scope: 'PRIVATE'
+				}],
+				totalCount: 2,
+				status: 200,
+			});
+		});
+		const currentJSON = await contactsModule.exportAsJSON('ALL');
+
+		const expectedJSON = '{"contacts":[{"id":"001","name":"Peter Ustinov","emails":["test@sipgate.de"],"numbers":["+4912121212"],"addresses":[{"poBox":"","extendedAddress":"","country":"USA","locality":"Worktown","postalCode":"01111","region":"NY","streetAddress":"2 Enterprise Avenue"}],"organizations":[["Example.com Inc."]],"scope":"PRIVATE"},{"id":"007","name":"James Bond","emails":["bond@sipgate.de"],"numbers":["+4912121007"],"addresses":[{"poBox":"","extendedAddress":"","country":"Great Britain","locality":"London","postalCode":"SW1A 2JL","region":"LO","streetAddress":"Victoria Embankment 007"}],"organizations":[["Scotland Yard"]],"scope":"PRIVATE"}],"totalCount":2}'
+		expect(currentJSON).toEqual(expectedJSON);
+
+	});
+
 	it('transfers the given filter and pagination parameters when exporting as vCards', () => {
 		contactsModule.exportAsVCards(
 			'INTERNAL',
