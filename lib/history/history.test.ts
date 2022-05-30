@@ -1,4 +1,9 @@
-import { HistoryEntry, HistoryEntryType, HistoryResponse, StarredDTO } from './history.types';
+import {
+	HistoryEntry,
+	HistoryEntryType,
+	HistoryResponse,
+	StarredDTO,
+} from './history.types';
 import { HistoryErrorMessage } from './errors/handleHistoryError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
@@ -28,11 +33,11 @@ describe('History Module', () => {
 			.fn()
 			.mockImplementationOnce(() => Promise.resolve(mockedResponse));
 
-		await historyModule.fetchAll({ phonenumber: "0211123456789" });
+		await historyModule.fetchAll({ phonenumber: '0211123456789' });
 
 		expect(mockClient.get).toBeCalledWith('/history', {
 			params: {
-				phonenumber: "0211123456789"
+				phonenumber: '0211123456789',
 			},
 		});
 	});
@@ -79,11 +84,11 @@ describe('History Module', () => {
 		const historyModule = createHistoryModule(mockClient);
 
 		const events: HistoryEntry[] = [
-			({ id: '1' } as unknown) as HistoryEntry,
-			({ id: '2' } as unknown) as HistoryEntry,
-			({ id: '3' } as unknown) as HistoryEntry,
-			({ id: '4' } as unknown) as HistoryEntry,
-			({ id: '5' } as unknown) as HistoryEntry,
+			{ id: '1' } as unknown as HistoryEntry,
+			{ id: '2' } as unknown as HistoryEntry,
+			{ id: '3' } as unknown as HistoryEntry,
+			{ id: '4' } as unknown as HistoryEntry,
+			{ id: '5' } as unknown as HistoryEntry,
 		];
 
 		await expect(

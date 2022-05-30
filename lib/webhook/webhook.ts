@@ -21,12 +21,12 @@ import {
 	WebhookServer,
 } from './webhook.types';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
+import { SipgateIOClient, createRTCMModule } from '..';
 import { WebhookErrorMessage } from './webhook.errors';
 import { isSipgateSignature } from './signatureVerifier';
 import { js2xml } from 'xml-js';
 import { parse } from 'qs';
 import { validateAnnouncementAudio } from './audioUtils';
-import { createRTCMModule, SipgateIOClient } from '..';
 
 interface WebhookApiResponse {
 	_declaration: {
@@ -62,7 +62,7 @@ const createWebhookServer = async (
 		): Promise<void> => {
 			const requestBody = await collectRequestData(req);
 			if (!serverAddressesMatch(req, serverOptions)) {
-				console.error(WebhookErrorMessage.SERVERADDRESS_DOES_NOT_MATCH)
+				console.error(WebhookErrorMessage.SERVERADDRESS_DOES_NOT_MATCH);
 			}
 			if (!serverOptions.skipSignatureVerification) {
 				if (!req.headers['x-forwarded-for']?.includes(SIPGATE_IP_ADRESS)) {
@@ -176,7 +176,7 @@ const parseRequestBodyJSON = (body: string): CallEvent => {
 		.replace(/fullUserId%5B%5D/g, 'fullUserIds%5B%5D')
 		.replace(/origCallId/g, 'originalCallId');
 
-	const parsedBody = (parse(body) as unknown) as CallEvent;
+	const parsedBody = parse(body) as unknown as CallEvent;
 	if ('from' in parsedBody && parsedBody.from !== 'anonymous') {
 		parsedBody.from = `+${parsedBody.from}`;
 	}
@@ -248,8 +248,11 @@ const isGatherObject = (
 	return (gatherCandidate as GatherObject)?.Gather !== undefined;
 };
 
-export const serverAddressesMatch = ({ headers: { host }, url }: { headers: { host?: string }, url?: string }, { serverAddress }: { serverAddress: string }): boolean => {
-	const actual = new URL("http://" + host + url);
+export const serverAddressesMatch = (
+	{ headers: { host }, url }: { headers: { host?: string }; url?: string },
+	{ serverAddress }: { serverAddress: string }
+): boolean => {
+	const actual = new URL(`http://${host}${url}`);
 	const expected = new URL(serverAddress);
 
 	function paramsToObject(entries: IterableIterator<[string, string]>) {
@@ -263,26 +266,23 @@ export const serverAddressesMatch = ({ headers: { host }, url }: { headers: { ho
 	}
 
 	return [
-		actual.hostname == expected.hostname,
-		actual.pathname == expected.pathname,
-		JSON.stringify(paramsToObject(actual.searchParams.entries())) == JSON.stringify(paramsToObject(expected.searchParams.entries()))
-	].every(filter => filter === true)
-}
+		actual.hostname === expected.hostname,
+		actual.pathname === expected.pathname,
+		JSON.stringify(paramsToObject(actual.searchParams.entries())) ===
+			JSON.stringify(paramsToObject(expected.searchParams.entries())),
+	].every((filter) => filter === true);
+};
 
 export const WebhookResponse: WebhookResponseInterface = {
 	gatherDTMF: async (gatherOptions: GatherOptions): Promise<GatherObject> => {
-		if (gatherOptions.maxDigits < 1){
+		if (gatherOptions.maxDigits < 1) {
 			throw new Error(
-				`\n\n${
-					WebhookErrorMessage.INVALID_DTMF_MAX_DIGITS
-				}\nYour maxDigits was: ${gatherOptions.maxDigits}\n`
+				`\n\n${WebhookErrorMessage.INVALID_DTMF_MAX_DIGITS}\nYour maxDigits was: ${gatherOptions.maxDigits}\n`
 			);
 		}
-		if (gatherOptions.timeout < 0){
+		if (gatherOptions.timeout < 0) {
 			throw new Error(
-				`\n\n${
-					WebhookErrorMessage.INVALID_DTMF_TIMEOUT
-				}\nYour timeout was: ${gatherOptions.timeout}\n`
+				`\n\n${WebhookErrorMessage.INVALID_DTMF_TIMEOUT}\nYour timeout was: ${gatherOptions.timeout}\n`
 			);
 		}
 		const gatherObject: GatherObject = {
@@ -360,7 +360,7 @@ export const WebhookResponse: WebhookResponseInterface = {
 			try {
 				rtcm.hangUp({ callId });
 			} catch (error) {
-				console.log(error)
+				console.log(error);
 				return;
 			}
 		}, duration);

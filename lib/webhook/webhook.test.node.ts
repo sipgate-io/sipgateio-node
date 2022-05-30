@@ -1,11 +1,15 @@
 import { WebhookModule, WebhookServer } from './webhook.types';
-import { WebhookResponse, createWebhookModule, serverAddressesMatch } from './webhook';
+import {
+	WebhookResponse,
+	createWebhookModule,
+	serverAddressesMatch,
+} from './webhook';
 import axios, { AxiosResponse } from 'axios';
 import qs from 'qs';
 
 import * as audioUtils from './audioUtils';
-import { WebhookErrorMessage } from './webhook.errors';
 import { SipgateIOClient } from '../core/sipgateIOClient';
+import { WebhookErrorMessage } from './webhook.errors';
 
 const mockedGetAudioMetadata = jest.spyOn(audioUtils, 'getAudioMetadata');
 
@@ -70,8 +74,7 @@ describe('create webhook module', () => {
 			serverAddress: SERVER_ADDRESS,
 		});
 		expect(() => {
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			server.onNewCall(() => { });
+			server.onNewCall(() => {});
 		}).not.toThrow();
 		server.stop();
 	});
@@ -82,8 +85,7 @@ describe('create webhook module', () => {
 			serverAddress: SERVER_ADDRESS,
 		});
 		expect(() => {
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			server.onAnswer(() => { });
+			server.onAnswer(() => {});
 		}).not.toThrow();
 		server.stop();
 	});
@@ -94,8 +96,7 @@ describe('create webhook module', () => {
 			serverAddress: SERVER_ADDRESS,
 		});
 		expect(() => {
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			server.onData(() => { });
+			server.onData(() => {});
 		}).not.toThrow();
 		server.stop();
 	});
@@ -106,8 +107,7 @@ describe('create webhook module', () => {
 			serverAddress: SERVER_ADDRESS,
 		});
 		expect(() => {
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			server.onHangUp(() => { });
+			server.onHangUp(() => {});
 		}).not.toThrow();
 		server.stop();
 	});
@@ -246,7 +246,6 @@ describe('create webhook-"Response" module', () => {
 	});
 
 	it('should return a play audio object for a valid audio file with hangUp and timeOut', async () => {
-
 		const duration = 7140;
 		const timeout = 1000;
 
@@ -258,14 +257,12 @@ describe('create webhook-"Response" module', () => {
 					bitsPerSample: 16,
 					sampleRate: 8000,
 					numberOfChannels: 1,
-					duration: duration / 1000
+					duration: duration / 1000,
 				})
 			)
 		);
 
-		mockClient.delete = jest
-			.fn()
-			.mockImplementation(() => Promise.resolve());
+		mockClient.delete = jest.fn().mockImplementation(() => Promise.resolve());
 
 		const testUrl = 'www.testurl.com';
 		const callId = '1234567890';
@@ -273,19 +270,26 @@ describe('create webhook-"Response" module', () => {
 		const playOptions = {
 			announcement: testUrl,
 		};
-		const result = await WebhookResponse.playAudioAndHangUp(playOptions, mockClient, callId, timeout);
+		const result = await WebhookResponse.playAudioAndHangUp(
+			playOptions,
+			mockClient,
+			callId,
+			timeout
+		);
 		const playObject = { Play: { Url: testUrl } };
 
 		expect(result).toEqual(playObject);
 		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), duration + timeout);
+		expect(setTimeout).toHaveBeenLastCalledWith(
+			expect.any(Function),
+			duration + timeout
+		);
 		jest.runAllTimers();
 		expect(mockClient.delete).toHaveBeenCalledTimes(1);
 		expect(mockClient.delete).toHaveBeenCalledWith(`/calls/${callId}`);
 	});
 
 	it('should return a play audio object for a valid audio file with hangUp and without timeOut', async () => {
-
 		const duration = 7140;
 		const timeout = 0;
 
@@ -297,14 +301,12 @@ describe('create webhook-"Response" module', () => {
 					bitsPerSample: 16,
 					sampleRate: 8000,
 					numberOfChannels: 1,
-					duration: duration / 1000
+					duration: duration / 1000,
 				})
 			)
 		);
 
-		mockClient.delete = jest
-			.fn()
-			.mockImplementation(() => Promise.resolve());
+		mockClient.delete = jest.fn().mockImplementation(() => Promise.resolve());
 
 		const testUrl = 'www.testurl.com';
 		const callId = '1234567890';
@@ -312,12 +314,19 @@ describe('create webhook-"Response" module', () => {
 		const playOptions = {
 			announcement: testUrl,
 		};
-		const result = await WebhookResponse.playAudioAndHangUp(playOptions, mockClient, callId);
+		const result = await WebhookResponse.playAudioAndHangUp(
+			playOptions,
+			mockClient,
+			callId
+		);
 		const playObject = { Play: { Url: testUrl } };
 
 		expect(result).toEqual(playObject);
 		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), duration + timeout);
+		expect(setTimeout).toHaveBeenLastCalledWith(
+			expect.any(Function),
+			duration + timeout
+		);
 		jest.runAllTimers();
 		expect(mockClient.delete).toHaveBeenCalledTimes(1);
 		expect(mockClient.delete).toHaveBeenCalledWith(`/calls/${callId}`);
@@ -395,18 +404,14 @@ describe('Signed webhook server', () => {
 		verificationIpAddress = SIPGATE_IP_ADRESS,
 		newCallEvent = newCallWebhook
 	): Promise<AxiosResponse<string>> => {
-		return await axios.post(
-			serverAddress,
-			qs.stringify(newCallEvent),
-			{
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					'x-sipgate-signature': signature,
-					'x-forwarded-for': verificationIpAddress,
-					'host': 'localhost'
-				},
-			}
-		);
+		return await axios.post(serverAddress, qs.stringify(newCallEvent), {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'x-sipgate-signature': signature,
+				'x-forwarded-for': verificationIpAddress,
+				host: 'localhost',
+			},
+		});
 	};
 
 	beforeEach(async () => {
@@ -421,8 +426,7 @@ describe('Signed webhook server', () => {
 	});
 
 	it('should successfully verify header signature and sipgate ip address for webhook body', async () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => { });
+		webhookServer.onNewCall(() => {});
 
 		const response = await sendTestWebhook(signature, '217.116.118.254');
 
@@ -432,8 +436,7 @@ describe('Signed webhook server', () => {
 	});
 
 	it('should return error if header signature is not valid', async () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => { });
+		webhookServer.onNewCall(() => {});
 
 		const response = await sendTestWebhook('fakeSignature', '217.116.118.254');
 
@@ -443,8 +446,7 @@ describe('Signed webhook server', () => {
 	});
 
 	it('should return error if body is not valid for signature', async () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => { });
+		webhookServer.onNewCall(() => {});
 
 		const response = await sendTestWebhook(
 			signature,
@@ -458,8 +460,7 @@ describe('Signed webhook server', () => {
 	});
 
 	it('should return error if header ip address is not from sipgate', async () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => { });
+		webhookServer.onNewCall(() => {});
 
 		const response = await sendTestWebhook(signature, '127.0.0.1');
 
@@ -505,16 +506,12 @@ describe('The webhook server', () => {
 	const sendTestWebhook = async (
 		newCallEvent = newCallWebhook
 	): Promise<AxiosResponse<string>> => {
-		return await axios.post(
-			serverAddress,
-			qs.stringify(newCallEvent),
-			{
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					'host': 'localhost'
-				},
-			}
-		);
+		return await axios.post(serverAddress, qs.stringify(newCallEvent), {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				host: 'localhost',
+			},
+		});
 	};
 
 	beforeEach(async () => {
@@ -558,8 +555,7 @@ describe('The webhook server', () => {
 	});
 
 	it('should generate a valid XML response with no handlers for answer or hangup event', async () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => { });
+		webhookServer.onNewCall(() => {});
 
 		const response = await sendTestWebhook();
 
@@ -602,53 +598,128 @@ describe('The webhook server', () => {
 
 describe('serverAddressesMatch', () => {
 	it('should pass if hosts are equal but protocol is given', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/" }, { serverAddress: "https://sipgate.dev/" })).toBeTruthy();
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/foo/" }, { serverAddress: "https://sipgate.dev/foo/" })).toBeTruthy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/' },
+				{ serverAddress: 'https://sipgate.dev/' }
+			)
+		).toBeTruthy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/foo/' },
+				{ serverAddress: 'https://sipgate.dev/foo/' }
+			)
+		).toBeTruthy();
 	});
 
 	it('should pass if hosts are equal but no trailing / is given', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/" }, { serverAddress: "https://sipgate.dev" })).toBeTruthy();
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/foo" }, { serverAddress: "https://sipgate.dev/foo" })).toBeTruthy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/' },
+				{ serverAddress: 'https://sipgate.dev' }
+			)
+		).toBeTruthy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/foo' },
+				{ serverAddress: 'https://sipgate.dev/foo' }
+			)
+		).toBeTruthy();
 	});
 
 	it('should fail if hosts are not equal', () => {
-		expect(serverAddressesMatch({ headers: { host: "not-sipgate.dev" }, url: "/" }, { serverAddress: "https://sipgate.dev" })).toBeFalsy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'not-sipgate.dev' }, url: '/' },
+				{ serverAddress: 'https://sipgate.dev' }
+			)
+		).toBeFalsy();
 	});
 
 	it('should fail if same path is given', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/one" }, { serverAddress: "https://sipgate.dev/one" })).toBeTruthy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/one' },
+				{ serverAddress: 'https://sipgate.dev/one' }
+			)
+		).toBeTruthy();
 	});
 
 	it('should fail if different path is given', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/one" }, { serverAddress: "https://sipgate.dev/two" })).toBeFalsy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/one' },
+				{ serverAddress: 'https://sipgate.dev/two' }
+			)
+		).toBeFalsy();
 	});
 
 	it('should pass if serverAddress is not encrypted', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/" }, { serverAddress: "http://sipgate.dev/" })).toBeTruthy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/' },
+				{ serverAddress: 'http://sipgate.dev/' }
+			)
+		).toBeTruthy();
 	});
 
 	it('should pass if other port HTTP is used', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/" }, { serverAddress: "http://sipgate.dev:8080/" })).toBeTruthy();
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/foo/" }, { serverAddress: "http://sipgate.dev:8080/foo/" })).toBeTruthy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/' },
+				{ serverAddress: 'http://sipgate.dev:8080/' }
+			)
+		).toBeTruthy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/foo/' },
+				{ serverAddress: 'http://sipgate.dev:8080/foo/' }
+			)
+		).toBeTruthy();
 	});
 
 	it('should pass with the same query parameters', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123&action=foo" }, { serverAddress: "http://sipgate.dev:8080/?customer=123&action=foo" })).toBeTruthy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/?customer=123&action=foo' },
+				{ serverAddress: 'http://sipgate.dev:8080/?customer=123&action=foo' }
+			)
+		).toBeTruthy();
 	});
 
 	it('should fail with different query parameters', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123&action=bar" }, { serverAddress: "http://sipgate.dev:8080/?customer=123&action=foo" })).toBeFalsy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/?customer=123&action=bar' },
+				{ serverAddress: 'http://sipgate.dev:8080/?customer=123&action=foo' }
+			)
+		).toBeFalsy();
 	});
 
 	it('should fail with query parameters in different order', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123&action=bar" }, { serverAddress: "http://sipgate.dev:8080/?action=bar&customer=123" })).toBeFalsy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/?customer=123&action=bar' },
+				{ serverAddress: 'http://sipgate.dev:8080/?action=bar&customer=123' }
+			)
+		).toBeFalsy();
 	});
 
 	it('should fail with missing query parameters', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123" }, { serverAddress: "http://sipgate.dev:8080/?customer=123&action=foo" })).toBeFalsy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/?customer=123' },
+				{ serverAddress: 'http://sipgate.dev:8080/?customer=123&action=foo' }
+			)
+		).toBeFalsy();
 	});
 
 	it('should fail with too many query parameters', () => {
-		expect(serverAddressesMatch({ headers: { host: "sipgate.dev" }, url: "/?customer=123&action=foo" }, { serverAddress: "http://sipgate.dev:8080/?customer=123" })).toBeFalsy();
+		expect(
+			serverAddressesMatch(
+				{ headers: { host: 'sipgate.dev' }, url: '/?customer=123&action=foo' },
+				{ serverAddress: 'http://sipgate.dev:8080/?customer=123' }
+			)
+		).toBeFalsy();
 	});
 });

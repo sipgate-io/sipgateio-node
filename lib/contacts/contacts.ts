@@ -15,8 +15,6 @@ import { Parser } from 'json2csv';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createVCards, parseVCard } from './helpers/vCardHelper';
 import { toBase64 } from '../utils';
-var fs = require('fs');
-
 
 export const createContactsModule = (
 	client: SipgateIOClient
@@ -145,12 +143,10 @@ export const createContactsModule = (
 				},
 			}
 		);
-		
-		
+
 		contactsResponse.items = contactsResponse.items.filter(
 			(contact) => contact.scope === scope || scope === 'ALL'
 		);
-		
 
 		const fields = [
 			'id',
@@ -160,7 +156,7 @@ export const createContactsModule = (
 			'addresses',
 			'organizations',
 		];
-		
+
 		const opts = { fields, delimiter };
 		const elements = contactsResponse.items.map((contact) => {
 			return {
@@ -169,7 +165,7 @@ export const createContactsModule = (
 				emails: contact.emails.map((email) => email.email),
 				numbers: contact.numbers.map((number) => number.number),
 				addresses: contact.addresses,
-				organizations: contact.organization
+				organizations: contact.organization,
 			};
 		});
 		try {
@@ -179,11 +175,7 @@ export const createContactsModule = (
 			throw Error(`${err}`);
 		}
 	},
-	async exportAsJSON(
-		scope,
-		pagination,
-		filter
-	): Promise<string> {
+	async exportAsJSON(scope, pagination, filter): Promise<string> {
 		const contactsResponse = await client.get<ContactsListResponse>(
 			`contacts`,
 			{
@@ -205,14 +197,14 @@ export const createContactsModule = (
 				numbers: contact.numbers.map((number) => number.number),
 				addresses: contact.addresses,
 				organizations: contact.organization,
-				scope: contact.scope
+				scope: contact.scope,
 			};
 		});
 		try {
 			return JSON.stringify({
 				contacts: elements,
-				totalCount: contactsResponse.totalCount
-			})
+				totalCount: contactsResponse.totalCount,
+			});
 		} catch (err) {
 			throw Error(`${err}`);
 		}

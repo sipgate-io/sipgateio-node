@@ -51,7 +51,12 @@ export interface WebhookResponseInterface {
 	redirectCall: (redirectOptions: RedirectOptions) => RedirectObject;
 	gatherDTMF: (gatherOptions: GatherOptions) => Promise<GatherObject>;
 	playAudio: (playOptions: PlayOptions) => Promise<PlayObject>;
-	playAudioAndHangUp: (playOptions: PlayOptions, client: SipgateIOClient, callId: string, timeout?: number) => Promise<PlayObject>;
+	playAudioAndHangUp: (
+		playOptions: PlayOptions,
+		client: SipgateIOClient,
+		callId: string,
+		timeout?: number
+	) => Promise<PlayObject>;
 	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
 	hangUpCall: () => HangUpObject;
 	sendToVoicemail: () => VoicemailObject;

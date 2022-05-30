@@ -20,7 +20,7 @@ export const createHistoryModule = (
 	async fetchAll(filter = {}, pagination): Promise<HistoryEntry[]> {
 		validateFilteredExtension(filter);
 
-		const historyFilterDTO: HistoryFilterDTO & { phonenumber?: string; } = {
+		const historyFilterDTO: HistoryFilterDTO & { phonenumber?: string } = {
 			archived: filter.archived,
 			connectionIds: filter.connectionIds,
 			directions: filter.directions,
@@ -96,7 +96,6 @@ export const createHistoryModule = (
 	async exportAsCsvString(filter = {}, pagination): Promise<string> {
 		validateFilteredExtension(filter);
 
-		const starred: Starred | undefined = filter.starred === true ? Starred.STARRED : filter.starred === false ? Starred.UNSTARRED : filter.starred;
 		const historyFilterDTO: HistoryFilterDTO = {
 			archived: filter.archived,
 			connectionIds: filter.connectionIds,
@@ -138,7 +137,9 @@ const transformHistoryEntry = (entry: HistoryResponseItem): HistoryEntry => {
 	return entry;
 };
 
-function mapStarredToDTO(starred: boolean | Starred | undefined): StarredDTO | undefined {
+function mapStarredToDTO(
+	starred: boolean | Starred | undefined
+): StarredDTO | undefined {
 	switch (starred) {
 		case true:
 		case Starred.STARRED:

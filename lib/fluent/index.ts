@@ -1,3 +1,1 @@
-export {
-    FluentWebhookServer,
-} from './webhook';
+export { FluentWebhookServer } from './webhook';
