@@ -54,14 +54,12 @@
 		}
 	},
 	"lint-staged": {
-		"*.{ts}": [
+		"*.ts": [
 			"npm run format",
-			"npm run lint",
-			"git add"
+			"npm run lint"
 		],
 		"*.{json,md}": [
-			"prettier --write",
-			"git add"
+			"prettier --write"
 		]
 	},
 	"devDependencies": {
