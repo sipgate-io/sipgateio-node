@@ -414,6 +414,15 @@ describe('Signed webhook server', () => {
 		});
 	};
 
+	// disable console.error to not fill up the jest output
+	let consoleSpy: jest.SpyInstance;
+	beforeAll(() => {
+		consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+	});
+	afterAll(() => {
+		consoleSpy.mockRestore();
+	});
+
 	beforeEach(async () => {
 		webhookServer = await webhookModule.createServer({
 			port,
