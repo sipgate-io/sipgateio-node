@@ -15,7 +15,7 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 				throw new Error(ContactsErrorMessage.CONTACTS_VCARD_MISSING_END);
 			}
 		}
-		throw new Error(ex);
+		throw new Error(ContactsErrorMessage.CONTACTS_VCARD_FAILED_TO_PARSE);
 	}
 
 	if (parsedVCard.version !== '4.0') {
@@ -135,12 +135,9 @@ export const createVCards = (contacts: ContactImport[]): string[] => {
 			addresses.forEach((address) => {
 				card.add(
 					'addr',
-					`${address.poBox ? address.poBox : ''};${
-						address.extendedAddress ? address.extendedAddress : ''
-					};${address.streetAddress ? address.streetAddress : ''};${
-						address.locality ? address.locality : ''
-					};${address.region ? address.region : ''};${
-						address.postalCode ? address.postalCode : ''
+					`${address.poBox ? address.poBox : ''};${address.extendedAddress ? address.extendedAddress : ''
+					};${address.streetAddress ? address.streetAddress : ''};${address.locality ? address.locality : ''
+					};${address.region ? address.region : ''};${address.postalCode ? address.postalCode : ''
 					};${address.country ? address.country : ''}`,
 					{
 						type: address.type,

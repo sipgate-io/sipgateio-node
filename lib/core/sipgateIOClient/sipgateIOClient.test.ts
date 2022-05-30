@@ -205,9 +205,12 @@ describe('validation', () => {
 			sipgateIO({ username: 'testUsername', password: 'testPassword' });
 			expect(true).toBe(false);
 		} catch (error) {
-			expect(error.message).toBe(
-				'Invalid email: testUsername'
-			);
+			expect(error instanceof Error);
+			if (error instanceof Error) {
+				expect(error.message).toBe(
+					'Invalid email: testUsername'
+				);
+			}
 		}
 	});
 
@@ -222,9 +225,12 @@ describe('validation', () => {
 			sipgateIO({ tokenId: 'token-1234567', token: 'a01ac872-ab6a-4036-8a88-0512d8be3792' });
 			expect(true).toBe(false);
 		} catch (error) {
-			expect(error.message).toBe(
-				'Invalid token id: token-1234567'
-			);
+			expect(error instanceof Error);
+			if (error instanceof Error) {
+				expect(error.message).toBe(
+					'Invalid token id: token-1234567'
+				);
+			};
 		}
 	});
 
@@ -239,7 +245,10 @@ describe('validation', () => {
 			sipgateIO({ username: 'testUsername@test.d', password: '' });
 			expect(true).toBe(false);
 		} catch (error) {
-			expect(error.message).toBe('Invalid password');
+			expect(error instanceof Error);
+			if (error instanceof Error) {
+				expect(error.message).toBe('Invalid password');
+			}
 		}
 	});
 
@@ -267,7 +276,7 @@ describe('validation', () => {
 				tokenId: 'token-6HEF5K',
 				token: '195d5a7c-559f-9a61-06adaf70ff27',
 			})
-		).toThrow('Invalid personal access token')
+		).toThrow('Invalid personal access token');
 	});
 });
 

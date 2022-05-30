@@ -71,7 +71,7 @@ describe('create webhook module', () => {
 		});
 		expect(() => {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			server.onNewCall(() => {});
+			server.onNewCall(() => { });
 		}).not.toThrow();
 		server.stop();
 	});
@@ -83,7 +83,7 @@ describe('create webhook module', () => {
 		});
 		expect(() => {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			server.onAnswer(() => {});
+			server.onAnswer(() => { });
 		}).not.toThrow();
 		server.stop();
 	});
@@ -95,7 +95,7 @@ describe('create webhook module', () => {
 		});
 		expect(() => {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			server.onData(() => {});
+			server.onData(() => { });
 		}).not.toThrow();
 		server.stop();
 	});
@@ -107,20 +107,19 @@ describe('create webhook module', () => {
 		});
 		expect(() => {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			server.onHangUp(() => {});
+			server.onHangUp(() => { });
 		}).not.toThrow();
 		server.stop();
 	});
 });
 
 describe('create webhook-"Response" module', () => {
-
 	let mockClient: SipgateIOClient;
-	jest.spyOn(global, 'setTimeout');
 
 	beforeEach(() => {
 		mockClient = {} as SipgateIOClient;
 		jest.useFakeTimers();
+		jest.spyOn(global, 'setTimeout');
 	});
 
 	it('should return a gather object without play tag', async () => {
@@ -163,27 +162,33 @@ describe('create webhook-"Response" module', () => {
 
 	it('should throw an exception for invalid max digits in gather dtmf', async () => {
 		const gatherOptions = {
-			maxDigits : 0,
-			timeout : 2000,
+			maxDigits: 0,
+			timeout: 2000,
 		};
 		try {
 			await WebhookResponse.gatherDTMF(gatherOptions);
 			fail('It should throw "Invalid DTMF maxDigits"');
 		} catch (e) {
-			expect(e.message).toContain('Invalid DTMF maxDigits');
+			expect(e instanceof Error);
+			if (e instanceof Error) {
+				expect(e.message).toContain('Invalid DTMF maxDigits');
+			}
 		}
 	});
 
 	it('should throw an exception for invalid timeout in gather dtmf', async () => {
 		const gatherOptions = {
-			maxDigits : 6,
-			timeout : -1,
+			maxDigits: 6,
+			timeout: -1,
 		};
 		try {
 			await WebhookResponse.gatherDTMF(gatherOptions);
 			fail('It should throw "Invalid DTMF timeout"');
 		} catch (e) {
-			expect(e.message).toContain('Invalid DTMF timeout');
+			expect(e instanceof Error);
+			if (e instanceof Error) {
+				expect(e.message).toContain('Invalid DTMF timeout');
+			}
 		}
 	});
 
@@ -211,7 +216,10 @@ describe('create webhook-"Response" module', () => {
 			await WebhookResponse.gatherDTMF(gatherOptions);
 			fail('It should throw "Invalid audio format"');
 		} catch (e) {
-			expect(e.message).toContain('Invalid audio format');
+			expect(e instanceof Error);
+			if (e instanceof Error) {
+				expect(e.message).toContain('Invalid audio format');
+			}
 		}
 	});
 
@@ -250,7 +258,7 @@ describe('create webhook-"Response" module', () => {
 					bitsPerSample: 16,
 					sampleRate: 8000,
 					numberOfChannels: 1,
-					duration: duration/1000
+					duration: duration / 1000
 				})
 			)
 		);
@@ -270,7 +278,7 @@ describe('create webhook-"Response" module', () => {
 
 		expect(result).toEqual(playObject);
 		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), duration+timeout);
+		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), duration + timeout);
 		jest.runAllTimers();
 		expect(mockClient.delete).toHaveBeenCalledTimes(1);
 		expect(mockClient.delete).toHaveBeenCalledWith(`/calls/${callId}`);
@@ -289,7 +297,7 @@ describe('create webhook-"Response" module', () => {
 					bitsPerSample: 16,
 					sampleRate: 8000,
 					numberOfChannels: 1,
-					duration: duration/1000
+					duration: duration / 1000
 				})
 			)
 		);
@@ -309,7 +317,7 @@ describe('create webhook-"Response" module', () => {
 
 		expect(result).toEqual(playObject);
 		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), duration+timeout);
+		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), duration + timeout);
 		jest.runAllTimers();
 		expect(mockClient.delete).toHaveBeenCalledTimes(1);
 		expect(mockClient.delete).toHaveBeenCalledWith(`/calls/${callId}`);
@@ -337,7 +345,10 @@ describe('create webhook-"Response" module', () => {
 			await WebhookResponse.playAudio(playOptions);
 			fail('It should throw "Invalid audio format"');
 		} catch (e) {
-			expect(e.message).toContain('Invalid audio format');
+			expect(e instanceof Error);
+			if (e instanceof Error) {
+				expect(e.message).toContain('Invalid audio format');
+			}
 		}
 	});
 });
@@ -411,7 +422,7 @@ describe('Signed webhook server', () => {
 
 	it('should successfully verify header signature and sipgate ip address for webhook body', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
+		webhookServer.onNewCall(() => { });
 
 		const response = await sendTestWebhook(signature, '217.116.118.254');
 
@@ -422,7 +433,7 @@ describe('Signed webhook server', () => {
 
 	it('should return error if header signature is not valid', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
+		webhookServer.onNewCall(() => { });
 
 		const response = await sendTestWebhook('fakeSignature', '217.116.118.254');
 
@@ -433,7 +444,7 @@ describe('Signed webhook server', () => {
 
 	it('should return error if body is not valid for signature', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
+		webhookServer.onNewCall(() => { });
 
 		const response = await sendTestWebhook(
 			signature,
@@ -448,7 +459,7 @@ describe('Signed webhook server', () => {
 
 	it('should return error if header ip address is not from sipgate', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
+		webhookServer.onNewCall(() => { });
 
 		const response = await sendTestWebhook(signature, '127.0.0.1');
 
@@ -548,7 +559,7 @@ describe('The webhook server', () => {
 
 	it('should generate a valid XML response with no handlers for answer or hangup event', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		webhookServer.onNewCall(() => {});
+		webhookServer.onNewCall(() => { });
 
 		const response = await sendTestWebhook();
 
