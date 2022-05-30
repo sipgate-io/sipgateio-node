@@ -6,7 +6,7 @@
 	"browser": "./dist/browser.js",
 	"scripts": {
 		"lint": "eslint --fix './lib/**/*.ts'",
-		"format": "prettier --write **/**.ts",
+		"format": "prettier --write './lib/**/**.ts'",
 		"test:dev": "jest --selectProjects node dom --watch",
 		"test:dev:coverage": "jest --selectProjects node dom --watch --coverage",
 		"test:unit": "jest --selectProjects node dom",
