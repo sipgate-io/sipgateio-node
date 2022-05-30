@@ -5,7 +5,7 @@
 	"main": "./dist/index.js",
 	"browser": "./dist/browser.js",
 	"scripts": {
-		"lint": "eslint --fix ./lib/**/*.ts",
+		"lint": "eslint --fix './lib/**/*.ts'",
 		"format": "prettier --write **/**.ts",
 		"test:dev": "jest --selectProjects node dom --watch",
 		"test:dev:coverage": "jest --selectProjects node dom --watch --coverage",

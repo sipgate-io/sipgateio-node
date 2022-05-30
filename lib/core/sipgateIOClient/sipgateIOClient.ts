@@ -14,10 +14,10 @@ import {
 	validatePassword,
 	validateTokenID,
 } from '../validator';
+import { validatePersonalAccessToken } from '../validator/validatePersonalAccessToken';
 import { version } from '../../version.json';
 import axios from 'axios';
 import qs from 'qs';
-import { validatePersonalAccessToken } from '../validator/validatePersonalAccessToken';
 
 interface RawDeserialized {
 	[key: string]: RawDeserializedValue;
@@ -68,7 +68,8 @@ const parseDatesInObject = (data: RawDeserialized): DeserializedWithDate => {
 };
 
 const parseIfDate = (maybeDate: string): Date | string => {
-	const regexISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d+)?)(?:Z|([+-])([\d|:]*))?$/;
+	const regexISO =
+		/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d+)?)(?:Z|([+-])([\d|:]*))?$/;
 	if (maybeDate.match(regexISO)) {
 		return new Date(maybeDate);
 	}
@@ -144,20 +145,19 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 
 const getAuthHeader = (credentials: AuthCredentials): string => {
 	if ('tokenId' in credentials) {
-		
 		const tokenIDValidationResult = validateTokenID(credentials.tokenId);
 		if (!tokenIDValidationResult.isValid) {
-			throw new Error(
-				tokenIDValidationResult.cause
-			);
+			throw new Error(tokenIDValidationResult.cause);
 		}
-	
-		const tokenValidationResult = validatePersonalAccessToken(credentials.token);
-	
+
+		const tokenValidationResult = validatePersonalAccessToken(
+			credentials.token
+		);
+
 		if (!tokenValidationResult.isValid) {
 			throw new Error(tokenValidationResult.cause);
 		}
-	
+
 		return `Basic ${toBase64(`${credentials.tokenId}:${credentials.token}`)}`;
 	}
 
@@ -173,9 +173,7 @@ const getAuthHeader = (credentials: AuthCredentials): string => {
 	const emailValidationResult = validateEmail(credentials.username);
 
 	if (!emailValidationResult.isValid) {
-		throw new Error(
-			emailValidationResult.cause
-		);
+		throw new Error(emailValidationResult.cause);
 	}
 
 	const passwordValidationResult = validatePassword(credentials.password);

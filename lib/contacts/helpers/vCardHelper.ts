@@ -135,9 +135,12 @@ export const createVCards = (contacts: ContactImport[]): string[] => {
 			addresses.forEach((address) => {
 				card.add(
 					'addr',
-					`${address.poBox ? address.poBox : ''};${address.extendedAddress ? address.extendedAddress : ''
-					};${address.streetAddress ? address.streetAddress : ''};${address.locality ? address.locality : ''
-					};${address.region ? address.region : ''};${address.postalCode ? address.postalCode : ''
+					`${address.poBox ? address.poBox : ''};${
+						address.extendedAddress ? address.extendedAddress : ''
+					};${address.streetAddress ? address.streetAddress : ''};${
+						address.locality ? address.locality : ''
+					};${address.region ? address.region : ''};${
+						address.postalCode ? address.postalCode : ''
 					};${address.country ? address.country : ''}`,
 					{
 						type: address.type,
