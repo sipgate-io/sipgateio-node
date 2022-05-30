@@ -1,4 +1,4 @@
-import { HistoryEntry, HistoryEntryType, Starred } from './history.types';
+import { HistoryEntry, HistoryEntryType, StarredDTO } from './history.types';
 import { HistoryErrorMessage } from './errors/handleHistoryError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
@@ -136,7 +136,7 @@ describe('History Module', () => {
 
 		expect(mockClient.get).toBeCalledWith('/history/export', {
 			params: {
-				starred: Starred.STARRED,
+				starred: StarredDTO.STARRED,
 			},
 		});
 	});
