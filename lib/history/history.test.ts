@@ -1,4 +1,4 @@
-import { HistoryEntry, HistoryEntryType, StarredDTO } from './history.types';
+import { HistoryEntry, HistoryEntryType, HistoryResponse, StarredDTO } from './history.types';
 import { HistoryErrorMessage } from './errors/handleHistoryError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
@@ -16,6 +16,25 @@ describe('History Module', () => {
 		await expect(
 			historyModule.fetchAll({ connectionIds: ['s0', 's1', 'sokx5', 's2'] })
 		).rejects.toThrowError('Invalid extension: sokx5');
+	});
+
+	it('includes the phonenumber filter when using the fetchAll function', async () => {
+		const historyModule = createHistoryModule(mockClient);
+		const mockedResponse: HistoryResponse = {
+			items: [],
+			totalCount: 0,
+		};
+		mockClient.get = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve(mockedResponse));
+
+		await historyModule.fetchAll({ phonenumber: "0211123456789" });
+
+		expect(mockClient.get).toBeCalledWith('/history', {
+			params: {
+				phonenumber: "0211123456789"
+			},
+		});
 	});
 
 	it('throws an error when the API answers with 404 Not Found', async () => {

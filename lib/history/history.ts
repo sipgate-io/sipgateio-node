@@ -20,7 +20,7 @@ export const createHistoryModule = (
 	async fetchAll(filter = {}, pagination): Promise<HistoryEntry[]> {
 		validateFilteredExtension(filter);
 
-		const historyFilterDTO: HistoryFilterDTO = {
+		const historyFilterDTO: HistoryFilterDTO & { phonenumber?: string; } = {
 			archived: filter.archived,
 			connectionIds: filter.connectionIds,
 			directions: filter.directions,
@@ -28,6 +28,7 @@ export const createHistoryModule = (
 			starred: mapStarredToDTO(filter.starred),
 			to: filter.endDate,
 			types: filter.types,
+			phonenumber: filter.phonenumber,
 		};
 
 		return client
