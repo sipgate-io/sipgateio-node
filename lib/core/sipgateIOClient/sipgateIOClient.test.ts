@@ -3,8 +3,6 @@ import { sipgateIO } from './sipgateIOClient';
 import { toBase64 } from '../../utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
 import packageJson from '../../../package.json';
 
 describe('Test header', () => {
@@ -30,7 +28,7 @@ describe('Test header', () => {
 		)}`;
 
 		axiosMock.onGet('/test').reply((config) => {
-			expect(config.headers.Authorization).toEqual(expectedAuthHeader);
+			expect(config.headers?.Authorization).toEqual(expectedAuthHeader);
 
 			return [201, expectedData];
 		});
@@ -45,7 +43,7 @@ describe('Test header', () => {
 		const expectedAuthHeader = `Bearer ${validOAuthToken}`;
 
 		axiosMock.onGet('/test').reply((config) => {
-			expect(config.headers.Authorization).toEqual(expectedAuthHeader);
+			expect(config.headers?.Authorization).toEqual(expectedAuthHeader);
 
 			return [201, expectedData];
 		});
@@ -61,7 +59,9 @@ describe('Test header', () => {
 		const expectedXHeaderValue = JSON.stringify(detectPlatform());
 
 		axiosMock.onGet('/test').reply((config) => {
-			expect(config.headers[expectedXHeaderKey]).toEqual(expectedXHeaderValue);
+			expect(config.headers?.[expectedXHeaderKey]).toEqual(
+				expectedXHeaderValue
+			);
 
 			return [201, expectedData];
 		});
@@ -76,7 +76,7 @@ describe('Test header', () => {
 		const expectedXVersionHeaderValue = packageJson.version;
 
 		axiosMock.onGet('/test').reply((config) => {
-			expect(config.headers[expectedXVersionHeaderKey]).toEqual(
+			expect(config.headers?.[expectedXVersionHeaderKey]).toEqual(
 				expectedXVersionHeaderValue
 			);
 
@@ -207,9 +207,7 @@ describe('validation', () => {
 		} catch (error) {
 			expect(error instanceof Error);
 			if (error instanceof Error) {
-				expect(error.message).toBe(
-					'Invalid email: testUsername'
-				);
+				expect(error.message).toBe('Invalid email: testUsername');
 			}
 		}
 	});
@@ -222,21 +220,25 @@ describe('validation', () => {
 
 	test('invalid tokenId', async () => {
 		try {
-			sipgateIO({ tokenId: 'token-1234567', token: 'a01ac872-ab6a-4036-8a88-0512d8be3792' });
+			sipgateIO({
+				tokenId: 'token-1234567',
+				token: 'a01ac872-ab6a-4036-8a88-0512d8be3792',
+			});
 			expect(true).toBe(false);
 		} catch (error) {
 			expect(error instanceof Error);
 			if (error instanceof Error) {
-				expect(error.message).toBe(
-					'Invalid token id: token-1234567'
-				);
-			};
+				expect(error.message).toBe('Invalid token id: token-1234567');
+			}
 		}
 	});
 
 	test('valid tokenId', async () => {
 		expect(() =>
-			sipgateIO({ tokenId: 'token-123456', token: 'a01ac872-ab6a-4036-8a88-0512d8be3792' })
+			sipgateIO({
+				tokenId: 'token-123456',
+				token: 'a01ac872-ab6a-4036-8a88-0512d8be3792',
+			})
 		).not.toThrow();
 	});
 
