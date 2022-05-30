@@ -35,7 +35,7 @@ export interface BaseHistoryFilter {
 	types?: HistoryEntryType[];
 	directions?: HistoryDirection[];
 	archived?: boolean;
-	starred?: Starred;
+	starred?: boolean | Starred;
 	startDate?: Date;
 	endDate?: Date;
 }

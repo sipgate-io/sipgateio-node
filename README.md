@@ -849,7 +849,7 @@ interface HistoryFilter {
 	types?: HistoryEntryType[];
 	directions?: Direction[];
 	archived?: boolean;
-	starred?: Starred;
+	starred?: boolean;
 	from?: Date;
 	to?: Date;
 	phonenumber?: string;
@@ -920,7 +920,7 @@ export interface BaseHistoryFilter {
 	types?: HistoryEntryType[];
 	directions?: HistoryDirection[];
 	archived?: boolean;
-	starred?: Starred;
+	starred?: boolean;
 	startDate?: Date;
 	endDate?: Date;
 }

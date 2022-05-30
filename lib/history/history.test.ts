@@ -1,4 +1,4 @@
-import { HistoryEntry, HistoryEntryType } from './history.types';
+import { HistoryEntry, HistoryEntryType, Starred } from './history.types';
 import { HistoryErrorMessage } from './errors/handleHistoryError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
@@ -122,6 +122,21 @@ describe('History Module', () => {
 				types: [HistoryEntryType.SMS],
 				offset: 10,
 				limit: 20,
+			},
+		});
+	});
+
+	it('accepts and remaps a starred boolean for the filter to the history export endpoint', async () => {
+		const historyModule = createHistoryModule(mockClient);
+		mockClient.get = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve('example response'));
+
+		await historyModule.exportAsCsvString({ starred: true });
+
+		expect(mockClient.get).toBeCalledWith('/history/export', {
+			params: {
+				starred: Starred.STARRED,
 			},
 		});
 	});

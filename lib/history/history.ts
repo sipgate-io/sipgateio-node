@@ -7,6 +7,7 @@ import {
 	HistoryModule,
 	HistoryResponse,
 	HistoryResponseItem,
+	Starred,
 } from './history.types';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { handleHistoryError } from './errors/handleHistoryError';
@@ -18,12 +19,13 @@ export const createHistoryModule = (
 	async fetchAll(filter = {}, pagination): Promise<HistoryEntry[]> {
 		validateFilteredExtension(filter);
 
+		const starred: Starred | undefined = filter.starred === true ? Starred.STARRED : filter.starred === false ? Starred.UNSTARRED : filter.starred;
 		const historyFilterDTO: HistoryFilterDTO = {
 			archived: filter.archived,
 			connectionIds: filter.connectionIds,
 			directions: filter.directions,
 			from: filter.startDate,
-			starred: filter.starred,
+			starred,
 			to: filter.endDate,
 			types: filter.types,
 		};
@@ -93,12 +95,13 @@ export const createHistoryModule = (
 	async exportAsCsvString(filter = {}, pagination): Promise<string> {
 		validateFilteredExtension(filter);
 
+		const starred: Starred | undefined = filter.starred === true ? Starred.STARRED : filter.starred === false ? Starred.UNSTARRED : filter.starred;
 		const historyFilterDTO: HistoryFilterDTO = {
 			archived: filter.archived,
 			connectionIds: filter.connectionIds,
 			directions: filter.directions,
 			from: filter.startDate,
-			starred: filter.starred,
+			starred,
 			to: filter.endDate,
 			types: filter.types,
 		};
