@@ -357,12 +357,8 @@ export const WebhookResponse: WebhookResponseInterface = {
 
 		setTimeout(() => {
 			const rtcm = createRTCMModule(client);
-			try {
-				rtcm.hangUp({ callId });
-			} catch (error) {
-				console.log(error);
-				return;
-			}
+			// ignore errors, which were happening when the callee already hung up the phone before the announcement had ended
+			rtcm.hangUp({ callId }).catch(() => {});
 		}, duration);
 
 		return { Play: { Url: playOptions.announcement } };
