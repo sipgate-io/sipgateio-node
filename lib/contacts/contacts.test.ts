@@ -103,6 +103,11 @@ describe('Contacts Module', () => {
 		expect(contacts).toHaveLength(3);
 	});
 
+	it('get All Contacts with Pagination', async () => {
+		const contacts = await contactsModule.paginatedGet('ALL');
+		expect(contacts.response).toHaveLength(3);
+	});
+
 	it.each`
 		scope
 		${'INTERNAL'}
@@ -112,6 +117,17 @@ describe('Contacts Module', () => {
 		const contacts = await contactsModule.get(scope);
 		expect(contacts).toHaveLength(1);
 		expect(contacts[0].scope).toBe(scope);
+	});
+
+	it.each`
+		scope
+		${'INTERNAL'}
+		${'PRIVATE'}
+		${'SHARED'}
+	`('', async ({ scope }) => {
+		const contacts = await contactsModule.paginatedGet(scope);
+		expect(contacts.response).toHaveLength(1);
+		expect(contacts.response[0].scope).toBe(scope);
 	});
 });
 
@@ -447,55 +463,6 @@ describe('Export Contacts', () => {
 		expect(mockClient.get).toHaveBeenCalledTimes(1);
 	});
 
-	it('returns a csv with pagination information', async () => {
-		let mockClient = {} as SipgateIOClient;
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		mockClient.get = jest.fn().mockImplementationOnce((_) => {
-			return Promise.resolve({
-				items: [
-					{
-						id: 'foo',
-						name: 'User1',
-						scope: 'PRIVATE',
-						emails: [],
-						numbers: [],
-					},
-					{
-						id: 'bar',
-						name: 'User2',
-						scope: 'INTERNAL',
-						emails: [],
-						numbers: [],
-					},
-					{
-						id: 'baz',
-						name: 'User3',
-						scope: 'SHARED',
-						emails: [],
-						numbers: [],
-					},
-				],
-				totalCount: 5,
-			});
-		});
-		let contactsModule = createContactsModule(mockClient);
-
-		// We ask for 3 items which the mock server responds with. However, due
-		// to clientside scope filtering, only one item is returned.
-		// The api indicates that there is more data to be fetched with the
-		// `hasMore` flag. If this flag is observed, you can make a paginated
-		// request with an offset.
-		await expect(
-			contactsModule
-				.paginatedExportAsCsv('PRIVATE', ',', { limit: 3, offset: 0 })
-				.catch((err) => console.error(err))
-		).resolves.toEqual({
-			response: `"id","name","emails","numbers","addresses","organizations"
-"foo","User1","[]","[]",,`,
-			hasMore: true,
-		});
-	});
-
 	it('transfers the given filter and pagination parameters when exporting as vCards', () => {
 		contactsModule.exportAsVCards(
 			'INTERNAL',
@@ -554,5 +521,108 @@ describe('Export Contacts', () => {
 			},
 		});
 		expect(mockClient.get).toHaveBeenCalledTimes(1);
+	});
+});
+
+describe('Export paginated contacts', () => {
+	let contactsModule: ContactsModule;
+	let mockClient: SipgateIOClient;
+
+	beforeEach(() => {
+		mockClient = {} as SipgateIOClient;
+		mockClient.get = jest.fn().mockImplementationOnce((_) => {
+			return Promise.resolve({
+				items: [
+					{
+						id: 'foo',
+						name: 'User1',
+						scope: 'PRIVATE',
+						emails: [],
+						numbers: [],
+						addresses: [],
+						organization: [[]],
+					},
+					{
+						id: 'bar',
+						name: 'User2',
+						scope: 'INTERNAL',
+						emails: [],
+						numbers: [],
+						addresses: [],
+						organization: [[]],
+					},
+					{
+						id: 'baz',
+						name: 'User3',
+						scope: 'SHARED',
+						emails: [],
+						numbers: [{ number: '0123456789' }],
+						addresses: [],
+						organization: [['sipgate']],
+					},
+				],
+				totalCount: 5,
+				status: 200,
+			});
+		});
+		mockClient.post = jest
+			.fn()
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			.mockImplementation((_, _contactsDTO: ContactsDTO) => {
+				return Promise.resolve({
+					status: 204,
+				});
+			});
+		contactsModule = createContactsModule(mockClient);
+	});
+
+	it('returns a csv with pagination information', async () => {
+		await expect(
+			contactsModule
+				.paginatedExportAsCsv('PRIVATE', ',', { limit: 3, offset: 0 })
+				.catch((err) => console.error(err))
+		).resolves.toEqual({
+			response: `"id","name","emails","numbers","addresses","organizations"
+"foo","User1","[]","[]","[]","[[]]"`,
+			hasMore: true,
+		});
+	});
+
+	it('paginatedGet returns filtered object with pagination information', async () => {
+		await expect(
+			contactsModule
+				.paginatedGet('PRIVATE', { limit: 3, offset: 0 })
+				.catch((err) => console.error(err))
+		).resolves.toEqual({
+			response: [
+				{
+					id: 'foo',
+					name: 'User1',
+					scope: 'PRIVATE',
+					emails: [],
+					numbers: [],
+					addresses: [],
+					organization: [[]],
+				},
+			],
+			hasMore: true,
+		});
+	});
+
+	it('paginatedExportAsSingleVCard returns filtered object with pagination information', async () => {
+		const {
+			response,
+			hasMore,
+		} = await contactsModule
+			.paginatedExportAsSingleVCard('SHARED', { limit: 3, offset: 0 })
+			.catch((err) => fail(err));
+		expect(hasMore).toBe(true);
+		expect(parseVCard(response)).toEqual({
+			email: undefined,
+			firstname: '',
+			lastname: 'User3',
+			organization: [['sipgate']],
+			phoneNumber: '0123456789',
+		});
 	});
 });
