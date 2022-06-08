@@ -188,9 +188,6 @@ export const createContactsModule = (
 		}
 	},
 
-	// DEPRECATED! Please use `paginatedExportAsCsv` whenever possible. This
-	// api might behave buggy when using pagination/many contacts and client-
-	// side scope filtering.
 	async exportAsCsv(
 		scope,
 		delimiter = ',',
@@ -266,9 +263,6 @@ export const createContactsModule = (
 		};
 	},
 
-	// DEPRECATED! Please use `paginatedGet` whenever possible. This
-	// api might behave buggy when using pagination/many contacts and client-
-	// side scope filtering.
 	async get(scope, pagination, filter): Promise<ContactResponse[]> {
 		const contactsResponse = await client.get<ContactsListResponse>(
 			`contacts`,
@@ -301,9 +295,6 @@ export const createContactsModule = (
 		};
 	},
 
-	// DEPRECATED! Please use `paginatedExportAsSingleVCard` whenever possible. This
-	// api might behave buggy when using pagination/many contacts and client-
-	// side scope filtering.
 	async exportAsSingleVCard(scope, pagination, filter): Promise<string> {
 		const vCards = await this.exportAsVCards(scope, pagination, filter);
 		return vCards.join('\r\n');
@@ -353,9 +344,6 @@ export const createContactsModule = (
 		};
 	},
 
-	// DEPRECATED! Please use `paginatedExportAsVCards` whenever possible. This
-	// api might behave buggy when using pagination/many contacts and client-
-	// side scope filtering.
 	async exportAsVCards(scope, pagination, filter): Promise<string[]> {
 		const contactsResponse = await client.get<ContactsListResponse>(
 			`contacts`,

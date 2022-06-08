@@ -14,9 +14,9 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<PagedResponse<string>>
-	// DEPRECATED! Please use `paginatedExportAsCsv` whenever possible. This
-	// api might behave buggy when using pagination/many contacts and client-
-	// side scope filtering.
+	/**
+	* @deprecated You should prefer to use `paginatedExportAsVCards`
+	*/
 	exportAsCsv: (
 		scope: ExportScope,
 		delimiter?: string,
@@ -28,9 +28,9 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<PagedResponse<string[]>>;
-	// DEPRECATED! Please use `paginatedExportAsVCards` whenever possible. This
-	// api might behave buggy when using pagination/many contacts and client-
-	// side scope filtering.
+	/**
+	 * @deprecated You should prefer to use `paginatedExportAsVCards`
+	 */
 	exportAsVCards: (
 		scope: ExportScope,
 		pagination?: Pagination,
@@ -41,9 +41,9 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<PagedResponse<string>>;
-	// DEPRECATED! Please use `paginatedExportAsSingleVCard` whenever possible. This
-	// api might behave buggy when using pagination/many contacts and client-
-	// side scope filtering.
+	/**
+	* @deprecated You should prefer to use `paginatedExportAsSingleVCard`
+	*/
 	exportAsSingleVCard: (
 		scope: ExportScope,
 		pagination?: Pagination,
@@ -54,9 +54,9 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<PagedResponse<ContactResponse[]>>;
-	// DEPRECATED! Please use `paginatedExportAsSingleVCard` whenever possible. This
-	// api might behave buggy when using pagination/many contacts and client-
-	// side scope filtering.
+	/**
+	 * @deprecated You should prefer to use `paginatedGet`
+	 */
 	get: (
 		scope: ExportScope,
 		pagination?: Pagination,
