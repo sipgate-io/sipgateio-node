@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require('fs');
+const { TextDecoder, TextEncoder } = require('util');
+
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
 
 describe('sipgate-io module', () => {
 	let dom;

@@ -1,4 +1,9 @@
-import { HistoryEntry, HistoryEntryType } from './history.types';
+import {
+	HistoryEntry,
+	HistoryEntryType,
+	HistoryResponse,
+	StarredDTO,
+} from './history.types';
 import { HistoryErrorMessage } from './errors/handleHistoryError';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { createHistoryModule } from './history';
@@ -16,6 +21,25 @@ describe('History Module', () => {
 		await expect(
 			historyModule.fetchAll({ connectionIds: ['s0', 's1', 'sokx5', 's2'] })
 		).rejects.toThrowError('Invalid extension: sokx5');
+	});
+
+	it('includes the phonenumber filter when using the fetchAll function', async () => {
+		const historyModule = createHistoryModule(mockClient);
+		const mockedResponse: HistoryResponse = {
+			items: [],
+			totalCount: 0,
+		};
+		mockClient.get = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve(mockedResponse));
+
+		await historyModule.fetchAll({ phonenumber: '0211123456789' });
+
+		expect(mockClient.get).toBeCalledWith('/history', {
+			params: {
+				phonenumber: '0211123456789',
+			},
+		});
 	});
 
 	it('throws an error when the API answers with 404 Not Found', async () => {
@@ -60,11 +84,11 @@ describe('History Module', () => {
 		const historyModule = createHistoryModule(mockClient);
 
 		const events: HistoryEntry[] = [
-			({ id: '1' } as unknown) as HistoryEntry,
-			({ id: '2' } as unknown) as HistoryEntry,
-			({ id: '3' } as unknown) as HistoryEntry,
-			({ id: '4' } as unknown) as HistoryEntry,
-			({ id: '5' } as unknown) as HistoryEntry,
+			{ id: '1' } as unknown as HistoryEntry,
+			{ id: '2' } as unknown as HistoryEntry,
+			{ id: '3' } as unknown as HistoryEntry,
+			{ id: '4' } as unknown as HistoryEntry,
+			{ id: '5' } as unknown as HistoryEntry,
 		];
 
 		await expect(
@@ -122,6 +146,21 @@ describe('History Module', () => {
 				types: [HistoryEntryType.SMS],
 				offset: 10,
 				limit: 20,
+			},
+		});
+	});
+
+	it('accepts and remaps a starred boolean for the filter to the history export endpoint', async () => {
+		const historyModule = createHistoryModule(mockClient);
+		mockClient.get = jest
+			.fn()
+			.mockImplementationOnce(() => Promise.resolve('example response'));
+
+		await historyModule.exportAsCsvString({ starred: true });
+
+		expect(mockClient.get).toBeCalledWith('/history/export', {
+			params: {
+				starred: StarredDTO.STARRED,
 			},
 		});
 	});

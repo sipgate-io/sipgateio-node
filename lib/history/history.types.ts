@@ -35,7 +35,7 @@ export interface BaseHistoryFilter {
 	types?: HistoryEntryType[];
 	directions?: HistoryDirection[];
 	archived?: boolean;
-	starred?: Starred;
+	starred?: boolean | Starred;
 	startDate?: Date;
 	endDate?: Date;
 }
@@ -45,7 +45,7 @@ export interface HistoryFilterDTO {
 	types?: HistoryEntryType[];
 	directions?: HistoryDirection[];
 	archived?: boolean;
-	starred?: Starred;
+	starred?: StarredDTO;
 	from?: Date;
 	to?: Date;
 }
@@ -68,7 +68,14 @@ export enum HistoryDirection {
 	MISSED_OUTGOING = 'MISSED_OUTGOING',
 }
 
+/**
+ * @deprecated You should prefer to use a boolean in the filter
+ */
 export enum Starred {
+	STARRED = 'STARRED',
+	UNSTARRED = 'UNSTARRED',
+}
+export enum StarredDTO {
 	STARRED = 'STARRED',
 	UNSTARRED = 'UNSTARRED',
 }

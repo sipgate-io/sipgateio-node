@@ -486,7 +486,12 @@ interface WebhookResponseInterface {
 	sendToVoicemail: () => VoicemailObject;
 	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
 	playAudio: (playOptions: PlayOptions) => PlayObject;
-	playAudioAndHangUp: (playOptions: PlayOptions, client: SipgateIOClient, callId: string, timeout?: number) => Promise<PlayObject>;
+	playAudioAndHangUp: (
+		playOptions: PlayOptions,
+		client: SipgateIOClient,
+		callId: string,
+		timeout?: number
+	) => Promise<PlayObject>;
 	gatherDTMF: (gatherOptions: GatherOptions) => GatherObject;
 	hangUpCall: () => HangUpObject;
 }
@@ -536,7 +541,7 @@ mpg123 --rate 8000 --mono -w output.wav input.mp3
 The `playAudioAndHangUp` method accepts an options object of type `PlayOptions` with a single field, the URL to a sound file to be played.
 In addition, this also requires a `sipgateIOClient`, a unique `callId` from an current active call and a `timeout` which is optional.
 
-After the audio file has been played and the additional timeout has expired, the call is terminated based on the `callId`. 
+After the audio file has been played and the additional timeout has expired, the call is terminated based on the `callId`.
 
 **Note:** For any information about the audio file please look at [play audio](#play-audio).
 
@@ -761,6 +766,12 @@ You can also add a specific delimiter for the csv format.
 
 **Note:** using a filter will ignore pagination
 
+#### The `exportAsJSON` method:
+
+It returns JSON objects containing all contacts for the given scope.
+
+**Note:** using a filter will ignore pagination
+
 #### The `exportAsVCards` method:
 
 It returns mulitple vCard-strings containing all contacts for the given scope
@@ -838,7 +849,7 @@ interface HistoryFilter {
 	types?: HistoryEntryType[];
 	directions?: Direction[];
 	archived?: boolean;
-	starred?: Starred;
+	starred?: boolean;
 	from?: Date;
 	to?: Date;
 	phonenumber?: string;
@@ -909,7 +920,7 @@ export interface BaseHistoryFilter {
 	types?: HistoryEntryType[];
 	directions?: HistoryDirection[];
 	archived?: boolean;
-	starred?: Starred;
+	starred?: boolean;
 	startDate?: Date;
 	endDate?: Date;
 }

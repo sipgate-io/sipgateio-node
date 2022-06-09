@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+./update_version.sh && ./run_unit_tests.sh && ./node_modules/.bin/lint-staged

@@ -1,4 +1,4 @@
-import { Pagination, PagedResponse } from '../core';
+import { PagedResponse, Pagination } from '../core';
 
 export interface ContactsModule {
 	create: (contact: ContactImport, scope: Scope) => Promise<void>;
@@ -13,10 +13,10 @@ export interface ContactsModule {
 		delimiter?: string,
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
-	) => Promise<PagedResponse<string>>
+	) => Promise<PagedResponse<string>>;
 	/**
-	* @deprecated You should prefer to use `paginatedExportAsVCards`
-	*/
+	 * @deprecated You should prefer to use `paginatedExportAsVCards`
+	 */
 	exportAsCsv: (
 		scope: ExportScope,
 		delimiter?: string,
@@ -31,6 +31,11 @@ export interface ContactsModule {
 	/**
 	 * @deprecated You should prefer to use `paginatedExportAsVCards`
 	 */
+	exportAsJSON: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<string>;
 	exportAsVCards: (
 		scope: ExportScope,
 		pagination?: Pagination,
@@ -42,8 +47,8 @@ export interface ContactsModule {
 		filter?: ContactsExportFilter
 	) => Promise<PagedResponse<string>>;
 	/**
-	* @deprecated You should prefer to use `paginatedExportAsSingleVCard`
-	*/
+	 * @deprecated You should prefer to use `paginatedExportAsSingleVCard`
+	 */
 	exportAsSingleVCard: (
 		scope: ExportScope,
 		pagination?: Pagination,

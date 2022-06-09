@@ -6,6 +6,7 @@ export enum ContactsErrorMessage {
 	CONTACTS_MISSING_VALUES = 'Missing values in CSV',
 	CONTACTS_VCARD_MISSING_BEGIN = 'vCard does not contain a valid BEGIN tag',
 	CONTACTS_VCARD_MISSING_END = 'vCard does not contain a valid END tag',
+	CONTACTS_VCARD_FAILED_TO_PARSE = 'Failed to parse VCard',
 	CONTACTS_INVALID_VCARD_VERSION = 'Invalid VCard Version given',
 	CONTACTS_MISSING_NAME_ATTRIBUTE = 'Names not given',
 	CONTACTS_MISSING_TEL_ATTRIBUTE = 'No phone number given',

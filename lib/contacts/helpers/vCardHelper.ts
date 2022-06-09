@@ -15,7 +15,7 @@ export const parseVCard = (vCardContent: string): ContactVCard => {
 				throw new Error(ContactsErrorMessage.CONTACTS_VCARD_MISSING_END);
 			}
 		}
-		throw new Error(ex);
+		throw new Error(ContactsErrorMessage.CONTACTS_VCARD_FAILED_TO_PARSE);
 	}
 
 	if (parsedVCard.version !== '4.0') {

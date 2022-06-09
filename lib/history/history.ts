@@ -7,6 +7,8 @@ import {
 	HistoryModule,
 	HistoryResponse,
 	HistoryResponseItem,
+	Starred,
+	StarredDTO,
 } from './history.types';
 import { SipgateIOClient } from '../core/sipgateIOClient';
 import { handleHistoryError } from './errors/handleHistoryError';
@@ -18,14 +20,15 @@ export const createHistoryModule = (
 	async fetchAll(filter = {}, pagination): Promise<HistoryEntry[]> {
 		validateFilteredExtension(filter);
 
-		const historyFilterDTO: HistoryFilterDTO = {
+		const historyFilterDTO: HistoryFilterDTO & { phonenumber?: string } = {
 			archived: filter.archived,
 			connectionIds: filter.connectionIds,
 			directions: filter.directions,
 			from: filter.startDate,
-			starred: filter.starred,
+			starred: mapStarredToDTO(filter.starred),
 			to: filter.endDate,
 			types: filter.types,
+			phonenumber: filter.phonenumber,
 		};
 
 		return client
@@ -98,7 +101,7 @@ export const createHistoryModule = (
 			connectionIds: filter.connectionIds,
 			directions: filter.directions,
 			from: filter.startDate,
-			starred: filter.starred,
+			starred: mapStarredToDTO(filter.starred),
 			to: filter.endDate,
 			types: filter.types,
 		};
@@ -133,3 +136,20 @@ const transformHistoryEntry = (entry: HistoryResponseItem): HistoryEntry => {
 
 	return entry;
 };
+
+function mapStarredToDTO(
+	starred: boolean | Starred | undefined
+): StarredDTO | undefined {
+	switch (starred) {
+		case true:
+		case Starred.STARRED:
+			return StarredDTO.STARRED;
+
+		case false:
+		case Starred.UNSTARRED:
+			return StarredDTO.UNSTARRED;
+
+		case undefined:
+			return undefined;
+	}
+}

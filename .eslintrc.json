@@ -6,12 +6,7 @@
 		"jasmine": true,
 		"node": true
 	},
-	"extends": [
-		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended",
-		"prettier/@typescript-eslint",
-		"prettier"
-	],
+	"extends": ["eslint:recommended", "plugin:prettier/recommended"],
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly"
@@ -22,28 +17,23 @@
 		"sourceType": "module"
 	},
 	"plugins": [
-		"@typescript-eslint",
 		"prettier",
 		"node",
 		"import",
 		"promise",
-		"standard",
 		"autofix",
-		"sort-imports-es6-autofix"
+		"sort-imports-es6-autofix",
+		"@typescript-eslint"
 	],
 	"rules": {
-		"@typescript-eslint/no-use-before-define": [
-			"error",
-			{ "functions": false, "classes": false, "variables": false }
-		],
 		"autofix/no-debugger": "error",
 		"autofix/sort-vars": "error",
 		"camelcase": "warn",
 		"eqeqeq": "error",
 		"no-unused-expressions": "error",
 		"no-unused-labels": "error",
-		"no-unused-vars": "error",
-		"@typescript-eslint/no-unused-vars": "error",
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": ["error"],
 		"prefer-const": "error",
 		"no-duplicate-imports": "error",
 		"prefer-destructuring": [

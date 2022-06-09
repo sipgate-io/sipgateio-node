@@ -1,3 +1,9 @@
+# 2.8.0
+
+## Features
+
+- contacts can now be exported to JSON-files ([abf6355](https://github.com/sipgate-io/sipgateio-node/commit/abf63350158f39ce6d28a3e9d486b96df722d1cd))
+
 # 2.0.0
 
 ## Features
