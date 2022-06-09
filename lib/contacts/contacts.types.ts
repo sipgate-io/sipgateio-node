@@ -28,11 +28,22 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<PagedResponse<string[]>>;
+	paginatedExportAsJSON: (
+		scope: ExportScope,
+		pagination?: Pagination,
+		filter?: ContactsExportFilter
+	) => Promise<PagedResponse<string>>;
+	/**
+	 * @deprecated You should prefer to use `paginatedExportAsJSON`
+	 */
 	exportAsJSON: (
 		scope: ExportScope,
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<string>;
+	/**
+	 * @deprecated You should prefer to use `paginatedExportAsVCards`
+	 */
 	exportAsVCards: (
 		scope: ExportScope,
 		pagination?: Pagination,

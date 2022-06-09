@@ -235,6 +235,54 @@ export const createContactsModule = (
 			throw Error(`${err}`);
 		}
 	},
+
+	async paginatedExportAsJSON(
+		scope,
+		pagination,
+		filter
+	): Promise<PagedResponse<string>> {
+		const contactsResponse = await client.get<ContactsListResponse>(
+			`contacts`,
+			{
+				params: {
+					...pagination,
+					...filter,
+				},
+			}
+		);
+
+		const limit = pagination?.limit ?? 5000;
+		const offset = pagination?.offset ?? 0;
+		const hasMore = contactsResponse.totalCount > limit + offset;
+
+		contactsResponse.items = contactsResponse.items.filter(
+			(contact) => contact.scope === scope || scope === 'ALL'
+		);
+
+		const elements = contactsResponse.items.map((contact) => {
+			return {
+				id: contact.id,
+				name: contact.name,
+				emails: contact.emails.map((email) => email.email),
+				numbers: contact.numbers.map((number) => number.number),
+				addresses: contact.addresses,
+				organizations: contact.organization,
+				scope: contact.scope,
+			};
+		});
+		try {
+			const jsonResponse = JSON.stringify({
+				contacts: elements,
+				totalCount: contactsResponse.totalCount,
+			});
+			return {
+				response: jsonResponse,
+				hasMore,
+			};
+		} catch (err) {
+			throw Error(`${err}`);
+		}
+	},
 	async exportAsJSON(scope, pagination, filter): Promise<string> {
 		const contactsResponse = await client.get<ContactsListResponse>(
 			`contacts`,
