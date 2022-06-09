@@ -4,8 +4,8 @@ export interface Pagination {
 }
 
 export interface PagedResponse<T> {
-	response: T,
-	hasMore: boolean
+	response: T;
+	hasMore: boolean;
 }
 
 export interface UserInfo {

@@ -709,4 +709,14 @@ describe('Export paginated contacts', () => {
 			phoneNumber: '0123456789',
 		});
 	});
+
+	it('paginatedExportAsJSON returns filtered object with pagination information', async () => {
+		const { response, hasMore } = await contactsModule
+			.paginatedExportAsJSON('SHARED', { limit: 3, offset: 0 })
+			.catch((err) => fail(err));
+		expect(hasMore).toBe(true);
+		expect(response).toEqual(
+			'{"contacts":[{"id":"baz","name":"User3","emails":[],"numbers":["0123456789"],"addresses":[],"organizations":[["sipgate"]],"scope":"SHARED"}],"totalCount":5}'
+		);
+	});
 });
