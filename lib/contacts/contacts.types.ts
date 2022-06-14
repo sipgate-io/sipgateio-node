@@ -15,7 +15,7 @@ export interface ContactsModule {
 		filter?: ContactsExportFilter
 	) => Promise<PagedResponse<string>>;
 	/**
-	 * @deprecated You should prefer to use `paginatedExportAsVCards`
+	 * @deprecated You should prefer to use `paginatedExportAsCSV`
 	 */
 	exportAsCsv: (
 		scope: ExportScope,
@@ -28,9 +28,6 @@ export interface ContactsModule {
 		pagination?: Pagination,
 		filter?: ContactsExportFilter
 	) => Promise<PagedResponse<string[]>>;
-	/**
-	 * @deprecated You should prefer to use `paginatedExportAsVCards`
-	 */
 	exportAsJSON: (
 		scope: ExportScope,
 		pagination?: Pagination,
