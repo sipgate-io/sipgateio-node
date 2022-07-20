@@ -21,7 +21,7 @@ import {
 	WebhookServer,
 } from './webhook.types';
 import { IncomingMessage, OutgoingMessage, createServer } from 'http';
-import { SipgateIOClient, createRTCMModule } from '..';
+import { SipgateIOClient, TransferOptions, createRTCMModule } from '..';
 import { WebhookErrorMessage } from './webhook.errors';
 import { isSipgateSignature } from './signatureVerifier';
 import { js2xml } from 'xml-js';
@@ -363,7 +363,39 @@ export const WebhookResponse: WebhookResponseInterface = {
 
 		return { Play: { Url: playOptions.announcement } };
 	},
+	playAudioAndTransfer: async (
+		playOptions: PlayOptions,
+		transferOptions: TransferOptions,
+		client: SipgateIOClient,
+		callId: string,
+		timeout?: number
+	): Promise<PlayObject> => {
+		const validationResult = await validateAnnouncementAudio(
+			playOptions.announcement
+		);
 
+		if (!validationResult.isValid) {
+			throw new Error(
+				`\n\n${
+					WebhookErrorMessage.AUDIO_FORMAT_ERROR
+				}\nYour format was: ${JSON.stringify(validationResult.metadata)}\n`
+			);
+		}
+
+		let duration = validationResult.metadata.duration
+			? validationResult.metadata.duration * 1000
+			: 0;
+
+		duration += timeout ? timeout : 0;
+
+		setTimeout(() => {
+			const rtcm = createRTCMModule(client);
+			// ignore errors, which were happening when the callee already hung up the phone before the announcement had ended
+			rtcm.transfer({ callId }, transferOptions).catch(() => {});
+		}, duration);
+
+		return { Play: { Url: playOptions.announcement } };
+	},
 	redirectCall: (redirectOptions: RedirectOptions): RedirectObject => {
 		return {
 			Dial: {
