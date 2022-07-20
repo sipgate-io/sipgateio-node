@@ -1,5 +1,5 @@
 import { Server } from 'http';
-import { SipgateIOClient } from '..';
+import { SipgateIOClient, TransferOptions } from '..';
 
 export enum EventType {
 	NEW_CALL = 'newCall',
@@ -53,6 +53,13 @@ export interface WebhookResponseInterface {
 	playAudio: (playOptions: PlayOptions) => Promise<PlayObject>;
 	playAudioAndHangUp: (
 		playOptions: PlayOptions,
+		client: SipgateIOClient,
+		callId: string,
+		timeout?: number
+	) => Promise<PlayObject>;
+	playAudioAndTransfer: (
+		playOptions: PlayOptions,
+		transferOptions: TransferOptions,
 		client: SipgateIOClient,
 		callId: string,
 		timeout?: number
