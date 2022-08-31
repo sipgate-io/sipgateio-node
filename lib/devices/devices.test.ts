@@ -14,23 +14,6 @@ describe('getDevices', () => {
 				type: 'REGISTER',
 				online: false,
 				dnd: false,
-				activePhonelines: [
-					{
-						id: 'p61',
-						alias: 'Call Service Test',
-					},
-				],
-				activeGroups: [],
-				credentials: {
-					username: '2705977e53',
-					password: '5UdYe4779GdM',
-					sipServer: 'sipgate.de',
-					outboundProxy: 'sipgate.de',
-					sipServerWebsocketUrl: 'wss://sip.sipgate.de',
-				},
-				registered: [],
-				emergencyAddressId: '1128909',
-				addressUrl: 'https://api.sipgate.com/v2/addresses/1128909',
 			},
 			{
 				id: 'e14',
@@ -38,23 +21,6 @@ describe('getDevices', () => {
 				type: 'REGISTER',
 				online: false,
 				dnd: false,
-				activePhonelines: [
-					{
-						id: 'p0',
-						alias: 'Peterle Drobusch-Lukfgx',
-					},
-				],
-				activeGroups: [],
-				credentials: {
-					username: '2705977e14',
-					password: 'qpU1o76cbDat',
-					sipServer: 'sipgate.de',
-					outboundProxy: 'sipgate.de',
-					sipServerWebsocketUrl: 'wss://sip.sipgate.de',
-				},
-				registered: [],
-				emergencyAddressId: '1128909',
-				addressUrl: 'https://api.sipgate.com/v2/addresses/1128909',
 			},
 		];
 
