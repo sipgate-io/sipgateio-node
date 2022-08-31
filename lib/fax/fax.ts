@@ -4,7 +4,6 @@ import {
 	FaxModule,
 	FaxStatus,
 	Faxline,
-	FaxlinesResponse,
 	HistoryFaxResponse,
 	SendFaxSessionResponse,
 } from './fax.types';
@@ -50,7 +49,7 @@ export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
 	},
 	async getFaxlines(webuserId: string): Promise<Faxline[]> {
 		return await client
-			.get<FaxlinesResponse>(`${webuserId}/faxlines`)
+			.get<{ items: Faxline[] }>(`${webuserId}/faxlines`)
 			.then((response) => response.items);
 	},
 });

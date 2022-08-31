@@ -7,8 +7,7 @@ import {
 	SMSModule,
 	ShortMessage,
 	ShortMessageDTO,
-	SmsCallerIds,
-	SmsExtensions,
+	SmsExtension,
 	SmsSenderId,
 } from './sms.types';
 import { SipgateIOClient } from '../core/sipgateIOClient';
@@ -50,7 +49,7 @@ export const getUserSmsExtension = (
 	webuserId: string
 ): Promise<string> => {
 	return client
-		.get<SmsExtensions>(`${webuserId}/sms`)
+		.get<{ items: SmsExtension[] }>(`${webuserId}/sms`)
 		.then((value) => value.items[0].id)
 		.catch((error) => Promise.reject(handleSmsError(error)));
 };
@@ -61,7 +60,9 @@ export const getSmsCallerIds = (
 	smsExtension: string
 ): Promise<SmsSenderId[]> => {
 	return client
-		.get<SmsCallerIds>(`${webuserExtension}/sms/${smsExtension}/callerids`)
+		.get<{ items: SmsSenderId[] }>(
+			`${webuserExtension}/sms/${smsExtension}/callerids`
+		)
 		.then((value) => value.items)
 		.catch((error) => Promise.reject(handleSmsError(error)));
 };

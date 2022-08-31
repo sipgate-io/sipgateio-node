@@ -4,10 +4,6 @@ export interface FaxModule {
 	getFaxlines(webuserId: string): Promise<Faxline[]>;
 }
 
-export interface FaxlinesResponse {
-	items: Faxline[];
-}
-
 export interface Faxline {
 	id: string;
 	alias: string;

@@ -937,13 +937,13 @@ The numbers module provides the following function:
 
 ```typescript
 interface NumbersModule {
-	getAllNumbers: (pagination?: Pagination) => Promise<NumberResponse>;
+	getAllNumbers: (pagination?: Pagination) => Promise<NumberResponseItem[]>;
 }
 ```
 
 #### The `getAllNumbers` method:
 
-It returns a `NumberResponse` object, that contains `NumberResponseItem`s in a list called `items`. Such a `NumberResponseItem` has the following structure:
+The method returns an array of objects with the type `NumberResponseItem`, which has the following structure:
 
 ```typescript
 interface NumberResponseItem {
