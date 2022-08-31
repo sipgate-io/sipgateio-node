@@ -2,6 +2,7 @@ import {
 	AuthCredentials,
 	HttpRequestConfig,
 	SipgateIOClient,
+	Webuser,
 } from './sipgateIOClient.types';
 
 import { UserInfo } from '../core.types';
@@ -138,6 +139,12 @@ export const sipgateIO = (credentials: AuthCredentials): SipgateIOClient => {
 			return client
 				.get<UserInfo>('authorization/userinfo')
 				.then((response) => response.data.sub)
+				.catch((error) => Promise.reject(handleCoreError(error)));
+		},
+		getWebUsers(): Promise<Webuser[]> {
+			return client
+				.get<{ items: Webuser[] }>('users')
+				.then((response) => response.data.items)
 				.catch((error) => Promise.reject(handleCoreError(error)));
 		},
 	};
