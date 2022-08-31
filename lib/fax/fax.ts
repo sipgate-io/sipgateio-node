@@ -48,8 +48,7 @@ export const createFaxModule = (client: SipgateIOClient): FaxModule => ({
 			})
 			.catch((error) => Promise.reject(handleFaxError(error)));
 	},
-	async getFaxlines(): Promise<Faxline[]> {
-		const webuserId = await client.getAuthenticatedWebuserId();
+	async getFaxlines(webuserId: string): Promise<Faxline[]> {
 		return await client
 			.get<FaxlinesResponse>(`${webuserId}/faxlines`)
 			.then((response) => response.items);
