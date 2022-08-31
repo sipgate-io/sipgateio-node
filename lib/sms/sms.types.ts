@@ -1,5 +1,6 @@
 export interface SMSModule {
 	send: (sms: ShortMessage, sendAt?: Date) => Promise<void>;
+	getSmsExtensions: (webuserId: string) => Promise<SmsExtension[]>;
 }
 
 interface GenericShortMessage {

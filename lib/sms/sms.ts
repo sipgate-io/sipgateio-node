@@ -33,6 +33,12 @@ export const createSMSModule = (client: SipgateIOClient): SMSModule => ({
 		}
 		return sendSmsBySmsId(sms, smsDTO, client);
 	},
+	getSmsExtensions(webuserId: string): Promise<SmsExtension[]> {
+		return client
+			.get<{ items: SmsExtension[] }>(`${webuserId}/sms`)
+			.then((response) => response.items)
+			.catch((error) => Promise.reject(handleSmsError(error)));
+	},
 });
 
 const sendSms = async (
