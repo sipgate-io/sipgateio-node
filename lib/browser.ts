@@ -57,3 +57,5 @@ export {
 } from './rtcm';
 export { createSMSModule, ShortMessage } from './sms';
 export { createSettingsModule, WebhookSettings } from './webhook-settings';
+export { createVoicemailsModule } from './voicemails';
+export { createDevicesModule } from './devices';

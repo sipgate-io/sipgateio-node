@@ -27,6 +27,8 @@ A JavaScript library for [sipgate.io](https://www.sipgate.io/)
 	- [History](#history-1)
 	- [Numbers](#numbers-1)
 	- [Real Time Call Manipulation (RTCM)](#real-time-call-manipulation-rtcm-1)
+	- [Voicemail](#voicemail)
+	- [Device](#device)
 - [Examples](#examples)
 - [Changelog](#changelog)
 - [Privacy Note](#privacy-note)
@@ -129,6 +131,32 @@ interface PersonalAccessTokenCredentials {
 The `sipgateIO` method accepts your valid sipgate credentials as defined in the `AuthCredentials` type and returns a sipgate.io Client.
 The client contains as members the supported modules (`sms`, `fax`, `call`, etc.).
 
+The client provides the following functions:
+
+```typescript
+async function getAuthenticatedWebuserId(): Promise<string>;
+async function getWebUsers(): Promise<Webuser[]>;
+```
+
+The `getAuthenticatedWebuserId()` method returns the ID of the admin account.
+
+The `getWebUsers()` method returns an array of the following type:
+
+```typescript
+export interface Webuser {
+	id: string;
+	firstname: string;
+	lastname: string;
+	email: string;
+	defaultDevice: string;
+	busyOnBusy: string;
+	addressId: string;
+	directDialIds: string[];
+	timezone: string;
+	admin: string;
+}
+```
+
 **Note** that creating the sipgate.io Client will not validate your credentials, you might want to call the method `client.getAuthenticatedWebuserId()` to check that your credentials are correct.
 
 ### SMS
@@ -138,6 +166,7 @@ The SMS module provides the following functions:
 ```typescript
 async function send(sms: ShortMessage): Promise<void>;
 async function schedule(sms: ShortMessage, sendAt: Date): Promise<void>;
+async function getSmsExtensions(webuserId: string): Promise<SmsExtension[]>;
 ```
 
 Note: `sendAt` can be 30 days in advance at max.
@@ -161,6 +190,16 @@ interface ShortMessage {
 	from: string;
 	to: string;
 	message: string;
+}
+```
+
+The `getSmsExtensions` method returns an array of the following type:
+
+```typescript
+export interface SmsExtension {
+	id: string;
+	alias: string;
+	callerId: string;
 }
 ```
 
@@ -1054,6 +1093,51 @@ You can hold and continue a present call.
 #### The `hangUp` method:
 
 You can abort or terminate a current call.
+
+### Voicemail
+
+The voicemail module provides the following functions:
+
+```typescript
+async function getVoicemails(): Promise<Voicemail[]>;
+```
+
+The `getVoicemails` method returns an array of the following type:
+
+```typescript
+export interface Voicemail {
+	id: string;
+	alias: string;
+	belongsToEndpoint: {
+		extension: string;
+		type: string;
+	};
+}
+```
+
+### Device
+
+The device module provides the following functions:
+
+```typescript
+async function getDevices(webuserId: string): Promise<Device[]>;
+```
+
+The `getDevices` method returns an array of the following type:
+
+```typescript
+export type DeviceType = 'REGISTER' | 'MOBILE' | 'EXTERNAL';
+
+export interface Device {
+	id: string;
+	alias: string;
+	type: DeviceType;
+	dnd: boolean;
+	online: boolean;
+	callerId?: string;
+	owner?: string;
+}
+```
 
 ## Examples
 
