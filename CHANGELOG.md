@@ -1,3 +1,9 @@
+# 2.13.0
+
+## Features
+
+- add functions to get common IDs ([9b73faa](https://github.com/sipgate-io/sipgateio-node/commit/9b73faa8629965b9fbb6faa8c4600b16a5ba12ec))
+
 # 2.8.0
 
 ## Features
