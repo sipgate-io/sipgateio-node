@@ -18,6 +18,19 @@ export interface PersonalAccessTokenCredentials {
 	token: string;
 }
 
+export interface Webuser {
+	id: string;
+	firstname: string;
+	lastname: string;
+	email: string;
+	defaultDevice: string;
+	busyOnBusy: string;
+	addressId: string;
+	directDialIds: string[];
+	timezone: string;
+	admin: string;
+}
+
 export type AuthCredentials =
 	| BasicAuthCredentials
 	| OAuthCredentials
@@ -47,4 +60,5 @@ export interface SipgateIOClient {
 		config?: HttpRequestConfig
 	) => Promise<T>;
 	getAuthenticatedWebuserId: () => Promise<string>;
+	getWebUsers: () => Promise<Webuser[]>;
 }

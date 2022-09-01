@@ -1,5 +1,6 @@
 export interface SMSModule {
 	send: (sms: ShortMessage, sendAt?: Date) => Promise<void>;
+	getSmsExtensions: (webuserId: string) => Promise<SmsExtension[]>;
 }
 
 interface GenericShortMessage {
@@ -43,17 +44,9 @@ export interface SmsExtension {
 	callerId: string;
 }
 
-export interface SmsExtensions {
-	items: SmsExtension[];
-}
-
 export interface SmsSenderId {
 	id: number;
 	phonenumber: string;
 	verified: boolean;
 	defaultNumber: boolean;
-}
-
-export interface SmsCallerIds {
-	items: SmsSenderId[];
 }

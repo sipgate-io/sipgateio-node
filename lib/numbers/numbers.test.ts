@@ -37,28 +37,26 @@ describe('Number Module', () => {
 
 		const numberModule = createNumbersModule(mockClient);
 		const actualValues = await numberModule.getAllNumbers();
-		await expect(actualValues).toStrictEqual({
-			items: [
-				{
-					id: '12355',
-					number: '+49157391234567',
-					localized: '15739123456',
-					type: NumberResponseItemType.INTERNATIONAL,
-					endpointId: 'string',
-					endpointAlias: 'string',
-					endpointUrl: 'string',
-				},
-				{
-					id: '41351',
-					number: '+49145169146',
-					localized: '145169146',
-					type: NumberResponseItemType.LANDLINE,
-					endpointId: 'string',
-					endpointAlias: 'string',
-					endpointUrl: 'string',
-				},
-			],
-		});
+		await expect(actualValues).toStrictEqual([
+			{
+				id: '12355',
+				number: '+49157391234567',
+				localized: '15739123456',
+				type: NumberResponseItemType.INTERNATIONAL,
+				endpointId: 'string',
+				endpointAlias: 'string',
+				endpointUrl: 'string',
+			},
+			{
+				id: '41351',
+				number: '+49145169146',
+				localized: '145169146',
+				type: NumberResponseItemType.LANDLINE,
+				endpointId: 'string',
+				endpointAlias: 'string',
+				endpointUrl: 'string',
+			},
+		]);
 	});
 
 	it('throws an error when the API answers with 400 Bad Request', async () => {

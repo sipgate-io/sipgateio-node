@@ -1,7 +1,7 @@
 import { Pagination } from '../core';
 
 export interface NumbersModule {
-	getAllNumbers: (pagination?: Pagination) => Promise<NumberResponse>;
+	getAllNumbers: (pagination?: Pagination) => Promise<NumberResponseItem[]>;
 }
 
 export interface NumberResponseItem {
@@ -21,10 +21,6 @@ export enum NumberResponseItemType {
 	LANDLINE = 'LANDLINE',
 	QUICKDIAL = 'QUICKDIAL',
 	INTERNATIONAL = 'INTERNATIONAL',
-}
-
-export interface NumberResponse {
-	items: NumberResponseItem[];
 }
 
 export interface NumberMnpState {

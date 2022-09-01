@@ -282,6 +282,36 @@ describe('The SMS module', () => {
 			getUserSmsExtension(mockedClient, 'some webuserId')
 		).resolves.toEqual(expectedId);
 	});
+
+	it('extracts the `items` from the API response', async () => {
+		const mockuserId = 'w0';
+		const testSmsExtensions: SmsExtension[] = [
+			{
+				id: 's0',
+				alias: 'Sams SMS',
+				callerId: 'test',
+			},
+			{
+				id: 's1',
+				alias: 'Daniels SMS',
+				callerId: 'test2',
+			},
+		];
+		const mockClient = {} as SipgateIOClient;
+
+		mockClient.get = jest
+			.fn()
+			.mockImplementationOnce(() =>
+				Promise.resolve({ items: testSmsExtensions })
+			);
+
+		const smsModule = createSMSModule(mockClient);
+
+		const smsExtensions = await smsModule.getSmsExtensions(mockuserId);
+		expect(smsExtensions).toEqual(testSmsExtensions);
+
+		expect(mockClient.get).toHaveBeenCalledWith(`${mockuserId}/sms`);
+	});
 });
 
 describe('CallerIds for SMS Extension', () => {
