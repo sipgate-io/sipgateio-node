@@ -211,6 +211,7 @@ The fax module provides the following functions:
 async function send(fax: Fax): Promise<SendFaxSessionResponse>;
 async function getFaxStatus(sessionId: string): Promise<FaxStatus>;
 async function getFaxlines(): Promise<Faxline[]>;
+async function getFaxlinesByWebUser(webuserId: string): Promise<Faxline[]>;
 ```
 
 The `send` function allows you to send a fax by passing an object with the following fields:
@@ -256,6 +257,8 @@ export interface Faxline {
 	canReceive: boolean;
 }
 ```
+
+With the `getFaxlinesByWebUser` function you can get a list of faxlines that belong to the specified user. It also returns an array of `Faxline`.
 
 ### Call
 

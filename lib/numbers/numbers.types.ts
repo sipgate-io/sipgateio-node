@@ -1,7 +1,11 @@
 import { Pagination } from '../core';
 
 export interface NumbersModule {
-	getAllNumbers: (pagination?: Pagination) => Promise<NumberResponseItem[]>;
+	getAllNumbers: (pagination?: Pagination) => Promise<NumberResponse>;
+}
+
+export interface NumberResponse {
+	items: NumberResponseItem[];
 }
 
 export interface NumberResponseItem {

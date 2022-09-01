@@ -86,7 +86,8 @@ describe('GetFaxStatus', () => {
 });
 
 describe('getFaxlines', () => {
-	const mockuserId = 'w0';
+	const mockuserId = 'w2';
+	const mockAuthenticatedWebUserID = 'w0';
 	const mockClient: SipgateIOClient = {} as SipgateIOClient;
 
 	test('extracts the `items` from the API response', async () => {
@@ -102,13 +103,21 @@ describe('getFaxlines', () => {
 
 		mockClient.get = jest
 			.fn()
-			.mockImplementationOnce(() => Promise.resolve({ items: testFaxlines }));
+			.mockImplementation(() => Promise.resolve({ items: testFaxlines }));
+		mockClient.getAuthenticatedWebuserId = jest
+			.fn()
+			.mockImplementation(() => Promise.resolve(mockAuthenticatedWebUserID));
 
 		const faxModule = createFaxModule(mockClient);
 
-		const faxlines = await faxModule.getFaxlines(mockuserId);
+		const faxlines = await faxModule.getFaxlines();
 		expect(faxlines).toEqual(testFaxlines);
+		expect(mockClient.get).toHaveBeenCalledWith(
+			`${mockAuthenticatedWebUserID}/faxlines`
+		);
 
+		const faxlinesByWebUser = await faxModule.getFaxlinesByWebUser(mockuserId);
+		expect(faxlinesByWebUser).toEqual(testFaxlines);
 		expect(mockClient.get).toHaveBeenCalledWith(`${mockuserId}/faxlines`);
 	});
 });
