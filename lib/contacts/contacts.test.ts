@@ -683,7 +683,7 @@ describe('Export paginated contacts', () => {
 		).resolves.toEqual({
 			response: [
 				{
-					id: 'foo',
+					id: 'foohoho',
 					name: 'User1',
 					scope: 'PRIVATE',
 					emails: [],
