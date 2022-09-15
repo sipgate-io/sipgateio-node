@@ -1131,6 +1131,11 @@ The `getDevices` method returns an array of the following type:
 ```typescript
 export type DeviceType = 'REGISTER' | 'MOBILE' | 'EXTERNAL';
 
+export interface ActiveRouting {
+	id: string;
+	alias: string;
+}
+
 export interface Device {
 	id: string;
 	alias: string;
@@ -1139,6 +1144,8 @@ export interface Device {
 	online: boolean;
 	callerId?: string;
 	owner?: string;
+	activePhonelines: ActiveRouting[];
+	activeGroups: ActiveRouting[];
 }
 ```
 

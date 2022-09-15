@@ -14,6 +14,8 @@ describe('getDevices', () => {
 				type: 'REGISTER',
 				online: false,
 				dnd: false,
+				activePhonelines: [],
+				activeGroups: [],
 			},
 			{
 				id: 'e14',
@@ -21,6 +23,8 @@ describe('getDevices', () => {
 				type: 'REGISTER',
 				online: false,
 				dnd: false,
+				activePhonelines: [],
+				activeGroups: [],
 			},
 		];
 
