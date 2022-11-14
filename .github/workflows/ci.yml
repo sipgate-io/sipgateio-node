@@ -1,23 +1,10 @@
-name: Build and test
+name: Run tests on pull request and auto merge dependabot pull requests
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: pull_request
 
+permissions: write-all
 
 jobs:
-  run-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12'
-      - run: |
-          npm install
-          npm run test:unit
-          npm run test:integration
-        env:
-          CI: true
+  dependabot_merge:
+   uses: sipgate-io/dependabot-automerge/.github/workflows/dependabot_automerge.yml@main
+   secrets: inherit
