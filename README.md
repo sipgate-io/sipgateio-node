@@ -528,6 +528,13 @@ interface WebhookResponseInterface {
 	sendToVoicemail: () => VoicemailObject;
 	rejectCall: (rejectOptions: RejectOptions) => RejectObject;
 	playAudio: (playOptions: PlayOptions) => PlayObject;
+	playAudioAndTransfer: (
+		playOptions: PlayOptions,
+		transferOptions: TransferOptions,
+		client: SipgateIOClient,
+		callId: string,
+		timeout?: number
+	) => Promise<PlayObject>;
 	playAudioAndHangUp: (
 		playOptions: PlayOptions,
 		client: SipgateIOClient,
@@ -581,6 +588,15 @@ mpg123 --rate 8000 --mono -w output.wav input.mp3
 ##### Play audio and hang up
 
 The `playAudioAndHangUp` method accepts an options object of type `PlayOptions` with a single field, the URL to a sound file to be played.
+In addition, this also requires a `sipgateIOClient`, a unique `callId` from an current active call and a `timeout` which is optional.
+
+After the audio file has been played and the additional timeout has expired, the call is terminated based on the `callId`.
+
+**Note:** For any information about the audio file please look at [play audio](#play-audio).
+
+##### Play audio and transfer
+
+The `playAudioAndTransfer` method accepts an options object of type `PlayOptions` with a single field, the URL to a sound file to be played, and an object of type `TransferOptions`, which contains the phone number to which the call should be transferred.
 In addition, this also requires a `sipgateIOClient`, a unique `callId` from an current active call and a `timeout` which is optional.
 
 After the audio file has been played and the additional timeout has expired, the call is terminated based on the `callId`.
