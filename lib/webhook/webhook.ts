@@ -44,7 +44,10 @@ export const createWebhookModule = (): WebhookModule => ({
 	createServer: createWebhookServer,
 });
 
-const SIPGATE_IP_ADRESS = '217.116.118.254';
+const SIPGATE_WEBHOOK_IP_ADDRESSES: string[] = [
+	'217.116.118.254',
+	'212.9.46.32',
+];
 
 const createWebhookServer = async (
 	serverOptions: ServerOptions
@@ -65,7 +68,7 @@ const createWebhookServer = async (
 				console.error(WebhookErrorMessage.SERVERADDRESS_DOES_NOT_MATCH);
 			}
 			if (!serverOptions.skipSignatureVerification) {
-				if (!req.headers['x-forwarded-for']?.includes(SIPGATE_IP_ADRESS)) {
+				if (!isSipgateOrigin(req, SIPGATE_WEBHOOK_IP_ADDRESSES)) {
 					console.error(WebhookErrorMessage.INVALID_ORIGIN);
 					res.end(
 						`<?xml version="1.0" encoding="UTF-8"?><Error message="${WebhookErrorMessage.INVALID_ORIGIN}" />`
@@ -246,6 +249,24 @@ const isGatherObject = (
 	gatherCandidate: ResponseObject
 ): gatherCandidate is GatherObject => {
 	return (gatherCandidate as GatherObject)?.Gather !== undefined;
+};
+
+const isSipgateOrigin = (
+	req: IncomingMessage,
+	validOrigins: string[]
+): boolean => {
+	const requestHeaders = req.headers['x-forwarded-for'];
+
+	if (requestHeaders === undefined) {
+		return false;
+	}
+	if (typeof requestHeaders === 'string') {
+		return validOrigins.includes(requestHeaders);
+	}
+
+	return requestHeaders.some((requestHeader) =>
+		validOrigins.includes(requestHeader)
+	);
 };
 
 export const serverAddressesMatch = (

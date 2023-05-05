@@ -430,7 +430,7 @@ The `stop` method simply kills the server, the other methods each take a callbac
 Webhooks are verified to ensure that they are sent by sipgate.\
 You can optionally disable this via the `skipSignatureVerification` flag.
 
-Additionaly you can check that webhooks are originated from push-api.sipgate.net (217.116.118.254).
+Additionaly you can check that webhooks are originated from push-api.sipgate.net (217.116.118.254 or 212.9.46.32).
 
 #### Registering event callbacks
 
