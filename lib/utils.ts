@@ -9,9 +9,5 @@ export const toBase64 = (input: string): string => {
 };
 
 export const fromBase64 = (input: string): string => {
-	if (typeof atob !== 'undefined') {
-		return atob(input);
-	} else {
-		return Buffer.from(input, 'base64').toString('binary');
-	}
+	return Buffer.from(input, 'base64').toString('binary');
 };
